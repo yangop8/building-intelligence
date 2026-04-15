@@ -2036,13 +2036,6 @@ def adam_step(params, grads, state, lr=1e-3, b1=0.9, b2=0.999, eps=1e-8):
 <p><strong>Neural ODEs</strong>: replace the discrete layers of a neural network with a continuous time parameter, where the forward pass solves an ODE <span class="math-i">\frac{d\mathbf{h}}{dt} = f(\mathbf{h}, t, \theta)</span> and the backward pass uses the adjoint method. Niche but conceptually elegant.</p>
 
 <p><strong>Newton's method in LLM optimization</strong>: second-order optimizers (K-FAC, Shampoo) use Newton's method ideas to approximate the Hessian, converging faster than Adam in certain scenarios. Has not become mainstream, but offers advantages in large-batch training (batch size in the thousands).</p>
-
-<hr style="margin-top:60px; border:none; border-top:1px dashed var(--rule);">
-
-<p style="color:var(--muted); font-size:14px; font-style:italic; text-align:center; margin-top:40px;">
-— End of Chapter 1 —<br>
-29 sections total · Next chapter: Systems Software (CPU, OS, Programming Languages, Databases, Network Stack)
-</p>
 </section>
 
 <section id="ch2" class="chapter">
@@ -3701,13 +3694,6 @@ ip4_lookup_node_fn(vlib_main_t *vm, vlib_node_runtime_t *node,
 </ul>
 
 <p>Training observability: loss curves, gradient norms, learning rate, per-rank synchronization latency, data loading delay. TensorBoard, Weights &amp; Biases, and MLflow are purpose-built platforms.</p>
-
-<hr style="margin-top:60px; border:none; border-top:1px dashed var(--rule);">
-
-<p style="color:var(--muted); font-size:14px; font-style:italic; text-align:center; margin-top:40px;">
-— End of Chapter 2 —<br>
-28 sections total &middot; Next chapter: AI Model Technology (Classical ML + Deep Learning + Training Optimization + AI Performance Engineering)
-</p>
 </section>
 
 <section id="ch3" class="chapter">
@@ -5961,13 +5947,6 @@ forecast = m.predict(future)
 </ul>
 
 <p>In practice, <strong>directional accuracy</strong> often matters more — whether the model correctly predicted "up or down" is more actionable than the precise value. Directional accuracy is a useful supplementary metric.</p>
-
-<hr style="margin-top:60px; border:none; border-top:1px dashed var(--rule);">
-
-<p style="color:var(--muted); font-size:14px; font-style:italic; text-align:center; margin-top:40px;">
-— End of Chapter 3 —<br>
-36 sections · Chapters 2–5 complete
-</p>
 </section>
 
 <section id="ch4" class="chapter">
@@ -7876,20 +7855,6 @@ flowchart LR
 <li><strong>Embodied intelligence</strong>: multimodal + physical-world action — robotics, autonomous driving. VLA (Vision-Language-Action) models are the new paradigm</li>
 </ol>
 <p>From 2025 onward, the boundaries of "LLM" are increasingly blurred as these models become the core of "foundation models" — with language as just one modality among many.</p>
-
-<hr style="margin-top:60px;border:none;border-top:1px dashed var(--rule);">
-
-<p style="color:var(--muted);font-size:14px;font-style:italic;text-align:center;margin-top:40px;">
-— End of Chapter 4 Part B —<br>
-Part B contains 7 sections · 36 sections total when merged with the full chapter · read alongside Part A (4.1–4.9)
-</p>
-
-<hr style="margin-top:60px;border:none;border-top:1px dashed var(--rule);">
-
-<p style="color:var(--muted);font-size:14px;font-style:italic;text-align:center;margin-top:40px;">
-— End of Chapter 4 —<br>
-37 sections total · Chapters 2–5 are now complete
-</p>
 </section>
 
 <section id="ch5" class="chapter">

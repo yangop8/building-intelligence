@@ -2078,13 +2078,6 @@ def adam_step(params, grads, state, lr=1e-3, b1=0.9, b2=0.999, eps=1e-8):
 <p><strong>Neural ODE</strong>：把神经网络的离散层数换成连续时间参数，前向是求解一个ODE <span class="math-i">\frac{d\mathbf{h}}{dt} = f(\mathbf{h}, t, \theta)</span>，反向通过adjoint方法。小众但概念优雅。</p>
 
 <p><strong>牛顿法在LLM优化</strong>：二阶优化器（K-FAC、Shampoo）用牛顿法思想近似Hessian，在某些场景比Adam收敛更快。没成为主流，但在大批量训练（batch size = 数千）有优势。</p>
-
-<hr style="margin-top:60px; border:none; border-top:1px dashed var(--rule);">
-
-<p style="color:var(--muted); font-size:14px; font-style:italic; text-align:center; margin-top:40px;">
-— 第1章 终 —<br>
-共29节 · 下一章：系统软件（CPU、OS、编程语言、数据库、网络栈）
-</p>
 </section>
 
 <section id="ch2" class="chapter">
@@ -3741,13 +3734,6 @@ ip4_lookup_node_fn(vlib_main_t *vm, vlib_node_runtime_t *node,
 </ul>
 
 <p>训练可观测性:loss曲线、梯度范数、学习率、各rank同步耗时、数据加载延迟。TensorBoard、Weights &amp; Biases、MLflow是专用平台。</p>
-
-<hr style="margin-top:60px; border:none; border-top:1px dashed var(--rule);">
-
-<p style="color:var(--muted); font-size:14px; font-style:italic; text-align:center; margin-top:40px;">
-— 第1章 终 —<br>
-共28节 · 下一章:AI模型技术(传统ML + 深度学习 + 训练优化 + AI性能工程)
-</p>
 </section>
 
 <section id="ch3" class="chapter">
@@ -6003,13 +5989,6 @@ forecast = m.predict(future)
 </ul>
 
 <p>业务上经常更关心<strong>方向性</strong>——是否预对了"涨还是跌",比精确值更有用于决策。方向准确率是补充指标。</p>
-
-<hr style="margin-top:60px; border:none; border-top:1px dashed var(--rule);">
-
-<p style="color:var(--muted); font-size:14px; font-style:italic; text-align:center; margin-top:40px;">
-— 第2章 终 —<br>
-共36节 · 至此第2–5章完整
-</p>
 </section>
 
 <section id="ch4" class="chapter">
@@ -7917,20 +7896,6 @@ flowchart LR
 <li><strong>具身智能</strong>:多模态 + 物理世界动作——机器人操作、自动驾驶。VLA(Vision-Language-Action)模型是新范式</li>
 </ol>
 <p>2025及之后LLM边界越来越模糊,成为"基础模型"的主体——文字只是其中一种模态。</p>
-
-<hr style="margin-top:60px;border:none;border-top:1px dashed var(--rule);">
-
-<p style="color:var(--muted);font-size:14px;font-style:italic;text-align:center;margin-top:40px;">
-— 第3章Part B终 —<br>
-Part B包含7节 · 全章合并后共36节 · 配合Part A (4.1-4.9)阅读
-</p>
-
-<hr style="margin-top:60px;border:none;border-top:1px dashed var(--rule);">
-
-<p style="color:var(--muted);font-size:14px;font-style:italic;text-align:center;margin-top:40px;">
-— 第3章 终 —<br>
-共37节 · 至此第2–5章完整
-</p>
 </section>
 
 <section id="ch5" class="chapter">
@@ -10117,13 +10082,6 @@ flowchart TB
 <p>但无论怎么质疑,V3是当代开源LLM史上最重要的里程碑之一。</p>
 
 <div class="refback"><strong>为什么压轴:</strong>V3技术报告是2024年最值得读的LLM工程论文——它把前面P06-P13的所有技术(Transformer、MoE、LoRA思想、FP8、推理优化)集大成,并展示"它们组合起来能做到什么"。读完这篇,前面16篇的相互关系会变得极其清晰。</div>
-
-<hr style="margin-top:60px;border:none;border-top:1px dashed var(--rule);">
-
-<p style="color:var(--muted);font-size:14px;font-style:italic;text-align:center;margin-top:40px;">
-— 第4章Part B终 —<br>
-Part B共8篇 · 合并后全章17篇
-</p>
 
 <h2 id="p25"><span class="num">P25</span>RAG:让LLM用上外部知识</h2>
 <p class="pos">对应主书:第4章5.10 RAG</p>
