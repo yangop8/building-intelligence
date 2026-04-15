@@ -57,11 +57,43 @@ The Ch 4 source file (`ch4_llm_tech.html`) has Chinese content but English TOC s
 - **Diagrams**: Mermaid 10
 - **Fonts**: Source Serif Pro (serif), Inter (sans), JetBrains Mono (code)
 
-## Editing Guidelines
+## Modification Workflow (MANDATORY)
 
-1. **Content changes**: Edit the source chapter file (e.g., `ch3_ai_model_tech.html`), then rebuild
-2. **English changes**: Edit `en/ch3_ai_model_tech.html`, then rebuild
-3. **CSS/cover changes**: Edit directly in `book.html` — the rebuild script preserves the `<style>` block and cover from the existing merged file
-4. **Adding formulas**: Use `$...$` for inline, `<div class="formula">$...$</div>` for display. Avoid `<` inside formulas — use `\lt` or write the comparison in prose
-5. **Adding papers**: Add to the appropriate `ch5_partX` source file, update the paper order arrays in the build script
-6. **References**: Edit the `<section id="refs">` directly in the merged books (not generated from source)
+Any content change MUST follow this 4-step pipeline to keep all 4 targets in sync:
+
+```
+Chinese Source → English Source → book.html → book_en.html
+     (1)              (2)            (3)           (3)
+```
+
+### Step 1: Edit Chinese source file
+- Make the content change in the Chinese source (e.g., `ch3_ai_model_tech.html`)
+- This is the single source of truth for content
+
+### Step 2: Translate to English source file
+- Translate the changed content to English
+- Apply the translation to the corresponding English source (e.g., `en/ch3_ai_model_tech.html`)
+- Verify: no grammar errors, no awkward phrasing, no remaining Chinese in the English file
+- Technical terms and proper nouns stay in English in both versions
+
+### Step 3: Rebuild both merged books
+- Run the rebuild script to regenerate `book.html` (from Chinese sources) and `book_en.html` (from English sources)
+- The script applies: code escaping, math span conversion, space removal, cross-ref fixing, paper renumbering
+- Never hand-edit the merged books — they are generated artifacts
+
+### Step 4: Verify consistency
+- Confirm the change appears in all 4 files: Chinese source, English source, book.html, book_en.html
+- Check for zero bare `$` signs in both merged books
+- Commit all 4 changed files together in one git commit
+
+### What NOT to do
+- Do NOT edit only `book.html` or `book_en.html` — changes will be overwritten on next rebuild
+- Do NOT edit only the English source without updating the Chinese source first
+- Do NOT commit source files and merged books from different content states
+
+## Other Editing Notes
+
+- **CSS/cover changes**: Edit directly in `book.html` — the rebuild script preserves the `<style>` block and cover from the existing merged file
+- **Adding formulas**: Use `$...$` for inline, `<div class="formula">$...$</div>` for display. Avoid `<` inside formulas — use `\lt` or write the comparison in prose
+- **Adding papers**: Add to the appropriate `ch5_partX` source file, update the paper order arrays in the build script
+- **References**: Edit the `<section id="refs">` directly in the merged books (not generated from source)
