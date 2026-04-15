@@ -1043,13 +1043,13 @@ The book comprises 5 chapters, 130+ sections, covering five major modules: mathe
 
 <h3>Multiple Variables: From Scalar Fields to Vector Fields</h3>
 
-<p>Switching to <span class="math-i">f: \mathbb{R}^n \to \mathbb{R}</span>, the input is an <span class="math-i">n</span>-dimensional vector and the output is still a scalar. We can differentiate with respect to each dimension separately to obtain the  \lt strong>partial derivatives \lt /strong> <span class="math-i">\frac{\partial f}{\partial x_i}</span>. Stacking all partial derivatives into a vector gives the <strong>gradient</strong>:</p>
+<p>Switching to <span class="math-i">f: \mathbb{R}^n \to \mathbb{R}</span>, the input is an <span class="math-i">n</span>-dimensional vector and the output is still a scalar. We can differentiate with respect to each dimension separately to obtain the  <strong>partial derivatives </strong> <span class="math-i">\frac{\partial f}{\partial x_i}</span>. Stacking all partial derivatives into a vector gives the <strong>gradient</strong>:</p>
 <div class="formula"><span class="math-d">\nabla f(\mathbf{x}) = \left(\frac{\partial f}{\partial x_1}, \frac{\partial f}{\partial x_2}, \ldots, \frac{\partial f}{\partial x_n}\right)^\top</span></div>
 <p>The gradient has one crucial geometric meaning: <strong>it points in the direction of steepest ascent of <span class="math-i">f</span>, with magnitude equal to the rate of increase in that direction</strong>. The negative gradient is the direction of steepest descent — and that is the entire rationale for gradient descent.</p>
 
-<p>Going further, the derivative of <span class="math-i">f: \mathbb{R}^n \to \mathbb{R}^m</span> (input <span class="math-i">n</span>-dimensional, output <span class="math-i">m</span>-dimensional) is an <span class="math-i">m \times n</span> matrix called the  \lt strong>Jacobian matrix \lt /strong> <span class="math-i">\mathbf{J}</span>, whose <span class="math-i">(i,j)</span> entry is <span class="math-i">\frac{\partial f_i}{\partial x_j}</span>. Backpropagation in neural networks is essentially a chain of Jacobian matrix products.</p>
+<p>Going further, the derivative of <span class="math-i">f: \mathbb{R}^n \to \mathbb{R}^m</span> (input <span class="math-i">n</span>-dimensional, output <span class="math-i">m</span>-dimensional) is an <span class="math-i">m \times n</span> matrix called the  <strong>Jacobian matrix </strong> <span class="math-i">\mathbf{J}</span>, whose <span class="math-i">(i,j)</span> entry is <span class="math-i">\frac{\partial f_i}{\partial x_j}</span>. Backpropagation in neural networks is essentially a chain of Jacobian matrix products.</p>
 
-<p>The <span class="math-i">n \times n</span> matrix formed by the second-order partial derivatives of <span class="math-i">f</span> is called the  \lt strong>Hessian matrix \lt /strong> <span class="math-i">\mathbf{H}</span>, with <span class="math-i">(i,j)</span> entry <span class="math-i">\frac{\partial^2 f}{\partial x_i \partial x_j}</span>. The Hessian describes the local curvature of a function: positive definite means it is a bowl (local minimum), negative definite means it is a hilltop (local maximum), and indefinite means it is a saddle point.</p>
+<p>The <span class="math-i">n \times n</span> matrix formed by the second-order partial derivatives of <span class="math-i">f</span> is called the  <strong>Hessian matrix </strong> <span class="math-i">\mathbf{H}</span>, with <span class="math-i">(i,j)</span> entry <span class="math-i">\frac{\partial^2 f}{\partial x_i \partial x_j}</span>. The Hessian describes the local curvature of a function: positive definite means it is a bowl (local minimum), negative definite means it is a hilltop (local maximum), and indefinite means it is a saddle point.</p>
 
 <h3>In AI</h3>
 <p>The loss function <span class="math-i">L(\boldsymbol{\theta})</span> of a neural network maps from a million-dimensional parameter space to a scalar. What we need is <span class="math-i">\nabla_\boldsymbol{\theta} L</span> — a million-dimensional vector pointing in the direction of fastest loss increase. Each step <span class="math-i">\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \eta \nabla L</span> is gradient descent. The Hessian matrix is far too large to store (<span class="math-i">10^6 \times 10^6</span>), so optimizers like Adam <em>approximate</em> Hessian information using the second moment of the gradient — this is the dividing line between first-order and second-order optimization.</p>
@@ -1060,7 +1060,7 @@ The book comprises 5 chapters, 130+ sections, covering five major modules: mathe
 
 <h3>Convexity and Concavity</h3>
 
-<p>A function <span class="math-i">f</span> is  \lt strong>convex \lt /strong> on an interval if, for any <span class="math-i">x_1, x_2</span> and <span class="math-i">t \in [0,1]</span>:</p>
+<p>A function <span class="math-i">f</span> is  <strong>convex </strong> on an interval if, for any <span class="math-i">x_1, x_2</span> and <span class="math-i">t \in [0,1]</span>:</p>
 <div class="formula"><span class="math-d">f(t x_1 + (1-t) x_2) \le t f(x_1) + (1-t) f(x_2)</span></div>
 <p>Geometric interpretation: the line segment connecting any two points does not fall below the function's graph. The greatest advantage of convex functions is that <strong>every local minimum is a global minimum</strong> — a paradise for optimization algorithms. The squared loss in linear regression and the cross-entropy loss in logistic regression are both convex, which is why these classical algorithms are guaranteed to converge to the global optimum.</p>
 
@@ -1145,7 +1145,7 @@ print(conv1d(x, k))   # [-2, -2, -2]
 
 <h3>The Chain Rule Is All of Backpropagation</h3>
 
-<p>The chain rule: <span class="math-i">\frac{d}{dx} f(g(x)) = f'(g(x)) \cdot g'(x)</span>. High-school mathematics. But the output of a neural network is a chain of nested functions <span class="math-i">y = f_L(f_{L-1}(\ldots f_1(x)))</span>, so computing the partial derivative with respect to some intermediate parameter <span class="math-i">w_i</span> means a long chain of multiplications. The key engineering observation is:  \lt strong>many intermediate quantities in this chain are shared \lt /strong>. If each parameter independently computes a full chain, the total work is <span class="math-i">O(L \cdot N)</span> (<span class="math-i">N</span> being the number of parameters); if the computation proceeds in "output-to-input" order and is done in a single pass, the total work is <span class="math-i">O(L + N)</span>. This orders-of-magnitude difference is the reason backpropagation exists.</p>
+<p>The chain rule: <span class="math-i">\frac{d}{dx} f(g(x)) = f'(g(x)) \cdot g'(x)</span>. High-school mathematics. But the output of a neural network is a chain of nested functions <span class="math-i">y = f_L(f_{L-1}(\ldots f_1(x)))</span>, so computing the partial derivative with respect to some intermediate parameter <span class="math-i">w_i</span> means a long chain of multiplications. The key engineering observation is:  <strong>many intermediate quantities in this chain are shared </strong>. If each parameter independently computes a full chain, the total work is <span class="math-i">O(L \cdot N)</span> (<span class="math-i">N</span> being the number of parameters); if the computation proceeds in "output-to-input" order and is done in a single pass, the total work is <span class="math-i">O(L + N)</span>. This orders-of-magnitude difference is the reason backpropagation exists.</p>
 
 <h3>Backpropagation Through a Two-Layer Network</h3>
 
@@ -1226,13 +1226,13 @@ print("dL/dW1 =\n", dL_dW1)
 
 <h3>Vectors, Matrices, and Tensors</h3>
 
-<p>A vector <span class="math-i">\mathbf{v} \in \mathbb{R}^n</span> is an ordered arrangement of <span class="math-i">n</span> real numbers. What matters is that it supports two operations: addition <span class="math-i">\mathbf{u} + \mathbf{v}</span> and scalar multiplication <span class="math-i">\alpha \mathbf{v}</span>, and that these operations satisfy 8 axioms (associativity, distributivity, etc.). Any set satisfying these axioms is called a  \lt strong>linear space \lt /strong> (or vector space). <span class="math-i">\mathbb{R}^n</span> is the most fundamental linear space, but abstractly it can be a space of continuous functions, a space of probability distributions, and so on — this is the power of "linear" thinking.</p>
+<p>A vector <span class="math-i">\mathbf{v} \in \mathbb{R}^n</span> is an ordered arrangement of <span class="math-i">n</span> real numbers. What matters is that it supports two operations: addition <span class="math-i">\mathbf{u} + \mathbf{v}</span> and scalar multiplication <span class="math-i">\alpha \mathbf{v}</span>, and that these operations satisfy 8 axioms (associativity, distributivity, etc.). Any set satisfying these axioms is called a  <strong>linear space </strong> (or vector space). <span class="math-i">\mathbb{R}^n</span> is the most fundamental linear space, but abstractly it can be a space of continuous functions, a space of probability distributions, and so on — this is the power of "linear" thinking.</p>
 
 <p>A matrix <span class="math-i">\mathbf{A} \in \mathbb{R}^{m \times n}</span> arranges <span class="math-i">m \times n</span> real numbers in a two-dimensional grid. A tensor is a higher-dimensional generalization: a three-dimensional tensor can be thought of as a stack of matrices, and a four-dimensional tensor as a stack of three-dimensional tensors. In deep learning, "tensor" is used more loosely than its strict mathematical definition — in PyTorch, any multi-dimensional array is called a tensor.</p>
 
 <h3>Dimension and Rank</h3>
 
-<p>A set of vectors <span class="math-i">\{\mathbf{v}_1, \ldots, \mathbf{v}_k\}</span> is called  \lt strong>linearly independent \lt /strong> if <span class="math-i">\sum \alpha_i \mathbf{v}_i = \mathbf{0}</span> has only the solution <span class="math-i">\alpha_i = 0</span>. The <strong>dimension</strong> of a linear space is the size of the largest linearly independent set that can be found.</p>
+<p>A set of vectors <span class="math-i">\{\mathbf{v}_1, \ldots, \mathbf{v}_k\}</span> is called  <strong>linearly independent </strong> if <span class="math-i">\sum \alpha_i \mathbf{v}_i = \mathbf{0}</span> has only the solution <span class="math-i">\alpha_i = 0</span>. The <strong>dimension</strong> of a linear space is the size of the largest linearly independent set that can be found.</p>
 
 <p>The <strong>rank</strong> <span class="math-i">\text{rank}(\mathbf{A})</span> of a matrix <span class="math-i">\mathbf{A}</span> is the maximum number of linearly independent columns (or rows) in the matrix. <span class="math-i">\text{rank}(\mathbf{A}) \le \min(m, n)</span>. Rank directly reflects "information redundancy": a low-rank matrix can be compressed into a lower-dimensional representation. This is the starting point for SVD and LoRA later on.</p>
 
@@ -1282,7 +1282,7 @@ print("dL/dW1 =\n", dL_dW1)
 
 <table>
 <tr><th>Case</th><th>Condition</th><th>Result</th></tr>
-<tr><td>Square, full rank (<span class="math-i">m = n, \text{rank} = n</span>) \lt /td> \lt td><span class="math-i">\det(\mathbf{A}) \ne 0</span> \lt /td> \lt td>Unique solution <span class="math-i">\mathbf{x} = \mathbf{A}^{-1}\mathbf{b}</span></td></tr>
+<tr><td>Square, full rank (<span class="math-i">m = n, \text{rank} = n</span>) </td> \lt td><span class="math-i">\det(\mathbf{A}) \ne 0</span> </td> \lt td>Unique solution <span class="math-i">\mathbf{x} = \mathbf{A}^{-1}\mathbf{b}</span></td></tr>
 <tr><td>Overdetermined (<span class="math-i">m > n</span>)</td><td>Usually no exact solution</td><td>Least squares solution</td></tr>
 <tr><td>Underdetermined (<span class="math-i">m \lt n</span>)</td><td>Usually infinitely many solutions</td><td>Minimum-norm solution</td></tr>
 </table>
@@ -1293,7 +1293,7 @@ print("dL/dW1 =\n", dL_dW1)
 
 <h3>Generalized Inverse (Moore-Penrose Pseudoinverse)</h3>
 
-<p>When <span class="math-i">\mathbf{A}</span> is not square, or is square but not invertible, the traditional <span class="math-i">\mathbf{A}^{-1}</span> does not exist. The  \lt strong>pseudoinverse \lt /strong> <span class="math-i">\mathbf{A}^+</span> is the generalization:</p>
+<p>When <span class="math-i">\mathbf{A}</span> is not square, or is square but not invertible, the traditional <span class="math-i">\mathbf{A}^{-1}</span> does not exist. The  <strong>pseudoinverse </strong> <span class="math-i">\mathbf{A}^+</span> is the generalization:</p>
 <ul style="list-style:none; padding-left:0;">
 <li>- If <span class="math-i">\mathbf{A}</span> has full column rank (<span class="math-i">m \ge n</span>, <span class="math-i">\text{rank} = n</span>): <span class="math-i">\mathbf{A}^+ = (\mathbf{A}^\top \mathbf{A})^{-1} \mathbf{A}^\top</span></li>
 <li>- If <span class="math-i">\mathbf{A}</span> has full row rank (<span class="math-i">m \le n</span>, <span class="math-i">\text{rank} = m</span>): <span class="math-i">\mathbf{A}^+ = \mathbf{A}^\top (\mathbf{A} \mathbf{A}^\top)^{-1}</span></li>
@@ -1316,7 +1316,7 @@ print("dL/dW1 =\n", dL_dW1)
 
 <p>For a square matrix <span class="math-i">\mathbf{A}</span>, if there exists a nonzero vector <span class="math-i">\mathbf{v}</span> and a scalar <span class="math-i">\lambda</span> such that:</p>
 <div class="formula"><span class="math-d">\mathbf{A}\mathbf{v} = \lambda \mathbf{v}</span></div>
-<p>then <span class="math-i">\mathbf{v}</span> is called an  \lt strong>eigenvector \lt /strong> and <span class="math-i">\lambda</span> the corresponding  \lt strong>eigenvalue \lt /strong>. Geometric meaning: <span class="math-i">\mathbf{A}</span> acting on <span class="math-i">\mathbf{v}</span>  \lt em>only changes its length, not its direction \lt /em> (when <span class="math-i">\lambda &lt; 0</span>, the direction is reversed). These are the "intrinsic" directions of the matrix — the simplest directions under its action.</p>
+<p>then <span class="math-i">\mathbf{v}</span> is called an  <strong>eigenvector </strong> and <span class="math-i">\lambda</span> the corresponding  <strong>eigenvalue </strong>. Geometric meaning: <span class="math-i">\mathbf{A}</span> acting on <span class="math-i">\mathbf{v}</span>  <em>only changes its length, not its direction </em> (when <span class="math-i">\lambda &lt; 0</span>, the direction is reversed). These are the "intrinsic" directions of the matrix — the simplest directions under its action.</p>
 
 <h3>Diagonalization</h3>
 
@@ -1371,19 +1371,19 @@ print("Variance after dimensionality reduction:", X_pca.var(axis=0))
 
 <h3>Geometric Meaning</h3>
 
-<p>Break down <span class="math-i">\mathbf{A}\mathbf{x}</span> into three steps:  \lt strong><span class="math-i">\mathbf{V}^\top</span> rotates the coordinate system → <span class="math-i">\boldsymbol{\Sigma}</span> scales along each axis → <span class="math-i">\mathbf{U}</span> rotates again into the output space</strong>. Therefore any linear transformation is a combination of "rotation + scaling + rotation." This conclusion is remarkably powerful.</p>
+<p>Break down <span class="math-i">\mathbf{A}\mathbf{x}</span> into three steps:  <strong><span class="math-i">\mathbf{V}^\top</span> rotates the coordinate system → <span class="math-i">\boldsymbol{\Sigma}</span> scales along each axis → <span class="math-i">\mathbf{U}</span> rotates again into the output space</strong>. Therefore any linear transformation is a combination of "rotation + scaling + rotation." This conclusion is remarkably powerful.</p>
 
 <h3>Low-Rank Approximation</h3>
 
 <p>SVD can be written as a sum of outer products:</p>
 <div class="formula"><span class="math-d">\mathbf{A} = \sum_{i=1}^r \sigma_i \mathbf{u}_i \mathbf{v}_i^\top</span></div>
-<p>where <span class="math-i">r = \text{rank}(\mathbf{A})</span>. The  \lt strong>Eckart-Young theorem \lt /strong> tells us: retaining only the largest <span class="math-i">k</span> terms (<span class="math-i">k \lt r</span>), the result <span class="math-i">\mathbf{A}_k = \sum_{i=1}^k \sigma_i \mathbf{u}_i \mathbf{v}_i^\top</span> is the  \lt em>optimal rank-<span class="math-i">k</span> approximation \lt /em> to <span class="math-i">\mathbf{A}</span> under either the Frobenius norm or the spectral norm. No other rank-<span class="math-i">k</span> matrix is closer to <span class="math-i">\mathbf{A}</span>.</p>
+<p>where <span class="math-i">r = \text{rank}(\mathbf{A})</span>. The  <strong>Eckart-Young theorem </strong> tells us: retaining only the largest <span class="math-i">k</span> terms (<span class="math-i">k \lt r</span>), the result <span class="math-i">\mathbf{A}_k = \sum_{i=1}^k \sigma_i \mathbf{u}_i \mathbf{v}_i^\top</span> is the  <em>optimal rank-<span class="math-i">k</span> approximation </em> to <span class="math-i">\mathbf{A}</span> under either the Frobenius norm or the spectral norm. No other rank-<span class="math-i">k</span> matrix is closer to <span class="math-i">\mathbf{A}</span>.</p>
 
 <p>This is the unified mathematical foundation for compression, dimensionality reduction, and denoising. Image compression, matrix completion in recommendation systems, model weight compression — all rely on this theorem.</p>
 
 <h3>In AI: LoRA</h3>
 
-<p>LoRA's hypothesis is that the weight change <span class="math-i">\Delta \mathbf{W}</span> induced by fine-tuning an LLM is  \lt em>low-rank \lt /em>. Mathematically: <span class="math-i">\Delta \mathbf{W} \approx \mathbf{B}\mathbf{A}</span>, where <span class="math-i">\mathbf{A} \in \mathbb{R}^{r \times d}</span> and <span class="math-i">\mathbf{B} \in \mathbb{R}^{d \times r}</span> with <span class="math-i">r \ll d</span>. The parameter count drops from <span class="math-i">d^2</span> to <span class="math-i">2rd</span> — for a 7B model with <span class="math-i">d \approx 4096</span> and <span class="math-i">r = 16</span>, that is a 128× compression.</p>
+<p>LoRA's hypothesis is that the weight change <span class="math-i">\Delta \mathbf{W}</span> induced by fine-tuning an LLM is  <em>low-rank </em>. Mathematically: <span class="math-i">\Delta \mathbf{W} \approx \mathbf{B}\mathbf{A}</span>, where <span class="math-i">\mathbf{A} \in \mathbb{R}^{r \times d}</span> and <span class="math-i">\mathbf{B} \in \mathbb{R}^{d \times r}</span> with <span class="math-i">r \ll d</span>. The parameter count drops from <span class="math-i">d^2</span> to <span class="math-i">2rd</span> — for a 7B model with <span class="math-i">d \approx 4096</span> and <span class="math-i">r = 16</span>, that is a 128× compression.</p>
 
 <p>Why does this work? Empirical observation: the "effective information dimensionality" of each layer in a neural network is far lower than its parameter dimensionality, and truncating SVD to retain the top <span class="math-i">r</span> components loses almost no performance. This is not a mathematically proven result but an empirical regularity — yet SVD provides the theoretical language for it.</p>
 
@@ -1465,11 +1465,11 @@ for r in [5, 10, 20, 50, 100]:
 
 <p>Throw <span class="math-i">n</span> balls randomly into <span class="math-i">n</span> bins. The question: how many balls are in the fullest bin? This is the mathematical abstraction of <strong>load balancing</strong>.</p>
 
-<p>Each ball independently picks a bin uniformly at random, so the number of balls each bin receives is approximately <span class="math-i">\text{Poisson}(1)</span>. By analyzing tail probabilities, one can show:  \lt em>the maximum load is with high probability approximately <span class="math-i">\Theta(\log n / \log\log n)</span> \lt /em>. For <span class="math-i">n = 1000</span>, the fullest bin holds about 5 balls — not terrible, but already 5 times the average.</p>
+<p>Each ball independently picks a bin uniformly at random, so the number of balls each bin receives is approximately <span class="math-i">\text{Poisson}(1)</span>. By analyzing tail probabilities, one can show:  <em>the maximum load is with high probability approximately <span class="math-i">\Theta(\log n / \log\log n)</span> </em>. For <span class="math-i">n = 1000</span>, the fullest bin holds about 5 balls — not terrible, but already 5 times the average.</p>
 
 <h3>POTC: Power of Two Choices</h3>
 
-<p>Improved strategy: each ball independently picks <em>two</em> bins at random and goes into the less loaded one. This seemingly minor change produces a dramatic effect — <em>the maximum load is with high probability approximately <span class="math-i">\Theta(\log\log n)</span> \lt /em> — an exponential improvement. For <span class="math-i">n = 1000</span>, the maximum drops from 5 balls to 2.</p>
+<p>Improved strategy: each ball independently picks <em>two</em> bins at random and goes into the less loaded one. This seemingly minor change produces a dramatic effect — <em>the maximum load is with high probability approximately <span class="math-i">\Theta(\log\log n)</span> </em> — an exponential improvement. For <span class="math-i">n = 1000</span>, the maximum drops from 5 balls to 2.</p>
 
 <p>This is one of the most striking results in probability theory: "looking at one extra option" yields an exponential improvement. The intuition: worse bins are less likely to be chosen, pushing the distribution toward uniformity.</p>
 
@@ -1504,10 +1504,10 @@ print("POTC     max load:", np.mean([simulate_balls_bins(n, 'potc')   for _ in r
 
 <table>
 <tr><th>Distribution</th><th>Meaning</th><th>PMF</th><th>Mean / Variance</th></tr>
-<tr><td>Bernoulli Ber(p)</td><td>One coin flip</td><td><span class="math-i">P(X=1) = p</span> \lt /td> \lt td><span class="math-i">p, p(1-p)</span></td></tr>
-<tr><td>Binomial Bin(n, p)</td><td>Sum of n Bernoullis</td><td><span class="math-i">\binom{n}{k} p^k (1-p)^{n-k}</span> \lt /td> \lt td><span class="math-i">np, np(1-p)</span></td></tr>
-<tr><td>Poisson Poi(λ)</td><td>Count of rare events</td><td><span class="math-i">\frac{\lambda^k e^{-\lambda}}{k!}</span> \lt /td> \lt td><span class="math-i">\lambda, \lambda</span></td></tr>
-<tr><td>Geometric Geo(p)</td><td>Number of trials until success</td><td><span class="math-i">(1-p)^{k-1} p</span> \lt /td> \lt td><span class="math-i">1/p, (1-p)/p^2</span></td></tr>
+<tr><td>Bernoulli Ber(p)</td><td>One coin flip</td><td><span class="math-i">P(X=1) = p</span> </td> \lt td><span class="math-i">p, p(1-p)</span></td></tr>
+<tr><td>Binomial Bin(n, p)</td><td>Sum of n Bernoullis</td><td><span class="math-i">\binom{n}{k} p^k (1-p)^{n-k}</span> </td> \lt td><span class="math-i">np, np(1-p)</span></td></tr>
+<tr><td>Poisson Poi(λ)</td><td>Count of rare events</td><td><span class="math-i">\frac{\lambda^k e^{-\lambda}}{k!}</span> </td> \lt td><span class="math-i">\lambda, \lambda</span></td></tr>
+<tr><td>Geometric Geo(p)</td><td>Number of trials until success</td><td><span class="math-i">(1-p)^{k-1} p</span> </td> \lt td><span class="math-i">1/p, (1-p)/p^2</span></td></tr>
 </table>
 
 <p>Poisson is the limit of Binomial as <span class="math-i">n \to \infty, p \to 0, np = \lambda</span>. It describes "a large number of independent rare events" — user traffic, system crashes, genetic mutations.</p>
@@ -1595,21 +1595,21 @@ print("POTC     max load:", np.mean([simulate_balls_bins(n, 'potc')   for _ in r
 
 <h3>Core Concepts</h3>
 
-<p><strong>Null hypothesis <span class="math-i">H_0</span> \lt /strong>: the default position we wish to disprove ("the new model is no different from the old one").  \lt strong>Alternative hypothesis <span class="math-i">H_1</span></strong>: the claim we wish to establish ("the new model is better").</p>
+<p><strong>Null hypothesis <span class="math-i">H_0</span> </strong>: the default position we wish to disprove ("the new model is no different from the old one").  <strong>Alternative hypothesis <span class="math-i">H_1</span></strong>: the claim we wish to establish ("the new model is better").</p>
 
-<p><strong>Test statistic</strong>: a number computed from the data that has a known distribution under <span class="math-i">H_0</span>.  \lt strong>p-value \lt /strong>: the probability of observing "the current statistic or a more extreme value" under <span class="math-i">H_0</span>. A small p-value means "if <span class="math-i">H_0</span> were true, the current data would be unlikely," and we therefore reject <span class="math-i">H_0</span>.</p>
+<p><strong>Test statistic</strong>: a number computed from the data that has a known distribution under <span class="math-i">H_0</span>.  <strong>p-value </strong>: the probability of observing "the current statistic or a more extreme value" under <span class="math-i">H_0</span>. A small p-value means "if <span class="math-i">H_0</span> were true, the current data would be unlikely," and we therefore reject <span class="math-i">H_0</span>.</p>
 
 <p>Common p-value thresholds are 0.05 or 0.01. These thresholds are historical conventions, not mathematical laws — in recent years many fields have recommended 0.005 or even abandoning p-values altogether in favor of Bayesian approaches, due to widespread "p-value abuse."</p>
 
 <h3>Two Types of Errors</h3>
 
 <table>
-<tr><th></th><th>Truth: <span class="math-i">H_0</span> is true \lt /th> \lt th>Truth: <span class="math-i">H_1</span> is true</th></tr>
+<tr><th></th><th>Truth: <span class="math-i">H_0</span> is true </th> \lt th>Truth: <span class="math-i">H_1</span> is true</th></tr>
 <tr><td>Accept <span class="math-i">H_0</span></td><td>Correct</td><td>Type II error (false negative, β)</td></tr>
 <tr><td>Reject <span class="math-i">H_0</span></td><td>Type I error (false positive, α)</td><td>Correct (power 1-β)</td></tr>
 </table>
 
-<p><span class="math-i">\alpha</span> and <span class="math-i">\beta</span> cannot both be reduced simultaneously — only increasing the sample size can reduce both at once. Before running an experiment you should perform a  \lt strong>power analysis \lt /strong>: target effect size + desired <span class="math-i">\alpha</span> and <span class="math-i">\beta</span> → required sample size. Many AI experiments have too few samples, insufficient power, and cannot detect a real difference even when one exists.</p>
+<p><span class="math-i">\alpha</span> and <span class="math-i">\beta</span> cannot both be reduced simultaneously — only increasing the sample size can reduce both at once. Before running an experiment you should perform a  <strong>power analysis </strong>: target effect size + desired <span class="math-i">\alpha</span> and <span class="math-i">\beta</span> → required sample size. Many AI experiments have too few samples, insufficient power, and cannot detect a real difference even when one exists.</p>
 
 <h3>t-Test</h3>
 
@@ -1745,7 +1745,7 @@ print("POTC     max load:", np.mean([simulate_balls_bins(n, 'potc')   for _ in r
 <p>Interpretation: Using the optimal code designed for distribution <span class="math-i">q</span> to encode data actually drawn from distribution <span class="math-i">p</span>, the average number of bits required per symbol. Clearly <span class="math-i">H(p,q) \ge H(p)</span>, and the excess is the <strong>KL divergence</strong>:</p>
 <div class="formula"><span class="math-d">D_{\text{KL}}(p \parallel q) = H(p, q) - H(p) = \sum_x p(x) \log \frac{p(x)}{q(x)}</span></div>
 
-<p><span class="math-i">D_{\text{KL}} \ge 0</span>, with equality if and only if <span class="math-i">p = q</span>.  \lt strong>Asymmetry \lt /strong>: <span class="math-i">D_{\text{KL}}(p \| q) \ne D_{\text{KL}}(q \| p)</span> — this is not a mathematical defect, but actually useful: "approximating <span class="math-i">p</span> with <span class="math-i">q</span>" and "approximating <span class="math-i">q</span> with <span class="math-i">p</span>" are genuinely different operations, and KL's asymmetry faithfully reflects this.</p>
+<p><span class="math-i">D_{\text{KL}} \ge 0</span>, with equality if and only if <span class="math-i">p = q</span>.  <strong>Asymmetry </strong>: <span class="math-i">D_{\text{KL}}(p \| q) \ne D_{\text{KL}}(q \| p)</span> — this is not a mathematical defect, but actually useful: "approximating <span class="math-i">p</span> with <span class="math-i">q</span>" and "approximating <span class="math-i">q</span> with <span class="math-i">p</span>" are genuinely different operations, and KL's asymmetry faithfully reflects this.</p>
 
 <h3>Mutual Information</h3>
 
@@ -1846,7 +1846,7 @@ print("POTC     max load:", np.mean([simulate_balls_bins(n, 'potc')   for _ in r
 
 <h3>Machine Epsilon</h3>
 
-<p>The smallest floating-point number greater than 1 is <span class="math-i">1 + \epsilon</span>, where <span class="math-i">\epsilon</span> is the  \lt strong>machine epsilon \lt /strong>. FP32 <span class="math-i">\epsilon \approx 1.19 \times 10^{-7}</span>, FP16 <span class="math-i">\epsilon \approx 9.77 \times 10^{-4}</span>, BF16 <span class="math-i">\epsilon \approx 3.91 \times 10^{-3}</span>. BF16 has four times worse precision than FP16, but it has a larger dynamic range (same exponent bits as FP32), which is why training uses BF16 rather than FP16.</p>
+<p>The smallest floating-point number greater than 1 is <span class="math-i">1 + \epsilon</span>, where <span class="math-i">\epsilon</span> is the  <strong>machine epsilon </strong>. FP32 <span class="math-i">\epsilon \approx 1.19 \times 10^{-7}</span>, FP16 <span class="math-i">\epsilon \approx 9.77 \times 10^{-4}</span>, BF16 <span class="math-i">\epsilon \approx 3.91 \times 10^{-3}</span>. BF16 has four times worse precision than FP16, but it has a larger dynamic range (same exponent bits as FP32), which is why training uses BF16 rather than FP16.</p>
 
 <h3>Classic Numerical Pitfalls</h3>
 
@@ -1894,7 +1894,7 @@ print(y - x)   # Expected 1.0, may actually be 0.0 — 1.0 is swallowed by the p
 
 <p>Small matrices: solve the characteristic polynomial <span class="math-i">\det(\mathbf{A} - \lambda \mathbf{I}) = 0</span> directly. Large matrices: the <strong>QR algorithm</strong> (iteratively applying QR decomposition until convergence to diagonal/triangular form) is the standard approach — it is what <code>numpy.linalg.eig</code> uses under the hood.</p>
 
-<p><strong>When only the top <span class="math-i">k</span> eigenvalues are needed \lt /strong>: use  \lt strong>power iteration \lt /strong>. Starting from a random vector <span class="math-i">\mathbf{v}_0</span>, repeatedly apply <span class="math-i">\mathbf{v}_{k+1} = \mathbf{A}\mathbf{v}_k / \|\mathbf{A}\mathbf{v}_k\|</span>, which converges to the eigenvector corresponding to the largest eigenvalue. Combined with deflation or the Lanczos method, multiple leading eigenvectors can be obtained.</p>
+<p><strong>When only the top <span class="math-i">k</span> eigenvalues are needed </strong>: use  <strong>power iteration </strong>. Starting from a random vector <span class="math-i">\mathbf{v}_0</span>, repeatedly apply <span class="math-i">\mathbf{v}_{k+1} = \mathbf{A}\mathbf{v}_k / \|\mathbf{A}\mathbf{v}_k\|</span>, which converges to the eigenvector corresponding to the largest eigenvalue. Combined with deflation or the Lanczos method, multiple leading eigenvectors can be obtained.</p>
 
 <p>PageRank is power iteration — repeatedly multiplying the web link matrix converges to the steady-state probability of each page. Google's original core algorithm.</p>
 
@@ -1965,7 +1965,7 @@ print(y - x)   # Expected 1.0, may actually be 0.0 — 1.0 is swallowed by the p
 </div>
 <div class="formula"><span class="math-d">\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta \frac{\hat{\mathbf{m}}_t}{\sqrt{\hat{\mathbf{v}}_t} + \epsilon}</span></div>
 
-<p><span class="math-i">\beta_1 = 0.9, \beta_2 = 0.999, \epsilon = 10^{-8}</span> are the default values.  \lt strong>Bias correction \lt /strong> is a detail but an important one: at the start, <span class="math-i">\mathbf{m}_0 = \mathbf{v}_0 = 0</span> causes early estimates to be biased low; dividing by <span class="math-i">(1 - \beta^t)</span> corrects for this.</p>
+<p><span class="math-i">\beta_1 = 0.9, \beta_2 = 0.999, \epsilon = 10^{-8}</span> are the default values.  <strong>Bias correction </strong> is a detail but an important one: at the start, <span class="math-i">\mathbf{m}_0 = \mathbf{v}_0 = 0</span> causes early estimates to be biased low; dividing by <span class="math-i">(1 - \beta^t)</span> corrects for this.</p>
 
 <p>Intuition: parameters with large gradients automatically get a small learning rate (because <span class="math-i">\sqrt{\mathbf{v}}</span> is large), while parameters with small gradients get a large learning rate — automatic per-dimension adjustment. This is what "adaptive learning rate" means.</p>
 
@@ -3790,7 +3790,7 @@ def kmeans(X, k, max_iter=100, tol=1e-4):
     return centers, labels
 </code></pre>
 
-<p>A few pitfalls with K-means. First, <strong>sensitivity to initialization</strong> — different seeds can produce completely different clusters. K-means++ initialization (as done in the code above) significantly improves this. Second, <strong>you must specify <span class="math-i">k</span> \lt /strong> — typically the elbow method (plot <span class="math-i">k</span> vs. SSE, find the kink) or the silhouette score helps with selection. Third, <strong>it assumes spherical clusters</strong> — elongated or ring-shaped distributions are beyond its reach; DBSCAN or spectral clustering are needed for those cases.</p>
+<p>A few pitfalls with K-means. First, <strong>sensitivity to initialization</strong> — different seeds can produce completely different clusters. K-means++ initialization (as done in the code above) significantly improves this. Second, <strong>you must specify <span class="math-i">k</span> </strong> — typically the elbow method (plot <span class="math-i">k</span> vs. SSE, find the kink) or the silhouette score helps with selection. Third, <strong>it assumes spherical clusters</strong> — elongated or ring-shaped distributions are beyond its reach; DBSCAN or spectral clustering are needed for those cases.</p>
 
 <h3>In the Networking Domain</h3>
 
@@ -3919,13 +3919,13 @@ for feat, imp in sorted(zip(feature_names, importance), key=lambda x: -x[1])[:10
 
 <div class="formula"><span class="math-d">\max_\alpha \sum_i \alpha_i - \frac{1}{2}\sum_{i,j} \alpha_i \alpha_j y_i y_j \mathbf{x}_i^\top \mathbf{x}_j, \quad \alpha_i \ge 0, \sum_i \alpha_i y_i = 0</span></div>
 
-<p>After solving for <span class="math-i">\alpha^*</span>, <span class="math-i">\mathbf{w} = \sum_i \alpha_i y_i \mathbf{x}_i</span>. A key observation:  \lt strong>the vast majority of <span class="math-i">\alpha_i = 0</span> \lt /strong>; only the points on the margin boundary have <span class="math-i">\alpha_i > 0</span> — these are the <strong>support vectors</strong>, which is where the name SVM comes from. Prediction only requires the support vectors:</p>
+<p>After solving for <span class="math-i">\alpha^*</span>, <span class="math-i">\mathbf{w} = \sum_i \alpha_i y_i \mathbf{x}_i</span>. A key observation:  <strong>the vast majority of <span class="math-i">\alpha_i = 0</span> </strong>; only the points on the margin boundary have <span class="math-i">\alpha_i > 0</span> — these are the <strong>support vectors</strong>, which is where the name SVM comes from. Prediction only requires the support vectors:</p>
 
 <div class="formula"><span class="math-d">f(\mathbf{x}) = \text{sign}\left(\sum_{i \in \text{SV}} \alpha_i y_i \mathbf{x}_i^\top \mathbf{x} + b\right)</span></div>
 
 <h3>The Kernel Trick</h3>
 
-<p>What about linearly inseparable data? Map the data to a higher-dimensional space <span class="math-i">\phi(\mathbf{x})</span> where linear separability holds. Notice that the dual only involves <span class="math-i">\mathbf{x}_i^\top \mathbf{x}_j</span> — replacing this with <span class="math-i">\phi(\mathbf{x}_i)^\top \phi(\mathbf{x}_j)</span> suffices. And this inner product can be defined as a  \lt strong>kernel function \lt /strong> <span class="math-i">K(\mathbf{x}_i, \mathbf{x}_j)</span> computed directly, without explicitly computing <span class="math-i">\phi</span> — this is the kernel trick.</p>
+<p>What about linearly inseparable data? Map the data to a higher-dimensional space <span class="math-i">\phi(\mathbf{x})</span> where linear separability holds. Notice that the dual only involves <span class="math-i">\mathbf{x}_i^\top \mathbf{x}_j</span> — replacing this with <span class="math-i">\phi(\mathbf{x}_i)^\top \phi(\mathbf{x}_j)</span> suffices. And this inner product can be defined as a  <strong>kernel function </strong> <span class="math-i">K(\mathbf{x}_i, \mathbf{x}_j)</span> computed directly, without explicitly computing <span class="math-i">\phi</span> — this is the kernel trick.</p>
 
 <p>Common kernels:</p>
 <ul style="list-style:none; padding-left:0;">
@@ -4080,7 +4080,7 @@ def dtw(x, y):
     return D[n, m]
 </code></pre>
 
-<p>Optimizations: the <strong>Sakoe-Chiba band</strong> restricts <span class="math-i">|i - j| \le w</span>, reducing complexity from <span class="math-i">O(nm)</span> to <span class="math-i">O(nw)</span>;  \lt strong>FastDTW \lt /strong> uses multiscale recursion to approximate in <span class="math-i">O(n)</span>.</p>
+<p>Optimizations: the <strong>Sakoe-Chiba band</strong> restricts <span class="math-i">|i - j| \le w</span>, reducing complexity from <span class="math-i">O(nm)</span> to <span class="math-i">O(nw)</span>;  <strong>FastDTW </strong> uses multiscale recursion to approximate in <span class="math-i">O(n)</span>.</p>
 
 <h3>DBA: Dynamic Time Warping Barycenter Averaging</h3>
 
@@ -4619,7 +4619,7 @@ flowchart LR
 
 <p>Here <span class="math-i">q_\phi(z|x)</span> is the encoder (maps <span class="math-i">x</span> to a distribution over <span class="math-i">z</span>), and <span class="math-i">p_\theta(x|z)</span> is the decoder (reconstructs <span class="math-i">x</span> from <span class="math-i">z</span>). Both are neural networks.</p>
 
-<p>Training jointly optimizes two terms: the reconstruction term (the decoder can recover <span class="math-i">x</span> from <span class="math-i">z</span>) and the KL term (<span class="math-i">q</span> stays close to the prior <span class="math-i">p(z)</span>). Training uses the  \lt strong>reparameterization trick \lt /strong>: <span class="math-i">z = \mu_\phi(x) + \sigma_\phi(x) \odot \epsilon, \epsilon \sim \mathcal{N}(0, I)</span> — making sampling differentiable.</p>
+<p>Training jointly optimizes two terms: the reconstruction term (the decoder can recover <span class="math-i">x</span> from <span class="math-i">z</span>) and the KL term (<span class="math-i">q</span> stays close to the prior <span class="math-i">p(z)</span>). Training uses the  <strong>reparameterization trick </strong>: <span class="math-i">z = \mu_\phi(x) + \sigma_\phi(x) \odot \epsilon, \epsilon \sim \mathcal{N}(0, I)</span> — making sampling differentiable.</p>
 
 <p>VAE advantages: explicit latent space (supports interpolation and controllable generation), stable training. Disadvantage: generated samples tend to be blurry (reconstruction loss is pixel-level MSE, which averages across outcomes).</p>
 
@@ -4627,7 +4627,7 @@ flowchart LR
 
 <p>An entirely different approach. Two networks compete:</p>
 <ul style="list-style:none; padding-left:0;">
-<li><strong>Generator <span class="math-i">G</span> \lt /strong>: takes noise <span class="math-i">z</span> as input, outputs fake sample <span class="math-i">G(z)</span></li>
+<li><strong>Generator <span class="math-i">G</span> </strong>: takes noise <span class="math-i">z</span> as input, outputs fake sample <span class="math-i">G(z)</span></li>
 <li><strong>Discriminator <span class="math-i">D</span></strong>: takes a sample as input, judges whether it is real or fake (outputs a 0–1 probability)</li>
 </ul>
 
@@ -5098,7 +5098,7 @@ labels = [-100] * len(tokenize(prompt)) + tokenize(response + "&lt;|end|&gt;")
 
 <h3>The MDP Framework</h3>
 
-<p>The mathematical backbone of RL is the Markov Decision Process (MDP): state <span class="math-i">s</span>, action <span class="math-i">a</span>, transition <span class="math-i">P(s'|s,a)</span>, reward <span class="math-i">R(s,a)</span>, discount factor <span class="math-i">\gamma</span>. The objective is to learn a  \lt strong>policy \lt /strong> <span class="math-i">\pi(a|s)</span> that maximizes the expected cumulative return:</p>
+<p>The mathematical backbone of RL is the Markov Decision Process (MDP): state <span class="math-i">s</span>, action <span class="math-i">a</span>, transition <span class="math-i">P(s'|s,a)</span>, reward <span class="math-i">R(s,a)</span>, discount factor <span class="math-i">\gamma</span>. The objective is to learn a  <strong>policy </strong> <span class="math-i">\pi(a|s)</span> that maximizes the expected cumulative return:</p>
 
 <div class="formula"><span class="math-d">J(\pi) = \mathbb{E}_\pi\left[\sum_{t=0}^\infty \gamma^t R(s_t, a_t)\right]</span></div>
 
@@ -6149,7 +6149,7 @@ flowchart TB
 <p class="pos">Position: The soul operator of LLMs — deriving every detail, including why we divide by √d.</p>
 
 <h3>Problem Setup</h3>
-<p>Input: <span class="math-i">L</span> tokens, each a <span class="math-i">d</span>-dimensional vector <span class="math-i">\mathbf{x}_i \in \mathbb{R}^d</span>. Goal: make the output <span class="math-i">\mathbf{y}_i</span> at each position <span class="math-i">i</span> a  \lt strong>dynamic weighted combination \lt /strong> of all input positions, with weights determined by the "similarity" between <span class="math-i">\mathbf{x}_i</span> and other positions.</p>
+<p>Input: <span class="math-i">L</span> tokens, each a <span class="math-i">d</span>-dimensional vector <span class="math-i">\mathbf{x}_i \in \mathbb{R}^d</span>. Goal: make the output <span class="math-i">\mathbf{y}_i</span> at each position <span class="math-i">i</span> a  <strong>dynamic weighted combination </strong> of all input positions, with weights determined by the "similarity" between <span class="math-i">\mathbf{x}_i</span> and other positions.</p>
 
 <h3>The Roles of Query / Key / Value</h3>
 <p>Core idea: each position plays three roles:</p>
@@ -6467,7 +6467,7 @@ K = apply_rope(K, freqs_cis)
 <p class="pos">Position: Successive generations of solutions for reducing KV Cache — from MQA to DeepSeek's MLA.</p>
 
 <h3>Why KV Cache Is the Bottleneck</h3>
-<p>During inference, generating each new token requires computing the new token's Q, K, V; appending the new K, V to the existing cache; and having the new Q perform attention over all K, V. Recomputing all prior K, V each time costs <span class="math-i">O(L^2)</span> computation.  \lt strong>KV Cache \lt /strong> caches previously computed K, V so a new token only computes its own share, bringing total computation to <span class="math-i">O(L)</span>.</p>
+<p>During inference, generating each new token requires computing the new token's Q, K, V; appending the new K, V to the existing cache; and having the new Q perform attention over all K, V. Recomputing all prior K, V each time costs <span class="math-i">O(L^2)</span> computation.  <strong>KV Cache </strong> caches previously computed K, V so a new token only computes its own share, bringing total computation to <span class="math-i">O(L)</span>.</p>
 <p>But KV Cache consumes GPU memory. Estimate: <code>2 × layers × H × d_head × seq_len × 2 bytes (FP16)</code>. LLaMA-3-70B at L=8K requires KV Cache ≈ 2.5 GB per sample. At batch=10 that's 25GB — more than the model weights. At long contexts, KV Cache is the primary memory killer.</p>
 
 <h3>MHA / MQA / GQA</h3>
@@ -6584,7 +6584,7 @@ K = apply_rope(K, freqs_cis)
 <table>
 <tr><th>Dimension</th><th>Transformer</th><th>Mamba</th></tr>
 <tr><td>Training</td><td>Fully parallel</td><td>Parallel scan (<span class="math-i">O(L)</span>)</td></tr>
-<tr><td>Inference</td><td><span class="math-i">O(L)</span> attention + <span class="math-i">O(L)</span> KV Cache \lt /td> \lt td><span class="math-i">O(1)</span> state update</td></tr>
+<tr><td>Inference</td><td><span class="math-i">O(L)</span> attention + <span class="math-i">O(L)</span> KV Cache </td> \lt td><span class="math-i">O(1)</span> state update</td></tr>
 <tr><td>Inference memory</td><td>Grows with L (KV Cache)</td><td>Fixed</td></tr>
 <tr><td>Long sequences</td><td>Limited by KV Cache</td><td>Naturally supported</td></tr>
 <tr><td>Interpretability</td><td>Attention visualization</td><td>State not directly observable</td></tr>
@@ -7063,7 +7063,7 @@ model = FSDP(
 <p class="pos">Position: The soul of LLM inference — cutting <span class="math-i">O(L^2)</span> complexity to <span class="math-i">O(L)</span>, but introducing memory pressure.</p>
 
 <h3>Why It's Needed</h3>
-<p>During decode, generating the <span class="math-i">t</span>-th token requires only the new token's <span class="math-i">\mathbf{q}_t</span> for attention, but needs  \lt strong>all prior positions' K, V \lt /strong>. If <span class="math-i">\mathbf{k}_1, \ldots, \mathbf{k}_{t-1}</span> were recomputed each time, that's <span class="math-i">O(t)</span> extra computation per step — total <span class="math-i">O(t^2)</span>. KV Cache caches all prior K, V — each new token only computes its own <span class="math-i">\mathbf{k}_t, \mathbf{v}_t</span> and appends to the cache. Total computation <span class="math-i">O(t)</span>.</p>
+<p>During decode, generating the <span class="math-i">t</span>-th token requires only the new token's <span class="math-i">\mathbf{q}_t</span> for attention, but needs  <strong>all prior positions' K, V </strong>. If <span class="math-i">\mathbf{k}_1, \ldots, \mathbf{k}_{t-1}</span> were recomputed each time, that's <span class="math-i">O(t)</span> extra computation per step — total <span class="math-i">O(t^2)</span>. KV Cache caches all prior K, V — each new token only computes its own <span class="math-i">\mathbf{k}_t, \mathbf{v}_t</span> and appends to the cache. Total computation <span class="math-i">O(t)</span>.</p>
 
 <h3>Memory Footprint</h3>
 <p>LLaMA-3-70B (80 layers, 64 heads, d_head=128, GQA=8):</p>
@@ -7659,103 +7659,103 @@ Action: finish("Max Verstappen, age 27")
 
 <h3>Tier 2: Platform-Level Products</h3>
 
-<p><strong>Dify</strong>: An open-source low-code agent platform with 60,000+ GitHub stars. It provides a visual workflow editor, RAG pipelines, 50+ built-in tools (search, DALL-E, Wolfram, etc.), model management, and monitoring. Its positioning is "enabling non-engineers to build agent applications." The company raised <span class="math-i">30 million in a Pre-A funding round.&lt;/p>
+<p><strong>Dify</strong>: An open-source low-code agent platform with 60,000+ GitHub stars. It provides a visual workflow editor, RAG pipelines, 50+ built-in tools (search, DALL-E, Wolfram, etc.), model management, and monitoring. Its positioning is "enabling non-engineers to build agent applications." The company raised US$30 million in a Pre-A funding round.</p>
 
-&lt;p>&lt;strong>Coze (ByteDance)&lt;/strong>: In July 2025, ByteDance open-sourced the core components Coze Studio and Coze Loop. Version 2.0 was released in January 2026, transforming the product from a chat tool into an "intelligent work partner" — supporting long-running Agent Plans (spanning multiple days) and Agent Skills (a customizable skill marketplace). It competes head-to-head with Dify in Asian markets.&lt;/p>
+<p><strong>Coze (ByteDance)</strong>: In July 2025, ByteDance open-sourced the core components Coze Studio and Coze Loop. Version 2.0 was released in January 2026, transforming the product from a chat tool into an "intelligent work partner" — supporting long-running Agent Plans (spanning multiple days) and Agent Skills (a customizable skill marketplace). It competes head-to-head with Dify in Asian markets.</p>
 
-&lt;h3>Tier 3: Vendor SDKs&lt;/h3>
+<h3>Tier 3: Vendor SDKs</h3>
 
-&lt;table>
-&lt;tr>&lt;th>SDK&lt;/th>&lt;th>Vendor&lt;/th>&lt;th>Released&lt;/th>&lt;th>Core Design&lt;/th>&lt;/tr>
-&lt;tr>&lt;td>&lt;strong>Agents SDK&lt;/strong>&lt;/td>&lt;td>OpenAI&lt;/td>&lt;td>2025.3&lt;/td>&lt;td>Four primitives: Agent, Handoff, Guardrail, Tracing. Minimalist design, model-agnostic&lt;/td>&lt;/tr>
-&lt;tr>&lt;td>&lt;strong>Claude Agent SDK&lt;/strong>&lt;/td>&lt;td>Anthropic&lt;/td>&lt;td>2025.9&lt;/td>&lt;td>Shares toolchain with Claude Code (file read/write, command execution, code editing); supports sub-agents and hooks&lt;/td>&lt;/tr>
-&lt;tr>&lt;td>&lt;strong>ADK&lt;/strong>&lt;/td>&lt;td>Google&lt;/td>&lt;td>2025&lt;/td>&lt;td>Code-first, model-agnostic, deployment-agnostic. Supports Python, Go, Java, and TypeScript&lt;/td>&lt;/tr>
-&lt;/table>
+<table>
+<tr><th>SDK</th><th>Vendor</th><th>Released</th><th>Core Design</th></tr>
+<tr><td><strong>Agents SDK</strong></td><td>OpenAI</td><td>2025.3</td><td>Four primitives: Agent, Handoff, Guardrail, Tracing. Minimalist design, model-agnostic</td></tr>
+<tr><td><strong>Claude Agent SDK</strong></td><td>Anthropic</td><td>2025.9</td><td>Shares toolchain with Claude Code (file read/write, command execution, code editing); supports sub-agents and hooks</td></tr>
+<tr><td><strong>ADK</strong></td><td>Google</td><td>2025</td><td>Code-first, model-agnostic, deployment-agnostic. Supports Python, Go, Java, and TypeScript</td></tr>
+</table>
 
-&lt;p>Trend: All three major vendors have released their own agent SDKs, but with distinct design philosophies — OpenAI pursues minimalism (4 concepts are enough), Anthropic pursues pragmatism (giving you direct access to the filesystem and terminal), and Google pursues universality (cross-language, cross-platform).&lt;/p>
+<p>Trend: All three major vendors have released their own agent SDKs, but with distinct design philosophies — OpenAI pursues minimalism (4 concepts are enough), Anthropic pursues pragmatism (giving you direct access to the filesystem and terminal), and Google pursues universality (cross-language, cross-platform).</p>
 
-&lt;h3>Framework Selection Decision Tree&lt;/h3>
-&lt;ul style="list-style:none;padding-left:0;">
-&lt;li>- Single agent + tool calling only → &lt;strong>OpenAI Agents SDK&lt;/strong> or native Function Calling&lt;/li>
-&lt;li>- Stateful, interruptible agent workflows → &lt;strong>LangGraph&lt;/strong>&lt;/li>
-&lt;li>- Multi-agent role specialization → &lt;strong>CrewAI&lt;/strong>&lt;/li>
-&lt;li>- Non-engineers building agents → &lt;strong>Dify&lt;/strong> or &lt;strong>Coze&lt;/strong>&lt;/li>
-&lt;li>- Building a coding agent → &lt;strong>Claude Agent SDK&lt;/strong>&lt;/li>
-&lt;li>- Enterprise-grade, multi-cloud deployment → &lt;strong>Google ADK&lt;/strong>&lt;/li>
-&lt;/ul>
+<h3>Framework Selection Decision Tree</h3>
+<ul style="list-style:none;padding-left:0;">
+<li>- Single agent + tool calling only → <strong>OpenAI Agents SDK</strong> or native Function Calling</li>
+<li>- Stateful, interruptible agent workflows → <strong>LangGraph</strong></li>
+<li>- Multi-agent role specialization → <strong>CrewAI</strong></li>
+<li>- Non-engineers building agents → <strong>Dify</strong> or <strong>Coze</strong></li>
+<li>- Building a coding agent → <strong>Claude Agent SDK</strong></li>
+<li>- Enterprise-grade, multi-cloud deployment → <strong>Google ADK</strong></li>
+</ul>
 
-&lt;!-- 4.11.4 -->
-&lt;h2 id="s4-11-4">&lt;span class="num">4.11.4&lt;/span>Coding Agent: The Most Mature Agent Vertical&lt;/h2>
-&lt;p class="pos">Orientation: Programming is the most successful real-world application of agents — the toolchain is closed-loop, feedback is immediate, and evaluation is objective.&lt;/p>
+<!-- 4.11.4 -->
+<h2 id="s4-11-4"><span class="num">4.11.4</span>Coding Agent: The Most Mature Agent Vertical</h2>
+<p class="pos">Orientation: Programming is the most successful real-world application of agents — the toolchain is closed-loop, feedback is immediate, and evaluation is objective.</p>
 
-&lt;h3>Why Coding Agents Matured First&lt;/h3>
-&lt;p>Agents remain unreliable in general-purpose scenarios, but the programming domain got there first: code can be compiled and tested, giving an objective correctness signal at every step; the toolchain of file read/write, terminal execution, and Git operations has been standardized via MCP; benchmarks like SWE-bench enable quantitative comparison; and developer hourly rates are high, so the automation ROI is immediate.&lt;/p>
+<h3>Why Coding Agents Matured First</h3>
+<p>Agents remain unreliable in general-purpose scenarios, but the programming domain got there first: code can be compiled and tested, giving an objective correctness signal at every step; the toolchain of file read/write, terminal execution, and Git operations has been standardized via MCP; benchmarks like SWE-bench enable quantitative comparison; and developer hourly rates are high, so the automation ROI is immediate.</p>
 
-&lt;h3>Leading Coding Agents (2025–2026)&lt;/h3>
+<h3>Leading Coding Agents (2025–2026)</h3>
 
-&lt;p>&lt;strong>United States&lt;/strong>&lt;/p>
-&lt;table>
-&lt;tr>&lt;th>Product&lt;/th>&lt;th>Type&lt;/th>&lt;th>Key Characteristics&lt;/th>&lt;/tr>
-&lt;tr>&lt;td>&lt;strong>Claude Code&lt;/strong> (Anthropic)&lt;/td>&lt;td>Terminal CLI + IDE extension&lt;/td>&lt;td>Released 2025.2. A terminal-first agentic coding tool that reads entire codebases, performs multi-file editing, integrates Git workflows, and runs parallel sub-agents. VS Code extension and desktop app launched in 2025.9. The majority of Anthropic's internal code is now generated by it.&lt;/td>&lt;/tr>
-&lt;tr>&lt;td>&lt;strong>Cursor&lt;/strong> (Anysphere)&lt;/td>&lt;td>AI-native IDE&lt;/td>&lt;td>Built on VS Code. Composer 1.5 (in-house reasoning model with adaptive inference time), Visual Editor (drag-and-drop UI generation). Series D in 2025.11 valued the company at US&lt;span class="math-i">29.3B; annualized revenue exceeded US&lt;/span>2B in early 2026.&lt;/td>&lt;/tr>
-&lt;tr>&lt;td>&lt;strong>Devin&lt;/strong> (Cognition)&lt;/td>&lt;td>Fully autonomous agent&lt;/td>&lt;td>v2.0 released 2025.4; pricing dropped from US&lt;span class="math-i">500/month to US&lt;/span>20/month + US&lt;span class="math-i">2.25/ACU. Autonomously completes coding tasks from Jira/Linear tickets. Goldman Sachs deployed it as a "new-hire"-level pilot in 2025.7. Acquired Windsurf in 2025 (~US&lt;/span>250M), merging IDE + autonomous agent capabilities.&lt;/td>&lt;/tr>
-&lt;tr>&lt;td>&lt;strong>GitHub Copilot&lt;/strong> (Microsoft)&lt;/td>&lt;td>IDE plugin + async agent&lt;/td>&lt;td>Agent Mode: a self-iterating plan → edit → test → fix loop, now stable in VS Code. Coding Agent: executes asynchronously in GitHub Actions. Project Padawan: the next generation, capable of being assigned issues directly to generate PRs.&lt;/td>&lt;/tr>
-&lt;tr>&lt;td>&lt;strong>OpenAI Codex CLI&lt;/strong>&lt;/td>&lt;td>Open-source terminal agent&lt;/td>&lt;td>Implemented in Rust, open-source. Uses a dedicated codex-mini model, supports parallel sub-agents and MCP integration. Lightweight and community-driven.&lt;/td>&lt;/tr>
-&lt;/table>
+<p><strong>United States</strong></p>
+<table>
+<tr><th>Product</th><th>Type</th><th>Key Characteristics</th></tr>
+<tr><td><strong>Claude Code</strong> (Anthropic)</td><td>Terminal CLI + IDE extension</td><td>Released 2025.2. A terminal-first agentic coding tool that reads entire codebases, performs multi-file editing, integrates Git workflows, and runs parallel sub-agents. VS Code extension and desktop app launched in 2025.9. The majority of Anthropic's internal code is now generated by it.</td></tr>
+<tr><td><strong>Cursor</strong> (Anysphere)</td><td>AI-native IDE</td><td>Built on VS Code. Composer 1.5 (in-house reasoning model with adaptive inference time), Visual Editor (drag-and-drop UI generation). Series D in 2025.11 valued the company at US<span class="math-i">29.3B; annualized revenue exceeded US</span>2B in early 2026.</td></tr>
+<tr><td><strong>Devin</strong> (Cognition)</td><td>Fully autonomous agent</td><td>v2.0 released 2025.4; pricing dropped from US<span class="math-i">500/month to US</span>20/month + US<span class="math-i">2.25/ACU. Autonomously completes coding tasks from Jira/Linear tickets. Goldman Sachs deployed it as a "new-hire"-level pilot in 2025.7. Acquired Windsurf in 2025 (~US</span>250M), merging IDE + autonomous agent capabilities.</td></tr>
+<tr><td><strong>GitHub Copilot</strong> (Microsoft)</td><td>IDE plugin + async agent</td><td>Agent Mode: a self-iterating plan → edit → test → fix loop, now stable in VS Code. Coding Agent: executes asynchronously in GitHub Actions. Project Padawan: the next generation, capable of being assigned issues directly to generate PRs.</td></tr>
+<tr><td><strong>OpenAI Codex CLI</strong></td><td>Open-source terminal agent</td><td>Implemented in Rust, open-source. Uses a dedicated codex-mini model, supports parallel sub-agents and MCP integration. Lightweight and community-driven.</td></tr>
+</table>
 
-&lt;p>&lt;strong>China&lt;/strong>&lt;/p>
-&lt;table>
-&lt;tr>&lt;th>Product&lt;/th>&lt;th>Type&lt;/th>&lt;th>Key Characteristics&lt;/th>&lt;/tr>
-&lt;tr>&lt;td>&lt;strong>Trae&lt;/strong> (ByteDance)&lt;/td>&lt;td>Free AI IDE&lt;/td>&lt;td>Released 2025.3 with the tagline "The Real AI Engineer." VS Code-based, offering unlimited free access to DeepSeek R1 and Claude 3.7 Sonnet. Features Builder Mode (preview global changes), MCP support, and Figma integration. MAU surpassed one million in 2025.5; over 80% of ByteDance engineers use it internally.&lt;/td>&lt;/tr>
-&lt;tr>&lt;td>&lt;strong>Qwen3-Coder + Qoder&lt;/strong> (Alibaba)&lt;/td>&lt;td>Model + platform&lt;/td>&lt;td>Qwen3-Coder ranks second globally on the OpenRouter Coder leaderboard (behind only Claude Sonnet 4). Qoder is the coding platform launched in 2025.8.&lt;/td>&lt;/tr>
-&lt;/table>
+<p><strong>China</strong></p>
+<table>
+<tr><th>Product</th><th>Type</th><th>Key Characteristics</th></tr>
+<tr><td><strong>Trae</strong> (ByteDance)</td><td>Free AI IDE</td><td>Released 2025.3 with the tagline "The Real AI Engineer." VS Code-based, offering unlimited free access to DeepSeek R1 and Claude 3.7 Sonnet. Features Builder Mode (preview global changes), MCP support, and Figma integration. MAU surpassed one million in 2025.5; over 80% of ByteDance engineers use it internally.</td></tr>
+<tr><td><strong>Qwen3-Coder + Qoder</strong> (Alibaba)</td><td>Model + platform</td><td>Qwen3-Coder ranks second globally on the OpenRouter Coder leaderboard (behind only Claude Sonnet 4). Qoder is the coding platform launched in 2025.8.</td></tr>
+</table>
 
-&lt;h3>Open-Source Agent Ecosystem&lt;/h3>
-&lt;p>In the second half of 2025, a wave of open-source activity erupted around agents:&lt;/p>
-&lt;ul style="list-style:none;padding-left:0;">
-&lt;li>- &lt;strong>OpenClaw&lt;/strong> (2025.11): an open-source personal AI agent created by Peter Steinberger. Not limited to coding — it can browse the web, fill out forms, read and write files, execute shell commands, and even create new skills automatically by writing code. Supports over ten platforms including WhatsApp, Telegram, Slack, and Discord. By 2026.4, eleven major Chinese internet companies had launched products based on OpenClaw.&lt;/li>
-&lt;li>- &lt;strong>ZeroClaw&lt;/strong>: a Rust rewrite of OpenClaw, built for extreme lightness — 400× faster startup, 99% less memory, an 8.8 MB binary, and under 5 MB runtime memory. Trait-based architecture with pluggable model, channel, memory, and tool layers.&lt;/li>
-&lt;li>- &lt;strong>Hermes Agent&lt;/strong> (Nous Research): an open-source self-improving agent. Its defining feature is a &lt;strong>learning loop&lt;/strong>: when a tool is called more than five times, it automatically abstracts the operation into a reusable "skill." Cross-session persistent memory, 40+ built-in tools, and six terminal backends (local / Docker / SSH / Daytona / Singularity / Modal). Supports any model backend.&lt;/li>
-&lt;li>- &lt;strong>Aider&lt;/strong>: an early open-source terminal pair-programming tool supporting multiple models; remains actively developed.&lt;/li>
-&lt;li>- &lt;strong>Continue&lt;/strong>: an open-source VS Code/JetBrains plugin supporting local models (Ollama) or cloud APIs, positioned as the open-source Copilot.&lt;/li>
-&lt;/ul>
+<h3>Open-Source Agent Ecosystem</h3>
+<p>In the second half of 2025, a wave of open-source activity erupted around agents:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong>OpenClaw</strong> (2025.11): an open-source personal AI agent created by Peter Steinberger. Not limited to coding — it can browse the web, fill out forms, read and write files, execute shell commands, and even create new skills automatically by writing code. Supports over ten platforms including WhatsApp, Telegram, Slack, and Discord. By 2026.4, eleven major Chinese internet companies had launched products based on OpenClaw.</li>
+<li>- <strong>ZeroClaw</strong>: a Rust rewrite of OpenClaw, built for extreme lightness — 400× faster startup, 99% less memory, an 8.8 MB binary, and under 5 MB runtime memory. Trait-based architecture with pluggable model, channel, memory, and tool layers.</li>
+<li>- <strong>Hermes Agent</strong> (Nous Research): an open-source self-improving agent. Its defining feature is a <strong>learning loop</strong>: when a tool is called more than five times, it automatically abstracts the operation into a reusable "skill." Cross-session persistent memory, 40+ built-in tools, and six terminal backends (local / Docker / SSH / Daytona / Singularity / Modal). Supports any model backend.</li>
+<li>- <strong>Aider</strong>: an early open-source terminal pair-programming tool supporting multiple models; remains actively developed.</li>
+<li>- <strong>Continue</strong>: an open-source VS Code/JetBrains plugin supporting local models (Ollama) or cloud APIs, positioned as the open-source Copilot.</li>
+</ul>
 
-&lt;h3>SWE-bench: The Standard Exam for Coding Agents&lt;/h3>
-&lt;p>SWE-bench (Princeton 2024) draws programming tasks from real GitHub issues, requiring agents to fix bugs and add features on complete codebases. SWE-bench Verified is a human-validated subset.&lt;/p>
-&lt;p>In early 2024, the best systems could solve only around 5% of problems. By April 2026:&lt;/p>
-&lt;table>
-&lt;tr>&lt;th>Benchmark&lt;/th>&lt;th>Top System&lt;/th>&lt;th>Score&lt;/th>&lt;/tr>
-&lt;tr>&lt;td>SWE-bench Verified&lt;/td>&lt;td>Claude Mythos Preview&lt;/td>&lt;td>93.9%&lt;/td>&lt;/tr>
-&lt;tr>&lt;td>SWE-bench Verified (public models)&lt;/td>&lt;td>Claude Opus 4.5&lt;/td>&lt;td>80.9%&lt;/td>&lt;/tr>
-&lt;tr>&lt;td>SWE-bench Pro (harder, multilingual)&lt;/td>&lt;td>GPT-5.3 Codex&lt;/td>&lt;td>56.8%&lt;/td>&lt;/tr>
-&lt;/table>
-&lt;p>Worth noting: the large gap between Verified and Pro scores (80% → 57%) suggests Verified may be subject to data contamination. Pro is the more reliable measure.&lt;/p>
+<h3>SWE-bench: The Standard Exam for Coding Agents</h3>
+<p>SWE-bench (Princeton 2024) draws programming tasks from real GitHub issues, requiring agents to fix bugs and add features on complete codebases. SWE-bench Verified is a human-validated subset.</p>
+<p>In early 2024, the best systems could solve only around 5% of problems. By April 2026:</p>
+<table>
+<tr><th>Benchmark</th><th>Top System</th><th>Score</th></tr>
+<tr><td>SWE-bench Verified</td><td>Claude Mythos Preview</td><td>93.9%</td></tr>
+<tr><td>SWE-bench Verified (public models)</td><td>Claude Opus 4.5</td><td>80.9%</td></tr>
+<tr><td>SWE-bench Pro (harder, multilingual)</td><td>GPT-5.3 Codex</td><td>56.8%</td></tr>
+</table>
+<p>Worth noting: the large gap between Verified and Pro scores (80% → 57%) suggests Verified may be subject to data contamination. Pro is the more reliable measure.</p>
 
-&lt;h3>Limitations of Coding Agents&lt;/h3>
-&lt;ul style="list-style:none;padding-left:0;">
-&lt;li>- &lt;strong>Weak creative design&lt;/strong>: excels at well-defined tasks (fixing bugs, writing tests, migrations); struggles with ambiguous ones (designing architecture from scratch)&lt;/li>
-&lt;li>- &lt;strong>Instability on long tasks&lt;/strong>: for complex tasks exceeding 30 minutes, error accumulation remains a problem&lt;/li>
-&lt;li>- &lt;strong>Security risks&lt;/strong>: autonomous code execution introduces risks such as prompt injection and credential leakage; sandbox isolation is required&lt;/li>
-&lt;li>- &lt;strong>Human-agent collaboration is optimal&lt;/strong>: the current best practice is not "full autonomy" but rather agent drafts + human review and confirmation&lt;/li>
-&lt;/ul>
+<h3>Limitations of Coding Agents</h3>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong>Weak creative design</strong>: excels at well-defined tasks (fixing bugs, writing tests, migrations); struggles with ambiguous ones (designing architecture from scratch)</li>
+<li>- <strong>Instability on long tasks</strong>: for complex tasks exceeding 30 minutes, error accumulation remains a problem</li>
+<li>- <strong>Security risks</strong>: autonomous code execution introduces risks such as prompt injection and credential leakage; sandbox isolation is required</li>
+<li>- <strong>Human-agent collaboration is optimal</strong>: the current best practice is not "full autonomy" but rather agent drafts + human review and confirmation</li>
+</ul>
 
-&lt;div class="part-header">&lt;div class="part-label">PART TWELVE&lt;/div>&lt;h2 class="part-title">4.12 Multimodal&lt;/h2>&lt;p class="part-desc">LLMs that see and hear — the expansion from "language model" to "foundation model."&lt;/p>&lt;/div>
+<div class="part-header"><div class="part-label">PART TWELVE</div><h2 class="part-title">4.12 Multimodal</h2><p class="part-desc">LLMs that see and hear — the expansion from "language model" to "foundation model."</p></div>
 
-&lt;h2 id="s4-12-1">&lt;span class="num">4.12.1&lt;/span>VLM Architecture&lt;/h2>
-&lt;p class="pos">Orientation: Vision-Language Models — the main architectural approaches for connecting images to LLMs.&lt;/p>
+<h2 id="s4-12-1"><span class="num">4.12.1</span>VLM Architecture</h2>
+<p class="pos">Orientation: Vision-Language Models — the main architectural approaches for connecting images to LLMs.</p>
 
-&lt;h3>Three Architectural Approaches&lt;/h3>
-&lt;p>The core problem in VLMs (Vision-Language Models): how do you feed image input to an LLM? Three main approaches:&lt;/p>
+<h3>Three Architectural Approaches</h3>
+<p>The core problem in VLMs (Vision-Language Models): how do you feed image input to an LLM? Three main approaches:</p>
 
-&lt;p>&lt;strong>1. Projection Adapter&lt;/strong>: the image passes through a standalone visual encoder (e.g., CLIP ViT) to produce image feature vectors, which are then mapped into the LLM's token space via a lightweight projection layer (MLP or Q-Former) and fed in alongside text tokens. Representatives: LLaVA, MiniGPT, BLIP-2. Advantage: cheap to train (the LLM is frozen; only the projection is trained). Disadvantage: information loss from compressing visual features.&lt;/p>
+<p><strong>1. Projection Adapter</strong>: the image passes through a standalone visual encoder (e.g., CLIP ViT) to produce image feature vectors, which are then mapped into the LLM's token space via a lightweight projection layer (MLP or Q-Former) and fed in alongside text tokens. Representatives: LLaVA, MiniGPT, BLIP-2. Advantage: cheap to train (the LLM is frozen; only the projection is trained). Disadvantage: information loss from compressing visual features.</p>
 
-&lt;p>&lt;strong>2. Cross-Attention&lt;/strong>: visual features are not converted into tokens; instead they serve as the K and V of additional cross-attention layers added at each LLM layer, letting text tokens "look at" the image via cross-attention. Representatives: Flamingo, IDEFICS. Advantage: visual features retain high resolution. Disadvantage: modifies the LLM architecture, making training more complex.&lt;/p>
+<p><strong>2. Cross-Attention</strong>: visual features are not converted into tokens; instead they serve as the K and V of additional cross-attention layers added at each LLM layer, letting text tokens "look at" the image via cross-attention. Representatives: Flamingo, IDEFICS. Advantage: visual features retain high resolution. Disadvantage: modifies the LLM architecture, making training more complex.</p>
 
-&lt;p>&lt;strong>3. Unified Transformer&lt;/strong>: image patches and text tokens are mixed together from the start and processed jointly by a single Transformer with self-attention throughout — no separate "visual encoder." Representatives: Fuyu (Adept), native multimodal Gemini, Chameleon (Meta). Advantage: no information loss, scales well. Disadvantage: requires training from scratch with large data and compute.&lt;/p>
+<p><strong>3. Unified Transformer</strong>: image patches and text tokens are mixed together from the start and processed jointly by a single Transformer with self-attention throughout — no separate "visual encoder." Representatives: Fuyu (Adept), native multimodal Gemini, Chameleon (Meta). Advantage: no information loss, scales well. Disadvantage: requires training from scratch with large data and compute.</p>
 
-&lt;h3>LLaVA Architecture in Detail&lt;/h3>
-&lt;p>LLaVA (Haotian Liu 2023) is the canonical open-source multimodal model, with a clean, simple architecture:&lt;/p>
-&lt;div class="mermaid">
+<h3>LLaVA Architecture in Detail</h3>
+<p>LLaVA (Haotian Liu 2023) is the canonical open-source multimodal model, with a clean, simple architecture:</p>
+<div class="mermaid">
 flowchart LR
     IMG[Image 336x336] --> VE[CLIP ViT-L/14]
     VE --> IF[Image Features 576 tokens]
@@ -7764,85 +7764,85 @@ flowchart LR
     TXT[Text tokens] --> LLM[LLaMA / Vicuna]
     VT --> LLM
     LLM --> OUT[Text output]
-&lt;/div>
-&lt;p>Training has two stages:&lt;/p>
-&lt;ol>
-&lt;li>&lt;strong>Feature alignment&lt;/strong>: freeze the ViT and the LLM; train only the projector. Uses image-text pair data (image + caption). The goal is to teach the projector to map visual features into a space the LLM can "understand."&lt;/li>
-&lt;li>&lt;strong>Instruction fine-tuning&lt;/strong>: unfreeze the LLM and train the full pipeline on multimodal instruction data (image + question + answer).&lt;/li>
-&lt;/ol>
-&lt;p>Total training cost is only a few thousand dollars — far cheaper than training a vision model from scratch.&lt;/p>
+</div>
+<p>Training has two stages:</p>
+<ol>
+<li><strong>Feature alignment</strong>: freeze the ViT and the LLM; train only the projector. Uses image-text pair data (image + caption). The goal is to teach the projector to map visual features into a space the LLM can "understand."</li>
+<li><strong>Instruction fine-tuning</strong>: unfreeze the LLM and train the full pipeline on multimodal instruction data (image + question + answer).</li>
+</ol>
+<p>Total training cost is only a few thousand dollars — far cheaper than training a vision model from scratch.</p>
 
-&lt;h3>Improved Variants&lt;/h3>
-&lt;p>&lt;strong>LLaVA-1.5&lt;/strong>: better data, MLP replacing the single linear layer. Significant improvement.&lt;/p>
-&lt;p>&lt;strong>LLaVA-NeXT&lt;/strong>: the image is split into multiple 336×336 patches that are encoded separately, enabling high-resolution support.&lt;/p>
-&lt;p>&lt;strong>Qwen-VL / Qwen2-VL&lt;/strong>: dynamic resolution (no need to scale to a fixed size), with video support. Qwen2-VL topped the open-source VLM leaderboards in 2024.&lt;/p>
-&lt;p>&lt;strong>InternVL2&lt;/strong>: open-sourced by SenseTime, strong capabilities, available in multiple sizes.&lt;/p>
+<h3>Improved Variants</h3>
+<p><strong>LLaVA-1.5</strong>: better data, MLP replacing the single linear layer. Significant improvement.</p>
+<p><strong>LLaVA-NeXT</strong>: the image is split into multiple 336×336 patches that are encoded separately, enabling high-resolution support.</p>
+<p><strong>Qwen-VL / Qwen2-VL</strong>: dynamic resolution (no need to scale to a fixed size), with video support. Qwen2-VL topped the open-source VLM leaderboards in 2024.</p>
+<p><strong>InternVL2</strong>: open-sourced by SenseTime, strong capabilities, available in multiple sizes.</p>
 
-&lt;h3>High-Resolution Challenges&lt;/h3>
-&lt;p>At low resolution (336×336), VLMs cannot read text or see fine details. Two approaches to high resolution:&lt;/p>
-&lt;ol>
-&lt;li>&lt;strong>Patch splitting&lt;/strong>: slice the large image into sub-images, encode each independently, then concatenate the features. LLaVA-NeXT's approach.&lt;/li>
-&lt;li>&lt;strong>Dynamic resolution&lt;/strong>: the visual encoder accepts arbitrary input sizes. Qwen2-VL's Naive Dynamic Resolution achieves this.&lt;/li>
-&lt;/ol>
-&lt;p>Cost: more visual tokens (a 2K image can produce 2000+ tokens) crowds the context window and slows inference.&lt;/p>
+<h3>High-Resolution Challenges</h3>
+<p>At low resolution (336×336), VLMs cannot read text or see fine details. Two approaches to high resolution:</p>
+<ol>
+<li><strong>Patch splitting</strong>: slice the large image into sub-images, encode each independently, then concatenate the features. LLaVA-NeXT's approach.</li>
+<li><strong>Dynamic resolution</strong>: the visual encoder accepts arbitrary input sizes. Qwen2-VL's Naive Dynamic Resolution achieves this.</li>
+</ol>
+<p>Cost: more visual tokens (a 2K image can produce 2000+ tokens) crowds the context window and slows inference.</p>
 
-&lt;h3>What VLMs Can Do&lt;/h3>
-&lt;table>
-&lt;tr>&lt;th>Task&lt;/th>&lt;th>Examples&lt;/th>&lt;/tr>
-&lt;tr>&lt;td>Image description&lt;/td>&lt;td>Captioning, VQA (visual question answering)&lt;/td>&lt;/tr>
-&lt;tr>&lt;td>Document understanding&lt;/td>&lt;td>PDF extraction, table recognition, chart parsing&lt;/td>&lt;/tr>
-&lt;tr>&lt;td>OCR integration&lt;/td>&lt;td>Directly reading text within images&lt;/td>&lt;/tr>
-&lt;tr>&lt;td>UI understanding&lt;/td>&lt;td>Screenshot-based operation (WebAgent, Anthropic Computer Use)&lt;/td>&lt;/tr>
-&lt;tr>&lt;td>Multi-image reasoning&lt;/td>&lt;td>Comparing differences between two images&lt;/td>&lt;/tr>
-&lt;tr>&lt;td>Video understanding&lt;/td>&lt;td>Key-frame extraction + per-frame analysis&lt;/td>&lt;/tr>
-&lt;/table>
+<h3>What VLMs Can Do</h3>
+<table>
+<tr><th>Task</th><th>Examples</th></tr>
+<tr><td>Image description</td><td>Captioning, VQA (visual question answering)</td></tr>
+<tr><td>Document understanding</td><td>PDF extraction, table recognition, chart parsing</td></tr>
+<tr><td>OCR integration</td><td>Directly reading text within images</td></tr>
+<tr><td>UI understanding</td><td>Screenshot-based operation (WebAgent, Anthropic Computer Use)</td></tr>
+<tr><td>Multi-image reasoning</td><td>Comparing differences between two images</td></tr>
+<tr><td>Video understanding</td><td>Key-frame extraction + per-frame analysis</td></tr>
+</table>
 
-&lt;h3>Closed-Source Frontier&lt;/h3>
-&lt;p>At the commercial API level: GPT-4o, Claude 3.5/3.7 Sonnet, and Gemini 2.0 all have strong multimodal capabilities. GPT-4o excels at real-time image + voice conversation; Claude is strong at UI operation and document understanding; Gemini leads on video (1.5 Pro can process a one-hour video).&lt;/p>
-&lt;p>Open-source is catching up fast — Qwen2-VL-72B, InternVL2-Pro, and LLaVA-OneVision approach closed-source performance on many tasks.&lt;/p>
+<h3>Closed-Source Frontier</h3>
+<p>At the commercial API level: GPT-4o, Claude 3.5/3.7 Sonnet, and Gemini 2.0 all have strong multimodal capabilities. GPT-4o excels at real-time image + voice conversation; Claude is strong at UI operation and document understanding; Gemini leads on video (1.5 Pro can process a one-hour video).</p>
+<p>Open-source is catching up fast — Qwen2-VL-72B, InternVL2-Pro, and LLaVA-OneVision approach closed-source performance on many tasks.</p>
 
-&lt;h2 id="s4-12-2">&lt;span class="num">4.12.2&lt;/span>Audio, Video, and Unified Multimodal&lt;/h2>
-&lt;p class="pos">Orientation: beyond images and text — speech, video, and the trend toward "one model for all modalities."&lt;/p>
+<h2 id="s4-12-2"><span class="num">4.12.2</span>Audio, Video, and Unified Multimodal</h2>
+<p class="pos">Orientation: beyond images and text — speech, video, and the trend toward "one model for all modalities."</p>
 
-&lt;h3>Speech Understanding&lt;/h3>
-&lt;p>Traditional ASR (automatic speech recognition) is a standalone task: a dedicated model (Whisper is the canonical example) converts speech to text, which is then sent to the LLM. This "cascade" has two problems: ASR errors propagate downstream; and information like emotion and tone in the speech is lost.&lt;/p>
-&lt;p>The new approach is to &lt;strong>connect audio directly to the LLM&lt;/strong>. Similar to the VLM architecture:&lt;/p>
-&lt;ol>
-&lt;li>Audio passes through an acoustic encoder (e.g., Whisper encoder) to produce features&lt;/li>
-&lt;li>A projection layer maps features to the LLM's token space&lt;/li>
-&lt;li>Features are fed into the LLM alongside text tokens&lt;/li>
-&lt;/ol>
-&lt;p>Notable open-source implementations: &lt;strong>Qwen2-Audio&lt;/strong>, &lt;strong>LLaMA-Omni&lt;/strong>, &lt;strong>SALMONN&lt;/strong>, &lt;strong>Whisper + Vicuna&lt;/strong> combinations.&lt;/p>
+<h3>Speech Understanding</h3>
+<p>Traditional ASR (automatic speech recognition) is a standalone task: a dedicated model (Whisper is the canonical example) converts speech to text, which is then sent to the LLM. This "cascade" has two problems: ASR errors propagate downstream; and information like emotion and tone in the speech is lost.</p>
+<p>The new approach is to <strong>connect audio directly to the LLM</strong>. Similar to the VLM architecture:</p>
+<ol>
+<li>Audio passes through an acoustic encoder (e.g., Whisper encoder) to produce features</li>
+<li>A projection layer maps features to the LLM's token space</li>
+<li>Features are fed into the LLM alongside text tokens</li>
+</ol>
+<p>Notable open-source implementations: <strong>Qwen2-Audio</strong>, <strong>LLaMA-Omni</strong>, <strong>SALMONN</strong>, <strong>Whisper + Vicuna</strong> combinations.</p>
 
-&lt;h3>Speech Synthesis and Full-Duplex&lt;/h3>
-&lt;p>Traditional speech &lt;em>generation&lt;/em> (TTS) is also a standalone task (Tacotron, VITS, XTTS). The emerging trend: LLMs that directly output audio tokens.&lt;/p>
-&lt;p>Neural audio codecs like SNAC, EnCodec, and SoundStream compress audio into discrete token sequences (roughly 50–100 tokens per second). An LLM can generate these tokens just as it generates text, and a decoder reconstructs the waveform.&lt;/p>
-&lt;p>Representatives: &lt;strong>OpenAI GPT-4o&lt;/strong> (voice mode, claimed to be end-to-end), &lt;strong>Fish Speech&lt;/strong>, &lt;strong>LLaMA-Omni&lt;/strong>, &lt;strong>Moshi&lt;/strong> (Kyutai, open-source end-to-end voice conversation).&lt;/p>
-&lt;p>The critical metric is &lt;strong>latency&lt;/strong> — the traditional ASR + LLM + TTS cascade introduces 1–3 seconds of delay; end-to-end LLMs can achieve under 300ms, which is what natural conversation actually requires.&lt;/p>
+<h3>Speech Synthesis and Full-Duplex</h3>
+<p>Traditional speech <em>generation</em> (TTS) is also a standalone task (Tacotron, VITS, XTTS). The emerging trend: LLMs that directly output audio tokens.</p>
+<p>Neural audio codecs like SNAC, EnCodec, and SoundStream compress audio into discrete token sequences (roughly 50–100 tokens per second). An LLM can generate these tokens just as it generates text, and a decoder reconstructs the waveform.</p>
+<p>Representatives: <strong>OpenAI GPT-4o</strong> (voice mode, claimed to be end-to-end), <strong>Fish Speech</strong>, <strong>LLaMA-Omni</strong>, <strong>Moshi</strong> (Kyutai, open-source end-to-end voice conversation).</p>
+<p>The critical metric is <strong>latency</strong> — the traditional ASR + LLM + TTS cascade introduces 1–3 seconds of delay; end-to-end LLMs can achieve under 300ms, which is what natural conversation actually requires.</p>
 
-&lt;h3>Video Understanding&lt;/h3>
-&lt;p>Video = image sequence + audio. The challenge is the temporal dimension — a 1-minute video at 30fps has 1800 frames; sending all of them is prohibitively expensive.&lt;/p>
-&lt;p>Mainstream strategies:&lt;/p>
-&lt;ol>
-&lt;li>&lt;strong>Uniform sampling&lt;/strong>: take one frame every N frames. Crude but sufficient for most scenarios.&lt;/li>
-&lt;li>&lt;strong>Key-frame extraction&lt;/strong>: use traditional CV (scene-cut detection) or an LLM to select frames with "high information density."&lt;/li>
-&lt;li>&lt;strong>Spatiotemporal modeling&lt;/strong>: dedicated video encoders (VideoMAE, Video-LLaMA) encode adjacent frames together.&lt;/li>
-&lt;li>&lt;strong>Long context windows&lt;/strong>: Gemini 1.5's 1M-token window can accommodate large numbers of frames.&lt;/li>
-&lt;/ol>
-&lt;p>Open-source representatives: Video-LLaMA, VideoChat, LLaVA-Video, Qwen2-VL (with video input support).&lt;/p>
+<h3>Video Understanding</h3>
+<p>Video = image sequence + audio. The challenge is the temporal dimension — a 1-minute video at 30fps has 1800 frames; sending all of them is prohibitively expensive.</p>
+<p>Mainstream strategies:</p>
+<ol>
+<li><strong>Uniform sampling</strong>: take one frame every N frames. Crude but sufficient for most scenarios.</li>
+<li><strong>Key-frame extraction</strong>: use traditional CV (scene-cut detection) or an LLM to select frames with "high information density."</li>
+<li><strong>Spatiotemporal modeling</strong>: dedicated video encoders (VideoMAE, Video-LLaMA) encode adjacent frames together.</li>
+<li><strong>Long context windows</strong>: Gemini 1.5's 1M-token window can accommodate large numbers of frames.</li>
+</ol>
+<p>Open-source representatives: Video-LLaMA, VideoChat, LLaVA-Video, Qwen2-VL (with video input support).</p>
 
-&lt;h3>Image Generation&lt;/h3>
-&lt;p>Strictly speaking this is outside the "LLM" category, but it is routinely discussed alongside LLMs in modern multimodal frameworks. Mainstream image generation architectures:&lt;/p>
-&lt;ul style="list-style:none;padding-left:0;">
-&lt;li>&lt;strong>Diffusion models&lt;/strong> (dominant): Stable Diffusion, SDXL, SD3, FLUX, DALL-E 3. See Chapter 3, Section 4.4.4.&lt;/li>
-&lt;li>&lt;strong>Autoregressive&lt;/strong>: images are split into patch tokens and generated like text. Parti, LLaMA-Gen, Emu3, and Chameleon are examples. Naturally integrates with LLMs, but quality currently lags behind diffusion.&lt;/li>
-&lt;li>&lt;strong>Hybrid&lt;/strong>: an LLM generates a latent; a diffusion decoder renders it. The approach taken by Transfusion (Meta) and Janus (DeepSeek).&lt;/li>
-&lt;/ul>
-&lt;p>A clear trend: &lt;strong>understanding and generation unified&lt;/strong> — a single model that can both read images and draw them. DeepSeek Janus-Pro and OmniGen are the open-source representatives.&lt;/p>
+<h3>Image Generation</h3>
+<p>Strictly speaking this is outside the "LLM" category, but it is routinely discussed alongside LLMs in modern multimodal frameworks. Mainstream image generation architectures:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Diffusion models</strong> (dominant): Stable Diffusion, SDXL, SD3, FLUX, DALL-E 3. See Chapter 3, Section 4.4.4.</li>
+<li><strong>Autoregressive</strong>: images are split into patch tokens and generated like text. Parti, LLaMA-Gen, Emu3, and Chameleon are examples. Naturally integrates with LLMs, but quality currently lags behind diffusion.</li>
+<li><strong>Hybrid</strong>: an LLM generates a latent; a diffusion decoder renders it. The approach taken by Transfusion (Meta) and Janus (DeepSeek).</li>
+</ul>
+<p>A clear trend: <strong>understanding and generation unified</strong> — a single model that can both read images and draw them. DeepSeek Janus-Pro and OmniGen are the open-source representatives.</p>
 
-&lt;h3>Video Generation&lt;/h3>
-&lt;p>Major breakthrough in 2024: OpenAI Sora, Google Veo, Runway Gen-3, Kling — capable of generating high-quality videos several minutes long. The underlying technology remains diffusion models + DiT (Diffusion Transformer) architecture, treating video as spatiotemporal patches.&lt;/p>
-&lt;p>Open-source is catching up: &lt;strong>CogVideoX&lt;/strong> (Tsinghua + Zhipu), &lt;strong>Open-Sora&lt;/strong> (version 2.0 reached commercial-grade quality at just US</span>200K training cost), <strong>HunyuanVideo</strong> (Tencent), <strong>Mochi</strong>, <strong>LTX-Video</strong>. Quality is approaching closed-source, but the compute barrier remains high (a single training run takes hundreds of GPU-days).</p>
+<h3>Video Generation</h3>
+<p>Major breakthrough in 2024: OpenAI Sora, Google Veo, Runway Gen-3, Kling — capable of generating high-quality videos several minutes long. The underlying technology remains diffusion models + DiT (Diffusion Transformer) architecture, treating video as spatiotemporal patches.</p>
+<p>Open-source is catching up: <strong>CogVideoX</strong> (Tsinghua + Zhipu), <strong>Open-Sora</strong> (version 2.0 reached commercial-grade quality at just US$200K training cost), <strong>HunyuanVideo</strong> (Tencent), <strong>Mochi</strong>, <strong>LTX-Video</strong>. Quality is approaching closed-source, but the compute barrier remains high (a single training run takes hundreds of GPU-days).</p>
 <p><strong>A significant pivot</strong>: on 2026.3.24, OpenAI announced the shutdown of the entire Sora product line, redirecting resources toward robotic world simulation. Sora 2 (released 2025.12) had supported 25-second generation and native audio sync, but commercial adoption fell short of expectations. The torch passed to <strong>Kling 3.0</strong> (native 4K 60fps broadcast-grade quality), <strong>Google Veo 3.1</strong>, and <strong>Seedance 1.5 Pro</strong> as the leading video generation platforms.</p>
 
 <h3>Unified Multimodal</h3>
@@ -7999,9 +7999,9 @@ flowchart TB
 <h3>Complexity Analysis</h3>
 <table>
 <tr><th>Operation</th><th>Time Complexity</th><th>Notes</th></tr>
-<tr><td>Search</td><td><span class="math-i">O(\log N)</span> \lt /td> \lt td><span class="math-i">O(1)</span> greedy steps per layer, <span class="math-i">O(\log N)</span> layers total</td></tr>
+<tr><td>Search</td><td><span class="math-i">O(\log N)</span> </td> \lt td><span class="math-i">O(1)</span> greedy steps per layer, <span class="math-i">O(\log N)</span> layers total</td></tr>
 <tr><td>Insert</td><td><span class="math-i">O(\log N)</span></td><td>Search + edge creation</td></tr>
-<tr><td>Space</td><td><span class="math-i">O(N \cdot M)</span> \lt /td> \lt td><span class="math-i">M</span> edges per node</td></tr>
+<tr><td>Space</td><td><span class="math-i">O(N \cdot M)</span> </td> \lt td><span class="math-i">M</span> edges per node</td></tr>
 </table>
 
 <h3>Key Parameters</h3>
@@ -8432,7 +8432,7 @@ print("Accuracy:", model.score(Xv, yv))
 <h3>Core Method: Two-Player Zero-Sum Game</h3>
 <p>Two networks are trained simultaneously:</p>
 <ul style="list-style:none;padding-left:0;">
-<li><strong>Generator <span class="math-i">G</span> \lt /strong>: generates fake samples <span class="math-i">G(z)</span> from noise <span class="math-i">z \sim p_z(z)</span>, with the goal of "fooling the discriminator"</li>
+<li><strong>Generator <span class="math-i">G</span> </strong>: generates fake samples <span class="math-i">G(z)</span> from noise <span class="math-i">z \sim p_z(z)</span>, with the goal of "fooling the discriminator"</li>
 <li><strong>Discriminator <span class="math-i">D</span></strong>: judges whether an input is a real or generated sample, with the goal of "not being fooled"</li>
 </ul>
 
@@ -8691,7 +8691,7 @@ def vae_loss(recon_x, x, mu, logvar):
 
 <div class="formula"><span class="math-d">p_\theta(x_{t-1} | x_t) = \mathcal{N}(x_{t-1}; \mu_\theta(x_t, t), \sigma_t^2 I)</span></div>
 
-<p>Ho et al.'s key simplification: instead of directly predicting <span class="math-i">\mu</span>, the network  \lt strong>predicts the noise <span class="math-i">\epsilon</span> \lt /strong>. The network <span class="math-i">\epsilon_\theta(x_t, t)</span> takes a noisy image and a timestep as input and outputs the predicted noise.</p>
+<p>Ho et al.'s key simplification: instead of directly predicting <span class="math-i">\mu</span>, the network  <strong>predicts the noise <span class="math-i">\epsilon</span> </strong>. The network <span class="math-i">\epsilon_\theta(x_t, t)</span> takes a noisy image and a timestep as input and outputs the predicted noise.</p>
 
 <div class="mermaid">
 flowchart LR
@@ -8865,7 +8865,7 @@ def sample(model, shape):
 
 <div class="formula"><span class="math-d">\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right) V</span></div>
 
-<p>Key detail: the <strong><span class="math-i">\sqrt{d_k}</span> \lt /strong> scaling. The variance of the dot product of <span class="math-i">d</span>-dimensional vectors is <span class="math-i">d</span>; dividing by <span class="math-i">\sqrt{d}</span> normalizes the variance and prevents the softmax from becoming oversaturated (main text §4.2.2 contains a detailed derivation).</p>
+<p>Key detail: the <strong><span class="math-i">\sqrt{d_k}</span> </strong> scaling. The variance of the dot product of <span class="math-i">d</span>-dimensional vectors is <span class="math-i">d</span>; dividing by <span class="math-i">\sqrt{d}</span> normalizes the variance and prevents the softmax from becoming oversaturated (main text §4.2.2 contains a detailed derivation).</p>
 
 <h3>Multi-Head Attention</h3>
 <p>Q, K, and V are projected into <span class="math-i">H</span> subspaces; attention is computed independently in each subspace, and the results are concatenated and projected:</p>
@@ -9280,7 +9280,7 @@ K = apply_rope(K, freqs_cis)
 <p>At <span class="math-i">L = 4096</span>, the <span class="math-i">S</span> matrix alone is 64 MB. Each read/write is a 128 MB round-trip to HBM. As <span class="math-i">L</span> grows, this cost scales linearly while compute utilization stays extremely low.</p>
 
 <h3>Core Method: Tiling + Online Softmax</h3>
-<p>FlashAttention splits Q, K, V into tiles sized to fit in the GPU's on-chip SRAM. The outer loop iterates over Q tiles <span class="math-i">Q_i</span>; the inner loop iterates over K, V tiles <span class="math-i">(K_j, V_j)</span>.  \lt strong>The full <span class="math-i">S</span> or <span class="math-i">P</span> matrix is never materialized</strong> — all intermediate results stay in SRAM.</p>
+<p>FlashAttention splits Q, K, V into tiles sized to fit in the GPU's on-chip SRAM. The outer loop iterates over Q tiles <span class="math-i">Q_i</span>; the inner loop iterates over K, V tiles <span class="math-i">(K_j, V_j)</span>.  <strong>The full <span class="math-i">S</span> or <span class="math-i">P</span> matrix is never materialized</strong> — all intermediate results stay in SRAM.</p>
 
 <div class="mermaid">
 flowchart TB
@@ -9292,7 +9292,7 @@ flowchart TB
 </div>
 
 <h3>The Key Challenge: Online Softmax</h3>
-<p>Softmax requires normalization — <span class="math-i">\text{softmax}(x_i) = \exp(x_i) / \sum_j \exp(x_j)</span>. It seems like you must see all <span class="math-i">x_j</span> before computing the denominator. FlashAttention uses an  \lt strong>incremental update \lt /strong> instead: each time a new <span class="math-i">S_{ij}</span> tile arrives, it maintains a running max and running sum, producing a result that is mathematically equivalent to the full softmax.</p>
+<p>Softmax requires normalization — <span class="math-i">\text{softmax}(x_i) = \exp(x_i) / \sum_j \exp(x_j)</span>. It seems like you must see all <span class="math-i">x_j</span> before computing the denominator. FlashAttention uses an  <strong>incremental update </strong> instead: each time a new <span class="math-i">S_{ij}</span> tile arrives, it maintains a running max and running sum, producing a result that is mathematically equivalent to the full softmax.</p>
 
 <p>Say we have processed up to tile <span class="math-i">j-1</span>, with state <span class="math-i">(m_{j-1}, l_{j-1}, O_{j-1})</span> — the current running max <span class="math-i">m</span>, running denominator <span class="math-i">l</span>, and current weighted output <span class="math-i">O</span>. A new tile <span class="math-i">(K_j, V_j)</span> arrives:</p>
 
@@ -9736,9 +9736,9 @@ flowchart TB
 <h3>Complexity Comparison</h3>
 <table>
 <tr><th>Model</th><th>Training Complexity</th><th>Inference (per token)</th><th>Long-Sequence Support</th></tr>
-<tr><td>Transformer</td><td><span class="math-i">O(N^2 d)</span> \lt /td> \lt td><span class="math-i">O(N d)</span> (KV cache)</td><td>Limited by quadratic complexity</td></tr>
-<tr><td>S4 (fixed SSM)</td><td><span class="math-i">O(N \log N \cdot d)</span> \lt /td> \lt td><span class="math-i">O(d)</span></td><td>Good, but lacks selectivity</td></tr>
-<tr><td>Mamba</td><td><span class="math-i">O(N d)</span> \lt /td> \lt td><span class="math-i">O(d)</span> (fixed state)</td><td>Theoretically unbounded</td></tr>
+<tr><td>Transformer</td><td><span class="math-i">O(N^2 d)</span> </td> \lt td><span class="math-i">O(N d)</span> (KV cache)</td><td>Limited by quadratic complexity</td></tr>
+<tr><td>S4 (fixed SSM)</td><td><span class="math-i">O(N \log N \cdot d)</span> </td> \lt td><span class="math-i">O(d)</span></td><td>Good, but lacks selectivity</td></tr>
+<tr><td>Mamba</td><td><span class="math-i">O(N d)</span> </td> \lt td><span class="math-i">O(d)</span> (fixed state)</td><td>Theoretically unbounded</td></tr>
 </table>
 
 <h3>Experimental Results</h3>
@@ -9985,90 +9985,90 @@ A: [let the model continue]
 </div>
 
 <h3>Why This Paper Is the Capstone</h3>
-<p>DeepSeek-V3 is not the first MoE, the first FP8 training run, or the first hybrid reasoning model — but it is the first open-source model to <em>integrate all of these techniques together and execute each to its limits</em>. 671B total parameters, 37B activated per token, trained in just 2.788M H800 GPU-hours (approximately US<span class="math-i">5.6M), reaching GPT-4o-level capability.&lt;/p>
-&lt;p>It is a case study in "engineering integration" winning over "single-point breakthroughs," and a decisive moment in open-source catching up to closed-source.&lt;/p>
+<p>DeepSeek-V3 is not the first MoE, the first FP8 training run, or the first hybrid reasoning model — but it is the first open-source model to <em>integrate all of these techniques together and execute each to its limits</em>. 671B total parameters, 37B activated per token, trained in just 2.788M H800 GPU-hours (approximately US$5.6M), reaching GPT-4o-level capability.</p>
+<p>It is a case study in "engineering integration" winning over "single-point breakthroughs," and a decisive moment in open-source catching up to closed-source.</p>
 
-&lt;h3>Architecture Overview&lt;/h3>
+<h3>Architecture Overview</h3>
 
-&lt;div class="mermaid">
+<div class="mermaid">
 flowchart TB
     IN[Input] --> EMB[Embedding]
     EMB --> L1[Layer 1 to 61]
-    L1 --> ATT["MLA Attention&lt;br/>low-rank KV compression"]
-    ATT --> MOE["Fine-grained MoE&lt;br/>256 routed + 1 shared&lt;br/>top-8 activated"]
-    MOE --> MTP["Multi-Token Prediction&lt;br/>auxiliary prediction of future tokens"]
+    L1 --> ATT["MLA Attention<br/>low-rank KV compression"]
+    ATT --> MOE["Fine-grained MoE<br/>256 routed + 1 shared<br/>top-8 activated"]
+    MOE --> MTP["Multi-Token Prediction<br/>auxiliary prediction of future tokens"]
     MTP --> NEXT[Next Layer]
     L1 --> LM[LM Head]
-&lt;/div>
+</div>
 
-&lt;h3>Innovation 1: MLA (Multi-head Latent Attention)&lt;/h3>
-&lt;p>Covered in depth in main text §4.4.1. Core idea: use low-rank decomposition to compress the KV Cache.&lt;/p>
-&lt;div class="formula">&lt;span class="math-d">\mathbf{c}_{\text{kv}} = W_{DKV} \mathbf{x}, \quad \mathbf{k} = W_{UK} \mathbf{c}_{\text{kv}}, \quad \mathbf{v} = W_{UV} \mathbf{c}_{\text{kv}}&lt;/span>&lt;/div>
+<h3>Innovation 1: MLA (Multi-head Latent Attention)</h3>
+<p>Covered in depth in main text §4.4.1. Core idea: use low-rank decomposition to compress the KV Cache.</p>
+<div class="formula"><span class="math-d">\mathbf{c}_{\text{kv}} = W_{DKV} \mathbf{x}, \quad \mathbf{k} = W_{UK} \mathbf{c}_{\text{kv}}, \quad \mathbf{v} = W_{UV} \mathbf{c}_{\text{kv}}</span></div>
 
-&lt;p>With &lt;span class="math-i">d_c \ll d_{model}&lt;/span>, the KV Cache stores only &lt;span class="math-i">\mathbf{c}_{\text{kv}}&lt;/span>. At inference, &lt;span class="math-i">W_{UK}&lt;/span> can be absorbed into the Q projection, adding zero extra computation.&lt;/p>
-&lt;p>Compared to equivalent MHA, KV Cache is &lt;strong>reduced by 90%+&lt;/strong> — the core advantage enabling long-context inference.&lt;/p>
+<p>With <span class="math-i">d_c \ll d_{model}</span>, the KV Cache stores only <span class="math-i">\mathbf{c}_{\text{kv}}</span>. At inference, <span class="math-i">W_{UK}</span> can be absorbed into the Q projection, adding zero extra computation.</p>
+<p>Compared to equivalent MHA, KV Cache is <strong>reduced by 90%+</strong> — the core advantage enabling long-context inference.</p>
 
-&lt;h3>Innovation 2: Fine-Grained MoE + Shared Expert&lt;/h3>
-&lt;p>Each layer in V3 has 256 routed experts + 1 shared expert, with top-8 routing:&lt;/p>
-&lt;ul style="list-style:none;padding-left:0;">
-&lt;li>- &lt;strong>Fine-grained&lt;/strong>: 256 small experts yield &lt;span class="math-i">C_{256}^8 = 4 \times 10^{14}&lt;/span> possible combinations — vastly more diverse than Mixtral's 28&lt;/li>
-&lt;li>- &lt;strong>Shared expert&lt;/strong>: handles general knowledge; every token passes through it&lt;/li>
-&lt;li>- &lt;strong>Load balancing without auxiliary loss&lt;/strong>: V3 innovates by adding learnable bias terms to routing scores, dynamically adjusting to equalize expert load — eliminating the traditional auxiliary loss&lt;/li>
-&lt;/ul>
+<h3>Innovation 2: Fine-Grained MoE + Shared Expert</h3>
+<p>Each layer in V3 has 256 routed experts + 1 shared expert, with top-8 routing:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong>Fine-grained</strong>: 256 small experts yield <span class="math-i">C_{256}^8 = 4 \times 10^{14}</span> possible combinations — vastly more diverse than Mixtral's 28</li>
+<li>- <strong>Shared expert</strong>: handles general knowledge; every token passes through it</li>
+<li>- <strong>Load balancing without auxiliary loss</strong>: V3 innovates by adding learnable bias terms to routing scores, dynamically adjusting to equalize expert load — eliminating the traditional auxiliary loss</li>
+</ul>
 
-&lt;h3>Innovation 3: Multi-Token Prediction (MTP)&lt;/h3>
-&lt;p>During training, V3 predicts not just the next token but also the next &lt;span class="math-i">D&lt;/span> tokens (&lt;span class="math-i">D = 1&lt;/span> in V3, i.e., one extra token predicted). Each prediction position has a dedicated MTP module (with its own Transformer layer). Benefits:&lt;/p>
-&lt;ul style="list-style:none;padding-left:0;">
-&lt;li>- Denser training signal: the model learns more from the same number of tokens&lt;/li>
-&lt;li>- At inference, the MTP module can directly serve as a speculative decoding draft head, eliminating the need for a separate draft model&lt;/li>
-&lt;/ul>
+<h3>Innovation 3: Multi-Token Prediction (MTP)</h3>
+<p>During training, V3 predicts not just the next token but also the next <span class="math-i">D</span> tokens (<span class="math-i">D = 1</span> in V3, i.e., one extra token predicted). Each prediction position has a dedicated MTP module (with its own Transformer layer). Benefits:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- Denser training signal: the model learns more from the same number of tokens</li>
+<li>- At inference, the MTP module can directly serve as a speculative decoding draft head, eliminating the need for a separate draft model</li>
+</ul>
 
-&lt;h3>Innovation 4: FP8 Training at Scale&lt;/h3>
-&lt;p>V3 is the first model at the 671B scale to train fully in FP8. Core techniques:&lt;/p>
-&lt;ol>
-&lt;li>&lt;strong>Fine-grained quantization&lt;/strong>: per-tensor granularity is insufficient; V3 uses per-block (groups of 1×128 elements share a scale)&lt;/li>
-&lt;li>&lt;strong>High-precision accumulation&lt;/strong>: FP8 × FP8 → BF16 accumulation, reducing numerical error&lt;/li>
-&lt;li>&lt;strong>Selective FP8&lt;/strong>: numerically sensitive operations (softmax in attention, layer normalization) retain BF16&lt;/li>
-&lt;li>&lt;strong>Pipeline optimization&lt;/strong>: overlapping all-to-all communication with computation, hiding cross-node latency&lt;/li>
-&lt;/ol>
+<h3>Innovation 4: FP8 Training at Scale</h3>
+<p>V3 is the first model at the 671B scale to train fully in FP8. Core techniques:</p>
+<ol>
+<li><strong>Fine-grained quantization</strong>: per-tensor granularity is insufficient; V3 uses per-block (groups of 1×128 elements share a scale)</li>
+<li><strong>High-precision accumulation</strong>: FP8 × FP8 → BF16 accumulation, reducing numerical error</li>
+<li><strong>Selective FP8</strong>: numerically sensitive operations (softmax in attention, layer normalization) retain BF16</li>
+<li><strong>Pipeline optimization</strong>: overlapping all-to-all communication with computation, hiding cross-node latency</li>
+</ol>
 
-&lt;p>In practice, FP8 achieves 1.5–2× training speedup over BF16, with negligible loss degradation.&lt;/p>
+<p>In practice, FP8 achieves 1.5–2× training speedup over BF16, with negligible loss degradation.</p>
 
-&lt;h3>Training Economics&lt;/h3>
-&lt;table>
-&lt;tr>&lt;th>Metric&lt;/th>&lt;th>Value&lt;/th>&lt;/tr>
-&lt;tr>&lt;td>Total parameters / Activated&lt;/td>&lt;td>671B / 37B&lt;/td>&lt;/tr>
-&lt;tr>&lt;td>Training tokens&lt;/td>&lt;td>14.8T&lt;/td>&lt;/tr>
-&lt;tr>&lt;td>Pretraining GPU-hours&lt;/td>&lt;td>2.664M H800 (~US</span>5.3M)</td></tr>
+<h3>Training Economics</h3>
+<table>
+<tr><th>Metric</th><th>Value</th></tr>
+<tr><td>Total parameters / Activated</td><td>671B / 37B</td></tr>
+<tr><td>Training tokens</td><td>14.8T</td></tr>
+<tr><td>Pretraining GPU-hours</td><td>2.664M H800 (~US$5.3M)</td></tr>
 <tr><td>Total training GPU-hours (incl. SFT + RLHF)</td><td>2.788M</td></tr>
 <tr><td>Estimated comparison: GPT-4</td><td>~50–100M GPU-hours</td></tr>
 <tr><td>Capability level</td><td>Comparable to GPT-4o / Claude 3.5 Sonnet</td></tr>
 </table>
 
-<p>Approximately US<span class="math-i">5.6M to train a GPT-4-level model — over 10× cheaper than closed-source estimates. This is the economic foundation of the "DeepSeek moment" (February 2025) — a cost low enough to shock the global industry.&lt;/p>
+<p>Approximately US$5.6M to train a GPT-4-level model — over 10× cheaper than closed-source estimates. This is the economic foundation of the "DeepSeek moment" (February 2025) — a cost low enough to shock the global industry.</p>
 
-&lt;h3>Subsequent Evolution&lt;/h3>
-&lt;ul style="list-style:none;padding-left:0;">
-&lt;li>&lt;strong>DeepSeek-R1&lt;/strong> (2025.1): built on V3, trained as a reasoning model using pure RL (GRPO algorithm). No human-labeled CoT data needed — reasoning ability emerged from RL alone&lt;/li>
-&lt;li>&lt;strong>V3-0324&lt;/strong> (2025.3): post-training improvements incorporating lessons from R1's RL, with major reasoning gains&lt;/li>
-&lt;li>&lt;strong>R1-0528&lt;/strong> (2025.5): upgraded R1, surpassing GPT-4o on the AIME math benchmark at that time&lt;/li>
-&lt;li>&lt;strong>V3.1&lt;/strong> (2025.8): hybrid thinking mode — a single model supporting switchable thinking / non-thinking, merging V3 and R1&lt;/li>
-&lt;li>&lt;strong>V3.2&lt;/strong> (2025.10): introduces DSA (DeepSeek Sparse Attention), reducing long-context inference cost by another 50%&lt;/li>
-&lt;/ul>
+<h3>Subsequent Evolution</h3>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>DeepSeek-R1</strong> (2025.1): built on V3, trained as a reasoning model using pure RL (GRPO algorithm). No human-labeled CoT data needed — reasoning ability emerged from RL alone</li>
+<li><strong>V3-0324</strong> (2025.3): post-training improvements incorporating lessons from R1's RL, with major reasoning gains</li>
+<li><strong>R1-0528</strong> (2025.5): upgraded R1, surpassing GPT-4o on the AIME math benchmark at that time</li>
+<li><strong>V3.1</strong> (2025.8): hybrid thinking mode — a single model supporting switchable thinking / non-thinking, merging V3 and R1</li>
+<li><strong>V3.2</strong> (2025.10): introduces DSA (DeepSeek Sparse Attention), reducing long-context inference cost by another 50%</li>
+</ul>
 
-&lt;h3>Significance&lt;/h3>
-&lt;p>V3 proved three things:&lt;/p>
-&lt;ol>
-&lt;li>&lt;strong>Open-source can match closed-source&lt;/strong>: not in 6 months, but on competitive terms&lt;/li>
-&lt;li>&lt;strong>Compounding returns from architectural innovation&lt;/strong>: MLA + MoE + MTP + FP8 combined yield efficiency far beyond any single component&lt;/li>
-&lt;li>&lt;strong>Engineering excellence from Chinese AI labs&lt;/strong>: V3's training efficiency and architectural details received broad international recognition&lt;/li>
-&lt;/ol>
+<h3>Significance</h3>
+<p>V3 proved three things:</p>
+<ol>
+<li><strong>Open-source can match closed-source</strong>: not in 6 months, but on competitive terms</li>
+<li><strong>Compounding returns from architectural innovation</strong>: MLA + MoE + MTP + FP8 combined yield efficiency far beyond any single component</li>
+<li><strong>Engineering excellence from Chinese AI labs</strong>: V3's training efficiency and architectural details received broad international recognition</li>
+</ol>
 
-&lt;p>The open-source ecosystem moved quickly to follow in 2025 — Qwen3, Kimi K2, GLM-4.5, and LLaMA 4 all adopt similar architectural philosophy (fine-grained MoE + long-context optimization + FP8 training).&lt;/p>
+<p>The open-source ecosystem moved quickly to follow in 2025 — Qwen3, Kimi K2, GLM-4.5, and LLaMA 4 all adopt similar architectural philosophy (fine-grained MoE + long-context optimization + FP8 training).</p>
 
-&lt;h3>Critical Perspectives&lt;/h3>
-&lt;ul style="list-style:none;padding-left:0;">
-&lt;li>- The training cost figures are debated — US</span>5.6M may count only GPU time, excluding data, infrastructure, and labor</li>
+<h3>Critical Perspectives</h3>
+<ul style="list-style:none;padding-left:0;">
+<li>- The training cost figures are debated — US$5.6M may count only GPU time, excluding data, infrastructure, and labor</li>
 <li>- "GPT-4 level" varies across benchmarks — V3 leads on some and trails on others</li>
 <li>- MLA's engineering complexity is high; small teams may find it difficult to reproduce</li>
 </ul>

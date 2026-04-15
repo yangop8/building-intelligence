@@ -119,7 +119,7 @@ th{background:var(--sidebar-bg);font-weight:600;}
 <p>$L = 4096$ 时,$S$ 矩阵 64 MB。每次读写都是 128 MB 的 HBM 往返。L 大,这个开销线性增长,但算力利用率极低。</p>
 
 <h3>核心方法:tiling + 在线 softmax</h3>
-<p>FlashAttention 把 Q、K、V 切成 tile,每个 tile 大小是 GPU 片上 SRAM 能容纳的。外层循环 Q 的 tile $Q_i$,内层循环 K、V 的 tile $(K_j, V_j)$。 \lt strong>永不物化完整的 $S$ 或 $P$</strong>——所有中间结果留在 SRAM 里。</p>
+<p>FlashAttention 把 Q、K、V 切成 tile,每个 tile 大小是 GPU 片上 SRAM 能容纳的。外层循环 Q 的 tile $Q_i$,内层循环 K、V 的 tile $(K_j, V_j)$。 <strong>永不物化完整的 $S$ 或 $P$</strong>——所有中间结果留在 SRAM 里。</p>
 
 <div class="mermaid">
 flowchart TB
@@ -131,7 +131,7 @@ flowchart TB
 </div>
 
 <h3>关键难点:在线 softmax</h3>
-<p>softmax 需要归一化——$\text{softmax}(x_i) = \exp(x_i) / \sum_j \exp(x_j)$。看起来必须等所有 $x_j$ 才能算分母。但 FlashAttention 用 \lt strong>增量更新 \lt /strong>:每看一个新 $S_{ij}$ tile,维护 running max 和 running sum,最后等价于完整 softmax。</p>
+<p>softmax 需要归一化——$\text{softmax}(x_i) = \exp(x_i) / \sum_j \exp(x_j)$。看起来必须等所有 $x_j$ 才能算分母。但 FlashAttention 用 <strong>增量更新 </strong>:每看一个新 $S_{ij}$ tile,维护 running max 和 running sum,最后等价于完整 softmax。</p>
 
 <p>设已处理到第 $j-1$ 个 tile,状态是 $(m_{j-1}, l_{j-1}, O_{j-1})$——当前位置已见最大值 $m$,当前分母 $l$,当前加权输出 $O$。新来一个 tile $(K_j, V_j)$:</p>
 

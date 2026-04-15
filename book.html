@@ -1085,13 +1085,13 @@ span.num {
 
 <h3>多元：从标量场到向量场</h3>
 
-<p>换成 <span class="math-i">f: \mathbb{R}^n \to \mathbb{R}</span>，输入是 <span class="math-i">n</span>维向量，输出还是一个数。每个维度上可以分别求导，得到  \lt strong>偏导数\lt /strong> <span class="math-i">\frac{\partial f}{\partial x_i}</span>。把所有偏导数拼成一个向量就是<strong>梯度</strong>：</p>
+<p>换成 <span class="math-i">f: \mathbb{R}^n \to \mathbb{R}</span>，输入是 <span class="math-i">n</span>维向量，输出还是一个数。每个维度上可以分别求导，得到  <strong>偏导数 </strong> <span class="math-i">\frac{\partial f}{\partial x_i}</span>。把所有偏导数拼成一个向量就是<strong>梯度</strong>：</p>
 <div class="formula"><span class="math-d">\nabla f(\mathbf{x}) = \left(\frac{\partial f}{\partial x_1}, \frac{\partial f}{\partial x_2}, \ldots, \frac{\partial f}{\partial x_n}\right)^\top</span></div>
 <p>梯度有一个最关键的几何意义：<strong>它指向 <span class="math-i">f</span>增长最快的方向，模长等于那个方向上的增长率</strong>。负梯度是下降最快的方向——这就是梯度下降的全部理由。</p>
 
-<p>再进一步，<span class="math-i">f: \mathbb{R}^n \to \mathbb{R}^m</span>（输入 <span class="math-i">n</span>维，输出 <span class="math-i">m</span>维）的导数是一个 <span class="math-i">m \times n</span>的矩阵，叫\lt strong>雅可比矩阵\lt /strong> <span class="math-i">\mathbf{J}</span>，第 <span class="math-i">(i,j)</span>位置是 <span class="math-i">\frac{\partial f_i}{\partial x_j}</span>。神经网络的反向传播本质上就是在做雅可比矩阵的链式乘积。</p>
+<p>再进一步，<span class="math-i">f: \mathbb{R}^n \to \mathbb{R}^m</span>（输入 <span class="math-i">n</span>维，输出 <span class="math-i">m</span>维）的导数是一个 <span class="math-i">m \times n</span>的矩阵，叫 <strong>雅可比矩阵 </strong> <span class="math-i">\mathbf{J}</span>，第 <span class="math-i">(i,j)</span>位置是 <span class="math-i">\frac{\partial f_i}{\partial x_j}</span>。神经网络的反向传播本质上就是在做雅可比矩阵的链式乘积。</p>
 
-<p><span class="math-i">f</span>的二阶偏导拼成的 <span class="math-i">n \times n</span>矩阵叫\lt strong>海森矩阵\lt /strong> <span class="math-i">\mathbf{H}</span>，第 <span class="math-i">(i,j)</span>位置是 <span class="math-i">\frac{\partial^2 f}{\partial x_i \partial x_j}</span>。海森描述函数的局部曲率：正定表示这是个碗底（局部极小），负定表示这是个山顶（局部极大），不定表示鞍点。</p>
+<p><span class="math-i">f</span>的二阶偏导拼成的 <span class="math-i">n \times n</span>矩阵叫 <strong>海森矩阵 </strong> <span class="math-i">\mathbf{H}</span>，第 <span class="math-i">(i,j)</span>位置是 <span class="math-i">\frac{\partial^2 f}{\partial x_i \partial x_j}</span>。海森描述函数的局部曲率：正定表示这是个碗底（局部极小），负定表示这是个山顶（局部极大），不定表示鞍点。</p>
 
 <h3>在AI里</h3>
 <p>神经网络训练的损失函数 <span class="math-i">L(\boldsymbol{\theta})</span>是从百万维参数空间到一个标量的函数。我们要的是 <span class="math-i">\nabla_\boldsymbol{\theta} L</span>，也就是一个百万维向量，指向loss增大最快的方向。每走一步 <span class="math-i">\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \eta \nabla L</span>就是梯度下降。海森矩阵太大（<span class="math-i">10^6 \times 10^6</span>存不下），所以Adam之类优化器<em>近似</em>用梯度的二阶矩来模拟海森信息——这是二阶优化与一阶优化的分界线。</p>
@@ -1102,7 +1102,7 @@ span.num {
 
 <h3>凹凸性</h3>
 
-<p>函数 <span class="math-i">f</span>在区间上是\lt strong>凸函数\lt /strong>，如果对任意 <span class="math-i">x_1, x_2</span>和 <span class="math-i">t \in [0,1]</span>：</p>
+<p>函数 <span class="math-i">f</span>在区间上是 <strong>凸函数 </strong>，如果对任意 <span class="math-i">x_1, x_2</span>和 <span class="math-i">t \in [0,1]</span>：</p>
 <div class="formula"><span class="math-d">f(t x_1 + (1-t) x_2) \le t f(x_1) + (1-t) f(x_2)</span></div>
 <p>几何含义：两点连线不会落到函数图像下方。凸函数最大的好处是<strong>局部极小就是全局极小</strong>——这对优化算法来说是天堂。线性回归的平方损失、Logistic回归的交叉熵损失都是凸的，所以这些经典算法能保证收敛到全局最优。</p>
 
@@ -1187,7 +1187,7 @@ print(conv1d(x, k))   # [-2, -2, -2]
 
 <h3>链式法则是反向传播的全部</h3>
 
-<p>链式法则：<span class="math-i">\frac{d}{dx} f(g(x)) = f'(g(x)) \cdot g'(x)</span>。这是高中数学。但神经网络的输出是一串嵌套函数 <span class="math-i">y = f_L(f_{L-1}(\ldots f_1(x)))</span>，对某个中间参数 <span class="math-i">w_i</span>求偏导，就是一串链式法则连乘。关键的工程观察是： \lt strong>这串连乘里，很多中间量是共享的\lt /strong>，如果每个参数都独立算一遍完整链式，总工作量是 <span class="math-i">O(L \cdot N)</span>（<span class="math-i">N</span>是参数数）；如果按"从输出反向往输入方向算"的顺序一口气算完，总工作量是 <span class="math-i">O(L + N)</span>。这个数量级差距就是反向传播存在的理由。</p>
+<p>链式法则：<span class="math-i">\frac{d}{dx} f(g(x)) = f'(g(x)) \cdot g'(x)</span>。这是高中数学。但神经网络的输出是一串嵌套函数 <span class="math-i">y = f_L(f_{L-1}(\ldots f_1(x)))</span>，对某个中间参数 <span class="math-i">w_i</span>求偏导，就是一串链式法则连乘。关键的工程观察是： <strong>这串连乘里，很多中间量是共享的 </strong>，如果每个参数都独立算一遍完整链式，总工作量是 <span class="math-i">O(L \cdot N)</span>（<span class="math-i">N</span>是参数数）；如果按"从输出反向往输入方向算"的顺序一口气算完，总工作量是 <span class="math-i">O(L + N)</span>。这个数量级差距就是反向传播存在的理由。</p>
 
 <h3>一个两层网络的反向传播</h3>
 
@@ -1268,15 +1268,15 @@ print("dL/dW1 =\n", dL_dW1)
 
 <h3>向量、矩阵、张量</h3>
 
-<p>向量 <span class="math-i">\mathbf{v} \in \mathbb{R}^n</span>就是 <span class="math-i">n</span>个实数的有序排列。关键是它能做两件事：相加 <span class="math-i">\mathbf{u} + \mathbf{v}</span>和数乘 <span class="math-i">\alpha \mathbf{v}</span>，并且这两种运算满足8条公理（结合律、分配律等）。满足这些公理的集合就叫\lt strong>线性空间\lt /strong>（向量空间）。<span class="math-i">\mathbb{R}^n</span>是最基础的线性空间，但抽象起来可以是连续函数空间、概率分布空间等——这就是"线性"思想的威力。</p>
+<p>向量 <span class="math-i">\mathbf{v} \in \mathbb{R}^n</span>就是 <span class="math-i">n</span>个实数的有序排列。关键是它能做两件事：相加 <span class="math-i">\mathbf{u} + \mathbf{v}</span>和数乘 <span class="math-i">\alpha \mathbf{v}</span>，并且这两种运算满足8条公理（结合律、分配律等）。满足这些公理的集合就叫 <strong>线性空间 </strong>（向量空间）。<span class="math-i">\mathbb{R}^n</span>是最基础的线性空间，但抽象起来可以是连续函数空间、概率分布空间等——这就是"线性"思想的威力。</p>
 
 <p>矩阵 <span class="math-i">\mathbf{A} \in \mathbb{R}^{m \times n}</span>是 <span class="math-i">m \times n</span>个实数按二维排列。张量是更高维的推广：三维张量可以理解成一摞矩阵、四维张量是一摞三维张量。深度学习里"张量"的用法比数学里的严格定义要松——PyTorch里任何多维数组都叫tensor。</p>
 
 <h3>维度与秩</h3>
 
-<p>一组向量 <span class="math-i">\{\mathbf{v}_1, \ldots, \mathbf{v}_k\}</span>叫\lt strong>线性无关\lt /strong>，如果 <span class="math-i">\sum \alpha_i \mathbf{v}_i = \mathbf{0}</span>只有 <span class="math-i">\alpha_i = 0</span>这一解。一个线性空间的<strong>维度</strong>是能找到的最大线性无关组的大小。</p>
+<p>一组向量 <span class="math-i">\{\mathbf{v}_1, \ldots, \mathbf{v}_k\}</span>叫 <strong>线性无关 </strong>，如果 <span class="math-i">\sum \alpha_i \mathbf{v}_i = \mathbf{0}</span>只有 <span class="math-i">\alpha_i = 0</span>这一解。一个线性空间的<strong>维度</strong>是能找到的最大线性无关组的大小。</p>
 
-<p>矩阵 <span class="math-i">\mathbf{A}</span>的\lt strong>秩\lt /strong> <span class="math-i">\text{rank}(\mathbf{A})</span>是它的列（或行）向量组的最大线性无关数。<span class="math-i">\text{rank}(\mathbf{A}) \le \min(m, n)</span>。秩充分反映了"信息冗余度"：秩低的矩阵能被低维表示压缩。这是后面SVD和LoRA的起点。</p>
+<p>矩阵 <span class="math-i">\mathbf{A}</span>的 <strong>秩 </strong> <span class="math-i">\text{rank}(\mathbf{A})</span>是它的列（或行）向量组的最大线性无关数。<span class="math-i">\text{rank}(\mathbf{A}) \le \min(m, n)</span>。秩充分反映了"信息冗余度"：秩低的矩阵能被低维表示压缩。这是后面SVD和LoRA的起点。</p>
 
 <h3>在AI里</h3>
 
@@ -1324,7 +1324,7 @@ print("dL/dW1 =\n", dL_dW1)
 
 <table>
 <tr><th>情况</th><th>条件</th><th>结果</th></tr>
-<tr><td>方阵满秩(<span class="math-i">m = n, \text{rank} = n</span>) \lt /td> \lt td><span class="math-i">\det(\mathbf{A}) \ne 0</span> \lt /td> \lt td>唯一解 <span class="math-i">\mathbf{x} = \mathbf{A}^{-1}\mathbf{b}</span></td></tr>
+<tr><td>方阵满秩(<span class="math-i">m = n, \text{rank} = n</span>) </td> \lt td><span class="math-i">\det(\mathbf{A}) \ne 0</span> </td> \lt td>唯一解 <span class="math-i">\mathbf{x} = \mathbf{A}^{-1}\mathbf{b}</span></td></tr>
 <tr><td>超定(<span class="math-i">m > n</span>)</td><td>通常无精确解</td><td>最小二乘解</td></tr>
 <tr><td>欠定(<span class="math-i">m \lt n</span>)</td><td>通常有无穷解</td><td>最小范数解</td></tr>
 </table>
@@ -1335,7 +1335,7 @@ print("dL/dW1 =\n", dL_dW1)
 
 <h3>广义逆（Moore-Penrose伪逆）</h3>
 
-<p>当 <span class="math-i">\mathbf{A}</span>不是方阵、或是方阵但不可逆，传统 <span class="math-i">\mathbf{A}^{-1}</span>不存在。 \lt strong>伪逆\lt /strong> <span class="math-i">\mathbf{A}^+</span>是推广：</p>
+<p>当 <span class="math-i">\mathbf{A}</span>不是方阵、或是方阵但不可逆，传统 <span class="math-i">\mathbf{A}^{-1}</span>不存在。 <strong>伪逆 </strong> <span class="math-i">\mathbf{A}^+</span>是推广：</p>
 <ul style="list-style:none; padding-left:0;">
 <li>- 若 <span class="math-i">\mathbf{A}</span>列满秩（<span class="math-i">m \ge n</span>，<span class="math-i">\text{rank} = n</span>）：<span class="math-i">\mathbf{A}^+ = (\mathbf{A}^\top \mathbf{A})^{-1} \mathbf{A}^\top</span></li>
 <li>- 若 <span class="math-i">\mathbf{A}</span>行满秩（<span class="math-i">m \le n</span>，<span class="math-i">\text{rank} = m</span>）：<span class="math-i">\mathbf{A}^+ = \mathbf{A}^\top (\mathbf{A} \mathbf{A}^\top)^{-1}</span></li>
@@ -1358,7 +1358,7 @@ print("dL/dW1 =\n", dL_dW1)
 
 <p>对方阵 <span class="math-i">\mathbf{A}</span>，如果存在非零向量 <span class="math-i">\mathbf{v}</span>和标量 <span class="math-i">\lambda</span>使得：</p>
 <div class="formula"><span class="math-d">\mathbf{A}\mathbf{v} = \lambda \mathbf{v}</span></div>
-<p>就称 <span class="math-i">\mathbf{v}</span>是\lt strong>特征向量\lt /strong>，<span class="math-i">\lambda</span>是对应的\lt strong>特征值\lt /strong>。几何含义：<span class="math-i">\mathbf{A}</span>作用在 <span class="math-i">\mathbf{v}</span>上\lt em>只改变长度、不改变方向\lt /em>（<span class="math-i">\lambda &lt; 0</span>时方向反转）。这是矩阵"本征"的方向——它作用下最简单的方向。</p>
+<p>就称 <span class="math-i">\mathbf{v}</span>是 <strong>特征向量 </strong>，<span class="math-i">\lambda</span>是对应的 <strong>特征值 </strong>。几何含义：<span class="math-i">\mathbf{A}</span>作用在 <span class="math-i">\mathbf{v}</span>上 <em>只改变长度、不改变方向 </em>（<span class="math-i">\lambda &lt; 0</span>时方向反转）。这是矩阵"本征"的方向——它作用下最简单的方向。</p>
 
 <h3>对角化</h3>
 
@@ -1413,19 +1413,19 @@ print("降维后方差:", X_pca.var(axis=0))
 
 <h3>几何含义</h3>
 
-<p>把 <span class="math-i">\mathbf{A}\mathbf{x}</span>拆成三步： \lt strong><span class="math-i">\mathbf{V}^\top</span>旋转坐标系 → <span class="math-i">\boldsymbol{\Sigma}</span>沿各轴缩放 → <span class="math-i">\mathbf{U}</span>再旋转到输出空间</strong>。所以任何线性变换都是"旋转 + 缩放 + 旋转"的组合。这个结论极其强大。</p>
+<p>把 <span class="math-i">\mathbf{A}\mathbf{x}</span>拆成三步： <strong><span class="math-i">\mathbf{V}^\top</span>旋转坐标系 → <span class="math-i">\boldsymbol{\Sigma}</span>沿各轴缩放 → <span class="math-i">\mathbf{U}</span>再旋转到输出空间</strong>。所以任何线性变换都是"旋转 + 缩放 + 旋转"的组合。这个结论极其强大。</p>
 
 <h3>低秩近似</h3>
 
 <p>SVD可以写成外积求和形式：</p>
 <div class="formula"><span class="math-d">\mathbf{A} = \sum_{i=1}^r \sigma_i \mathbf{u}_i \mathbf{v}_i^\top</span></div>
-<p><span class="math-i">r = \text{rank}(\mathbf{A})</span>。 \lt strong>Eckart-Young定理\lt /strong>告诉我们：如果只保留最大的 <span class="math-i">k</span>项（<span class="math-i">k \lt r</span>），得到的 <span class="math-i">\mathbf{A}_k = \sum_{i=1}^k \sigma_i \mathbf{u}_i \mathbf{v}_i^\top</span>是 <span class="math-i">\mathbf{A}</span>在Frobenius范数或谱范数下\lt em>最优的秩 <span class="math-i">k</span>近似\lt /em>。没有其它秩 <span class="math-i">k</span>矩阵比它更接近 <span class="math-i">\mathbf{A}</span>。</p>
+<p><span class="math-i">r = \text{rank}(\mathbf{A})</span>。 <strong>Eckart-Young定理 </strong>告诉我们：如果只保留最大的 <span class="math-i">k</span>项（<span class="math-i">k \lt r</span>），得到的 <span class="math-i">\mathbf{A}_k = \sum_{i=1}^k \sigma_i \mathbf{u}_i \mathbf{v}_i^\top</span>是 <span class="math-i">\mathbf{A}</span>在Frobenius范数或谱范数下 <em>最优的秩 <span class="math-i">k</span>近似 </em>。没有其它秩 <span class="math-i">k</span>矩阵比它更接近 <span class="math-i">\mathbf{A}</span>。</p>
 
 <p>这是压缩、降维、去噪的统一数学基础。图像压缩、推荐系统的矩阵填充、模型权重压缩——全都依赖这条定理。</p>
 
 <h3>在AI里：LoRA</h3>
 
-<p>LoRA的假设是：LLM微调引起的权重变化 <span class="math-i">\Delta \mathbf{W}</span>是\lt em>低秩\lt /em>的。数学表达：<span class="math-i">\Delta \mathbf{W} \approx \mathbf{B}\mathbf{A}</span>，其中 <span class="math-i">\mathbf{A} \in \mathbb{R}^{r \times d}</span>、<span class="math-i">\mathbf{B} \in \mathbb{R}^{d \times r}</span>，<span class="math-i">r \ll d</span>。参数量从 <span class="math-i">d^2</span>降到 <span class="math-i">2rd</span>——7B模型的 <span class="math-i">d \approx 4096</span>、取 <span class="math-i">r = 16</span>，压缩128倍。</p>
+<p>LoRA的假设是：LLM微调引起的权重变化 <span class="math-i">\Delta \mathbf{W}</span>是 <em>低秩 </em>的。数学表达：<span class="math-i">\Delta \mathbf{W} \approx \mathbf{B}\mathbf{A}</span>，其中 <span class="math-i">\mathbf{A} \in \mathbb{R}^{r \times d}</span>、<span class="math-i">\mathbf{B} \in \mathbb{R}^{d \times r}</span>，<span class="math-i">r \ll d</span>。参数量从 <span class="math-i">d^2</span>降到 <span class="math-i">2rd</span>——7B模型的 <span class="math-i">d \approx 4096</span>、取 <span class="math-i">r = 16</span>，压缩128倍。</p>
 
 <p>为什么能这样？经验观察：神经网络各层的"有效信息维度"远低于其参数维度，SVD截断保留前 <span class="math-i">r</span>项几乎不损失性能。这不是数学上严格证明的结论，而是实证规律，但SVD给了它理论语言。</p>
 
@@ -1507,11 +1507,11 @@ for r in [5, 10, 20, 50, 100]:
 
 <p>把 <span class="math-i">n</span>个球随机扔进 <span class="math-i">n</span>个桶，问：最满的桶里有多少球？这是<strong>负载均衡</strong>的数学抽象。</p>
 
-<p>每个球独立均匀选桶，每个桶接收球数近似 <span class="math-i">\text{Poisson}(1)</span>。通过分析尾部概率可以证明： \lt em>最大负载以高概率约为 <span class="math-i">\Theta(\log n / \log\log n)</span> \lt /em>。<span class="math-i">n = 1000</span>时最满的桶里大约5个球，不算太糟，但已经是平均值的5倍。</p>
+<p>每个球独立均匀选桶，每个桶接收球数近似 <span class="math-i">\text{Poisson}(1)</span>。通过分析尾部概率可以证明： <em>最大负载以高概率约为 <span class="math-i">\Theta(\log n / \log\log n)</span> </em>。<span class="math-i">n = 1000</span>时最满的桶里大约5个球，不算太糟，但已经是平均值的5倍。</p>
 
 <h3>POTC：Power of Two Choices</h3>
 
-<p>改进策略：每个球独立随机选<em>两个</em>桶，放到其中较少的那一个里。这个看似微小的改动带来的效果是——<em>最大负载以高概率约为 <span class="math-i">\Theta(\log\log n)</span> \lt /em>——指数级下降。<span class="math-i">n = 1000</span>时最满桶的球数从5降到2。</p>
+<p>改进策略：每个球独立随机选<em>两个</em>桶，放到其中较少的那一个里。这个看似微小的改动带来的效果是——<em>最大负载以高概率约为 <span class="math-i">\Theta(\log\log n)</span> </em>——指数级下降。<span class="math-i">n = 1000</span>时最满桶的球数从5降到2。</p>
 
 <p>这是概率论里最令人印象深刻的结果之一："多看一个选项"带来指数级改进。直觉：让差桶拒绝球的概率更高，从而把分布推向更均匀。</p>
 
@@ -1546,10 +1546,10 @@ print("POTC    最大负载:", np.mean([simulate_balls_bins(n, 'potc')   for _ i
 
 <table>
 <tr><th>分布</th><th>含义</th><th>PMF</th><th>均值/方差</th></tr>
-<tr><td>伯努利Ber(p)</td><td>一次抛硬币</td><td><span class="math-i">P(X=1) = p</span> \lt /td> \lt td><span class="math-i">p, p(1-p)</span></td></tr>
-<tr><td>二项Bin(n, p)</td><td>n次伯努利和</td><td><span class="math-i">\binom{n}{k} p^k (1-p)^{n-k}</span> \lt /td> \lt td><span class="math-i">np, np(1-p)</span></td></tr>
-<tr><td>泊松Poi(λ)</td><td>稀有事件计数</td><td><span class="math-i">\frac{\lambda^k e^{-\lambda}}{k!}</span> \lt /td> \lt td><span class="math-i">\lambda, \lambda</span></td></tr>
-<tr><td>几何Geo(p)</td><td>直到成功的次数</td><td><span class="math-i">(1-p)^{k-1} p</span> \lt /td> \lt td><span class="math-i">1/p, (1-p)/p^2</span></td></tr>
+<tr><td>伯努利Ber(p)</td><td>一次抛硬币</td><td><span class="math-i">P(X=1) = p</span> </td> \lt td><span class="math-i">p, p(1-p)</span></td></tr>
+<tr><td>二项Bin(n, p)</td><td>n次伯努利和</td><td><span class="math-i">\binom{n}{k} p^k (1-p)^{n-k}</span> </td> \lt td><span class="math-i">np, np(1-p)</span></td></tr>
+<tr><td>泊松Poi(λ)</td><td>稀有事件计数</td><td><span class="math-i">\frac{\lambda^k e^{-\lambda}}{k!}</span> </td> \lt td><span class="math-i">\lambda, \lambda</span></td></tr>
+<tr><td>几何Geo(p)</td><td>直到成功的次数</td><td><span class="math-i">(1-p)^{k-1} p</span> </td> \lt td><span class="math-i">1/p, (1-p)/p^2</span></td></tr>
 </table>
 
 <p>泊松是 <span class="math-i">n \to \infty, p \to 0, np = \lambda</span>时二项的极限。它描述"大量独立稀有事件"——用户访问量、系统崩溃次数、基因突变。</p>
@@ -1637,16 +1637,16 @@ print("POTC    最大负载:", np.mean([simulate_balls_bins(n, 'potc')   for _ i
 
 <h3>核心概念</h3>
 
-<p><strong>原假设 <span class="math-i">H_0</span> \lt /strong>：我们想反驳的默认立场（"新模型和旧模型没区别"）。 \lt strong>备择假设 <span class="math-i">H_1</span></strong>：我们想证明的观点（"新模型更好"）。</p>
+<p><strong>原假设 <span class="math-i">H_0</span> </strong>：我们想反驳的默认立场（"新模型和旧模型没区别"）。 <strong>备择假设 <span class="math-i">H_1</span></strong>：我们想证明的观点（"新模型更好"）。</p>
 
-<p><strong>检验统计量</strong>：从数据计算的一个数，它在 <span class="math-i">H_0</span>下有已知分布。 \lt strong>p值\lt /strong>：在 <span class="math-i">H_0</span>下，观察到"当前统计量或更极端值"的概率。p值小说明"如果 <span class="math-i">H_0</span>真，当前数据不太可能出现"，因此拒绝 <span class="math-i">H_0</span>。</p>
+<p><strong>检验统计量</strong>：从数据计算的一个数，它在 <span class="math-i">H_0</span>下有已知分布。 <strong>p值 </strong>：在 <span class="math-i">H_0</span>下，观察到"当前统计量或更极端值"的概率。p值小说明"如果 <span class="math-i">H_0</span>真，当前数据不太可能出现"，因此拒绝 <span class="math-i">H_0</span>。</p>
 
 <p>p值阈值常用0.05或0.01。这个阈值是历史习惯不是数学定律——近年很多领域因为"p值滥用"推荐0.005甚至直接不用p值改用贝叶斯。</p>
 
 <h3>两类错误</h3>
 
 <table>
-<tr><th></th><th>真相 <span class="math-i">H_0</span>为真\lt /th> \lt th>真相 <span class="math-i">H_1</span>为真</th></tr>
+<tr><th></th><th>真相 <span class="math-i">H_0</span>为真 </th> \lt th>真相 <span class="math-i">H_1</span>为真</th></tr>
 <tr><td>接受 <span class="math-i">H_0</span></td><td>正确</td><td>第二类错误(漏报, β)</td></tr>
 <tr><td>拒绝 <span class="math-i">H_0</span></td><td>第一类错误(误报, α)</td><td>正确(功效1-β)</td></tr>
 </table>
@@ -1787,7 +1787,7 @@ print("POTC    最大负载:", np.mean([simulate_balls_bins(n, 'potc')   for _ i
 <p>含义：用针对分布 <span class="math-i">q</span>的最优编码，来编码实际来自分布 <span class="math-i">p</span>的数据，平均每个符号需要的比特数。显然 <span class="math-i">H(p,q) \ge H(p)</span>，多出来的部分就是<strong>KL散度</strong>：</p>
 <div class="formula"><span class="math-d">D_{\text{KL}}(p \parallel q) = H(p, q) - H(p) = \sum_x p(x) \log \frac{p(x)}{q(x)}</span></div>
 
-<p><span class="math-i">D_{\text{KL}} \ge 0</span>，等号当且仅当 <span class="math-i">p = q</span>。 \lt strong>不对称\lt /strong>：<span class="math-i">D_{\text{KL}}(p \| q) \ne D_{\text{KL}}(q \| p)</span>——这不是数学瑕疵，反而有用："用q近似p"和"用p近似q"本来就是两件事，KL的不对称忠实地反映了这个不对称。</p>
+<p><span class="math-i">D_{\text{KL}} \ge 0</span>，等号当且仅当 <span class="math-i">p = q</span>。 <strong>不对称 </strong>：<span class="math-i">D_{\text{KL}}(p \| q) \ne D_{\text{KL}}(q \| p)</span>——这不是数学瑕疵，反而有用："用q近似p"和"用p近似q"本来就是两件事，KL的不对称忠实地反映了这个不对称。</p>
 
 <h3>互信息</h3>
 
@@ -1888,7 +1888,7 @@ print("POTC    最大负载:", np.mean([simulate_balls_bins(n, 'potc')   for _ i
 
 <h3>机器精度</h3>
 
-<p>大于1的最小浮点数是 <span class="math-i">1 + \epsilon</span>，这个 <span class="math-i">\epsilon</span>就是\lt strong>机器精度\lt /strong>。FP32 <span class="math-i">\epsilon \approx 1.19 \times 10^{-7}</span>，FP16 <span class="math-i">\epsilon \approx 9.77 \times 10^{-4}</span>，BF16 <span class="math-i">\epsilon \approx 3.91 \times 10^{-3}</span>。BF16的精度比FP16还差4倍，但它有更大的动态范围（指数位同FP32），所以训练用BF16而不是FP16。</p>
+<p>大于1的最小浮点数是 <span class="math-i">1 + \epsilon</span>，这个 <span class="math-i">\epsilon</span>就是 <strong>机器精度 </strong>。FP32 <span class="math-i">\epsilon \approx 1.19 \times 10^{-7}</span>，FP16 <span class="math-i">\epsilon \approx 9.77 \times 10^{-4}</span>，BF16 <span class="math-i">\epsilon \approx 3.91 \times 10^{-3}</span>。BF16的精度比FP16还差4倍，但它有更大的动态范围（指数位同FP32），所以训练用BF16而不是FP16。</p>
 
 <h3>几个经典的数值坑</h3>
 
@@ -2007,7 +2007,7 @@ print(y - x)   # 期望1.0,实际可能是0.0 —— 1.0被1e8的精度吃掉了
 </div>
 <div class="formula"><span class="math-d">\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta \frac{\hat{\mathbf{m}}_t}{\sqrt{\hat{\mathbf{v}}_t} + \epsilon}</span></div>
 
-<p><span class="math-i">\beta_1 = 0.9, \beta_2 = 0.999, \epsilon = 10^{-8}</span>是默认值。 \lt strong>bias correction \lt /strong>是细节但重要：初期 <span class="math-i">\mathbf{m}_0 = \mathbf{v}_0 = 0</span>让早期估计偏小，除以 <span class="math-i">(1 - \beta^t)</span>修正。</p>
+<p><span class="math-i">\beta_1 = 0.9, \beta_2 = 0.999, \epsilon = 10^{-8}</span>是默认值。 <strong>bias correction </strong>是细节但重要：初期 <span class="math-i">\mathbf{m}_0 = \mathbf{v}_0 = 0</span>让早期估计偏小，除以 <span class="math-i">(1 - \beta^t)</span>修正。</p>
 
 <p>直觉：大梯度的参数自动用小学习率（因为 <span class="math-i">\sqrt{\mathbf{v}}</span>大），小梯度的参数用大学习率——在每个参数维度上自动调节。这就是"自适应学习率"。</p>
 
@@ -3830,7 +3830,7 @@ def kmeans(X, k, max_iter=100, tol=1e-4):
     return centers, labels
 </code></pre>
 
-<p>Kmeans的几个坑。第一,<strong>对初始化敏感</strong>——不同种子跑出完全不同的簇。Kmeans++ 初始化(上面代码里做的)显著改善。第二,<strong>必须指定 <span class="math-i">k</span> \lt /strong>——通常用elbow method(画 <span class="math-i">k</span> vs SSE曲线,找拐点)或silhouette score辅助选择。第三,<strong>假设簇是球形</strong>——条状、环形分布它搞不定,需要DBSCAN或spectral clustering这类。</p>
+<p>Kmeans的几个坑。第一,<strong>对初始化敏感</strong>——不同种子跑出完全不同的簇。Kmeans++ 初始化(上面代码里做的)显著改善。第二,<strong>必须指定 <span class="math-i">k</span> </strong>——通常用elbow method(画 <span class="math-i">k</span> vs SSE曲线,找拐点)或silhouette score辅助选择。第三,<strong>假设簇是球形</strong>——条状、环形分布它搞不定,需要DBSCAN或spectral clustering这类。</p>
 
 <h3>在网络领域</h3>
 
@@ -3959,13 +3959,13 @@ for feat, imp in sorted(zip(feature_names, importance), key=lambda x: -x[1])[:10
 
 <div class="formula"><span class="math-d">\max_\alpha \sum_i \alpha_i - \frac{1}{2}\sum_{i,j} \alpha_i \alpha_j y_i y_j \mathbf{x}_i^\top \mathbf{x}_j, \quad \alpha_i \ge 0, \sum_i \alpha_i y_i = 0</span></div>
 
-<p>解出 <span class="math-i">\alpha^*</span>后,<span class="math-i">\mathbf{w} = \sum_i \alpha_i y_i \mathbf{x}_i</span>。关键观察: \lt strong>绝大多数 <span class="math-i">\alpha_i = 0</span> \lt /strong>,只有在间隔边界上的少数点 <span class="math-i">\alpha_i > 0</span>——这些就是<strong>支持向量</strong>。SVM的名字由此而来。预测时只需要支持向量:</p>
+<p>解出 <span class="math-i">\alpha^*</span>后,<span class="math-i">\mathbf{w} = \sum_i \alpha_i y_i \mathbf{x}_i</span>。关键观察: <strong>绝大多数 <span class="math-i">\alpha_i = 0</span> </strong>,只有在间隔边界上的少数点 <span class="math-i">\alpha_i > 0</span>——这些就是<strong>支持向量</strong>。SVM的名字由此而来。预测时只需要支持向量:</p>
 
 <div class="formula"><span class="math-d">f(\mathbf{x}) = \text{sign}\left(\sum_{i \in \text{SV}} \alpha_i y_i \mathbf{x}_i^\top \mathbf{x} + b\right)</span></div>
 
 <h3>核技巧</h3>
 
-<p>线性不可分怎么办?把数据映射到更高维空间 <span class="math-i">\phi(\mathbf{x})</span>,希望在那里线性可分。注意对偶里只出现 <span class="math-i">\mathbf{x}_i^\top \mathbf{x}_j</span>——换成 <span class="math-i">\phi(\mathbf{x}_i)^\top \phi(\mathbf{x}_j)</span>就行。而这个内积可以定义一个\lt strong>核函数\lt /strong> <span class="math-i">K(\mathbf{x}_i, \mathbf{x}_j)</span>直接计算,不需要显式算 <span class="math-i">\phi</span>——这就是核技巧。</p>
+<p>线性不可分怎么办?把数据映射到更高维空间 <span class="math-i">\phi(\mathbf{x})</span>,希望在那里线性可分。注意对偶里只出现 <span class="math-i">\mathbf{x}_i^\top \mathbf{x}_j</span>——换成 <span class="math-i">\phi(\mathbf{x}_i)^\top \phi(\mathbf{x}_j)</span>就行。而这个内积可以定义一个 <strong>核函数 </strong> <span class="math-i">K(\mathbf{x}_i, \mathbf{x}_j)</span>直接计算,不需要显式算 <span class="math-i">\phi</span>——这就是核技巧。</p>
 
 <p>常用核:</p>
 <ul style="list-style:none; padding-left:0;">
@@ -4120,7 +4120,7 @@ def dtw(x, y):
     return D[n, m]
 </code></pre>
 
-<p>优化:<strong>Sakoe-Chiba带</strong>限制 <span class="math-i">|i - j| \le w</span>,复杂度从 <span class="math-i">O(nm)</span>降到 <span class="math-i">O(nw)</span>; \lt strong>FastDTW \lt /strong>用多尺度递归逼近 <span class="math-i">O(n)</span>。</p>
+<p>优化:<strong>Sakoe-Chiba带</strong>限制 <span class="math-i">|i - j| \le w</span>,复杂度从 <span class="math-i">O(nm)</span>降到 <span class="math-i">O(nw)</span>; <strong>FastDTW </strong>用多尺度递归逼近 <span class="math-i">O(n)</span>。</p>
 
 <h3>DBA:Dynamic Time Warping Barycenter Averaging</h3>
 
@@ -4661,7 +4661,7 @@ flowchart LR
 
 <p>其中 <span class="math-i">q_\phi(z|x)</span>是编码器(把 <span class="math-i">x</span>编成 <span class="math-i">z</span>的分布),<span class="math-i">p_\theta(x|z)</span>是解码器(从 <span class="math-i">z</span>重建 <span class="math-i">x</span>)。两者都是神经网络。</p>
 
-<p>训练时同时优化两项:重建项(解码器能从 <span class="math-i">z</span>还原 <span class="math-i">x</span>)+ KL项(<span class="math-i">q</span>和先验 <span class="math-i">p(z)</span>接近)。训练用\lt strong>重参数化技巧\lt /strong>:<span class="math-i">z = \mu_\phi(x) + \sigma_\phi(x) \odot \epsilon, \epsilon \sim \mathcal{N}(0, I)</span>——让采样可微。</p>
+<p>训练时同时优化两项:重建项(解码器能从 <span class="math-i">z</span>还原 <span class="math-i">x</span>)+ KL项(<span class="math-i">q</span>和先验 <span class="math-i">p(z)</span>接近)。训练用 <strong>重参数化技巧 </strong>:<span class="math-i">z = \mu_\phi(x) + \sigma_\phi(x) \odot \epsilon, \epsilon \sim \mathcal{N}(0, I)</span>——让采样可微。</p>
 
 <p>VAE的优点:显式潜空间(可插值、可控生成)、训练稳定。缺点:生成样本通常模糊(重建损失是像素MSE,倾向平均)。</p>
 
@@ -4669,7 +4669,7 @@ flowchart LR
 
 <p>完全不同的路径。两个网络对抗:</p>
 <ul style="list-style:none; padding-left:0;">
-<li><strong>生成器 <span class="math-i">G</span> \lt /strong>:输入噪声 <span class="math-i">z</span>,输出假样本 <span class="math-i">G(z)</span></li>
+<li><strong>生成器 <span class="math-i">G</span> </strong>:输入噪声 <span class="math-i">z</span>,输出假样本 <span class="math-i">G(z)</span></li>
 <li><strong>判别器 <span class="math-i">D</span></strong>:输入样本,判别真假(输出0–1概率)</li>
 </ul>
 
@@ -5140,7 +5140,7 @@ labels = [-100] * len(tokenize(prompt)) + tokenize(response + "&lt;|end|&gt;")
 
 <h3>MDP框架</h3>
 
-<p>RL的数学骨架是Markov Decision Process(MDP):状态 <span class="math-i">s</span>、动作 <span class="math-i">a</span>、转移 <span class="math-i">P(s'|s,a)</span>、奖励 <span class="math-i">R(s,a)</span>、折扣因子 <span class="math-i">\gamma</span>。目标是学一个\lt strong>策略\lt /strong> <span class="math-i">\pi(a|s)</span>,最大化期望累计回报:</p>
+<p>RL的数学骨架是Markov Decision Process(MDP):状态 <span class="math-i">s</span>、动作 <span class="math-i">a</span>、转移 <span class="math-i">P(s'|s,a)</span>、奖励 <span class="math-i">R(s,a)</span>、折扣因子 <span class="math-i">\gamma</span>。目标是学一个 <strong>策略 </strong> <span class="math-i">\pi(a|s)</span>,最大化期望累计回报:</p>
 
 <div class="formula"><span class="math-d">J(\pi) = \mathbb{E}_\pi\left[\sum_{t=0}^\infty \gamma^t R(s_t, a_t)\right]</span></div>
 
@@ -6191,7 +6191,7 @@ flowchart TB
 <p class="pos">定位:LLM灵魂算子——推导每一个细节,包括为什么要除 √d。</p>
 
 <h3>问题设定</h3>
-<p>输入:<span class="math-i">L</span>个token,每个是 <span class="math-i">d</span>维向量 <span class="math-i">\mathbf{x}_i \in \mathbb{R}^d</span>。目标:让每个位置 <span class="math-i">i</span>的输出 <span class="math-i">\mathbf{y}_i</span>是所有输入位置信息的\lt strong>动态加权组合\lt /strong>,权重由 <span class="math-i">\mathbf{x}_i</span>和其他位置的"相似度"决定。</p>
+<p>输入:<span class="math-i">L</span>个token,每个是 <span class="math-i">d</span>维向量 <span class="math-i">\mathbf{x}_i \in \mathbb{R}^d</span>。目标:让每个位置 <span class="math-i">i</span>的输出 <span class="math-i">\mathbf{y}_i</span>是所有输入位置信息的 <strong>动态加权组合 </strong>,权重由 <span class="math-i">\mathbf{x}_i</span>和其他位置的"相似度"决定。</p>
 
 <h3>Query / Key / Value的角色</h3>
 <p>核心思想:每个位置扮演三个角色:</p>
@@ -6509,7 +6509,7 @@ K = apply_rope(K, freqs_cis)
 <p class="pos">定位:减少KV Cache的几代方案——从MQA到DeepSeek的MLA。</p>
 
 <h3>为什么KV Cache是瓶颈</h3>
-<p>推理时,每生成一个新token都要算新token的Q、K、V;把新K、V追加到之前的;新Q对所有K、V做attention。如果每次都重新算前面所有位置的K、V,是 <span class="math-i">O(L^2)</span>计算。 \lt strong>KV Cache \lt /strong>缓存前面算过的K、V,新token只算自己那份,总计算 <span class="math-i">O(L)</span>。</p>
+<p>推理时,每生成一个新token都要算新token的Q、K、V;把新K、V追加到之前的;新Q对所有K、V做attention。如果每次都重新算前面所有位置的K、V,是 <span class="math-i">O(L^2)</span>计算。 <strong>KV Cache </strong>缓存前面算过的K、V,新token只算自己那份,总计算 <span class="math-i">O(L)</span>。</p>
 <p>但KV Cache占显存。估算:<code>2 × layers × H × d_head × seq_len × 2 bytes (FP16)</code>。LLaMA-3-70B在L=8K时KV Cache ≈ 2.5 GB/样本。batch=10就25GB——比模型权重还大。长上下文下KV Cache是显存主要杀手。</p>
 
 <h3>MHA / MQA / GQA</h3>
@@ -6626,7 +6626,7 @@ K = apply_rope(K, freqs_cis)
 <table>
 <tr><th>维度</th><th>Transformer</th><th>Mamba</th></tr>
 <tr><td>训练</td><td>全并行</td><td>并行扫描(<span class="math-i">O(L)</span>)</td></tr>
-<tr><td>推理</td><td><span class="math-i">O(L)</span> attention + <span class="math-i">O(L)</span> KV Cache \lt /td> \lt td><span class="math-i">O(1)</span>状态更新</td></tr>
+<tr><td>推理</td><td><span class="math-i">O(L)</span> attention + <span class="math-i">O(L)</span> KV Cache </td> \lt td><span class="math-i">O(1)</span>状态更新</td></tr>
 <tr><td>推理内存</td><td>随L增长(KV Cache)</td><td>固定</td></tr>
 <tr><td>长序列</td><td>受KV Cache限制</td><td>天然支持</td></tr>
 <tr><td>可解释性</td><td>attention可视化</td><td>状态不可直接观察</td></tr>
@@ -7105,7 +7105,7 @@ model = FSDP(
 <p class="pos">定位:LLM推理的灵魂——把 <span class="math-i">O(L^2)</span>复杂度砍到 <span class="math-i">O(L)</span>,但带来显存压力。</p>
 
 <h3>为什么需要</h3>
-<p>Decode阶段生成第 <span class="math-i">t</span>个token,要做的attention只需要新token的 <span class="math-i">\mathbf{q}_t</span>,但需要\lt strong>所有之前位置的K、V \lt /strong>。如果每次都重算 <span class="math-i">\mathbf{k}_1, \ldots, \mathbf{k}_{t-1}</span>,是 <span class="math-i">O(t)</span>额外计算每步——总 <span class="math-i">O(t^2)</span>。KV Cache缓存之前所有位置的K、V——每步新token只算自己的 <span class="math-i">\mathbf{k}_t, \mathbf{v}_t</span>,追加到cache。总计算 <span class="math-i">O(t)</span>。</p>
+<p>Decode阶段生成第 <span class="math-i">t</span>个token,要做的attention只需要新token的 <span class="math-i">\mathbf{q}_t</span>,但需要 <strong>所有之前位置的K、V </strong>。如果每次都重算 <span class="math-i">\mathbf{k}_1, \ldots, \mathbf{k}_{t-1}</span>,是 <span class="math-i">O(t)</span>额外计算每步——总 <span class="math-i">O(t^2)</span>。KV Cache缓存之前所有位置的K、V——每步新token只算自己的 <span class="math-i">\mathbf{k}_t, \mathbf{v}_t</span>,追加到cache。总计算 <span class="math-i">O(t)</span>。</p>
 
 <h3>显存占用</h3>
 <p>LLaMA-3-70B(80层,64头,d_head=128,GQA=8):</p>
@@ -8040,9 +8040,9 @@ flowchart TB
 <h3>复杂度分析</h3>
 <table>
 <tr><th>操作</th><th>时间复杂度</th><th>说明</th></tr>
-<tr><td>搜索</td><td><span class="math-i">O(\log N)</span> \lt /td> \lt td>每层贪心搜索 <span class="math-i">O(1)</span>步,共 <span class="math-i">O(\log N)</span>层</td></tr>
+<tr><td>搜索</td><td><span class="math-i">O(\log N)</span> </td> \lt td>每层贪心搜索 <span class="math-i">O(1)</span>步,共 <span class="math-i">O(\log N)</span>层</td></tr>
 <tr><td>插入</td><td><span class="math-i">O(\log N)</span></td><td>搜索 + 连边</td></tr>
-<tr><td>空间</td><td><span class="math-i">O(N \cdot M)</span> \lt /td> \lt td>每个节点 <span class="math-i">M</span>条边</td></tr>
+<tr><td>空间</td><td><span class="math-i">O(N \cdot M)</span> </td> \lt td>每个节点 <span class="math-i">M</span>条边</td></tr>
 </table>
 
 <h3>关键参数</h3>
@@ -8473,7 +8473,7 @@ print("Accuracy:", model.score(Xv, yv))
 <h3>核心方法:二人零和博弈</h3>
 <p>两个网络同时训练:</p>
 <ul style="list-style:none;padding-left:0;">
-<li><strong>生成器 <span class="math-i">G</span> \lt /strong>:从噪声 <span class="math-i">z \sim p_z(z)</span>生成假样本 <span class="math-i">G(z)</span>,目标是"骗过判别器"</li>
+<li><strong>生成器 <span class="math-i">G</span> </strong>:从噪声 <span class="math-i">z \sim p_z(z)</span>生成假样本 <span class="math-i">G(z)</span>,目标是"骗过判别器"</li>
 <li><strong>判别器 <span class="math-i">D</span></strong>:判断输入是真实样本还是生成样本,目标是"不被骗"</li>
 </ul>
 
@@ -8732,7 +8732,7 @@ def vae_loss(recon_x, x, mu, logvar):
 
 <div class="formula"><span class="math-d">p_\theta(x_{t-1} | x_t) = \mathcal{N}(x_{t-1}; \mu_\theta(x_t, t), \sigma_t^2 I)</span></div>
 
-<p>Ho等人的关键简化:不直接预测 <span class="math-i">\mu</span>,而是\lt strong>预测噪声 <span class="math-i">\epsilon</span> \lt /strong>。网络 <span class="math-i">\epsilon_\theta(x_t, t)</span>输入带噪图像和时间步,输出预测的噪声。</p>
+<p>Ho等人的关键简化:不直接预测 <span class="math-i">\mu</span>,而是 <strong>预测噪声 <span class="math-i">\epsilon</span> </strong>。网络 <span class="math-i">\epsilon_\theta(x_t, t)</span>输入带噪图像和时间步,输出预测的噪声。</p>
 
 <div class="mermaid">
 flowchart LR
@@ -8906,7 +8906,7 @@ def sample(model, shape):
 
 <div class="formula"><span class="math-d">\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right) V</span></div>
 
-<p>关键细节 <strong><span class="math-i">\sqrt{d_k}</span> \lt /strong>缩放:<span class="math-i">d</span>维向量点积方差是 <span class="math-i">d</span>,除以 <span class="math-i">\sqrt{d}</span>让方差归一,防止softmax过饱和(主书5.2.2有详细推导)。</p>
+<p>关键细节 <strong><span class="math-i">\sqrt{d_k}</span> </strong>缩放:<span class="math-i">d</span>维向量点积方差是 <span class="math-i">d</span>,除以 <span class="math-i">\sqrt{d}</span>让方差归一,防止softmax过饱和(主书5.2.2有详细推导)。</p>
 
 <h3>Multi-Head Attention</h3>
 <p>把Q、K、V投到 <span class="math-i">H</span>个子空间,每个子空间独立做attention,结果拼接后再投影:</p>
@@ -9321,7 +9321,7 @@ K = apply_rope(K, freqs_cis)
 <p><span class="math-i">L = 4096</span>时,<span class="math-i">S</span>矩阵64 MB。每次读写都是128 MB的HBM往返。L大,这个开销线性增长,但算力利用率极低。</p>
 
 <h3>核心方法:tiling + 在线softmax</h3>
-<p>FlashAttention把Q、K、V切成tile,每个tile大小是GPU片上SRAM能容纳的。外层循环Q的tile <span class="math-i">Q_i</span>,内层循环K、V的tile <span class="math-i">(K_j, V_j)</span>。 \lt strong>永不物化完整的 <span class="math-i">S</span>或 <span class="math-i">P</span></strong>——所有中间结果留在SRAM里。</p>
+<p>FlashAttention把Q、K、V切成tile,每个tile大小是GPU片上SRAM能容纳的。外层循环Q的tile <span class="math-i">Q_i</span>,内层循环K、V的tile <span class="math-i">(K_j, V_j)</span>。 <strong>永不物化完整的 <span class="math-i">S</span>或 <span class="math-i">P</span></strong>——所有中间结果留在SRAM里。</p>
 
 <div class="mermaid">
 flowchart TB
@@ -9333,7 +9333,7 @@ flowchart TB
 </div>
 
 <h3>关键难点:在线softmax</h3>
-<p>softmax需要归一化——<span class="math-i">\text{softmax}(x_i) = \exp(x_i) / \sum_j \exp(x_j)</span>。看起来必须等所有 <span class="math-i">x_j</span>才能算分母。但FlashAttention用\lt strong>增量更新\lt /strong>:每看一个新 <span class="math-i">S_{ij}</span> tile,维护running max和running sum,最后等价于完整softmax。</p>
+<p>softmax需要归一化——<span class="math-i">\text{softmax}(x_i) = \exp(x_i) / \sum_j \exp(x_j)</span>。看起来必须等所有 <span class="math-i">x_j</span>才能算分母。但FlashAttention用 <strong>增量更新 </strong>:每看一个新 <span class="math-i">S_{ij}</span> tile,维护running max和running sum,最后等价于完整softmax。</p>
 
 <p>设已处理到第 <span class="math-i">j-1</span>个tile,状态是 <span class="math-i">(m_{j-1}, l_{j-1}, O_{j-1})</span>——当前位置已见最大值 <span class="math-i">m</span>,当前分母 <span class="math-i">l</span>,当前加权输出 <span class="math-i">O</span>。新来一个tile <span class="math-i">(K_j, V_j)</span>:</p>
 
@@ -9777,9 +9777,9 @@ flowchart TB
 <h3>复杂度对比</h3>
 <table>
 <tr><th>模型</th><th>训练复杂度</th><th>推理(每token)</th><th>长序列支持</th></tr>
-<tr><td>Transformer</td><td><span class="math-i">O(N^2 d)</span> \lt /td> \lt td><span class="math-i">O(N d)</span>(KV cache)</td><td>受限于二次复杂度</td></tr>
-<tr><td>S4 (固定SSM)</td><td><span class="math-i">O(N \log N \cdot d)</span> \lt /td> \lt td><span class="math-i">O(d)</span></td><td>好,但缺乏选择性</td></tr>
-<tr><td>Mamba</td><td><span class="math-i">O(N d)</span> \lt /td> \lt td><span class="math-i">O(d)</span>(固定状态)</td><td>理论上无上限</td></tr>
+<tr><td>Transformer</td><td><span class="math-i">O(N^2 d)</span> </td> \lt td><span class="math-i">O(N d)</span>(KV cache)</td><td>受限于二次复杂度</td></tr>
+<tr><td>S4 (固定SSM)</td><td><span class="math-i">O(N \log N \cdot d)</span> </td> \lt td><span class="math-i">O(d)</span></td><td>好,但缺乏选择性</td></tr>
+<tr><td>Mamba</td><td><span class="math-i">O(N d)</span> </td> \lt td><span class="math-i">O(d)</span>(固定状态)</td><td>理论上无上限</td></tr>
 </table>
 
 <h3>实验结果</h3>
@@ -10080,36 +10080,36 @@ flowchart TB
 <tr><th>指标</th><th>数值</th></tr>
 <tr><td>总参数 / 激活</td><td>671B / 37B</td></tr>
 <tr><td>训练tokens</td><td>14.8T</td></tr>
-<tr><td>预训练GPU小时</td><td>2.664M H800(约<span class="math-i">5.3M)&lt;/td>&lt;/tr>
-&lt;tr>&lt;td>总训练GPU小时(含SFT + RLHF)&lt;/td>&lt;td>2.788M&lt;/td>&lt;/tr>
-&lt;tr>&lt;td>对比估计:GPT-4&lt;/td>&lt;td>~50–100M GPU-hour&lt;/td>&lt;/tr>
-&lt;tr>&lt;td>能力水平&lt;/td>&lt;td>接近GPT-4o / Claude 3.5 Sonnet&lt;/td>&lt;/tr>
-&lt;/table>
+<tr><td>预训练GPU小时</td><td>2.664M H800(约530万美元)</td></tr>
+<tr><td>总训练GPU小时(含SFT + RLHF)</td><td>2.788M</td></tr>
+<tr><td>对比估计:GPT-4</td><td>~50–100M GPU-hour</td></tr>
+<tr><td>能力水平</td><td>接近GPT-4o / Claude 3.5 Sonnet</td></tr>
+</table>
 
-&lt;p>约560万美元训一个GPT-4级别模型——比闭源估计节省10×+。这是"DeepSeek时刻"(2025.2)的经济基础——成本低到让全球震惊。&lt;/p>
+<p>约560万美元训一个GPT-4级别模型——比闭源估计节省10×+。这是"DeepSeek时刻"(2025.2)的经济基础——成本低到让全球震惊。</p>
 
-&lt;h3>后续演进&lt;/h3>
-&lt;ul style="list-style:none;padding-left:0;">
-&lt;li>&lt;strong>DeepSeek-R1&lt;/strong>(2025.1):基于V3,用纯RL(GRPO算法)训练出推理模型。无需人工标注CoT数据——纯RL涌现出推理能力&lt;/li>
-&lt;li>&lt;strong>V3-0324&lt;/strong>(2025.3):后训练改进,吸收R1的RL经验,推理能力大幅提升&lt;/li>
-&lt;li>&lt;strong>R1-0528&lt;/strong>(2025.5):R1升级版,AIME数学基准超过同期GPT-4o&lt;/li>
-&lt;li>&lt;strong>V3.1&lt;/strong>(2025.8):混合思考模式——一个模型支持thinking / non-thinking切换,合并V3和R1&lt;/li>
-&lt;li>&lt;strong>V3.2&lt;/strong>(2025.10):引入DSA(DeepSeek Sparse Attention),长上下文推理成本再降50%&lt;/li>
-&lt;/ul>
+<h3>后续演进</h3>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>DeepSeek-R1</strong>(2025.1):基于V3,用纯RL(GRPO算法)训练出推理模型。无需人工标注CoT数据——纯RL涌现出推理能力</li>
+<li><strong>V3-0324</strong>(2025.3):后训练改进,吸收R1的RL经验,推理能力大幅提升</li>
+<li><strong>R1-0528</strong>(2025.5):R1升级版,AIME数学基准超过同期GPT-4o</li>
+<li><strong>V3.1</strong>(2025.8):混合思考模式——一个模型支持thinking / non-thinking切换,合并V3和R1</li>
+<li><strong>V3.2</strong>(2025.10):引入DSA(DeepSeek Sparse Attention),长上下文推理成本再降50%</li>
+</ul>
 
-&lt;h3>意义&lt;/h3>
-&lt;p>V3证明了三件事:&lt;/p>
-&lt;ol>
-&lt;li>&lt;strong>开源能追上闭源&lt;/strong>:不是6个月,是能抗衡&lt;/li>
-&lt;li>&lt;strong>架构创新的复利&lt;/strong>:MLA + MoE + MTP + FP8叠加,整体效率远超单项&lt;/li>
-&lt;li>&lt;strong>中国AI实验室的工程实力&lt;/strong>:V3的训练效率和架构细节在国际上被全面认可&lt;/li>
-&lt;/ol>
+<h3>意义</h3>
+<p>V3证明了三件事:</p>
+<ol>
+<li><strong>开源能追上闭源</strong>:不是6个月,是能抗衡</li>
+<li><strong>架构创新的复利</strong>:MLA + MoE + MTP + FP8叠加,整体效率远超单项</li>
+<li><strong>中国AI实验室的工程实力</strong>:V3的训练效率和架构细节在国际上被全面认可</li>
+</ol>
 
-&lt;p>此后2025年开源生态迅速跟进——Qwen3、Kimi K2、GLM-4.5、LLaMA 4都采用类似架构哲学(细粒度MoE + 长上下文优化 + FP8训练)。&lt;/p>
+<p>此后2025年开源生态迅速跟进——Qwen3、Kimi K2、GLM-4.5、LLaMA 4都采用类似架构哲学(细粒度MoE + 长上下文优化 + FP8训练)。</p>
 
-&lt;h3>批判视角&lt;/h3>
-&lt;ul style="list-style:none;padding-left:0;">
-&lt;li>- 训练成本数字有争议——</span>560万可能只是算GPU时间,不含数据、基础设施、人力</li>
+<h3>批判视角</h3>
+<ul style="list-style:none;padding-left:0;">
+<li>- 训练成本数字有争议——560万美元可能只是算GPU时间,不含数据、基础设施、人力</li>
 <li>- "GPT-4级别"在不同基准上表现参差——某些基准超过,某些仍差距明显</li>
 <li>- MLA的工程复杂度高,小团队未必能复现</li>
 </ul>

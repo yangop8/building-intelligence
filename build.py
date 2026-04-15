@@ -228,9 +228,10 @@ def remove_chinese_english_spaces(content):
 def fix_bare_dollars(content, is_zh):
     for old, new in BARE_DOLLAR_FIXES:
         content = content.replace(old, new)
-    # Also catch $...<..$ patterns that slipped through
+    # Catch $...<..$ patterns in text nodes only (not spanning HTML tags)
+    # The regex must NOT match across > or < that are part of HTML tags
     content = re.sub(
-        r'\$([^$]*<[^$]*)\$',
+        r'\$([^$<>]*<[^$<>]*)\$',
         lambda m: f'<span class="math-i">{m.group(1).replace("<", "&lt;")}</span>',
         content
     )

@@ -449,7 +449,7 @@ print("Accuracy:", model.score(Xv, yv))
 
 <div class="formula">$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right) V$</div>
 
-<p>关键细节 <strong>$\sqrt{d_k}$ \lt /strong> 缩放:$d$ 维向量点积方差是 $d$,除以 $\sqrt{d}$ 让方差归一,防止 softmax 过饱和(主书 5.2.2 有详细推导)。</p>
+<p>关键细节 <strong>$\sqrt{d_k}$ </strong> 缩放:$d$ 维向量点积方差是 $d$,除以 $\sqrt{d}$ 让方差归一,防止 softmax 过饱和(主书 5.2.2 有详细推导)。</p>
 
 <h3>Multi-Head Attention</h3>
 <p>把 Q、K、V 投到 $H$ 个子空间,每个子空间独立做 attention,结果拼接后再投影:</p>

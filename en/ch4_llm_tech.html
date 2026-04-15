@@ -253,7 +253,7 @@ flowchart TB
 <p class="pos">Position: The soul operator of LLMs — deriving every detail, including why we divide by √d.</p>
 
 <h3>Problem Setup</h3>
-<p>Input: $L$ tokens, each a $d$-dimensional vector $\mathbf{x}_i \in \mathbb{R}^d$. Goal: make the output $\mathbf{y}_i$ at each position $i$ a  \lt strong>dynamic weighted combination \lt /strong> of all input positions, with weights determined by the "similarity" between $\mathbf{x}_i$ and other positions.</p>
+<p>Input: $L$ tokens, each a $d$-dimensional vector $\mathbf{x}_i \in \mathbb{R}^d$. Goal: make the output $\mathbf{y}_i$ at each position $i$ a  <strong>dynamic weighted combination </strong> of all input positions, with weights determined by the "similarity" between $\mathbf{x}_i$ and other positions.</p>
 
 <h3>The Roles of Query / Key / Value</h3>
 <p>Core idea: each position plays three roles:</p>
@@ -571,7 +571,7 @@ K = apply_rope(K, freqs_cis)
 <p class="pos">Position: Successive generations of solutions for reducing KV Cache — from MQA to DeepSeek's MLA.</p>
 
 <h3>Why KV Cache Is the Bottleneck</h3>
-<p>During inference, generating each new token requires computing the new token's Q, K, V; appending the new K, V to the existing cache; and having the new Q perform attention over all K, V. Recomputing all prior K, V each time costs $O(L^2)$ computation.  \lt strong>KV Cache \lt /strong> caches previously computed K, V so a new token only computes its own share, bringing total computation to $O(L)$.</p>
+<p>During inference, generating each new token requires computing the new token's Q, K, V; appending the new K, V to the existing cache; and having the new Q perform attention over all K, V. Recomputing all prior K, V each time costs $O(L^2)$ computation.  <strong>KV Cache </strong> caches previously computed K, V so a new token only computes its own share, bringing total computation to $O(L)$.</p>
 <p>But KV Cache consumes GPU memory. Estimate: <code>2 × layers × H × d_head × seq_len × 2 bytes (FP16)</code>. LLaMA-3-70B at L=8K requires KV Cache ≈ 2.5 GB per sample. At batch=10 that's 25GB — more than the model weights. At long contexts, KV Cache is the primary memory killer.</p>
 
 <h3>MHA / MQA / GQA</h3>
@@ -688,7 +688,7 @@ K = apply_rope(K, freqs_cis)
 <table>
 <tr><th>Dimension</th><th>Transformer</th><th>Mamba</th></tr>
 <tr><td>Training</td><td>Fully parallel</td><td>Parallel scan ($O(L)$)</td></tr>
-<tr><td>Inference</td><td>$O(L)$ attention + $O(L)$ KV Cache \lt /td> \lt td>$O(1)$ state update</td></tr>
+<tr><td>Inference</td><td>$O(L)$ attention + $O(L)$ KV Cache </td> \lt td>$O(1)$ state update</td></tr>
 <tr><td>Inference memory</td><td>Grows with L (KV Cache)</td><td>Fixed</td></tr>
 <tr><td>Long sequences</td><td>Limited by KV Cache</td><td>Naturally supported</td></tr>
 <tr><td>Interpretability</td><td>Attention visualization</td><td>State not directly observable</td></tr>
@@ -1167,7 +1167,7 @@ model = FSDP(
 <p class="pos">Position: The soul of LLM inference — cutting $O(L^2)$ complexity to $O(L)$, but introducing memory pressure.</p>
 
 <h3>Why It's Needed</h3>
-<p>During decode, generating the $t$-th token requires only the new token's $\mathbf{q}_t$ for attention, but needs  \lt strong>all prior positions' K, V \lt /strong>. If $\mathbf{k}_1, \ldots, \mathbf{k}_{t-1}$ were recomputed each time, that's $O(t)$ extra computation per step — total $O(t^2)$. KV Cache caches all prior K, V — each new token only computes its own $\mathbf{k}_t, \mathbf{v}_t$ and appends to the cache. Total computation $O(t)$.</p>
+<p>During decode, generating the $t$-th token requires only the new token's $\mathbf{q}_t$ for attention, but needs  <strong>all prior positions' K, V </strong>. If $\mathbf{k}_1, \ldots, \mathbf{k}_{t-1}$ were recomputed each time, that's $O(t)$ extra computation per step — total $O(t^2)$. KV Cache caches all prior K, V — each new token only computes its own $\mathbf{k}_t, \mathbf{v}_t$ and appends to the cache. Total computation $O(t)$.</p>
 
 <h3>Memory Footprint</h3>
 <p>LLaMA-3-70B (80 layers, 64 heads, d_head=128, GQA=8):</p>
@@ -1763,7 +1763,7 @@ Action: finish("Max Verstappen, age 27")
 
 <h3>Tier 2: Platform-Level Products</h3>
 
-<p><strong>Dify</strong>: An open-source low-code agent platform with 60,000+ GitHub stars. It provides a visual workflow editor, RAG pipelines, 50+ built-in tools (search, DALL-E, Wolfram, etc.), model management, and monitoring. Its positioning is "enabling non-engineers to build agent applications." The company raised $30 million in a Pre-A funding round.</p>
+<p><strong>Dify</strong>: An open-source low-code agent platform with 60,000+ GitHub stars. It provides a visual workflow editor, RAG pipelines, 50+ built-in tools (search, DALL-E, Wolfram, etc.), model management, and monitoring. Its positioning is "enabling non-engineers to build agent applications." The company raised US$30 million in a Pre-A funding round.</p>
 
 <p><strong>Coze (ByteDance)</strong>: In July 2025, ByteDance open-sourced the core components Coze Studio and Coze Loop. Version 2.0 was released in January 2026, transforming the product from a chat tool into an "intelligent work partner" — supporting long-running Agent Plans (spanning multiple days) and Agent Skills (a customizable skill marketplace). It competes head-to-head with Dify in Asian markets.</p>
 

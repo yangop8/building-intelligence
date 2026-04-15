@@ -365,13 +365,13 @@ th { background: var(--sidebar-bg); font-weight: 600; }
 
 <h3>多元：从标量场到向量场</h3>
 
-<p>换成 $f: \mathbb{R}^n \to \mathbb{R}$，输入是 $n$ 维向量，输出还是一个数。每个维度上可以分别求导，得到  \lt strong>偏导数 \lt /strong> $\frac{\partial f}{\partial x_i}$。把所有偏导数拼成一个向量就是<strong>梯度</strong>：</p>
+<p>换成 $f: \mathbb{R}^n \to \mathbb{R}$，输入是 $n$ 维向量，输出还是一个数。每个维度上可以分别求导，得到  <strong>偏导数 </strong> $\frac{\partial f}{\partial x_i}$。把所有偏导数拼成一个向量就是<strong>梯度</strong>：</p>
 <div class="formula">$\nabla f(\mathbf{x}) = \left(\frac{\partial f}{\partial x_1}, \frac{\partial f}{\partial x_2}, \ldots, \frac{\partial f}{\partial x_n}\right)^\top$</div>
 <p>梯度有一个最关键的几何意义：<strong>它指向 $f$ 增长最快的方向，模长等于那个方向上的增长率</strong>。负梯度是下降最快的方向——这就是梯度下降的全部理由。</p>
 
-<p>再进一步，$f: \mathbb{R}^n \to \mathbb{R}^m$（输入 $n$ 维，输出 $m$ 维）的导数是一个 $m \times n$ 的矩阵，叫 \lt strong>雅可比矩阵 \lt /strong> $\mathbf{J}$，第 $(i,j)$ 位置是 $\frac{\partial f_i}{\partial x_j}$。神经网络的反向传播本质上就是在做雅可比矩阵的链式乘积。</p>
+<p>再进一步，$f: \mathbb{R}^n \to \mathbb{R}^m$（输入 $n$ 维，输出 $m$ 维）的导数是一个 $m \times n$ 的矩阵，叫 <strong>雅可比矩阵 </strong> $\mathbf{J}$，第 $(i,j)$ 位置是 $\frac{\partial f_i}{\partial x_j}$。神经网络的反向传播本质上就是在做雅可比矩阵的链式乘积。</p>
 
-<p>$f$ 的二阶偏导拼成的 $n \times n$ 矩阵叫 \lt strong>海森矩阵 \lt /strong> $\mathbf{H}$，第 $(i,j)$ 位置是 $\frac{\partial^2 f}{\partial x_i \partial x_j}$。海森描述函数的局部曲率：正定表示这是个碗底（局部极小），负定表示这是个山顶（局部极大），不定表示鞍点。</p>
+<p>$f$ 的二阶偏导拼成的 $n \times n$ 矩阵叫 <strong>海森矩阵 </strong> $\mathbf{H}$，第 $(i,j)$ 位置是 $\frac{\partial^2 f}{\partial x_i \partial x_j}$。海森描述函数的局部曲率：正定表示这是个碗底（局部极小），负定表示这是个山顶（局部极大），不定表示鞍点。</p>
 
 <h3>在 AI 里</h3>
 <p>神经网络训练的损失函数 $L(\boldsymbol{\theta})$ 是从百万维参数空间到一个标量的函数。我们要的是 $\nabla_\boldsymbol{\theta} L$，也就是一个百万维向量，指向 loss 增大最快的方向。每走一步 $\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \eta \nabla L$ 就是梯度下降。海森矩阵太大（$10^6 \times 10^6$ 存不下），所以 Adam 之类优化器<em>近似</em>用梯度的二阶矩来模拟海森信息——这是二阶优化与一阶优化的分界线。</p>
@@ -382,7 +382,7 @@ th { background: var(--sidebar-bg); font-weight: 600; }
 
 <h3>凹凸性</h3>
 
-<p>函数 $f$ 在区间上是 \lt strong>凸函数 \lt /strong>，如果对任意 $x_1, x_2$ 和 $t \in [0,1]$：</p>
+<p>函数 $f$ 在区间上是 <strong>凸函数 </strong>，如果对任意 $x_1, x_2$ 和 $t \in [0,1]$：</p>
 <div class="formula">$f(t x_1 + (1-t) x_2) \le t f(x_1) + (1-t) f(x_2)$</div>
 <p>几何含义：两点连线不会落到函数图像下方。凸函数最大的好处是<strong>局部极小就是全局极小</strong>——这对优化算法来说是天堂。线性回归的平方损失、Logistic 回归的交叉熵损失都是凸的，所以这些经典算法能保证收敛到全局最优。</p>
 
@@ -467,7 +467,7 @@ print(conv1d(x, k))   # [-2, -2, -2]
 
 <h3>链式法则是反向传播的全部</h3>
 
-<p>链式法则：$\frac{d}{dx} f(g(x)) = f'(g(x)) \cdot g'(x)$。这是高中数学。但神经网络的输出是一串嵌套函数 $y = f_L(f_{L-1}(\ldots f_1(x)))$，对某个中间参数 $w_i$ 求偏导，就是一串链式法则连乘。关键的工程观察是： \lt strong>这串连乘里，很多中间量是共享的 \lt /strong>，如果每个参数都独立算一遍完整链式，总工作量是 $O(L \cdot N)$（$N$ 是参数数）；如果按"从输出反向往输入方向算"的顺序一口气算完，总工作量是 $O(L + N)$。这个数量级差距就是反向传播存在的理由。</p>
+<p>链式法则：$\frac{d}{dx} f(g(x)) = f'(g(x)) \cdot g'(x)$。这是高中数学。但神经网络的输出是一串嵌套函数 $y = f_L(f_{L-1}(\ldots f_1(x)))$，对某个中间参数 $w_i$ 求偏导，就是一串链式法则连乘。关键的工程观察是： <strong>这串连乘里，很多中间量是共享的 </strong>，如果每个参数都独立算一遍完整链式，总工作量是 $O(L \cdot N)$（$N$ 是参数数）；如果按"从输出反向往输入方向算"的顺序一口气算完，总工作量是 $O(L + N)$。这个数量级差距就是反向传播存在的理由。</p>
 
 <h3>一个两层网络的反向传播</h3>
 
@@ -548,15 +548,15 @@ print("dL/dW1 =\n", dL_dW1)
 
 <h3>向量、矩阵、张量</h3>
 
-<p>向量 $\mathbf{v} \in \mathbb{R}^n$ 就是 $n$ 个实数的有序排列。关键是它能做两件事：相加 $\mathbf{u} + \mathbf{v}$ 和数乘 $\alpha \mathbf{v}$，并且这两种运算满足 8 条公理（结合律、分配律等）。满足这些公理的集合就叫 \lt strong>线性空间 \lt /strong>（向量空间）。$\mathbb{R}^n$ 是最基础的线性空间，但抽象起来可以是连续函数空间、概率分布空间等——这就是"线性"思想的威力。</p>
+<p>向量 $\mathbf{v} \in \mathbb{R}^n$ 就是 $n$ 个实数的有序排列。关键是它能做两件事：相加 $\mathbf{u} + \mathbf{v}$ 和数乘 $\alpha \mathbf{v}$，并且这两种运算满足 8 条公理（结合律、分配律等）。满足这些公理的集合就叫 <strong>线性空间 </strong>（向量空间）。$\mathbb{R}^n$ 是最基础的线性空间，但抽象起来可以是连续函数空间、概率分布空间等——这就是"线性"思想的威力。</p>
 
 <p>矩阵 $\mathbf{A} \in \mathbb{R}^{m \times n}$ 是 $m \times n$ 个实数按二维排列。张量是更高维的推广：三维张量可以理解成一摞矩阵、四维张量是一摞三维张量。深度学习里"张量"的用法比数学里的严格定义要松——PyTorch 里任何多维数组都叫 tensor。</p>
 
 <h3>维度与秩</h3>
 
-<p>一组向量 $\{\mathbf{v}_1, \ldots, \mathbf{v}_k\}$ 叫 \lt strong>线性无关 \lt /strong>，如果 $\sum \alpha_i \mathbf{v}_i = \mathbf{0}$ 只有 $\alpha_i = 0$ 这一解。一个线性空间的<strong>维度</strong>是能找到的最大线性无关组的大小。</p>
+<p>一组向量 $\{\mathbf{v}_1, \ldots, \mathbf{v}_k\}$ 叫 <strong>线性无关 </strong>，如果 $\sum \alpha_i \mathbf{v}_i = \mathbf{0}$ 只有 $\alpha_i = 0$ 这一解。一个线性空间的<strong>维度</strong>是能找到的最大线性无关组的大小。</p>
 
-<p>矩阵 $\mathbf{A}$ 的 \lt strong>秩 \lt /strong> $\text{rank}(\mathbf{A})$ 是它的列（或行）向量组的最大线性无关数。$\text{rank}(\mathbf{A}) \le \min(m, n)$。秩充分反映了"信息冗余度"：秩低的矩阵能被低维表示压缩。这是后面 SVD 和 LoRA 的起点。</p>
+<p>矩阵 $\mathbf{A}$ 的 <strong>秩 </strong> $\text{rank}(\mathbf{A})$ 是它的列（或行）向量组的最大线性无关数。$\text{rank}(\mathbf{A}) \le \min(m, n)$。秩充分反映了"信息冗余度"：秩低的矩阵能被低维表示压缩。这是后面 SVD 和 LoRA 的起点。</p>
 
 <h3>在 AI 里</h3>
 
@@ -604,7 +604,7 @@ print("dL/dW1 =\n", dL_dW1)
 
 <table>
 <tr><th>情况</th><th>条件</th><th>结果</th></tr>
-<tr><td>方阵满秩 ($m = n, \text{rank} = n$) \lt /td> \lt td>$\det(\mathbf{A}) \ne 0$ \lt /td> \lt td>唯一解 $\mathbf{x} = \mathbf{A}^{-1}\mathbf{b}$</td></tr>
+<tr><td>方阵满秩 ($m = n, \text{rank} = n$) </td> \lt td>$\det(\mathbf{A}) \ne 0$ </td> \lt td>唯一解 $\mathbf{x} = \mathbf{A}^{-1}\mathbf{b}$</td></tr>
 <tr><td>超定 ($m > n$)</td><td>通常无精确解</td><td>最小二乘解</td></tr>
 <tr><td>欠定 ($m \lt n$)</td><td>通常有无穷解</td><td>最小范数解</td></tr>
 </table>
@@ -615,7 +615,7 @@ print("dL/dW1 =\n", dL_dW1)
 
 <h3>广义逆（Moore-Penrose 伪逆）</h3>
 
-<p>当 $\mathbf{A}$ 不是方阵、或是方阵但不可逆，传统 $\mathbf{A}^{-1}$ 不存在。 \lt strong>伪逆 \lt /strong> $\mathbf{A}^+$ 是推广：</p>
+<p>当 $\mathbf{A}$ 不是方阵、或是方阵但不可逆，传统 $\mathbf{A}^{-1}$ 不存在。 <strong>伪逆 </strong> $\mathbf{A}^+$ 是推广：</p>
 <ul style="list-style:none; padding-left:0;">
 <li>- 若 $\mathbf{A}$ 列满秩（$m \ge n$，$\text{rank} = n$）：$\mathbf{A}^+ = (\mathbf{A}^\top \mathbf{A})^{-1} \mathbf{A}^\top$</li>
 <li>- 若 $\mathbf{A}$ 行满秩（$m \le n$，$\text{rank} = m$）：$\mathbf{A}^+ = \mathbf{A}^\top (\mathbf{A} \mathbf{A}^\top)^{-1}$</li>
@@ -638,7 +638,7 @@ print("dL/dW1 =\n", dL_dW1)
 
 <p>对方阵 $\mathbf{A}$，如果存在非零向量 $\mathbf{v}$ 和标量 $\lambda$ 使得：</p>
 <div class="formula">$\mathbf{A}\mathbf{v} = \lambda \mathbf{v}$</div>
-<p>就称 $\mathbf{v}$ 是 \lt strong>特征向量 \lt /strong>，$\lambda$ 是对应的 \lt strong>特征值 \lt /strong>。几何含义：$\mathbf{A}$ 作用在 $\mathbf{v}$ 上 \lt em>只改变长度、不改变方向 \lt /em>（$\lambda < 0$ 时方向反转）。这是矩阵"本征"的方向——它作用下最简单的方向。</p>
+<p>就称 $\mathbf{v}$ 是 <strong>特征向量 </strong>，$\lambda$ 是对应的 <strong>特征值 </strong>。几何含义：$\mathbf{A}$ 作用在 $\mathbf{v}$ 上 <em>只改变长度、不改变方向 </em>（$\lambda < 0$ 时方向反转）。这是矩阵"本征"的方向——它作用下最简单的方向。</p>
 
 <h3>对角化</h3>
 
@@ -693,19 +693,19 @@ print("降维后方差:", X_pca.var(axis=0))
 
 <h3>几何含义</h3>
 
-<p>把 $\mathbf{A}\mathbf{x}$ 拆成三步： \lt strong>$\mathbf{V}^\top$ 旋转坐标系 → $\boldsymbol{\Sigma}$ 沿各轴缩放 → $\mathbf{U}$ 再旋转到输出空间</strong>。所以任何线性变换都是"旋转 + 缩放 + 旋转"的组合。这个结论极其强大。</p>
+<p>把 $\mathbf{A}\mathbf{x}$ 拆成三步： <strong>$\mathbf{V}^\top$ 旋转坐标系 → $\boldsymbol{\Sigma}$ 沿各轴缩放 → $\mathbf{U}$ 再旋转到输出空间</strong>。所以任何线性变换都是"旋转 + 缩放 + 旋转"的组合。这个结论极其强大。</p>
 
 <h3>低秩近似</h3>
 
 <p>SVD 可以写成外积求和形式：</p>
 <div class="formula">$\mathbf{A} = \sum_{i=1}^r \sigma_i \mathbf{u}_i \mathbf{v}_i^\top$</div>
-<p>$r = \text{rank}(\mathbf{A})$。 \lt strong>Eckart-Young 定理 \lt /strong>告诉我们：如果只保留最大的 $k$ 项（$k \lt r$），得到的 $\mathbf{A}_k = \sum_{i=1}^k \sigma_i \mathbf{u}_i \mathbf{v}_i^\top$ 是 $\mathbf{A}$ 在 Frobenius 范数或谱范数下 \lt em>最优的秩 $k$ 近似 \lt /em>。没有其它秩 $k$ 矩阵比它更接近 $\mathbf{A}$。</p>
+<p>$r = \text{rank}(\mathbf{A})$。 <strong>Eckart-Young 定理 </strong>告诉我们：如果只保留最大的 $k$ 项（$k \lt r$），得到的 $\mathbf{A}_k = \sum_{i=1}^k \sigma_i \mathbf{u}_i \mathbf{v}_i^\top$ 是 $\mathbf{A}$ 在 Frobenius 范数或谱范数下 <em>最优的秩 $k$ 近似 </em>。没有其它秩 $k$ 矩阵比它更接近 $\mathbf{A}$。</p>
 
 <p>这是压缩、降维、去噪的统一数学基础。图像压缩、推荐系统的矩阵填充、模型权重压缩——全都依赖这条定理。</p>
 
 <h3>在 AI 里：LoRA</h3>
 
-<p>LoRA 的假设是：LLM 微调引起的权重变化 $\Delta \mathbf{W}$ 是 \lt em>低秩 \lt /em>的。数学表达：$\Delta \mathbf{W} \approx \mathbf{B}\mathbf{A}$，其中 $\mathbf{A} \in \mathbb{R}^{r \times d}$、$\mathbf{B} \in \mathbb{R}^{d \times r}$，$r \ll d$。参数量从 $d^2$ 降到 $2rd$——7B 模型的 $d \approx 4096$、取 $r = 16$，压缩 128 倍。</p>
+<p>LoRA 的假设是：LLM 微调引起的权重变化 $\Delta \mathbf{W}$ 是 <em>低秩 </em>的。数学表达：$\Delta \mathbf{W} \approx \mathbf{B}\mathbf{A}$，其中 $\mathbf{A} \in \mathbb{R}^{r \times d}$、$\mathbf{B} \in \mathbb{R}^{d \times r}$，$r \ll d$。参数量从 $d^2$ 降到 $2rd$——7B 模型的 $d \approx 4096$、取 $r = 16$，压缩 128 倍。</p>
 
 <p>为什么能这样？经验观察：神经网络各层的"有效信息维度"远低于其参数维度，SVD 截断保留前 $r$ 项几乎不损失性能。这不是数学上严格证明的结论，而是实证规律，但 SVD 给了它理论语言。</p>
 
@@ -787,11 +787,11 @@ for r in [5, 10, 20, 50, 100]:
 
 <p>把 $n$ 个球随机扔进 $n$ 个桶，问：最满的桶里有多少球？这是<strong>负载均衡</strong>的数学抽象。</p>
 
-<p>每个球独立均匀选桶，每个桶接收球数近似 $\text{Poisson}(1)$。通过分析尾部概率可以证明： \lt em>最大负载以高概率约为 $\Theta(\log n / \log\log n)$ \lt /em>。$n = 1000$ 时最满的桶里大约 5 个球，不算太糟，但已经是平均值的 5 倍。</p>
+<p>每个球独立均匀选桶，每个桶接收球数近似 $\text{Poisson}(1)$。通过分析尾部概率可以证明： <em>最大负载以高概率约为 $\Theta(\log n / \log\log n)$ </em>。$n = 1000$ 时最满的桶里大约 5 个球，不算太糟，但已经是平均值的 5 倍。</p>
 
 <h3>POTC：Power of Two Choices</h3>
 
-<p>改进策略：每个球独立随机选<em>两个</em>桶，放到其中较少的那一个里。这个看似微小的改动带来的效果是——<em>最大负载以高概率约为 $\Theta(\log\log n)$ \lt /em>——指数级下降。$n = 1000$ 时最满桶的球数从 5 降到 2。</p>
+<p>改进策略：每个球独立随机选<em>两个</em>桶，放到其中较少的那一个里。这个看似微小的改动带来的效果是——<em>最大负载以高概率约为 $\Theta(\log\log n)$ </em>——指数级下降。$n = 1000$ 时最满桶的球数从 5 降到 2。</p>
 
 <p>这是概率论里最令人印象深刻的结果之一："多看一个选项"带来指数级改进。直觉：让差桶拒绝球的概率更高，从而把分布推向更均匀。</p>
 
@@ -826,10 +826,10 @@ print("POTC    最大负载:", np.mean([simulate_balls_bins(n, 'potc')   for _ i
 
 <table>
 <tr><th>分布</th><th>含义</th><th>PMF</th><th>均值/方差</th></tr>
-<tr><td>伯努利 Ber(p)</td><td>一次抛硬币</td><td>$P(X=1) = p$ \lt /td> \lt td>$p, p(1-p)$</td></tr>
-<tr><td>二项 Bin(n, p)</td><td>n 次伯努利和</td><td>$\binom{n}{k} p^k (1-p)^{n-k}$ \lt /td> \lt td>$np, np(1-p)$</td></tr>
-<tr><td>泊松 Poi(λ)</td><td>稀有事件计数</td><td>$\frac{\lambda^k e^{-\lambda}}{k!}$ \lt /td> \lt td>$\lambda, \lambda$</td></tr>
-<tr><td>几何 Geo(p)</td><td>直到成功的次数</td><td>$(1-p)^{k-1} p$ \lt /td> \lt td>$1/p, (1-p)/p^2$</td></tr>
+<tr><td>伯努利 Ber(p)</td><td>一次抛硬币</td><td>$P(X=1) = p$ </td> \lt td>$p, p(1-p)$</td></tr>
+<tr><td>二项 Bin(n, p)</td><td>n 次伯努利和</td><td>$\binom{n}{k} p^k (1-p)^{n-k}$ </td> \lt td>$np, np(1-p)$</td></tr>
+<tr><td>泊松 Poi(λ)</td><td>稀有事件计数</td><td>$\frac{\lambda^k e^{-\lambda}}{k!}$ </td> \lt td>$\lambda, \lambda$</td></tr>
+<tr><td>几何 Geo(p)</td><td>直到成功的次数</td><td>$(1-p)^{k-1} p$ </td> \lt td>$1/p, (1-p)/p^2$</td></tr>
 </table>
 
 <p>泊松是 $n \to \infty, p \to 0, np = \lambda$ 时二项的极限。它描述"大量独立稀有事件"——用户访问量、系统崩溃次数、基因突变。</p>
@@ -917,16 +917,16 @@ print("POTC    最大负载:", np.mean([simulate_balls_bins(n, 'potc')   for _ i
 
 <h3>核心概念</h3>
 
-<p><strong>原假设 $H_0$ \lt /strong>：我们想反驳的默认立场（"新模型和旧模型没区别"）。 \lt strong>备择假设 $H_1$</strong>：我们想证明的观点（"新模型更好"）。</p>
+<p><strong>原假设 $H_0$ </strong>：我们想反驳的默认立场（"新模型和旧模型没区别"）。 <strong>备择假设 $H_1$</strong>：我们想证明的观点（"新模型更好"）。</p>
 
-<p><strong>检验统计量</strong>：从数据计算的一个数，它在 $H_0$ 下有已知分布。 \lt strong>p 值 \lt /strong>：在 $H_0$ 下，观察到"当前统计量或更极端值"的概率。p 值小说明"如果 $H_0$ 真，当前数据不太可能出现"，因此拒绝 $H_0$。</p>
+<p><strong>检验统计量</strong>：从数据计算的一个数，它在 $H_0$ 下有已知分布。 <strong>p 值 </strong>：在 $H_0$ 下，观察到"当前统计量或更极端值"的概率。p 值小说明"如果 $H_0$ 真，当前数据不太可能出现"，因此拒绝 $H_0$。</p>
 
 <p>p 值阈值常用 0.05 或 0.01。这个阈值是历史习惯不是数学定律——近年很多领域因为"p 值滥用"推荐 0.005 甚至直接不用 p 值改用贝叶斯。</p>
 
 <h3>两类错误</h3>
 
 <table>
-<tr><th></th><th>真相 $H_0$ 为真 \lt /th> \lt th>真相 $H_1$ 为真</th></tr>
+<tr><th></th><th>真相 $H_0$ 为真 </th> \lt th>真相 $H_1$ 为真</th></tr>
 <tr><td>接受 $H_0$</td><td>正确</td><td>第二类错误 (漏报, β)</td></tr>
 <tr><td>拒绝 $H_0$</td><td>第一类错误 (误报, α)</td><td>正确 (功效 1-β)</td></tr>
 </table>
@@ -1067,7 +1067,7 @@ print("POTC    最大负载:", np.mean([simulate_balls_bins(n, 'potc')   for _ i
 <p>含义：用针对分布 $q$ 的最优编码，来编码实际来自分布 $p$ 的数据，平均每个符号需要的比特数。显然 $H(p,q) \ge H(p)$，多出来的部分就是<strong>KL 散度</strong>：</p>
 <div class="formula">$D_{\text{KL}}(p \parallel q) = H(p, q) - H(p) = \sum_x p(x) \log \frac{p(x)}{q(x)}$</div>
 
-<p>$D_{\text{KL}} \ge 0$，等号当且仅当 $p = q$。 \lt strong>不对称 \lt /strong>：$D_{\text{KL}}(p \| q) \ne D_{\text{KL}}(q \| p)$——这不是数学瑕疵，反而有用："用 q 近似 p"和"用 p 近似 q"本来就是两件事，KL 的不对称忠实地反映了这个不对称。</p>
+<p>$D_{\text{KL}} \ge 0$，等号当且仅当 $p = q$。 <strong>不对称 </strong>：$D_{\text{KL}}(p \| q) \ne D_{\text{KL}}(q \| p)$——这不是数学瑕疵，反而有用："用 q 近似 p"和"用 p 近似 q"本来就是两件事，KL 的不对称忠实地反映了这个不对称。</p>
 
 <h3>互信息</h3>
 
@@ -1168,7 +1168,7 @@ print("POTC    最大负载:", np.mean([simulate_balls_bins(n, 'potc')   for _ i
 
 <h3>机器精度</h3>
 
-<p>大于 1 的最小浮点数是 $1 + \epsilon$，这个 $\epsilon$ 就是 \lt strong>机器精度 \lt /strong>。FP32 $\epsilon \approx 1.19 \times 10^{-7}$，FP16 $\epsilon \approx 9.77 \times 10^{-4}$，BF16 $\epsilon \approx 3.91 \times 10^{-3}$。BF16 的精度比 FP16 还差 4 倍，但它有更大的动态范围（指数位同 FP32），所以训练用 BF16 而不是 FP16。</p>
+<p>大于 1 的最小浮点数是 $1 + \epsilon$，这个 $\epsilon$ 就是 <strong>机器精度 </strong>。FP32 $\epsilon \approx 1.19 \times 10^{-7}$，FP16 $\epsilon \approx 9.77 \times 10^{-4}$，BF16 $\epsilon \approx 3.91 \times 10^{-3}$。BF16 的精度比 FP16 还差 4 倍，但它有更大的动态范围（指数位同 FP32），所以训练用 BF16 而不是 FP16。</p>
 
 <h3>几个经典的数值坑</h3>
 
@@ -1289,7 +1289,7 @@ $\hat{\mathbf{m}}_t = \mathbf{m}_t / (1 - \beta_1^t), \quad \hat{\mathbf{v}}_t =
 $\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta \frac{\hat{\mathbf{m}}_t}{\sqrt{\hat{\mathbf{v}}_t} + \epsilon}$
 </div>
 
-<p>$\beta_1 = 0.9, \beta_2 = 0.999, \epsilon = 10^{-8}$ 是默认值。 \lt strong>bias correction \lt /strong> 是细节但重要：初期 $\mathbf{m}_0 = \mathbf{v}_0 = 0$ 让早期估计偏小，除以 $(1 - \beta^t)$ 修正。</p>
+<p>$\beta_1 = 0.9, \beta_2 = 0.999, \epsilon = 10^{-8}$ 是默认值。 <strong>bias correction </strong> 是细节但重要：初期 $\mathbf{m}_0 = \mathbf{v}_0 = 0$ 让早期估计偏小，除以 $(1 - \beta^t)$ 修正。</p>
 
 <p>直觉：大梯度的参数自动用小学习率（因为 $\sqrt{\mathbf{v}}$ 大），小梯度的参数用大学习率——在每个参数维度上自动调节。这就是"自适应学习率"。</p>
 
