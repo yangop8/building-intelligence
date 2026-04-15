@@ -649,7 +649,6 @@ span.num {
 </style>
 </head>
 <body>
-
 <aside class="toc">
   <div class="book-title">构建智能</div>
   <div class="book-sub">AI工程师的完整知识体系</div>
@@ -876,9 +875,7 @@ span.num {
   </ol>
   <div class="group"><a href="#refs" style="color:inherit;text-decoration:none">参考文献</a></div>
 </aside>
-
 <main>
-
 <!-- ======== BOOK COVER ======== -->
 <div class="book-cover" id="cover">
 
@@ -922,14 +919,7 @@ span.num {
         <div class="cover-stat-label">页</div>
       </div>
     </div>
-
-
-<section id="preface" class="chapter">
-<div class="chapter-divider">
-  <div class="chapter-divider-line"></div>
-  <div class="chapter-divider-label">序章</div>
-  <div class="chapter-divider-sub">AI工程师知识体系</div>
-</div>
+<section id="preface" class="chapter"><div class="chapter-divider"><div class="chapter-divider-line"></div><div class="chapter-divider-label">序章</div><div class="chapter-divider-sub">AI工程师知识体系</div></div>
 <header class="cover">
   <h1>序章</h1>
   <div class="subtitle">从数学到Agent——AI工程师的完整知识地图</div>
@@ -1048,13 +1038,7 @@ span.num {
 全书共5章,约130+ 节,覆盖数学、系统、AI模型、LLM、论文精读五大模块。祝阅读愉快。
 </p>
 </section>
-
-<section id="ch1" class="chapter">
-<div class="chapter-divider">
-  <div class="chapter-divider-line"></div>
-  <div class="chapter-divider-label">第一章 数学基础</div>
-  <div class="chapter-divider-sub">面向AI工程师的复习手册</div>
-</div>
+<section id="ch1" class="chapter"><div class="chapter-divider"><div class="chapter-divider-line"></div><div class="chapter-divider-label">第一章 数学基础</div><div class="chapter-divider-sub">面向AI工程师的复习手册</div></div>
 <header class="cover">
   <h1>数学基础</h1>
   <div class="subtitle">面向AI工程师的复习手册 —— 概念直觉、最小推导、工程落地</div>
@@ -1420,7 +1404,7 @@ print("降维后方差:", X_pca.var(axis=0))
 
 <p>SVD可以写成外积求和形式：</p>
 <div class="formula"><span class="math-d">\mathbf{A} = \sum_{i=1}^r \sigma_i \mathbf{u}_i \mathbf{v}_i^\top</span></div>
-<p><span class="math-i">r = \text{rank}(\mathbf{A})</span>。<strong>Eckart-Young定理</strong>告诉我们：如果只保留最大的 <span class="math-i">k</span>项（<span class="math-i">k &lt; r</span>），得到的<span class="math-i">\mathbf{A}_k = \sum_{i=1}^k \sigma_i \mathbf{u}_i \mathbf{v}_i^\top<span class="math-i">是</span>\mathbf{A}</span>在Frobenius范数或谱范数下<em>最优的秩 <span class="math-i">k</span>近似</em>。没有其它秩 <span class="math-i">k</span>矩阵比它更接近 <span class="math-i">\mathbf{A}</span>。</p>
+<p><span class="math-i">r = \text{rank}(\mathbf{A})</span>。<strong>Eckart-Young定理</strong>告诉我们：如果只保留最大的 <span class="math-i">k</span>项（<span class="math-i">k &lt; r</span>），得到的<span class="math-i">\mathbf{A}_k = \sum_{i=1}^k \sigma_i \mathbf{u}_i \mathbf{v}_i^\top</span>是<span class="math-i">\mathbf{A}</span>在Frobenius范数或谱范数下<em>最优的秩 <span class="math-i">k</span>近似</em>。没有其它秩 <span class="math-i">k</span>矩阵比它更接近 <span class="math-i">\mathbf{A}</span>。</p>
 
 <p>这是压缩、降维、去噪的统一数学基础。图像压缩、推荐系统的矩阵填充、模型权重压缩——全都依赖这条定理。</p>
 
@@ -2087,13 +2071,7 @@ def adam_step(params, grads, state, lr=1e-3, b1=0.9, b2=0.999, eps=1e-8):
 共29节 · 下一章：系统软件（CPU、OS、编程语言、数据库、网络栈）
 </p>
 </section>
-
-<section id="ch2" class="chapter">
-<div class="chapter-divider">
-  <div class="chapter-divider-line"></div>
-  <div class="chapter-divider-label">第二章 系统软件</div>
-  <div class="chapter-divider-sub">从CPU到DPDK</div>
-</div>
+<section id="ch2" class="chapter"><div class="chapter-divider"><div class="chapter-divider-line"></div><div class="chapter-divider-label">第二章 系统软件</div><div class="chapter-divider-sub">从CPU到DPDK</div></div>
 <header class="cover">
   <h1>系统软件</h1>
   <div class="subtitle">从CPU到DPDK/VPP —— AI工程师需要的系统视角</div>
@@ -3750,13 +3728,7 @@ ip4_lookup_node_fn(vlib_main_t *vm, vlib_node_runtime_t *node,
 共28节 · 下一章:AI模型技术(传统ML + 深度学习 + 训练优化 + AI性能工程)
 </p>
 </section>
-
-<section id="ch3" class="chapter">
-<div class="chapter-divider">
-  <div class="chapter-divider-line"></div>
-  <div class="chapter-divider-label">第三章 AI模型技术</div>
-  <div class="chapter-divider-sub">从传统ML到性能工程</div>
-</div>
+<section id="ch3" class="chapter"><div class="chapter-divider"><div class="chapter-divider-line"></div><div class="chapter-divider-label">第三章 AI模型技术</div><div class="chapter-divider-sub">从传统ML到性能工程</div></div>
 <header class="cover">
   <h1>AI模型技术</h1>
   <div class="subtitle">从传统机器学习到性能工程 —— 让AI真正跑起来的完整路径</div>
@@ -6012,17 +5984,11 @@ forecast = m.predict(future)
 共36节 · 至此第2–5章完整
 </p>
 </section>
-
-<section id="ch4" class="chapter">
-<div class="chapter-divider">
-  <div class="chapter-divider-line"></div>
-  <div class="chapter-divider-label">第四章 LLM技术</div>
-  <div class="chapter-divider-sub">从Transformer到Agent</div>
-</div>
+<section id="ch4" class="chapter"><div class="chapter-divider"><div class="chapter-divider-line"></div><div class="chapter-divider-label">第四章 LLM技术</div><div class="chapter-divider-sub">从Transformer到Agent</div></div>
 <header class="cover">
-<h1>LLM Technology</h1>
-<div class="subtitle">From Transformer to Agent — Complete Technical Stack of Large Language Models</div>
-<div class="meta">Chapter 4 · Internal Learning Material · 37 Sections · Revised Early 2026</div>
+<h1>LLM技术</h1>
+<div class="subtitle">从Transformer到Agent — Complete Technical Stack of Large Language Models</div>
+<div class="meta">Chapter 4 · 内部学习材料 · 共37节</div>
 </header>
 
 <p>LLM is no longer just a "model"—it is an entire technology stack. From low-level Transformer operators, to distributed training strategies, to inference-side scheduling optimizations, to RAG and Agent on the application side, every layer involves substantial engineering decisions and algorithm choices. This chapter ties these layers together so you can see the whole picture from top to bottom.</p>
@@ -6031,7 +5997,7 @@ forecast = m.predict(future)
 
 <p>When discussing concrete products, we focus on <strong>open-source</strong> (Transformers, vLLM, TGI, llama.cpp, DeepSpeed, FSDP, LangChain, LlamaIndex, etc.), with OpenAI/Anthropic APIs mentioned for comparison. This way you see the full ecosystem landscape without being tied to any single vendor.</p>
 
-<div class="part-header"><div class="part-label">PART ONE</div><h2 class="part-title">4.1 LLM全景</h2><p class="part-desc">建立整个LLM领域的坐标系——能力从何而来,生态如何分化。</p></div>
+<div class="part-header"><div class="part-label">PART ONE</div><h2 class="part-title">4.1 LLM全景</h2><p class="part-desc">建立整个LLM领域的坐标系—能力从何而来,生态如何分化。</p></div>
 
 <h2 id="s4-1-1"><span class="num">4.1.1</span>From LM to LLM</h2>
 <p class="pos">Position: How Scaling transforms "language models" into "general reasoning systems"—history, key milestones, Scaling Law.</p>
@@ -7946,13 +7912,7 @@ Part B包含7节 · 全章合并后共36节 · 配合Part A (4.1-4.9)阅读
 共37节 · 至此第2–5章完整
 </p>
 </section>
-
-<section id="ch5" class="chapter">
-<div class="chapter-divider">
-  <div class="chapter-divider-line"></div>
-  <div class="chapter-divider-label">第五章 论文精读</div>
-  <div class="chapter-divider-sub">26篇精选论文</div>
-</div>
+<section id="ch5" class="chapter"><div class="chapter-divider"><div class="chapter-divider-line"></div><div class="chapter-divider-label">第五章 论文精读</div><div class="chapter-divider-sub">26篇精选论文</div></div>
 <div class="part-header"><div class="part-label">第2章相关 · 系统基础</div></div>
 
 <h2 id="p01"><span class="num">P01</span>HNSW:向量数据库的检索引擎</h2>
@@ -10252,8 +10212,6 @@ Action 4: Finish[特朗普的母校宾夕法尼亚大学(1740年)比奥巴马的
 
 <div class="refback"><strong>为什么必读:</strong>如果你在做LLM Agent——无论是客服机器人、代码助手还是自动化工作流——你的架构底层大概率是ReAct模式的某种变体。理解"推理-行动交替"这个简单但强大的框架,是设计可靠Agent的第一步。</div>
 </section>
-
-
 <section id="refs" class="chapter" style="--ch-accent:#2d5a7a;--ch-accent-soft:#e6edf2">
 <div class="chapter-divider">
   <div class="chapter-divider-line"></div>
@@ -10347,27 +10305,19 @@ Action 4: Finish[特朗普的母校宾夕法尼亚大学(1740年)比奥巴马的
 </ol>
 
 </section>
-
 </main>
-
-<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部">↑</button>
-
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="↑">↑</button>
 <script>
-  hljs.highlightAll();
-  if (typeof mermaid !== 'undefined') { mermaid.initialize({ startOnLoad: true, theme: 'neutral' }); }
-  const btn = document.getElementById('backTop');
-  window.addEventListener('scroll', () => { btn.style.display = window.scrollY > 800 ? 'flex' : 'none'; });
+hljs.highlightAll();
+if(typeof mermaid!=='undefined'){mermaid.initialize({startOnLoad:true,theme:'neutral'});};
+document.getElementById('backTop').style.display='none';
+window.addEventListener('scroll',()=>{document.getElementById('backTop').style.display=window.scrollY>800?'flex':'none';});
 </script>
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll('.math-d').forEach(function(el) {
-      katex.render(el.textContent, el, { displayMode: true, throwOnError: false });
-    });
-    document.querySelectorAll('.math-i').forEach(function(el) {
-      katex.render(el.textContent, el, { displayMode: false, throwOnError: false });
-    });
-  });
+document.addEventListener("DOMContentLoaded",function(){
+document.querySelectorAll('.math-d').forEach(function(el){katex.render(el.textContent,el,{displayMode:true,throwOnError:false});});
+document.querySelectorAll('.math-i').forEach(function(el){katex.render(el.textContent,el,{displayMode:false,throwOnError:false});});
+});
 </script>
-
 </body>
 </html>

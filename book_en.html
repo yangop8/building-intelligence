@@ -4,14 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Building Intelligence — The Complete AI Engineer's Knowledge Map</title>
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/rust.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-
 <style>
 
 /* ======== CSS Variables ======== */
@@ -612,14 +610,48 @@ span.num {
   .cover-footer-left svg { width: 60px; }
 }
 
+/* ======== Paper Metadata ======== */
+.paper-meta {
+  font-family: var(--sans);
+  font-size: 14px;
+  background: var(--sidebar-bg);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 14px 18px;
+  margin: 16px 0;
+}
+.paper-meta .title-en {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 8px;
+}
+.paper-meta .row {
+  margin-bottom: 3px;
+}
+.paper-meta .label {
+  font-weight: 600;
+  color: var(--muted);
+  display: inline-block;
+  width: 50px;
+  margin-right: 8px;
+}
+.refback {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--muted);
+  background: var(--accent-soft);
+  padding: 8px 14px;
+  border-left: 2px solid var(--accent);
+  margin: 12px 0 20px 0;
+}
+
 </style>
 </head>
 <body>
-
 <aside class="toc">
   <div class="book-title">Building Intelligence</div>
   <div class="book-sub">The Complete AI Engineer's Knowledge Map</div>
-
   <div class="group"><a href="#preface" style="color:inherit;text-decoration:none">Preface</a></div>
   <ol>
     <li style="margin-top:6px;font-weight:600;font-size:11px;color:var(--muted);letter-spacing:0.05em">Contents</li>
@@ -801,6 +833,8 @@ span.num {
     <li style="margin-top:6px;font-weight:600;font-size:11px;color:var(--muted);letter-spacing:0.05em">4.11 Agent</li>
     <li><a href="#s4-11-1"><span class="num">1</span>From Prompt to ReAct</a></li>
     <li><a href="#s4-11-2"><span class="num">2</span>Function Calling/MCP/Multi-Agent</a></li>
+    <li><a href="#s4-11-3"><span class="num">3</span>Agent Framework Ecosystem</a></li>
+    <li><a href="#s4-11-4"><span class="num">4</span>Coding Agents</a></li>
     <li style="margin-top:6px;font-weight:600;font-size:11px;color:var(--muted);letter-spacing:0.05em">4.12 Multimodal</li>
     <li><a href="#s4-12-1"><span class="num">1</span>VLM Architecture</a></li>
     <li><a href="#s4-12-2"><span class="num">2</span>Audio, Video, and Unified Multimodal</a></li>
@@ -808,42 +842,40 @@ span.num {
   <div class="group"><a href="#ch5" style="color:inherit;text-decoration:none">Chapter 5: Paper Deep Dives</a></div>
   <ol>
     <li style="margin-top:6px;font-weight:600;font-size:11px;color:var(--muted);letter-spacing:0.05em">Ch 2 Related · Systems</li>
-    <li><a href="#p01"><span class="num">P01</span>HNSW: The Retrieval Engine of Vector ...</a></li>
-    <li><a href="#p02"><span class="num">P02</span>Raft: The Understandable Consensus Al...</a></li>
+    <li><a href="#p01"><span class="num">P01</span>HNSW: The Retrieval Engine of Vector Dat</a></li>
+    <li><a href="#p02"><span class="num">P02</span>Raft: The Understandable Consensus Algor</a></li>
     <li style="margin-top:6px;font-weight:600;font-size:11px;color:var(--muted);letter-spacing:0.05em">Ch 3 Related · Classic Models</li>
     <li><a href="#p03"><span class="num">P03</span>ResNet: Making Networks Truly "Deep"</a></li>
-    <li><a href="#p04"><span class="num">P04</span>LSTM: The Classic Gatekeeper of Seque...</a></li>
-    <li><a href="#p05"><span class="num">P05</span>BatchNorm: Making Deep Network Traini...</a></li>
-    <li><a href="#p06"><span class="num">P06</span>Adam: The Default Optimizer for Deep ...</a></li>
-    <li><a href="#p07"><span class="num">P07</span>XGBoost: The De Facto Standard for Ta...</a></li>
+    <li><a href="#p04"><span class="num">P04</span>LSTM: The Classic Gatekeeper of Sequence</a></li>
+    <li><a href="#p05"><span class="num">P05</span>BatchNorm: Making Deep Network Training </a></li>
+    <li><a href="#p06"><span class="num">P06</span>Adam: The Default Optimizer for Deep Lea</a></li>
+    <li><a href="#p07"><span class="num">P07</span>XGBoost: The De Facto Standard for Tabul</a></li>
     <li><a href="#p08"><span class="num">P08</span>GAN: The Birth of Adversarial Training</a></li>
-    <li><a href="#p09"><span class="num">P09</span>VAE: Variational Inference Meets Deep...</a></li>
-    <li><a href="#p10"><span class="num">P10</span>DDPM: Diffusion Models, the Foundatio...</a></li>
-    <li><a href="#p11"><span class="num">P11</span>Word2Vec: The Starting Point of Word ...</a></li>
+    <li><a href="#p09"><span class="num">P09</span>VAE: Variational Inference Meets Deep Le</a></li>
+    <li><a href="#p10"><span class="num">P10</span>DDPM: Diffusion Models, the Foundation o</a></li>
+    <li><a href="#p11"><span class="num">P11</span>Word2Vec: The Starting Point of Word Emb</a></li>
     <li style="margin-top:6px;font-weight:600;font-size:11px;color:var(--muted);letter-spacing:0.05em">Ch 4 Related · Transformer & Pretraining</li>
-    <li><a href="#p12"><span class="num">P12</span>Attention Is All You Need: The Birth ...</a></li>
-    <li><a href="#p13"><span class="num">P13</span>BERT and GPT: The Twin Stars of the P...</a></li>
-    <li><a href="#p14"><span class="num">P14</span>Scaling Laws and Chinchilla: The Econ...</a></li>
+    <li><a href="#p12"><span class="num">P12</span>Attention Is All You Need: The Birth of </a></li>
+    <li><a href="#p13"><span class="num">P13</span>BERT and GPT: The Twin Stars of the Pret</a></li>
+    <li><a href="#p14"><span class="num">P14</span>Scaling Laws and Chinchilla: The Economi</a></li>
     <li><a href="#p15"><span class="num">P15</span>RoPE: Rotary Position Embedding</a></li>
     <li style="margin-top:6px;font-weight:600;font-size:11px;color:var(--muted);letter-spacing:0.05em">Ch 4 Related · Efficiency & Inference</li>
     <li><a href="#p16"><span class="num">P16</span>FlashAttention: IO-Aware Exact Attention</a></li>
-    <li><a href="#p17"><span class="num">P17</span>LoRA / QLoRA: Making Fine-Tuning Affo...</a></li>
-    <li><a href="#p18"><span class="num">P18</span>PagedAttention / vLLM: Treating KV Ca...</a></li>
-    <li><a href="#p19"><span class="num">P19</span>Switch Transformer &amp; Mixtral: Mak...</a></li>
+    <li><a href="#p17"><span class="num">P17</span>LoRA / QLoRA: Making Fine-Tuning Afforda</a></li>
+    <li><a href="#p18"><span class="num">P18</span>PagedAttention / vLLM: Treating KV Cache</a></li>
+    <li><a href="#p19"><span class="num">P19</span>Switch Transformer &amp; Mixtral: Making</a></li>
     <li><a href="#p20"><span class="num">P20</span>Mamba: Linear-Time Sequence Modeling</a></li>
     <li style="margin-top:6px;font-weight:600;font-size:11px;color:var(--muted);letter-spacing:0.05em">Ch 4 Related · Alignment & Applications</li>
-    <li><a href="#p21"><span class="num">P21</span>InstructGPT / RLHF: The Starting Poin...</a></li>
-    <li><a href="#p22"><span class="num">P22</span>DPO: Turning RLHF into a Classificati...</a></li>
-    <li><a href="#p23"><span class="num">P23</span>Chain-of-Thought: Letting the Model "...</a></li>
-    <li><a href="#p24"><span class="num">P24</span>DeepSeek-V3: The Culmination of Open-...</a></li>
-    <li><a href="#p25"><span class="num">P25</span>RAG: Giving LLMs Access to External K...</a></li>
-    <li><a href="#p26"><span class="num">P26</span>ReAct: Synergizing Reasoning and Acti...</a></li>
+    <li><a href="#p21"><span class="num">P21</span>InstructGPT / RLHF: The Starting Point o</a></li>
+    <li><a href="#p22"><span class="num">P22</span>DPO: Turning RLHF into a Classification </a></li>
+    <li><a href="#p23"><span class="num">P23</span>Chain-of-Thought: Letting the Model "Thi</a></li>
+    <li><a href="#p24"><span class="num">P24</span>DeepSeek-V3: The Culmination of Open-Sou</a></li>
+    <li><a href="#p25"><span class="num">P25</span>RAG: Giving LLMs Access to External Know</a></li>
+    <li><a href="#p26"><span class="num">P26</span>ReAct: Synergizing Reasoning and Acting </a></li>
   </ol>
   <div class="group"><a href="#refs" style="color:inherit;text-decoration:none">References</a></div>
 </aside>
-
 <main>
-
 <!-- COVER -->
 <div class="book-cover" id="cover">
 
@@ -869,49 +901,7 @@ span.num {
 
     <div class="cover-stats">
       <div class="cover-stat"><div class="cover-stat-num">5</div><div class="cover-stat-label">Chapters</div></div>
-      <div class="cover-stat"><div class="cover-stat-num">130+</div><div class="cover-stat-label">Sections</div></div>
-      <div class="cover-stat"><div class="cover-stat-num">26</div><div class="cover-stat-label">Paper Deep Dives</div></div>
-      <div class="cover-stat"><div class="cover-stat-num">600+</div><div class="cover-stat-label">Pages</div></div>
-    </div>
-
-    <div class="cover-meta"><strong>April 2026 Revision</strong> · Covering the latest frontier models and architectures</div>
-    <div class="cover-models">
-      <span>DeepSeek V4/R2</span><span>Qwen3.6-Plus</span><span>Claude Mythos</span><span>GPT-5</span>
-      <span>Gemini 3</span><span>LLaMA 4</span><span>Mamba-3</span><span>FlashAttention-4</span>
-    </div>
-
-    <div class="cover-toc">
-      <h2>Table of Contents</h2>
-      <div class="cover-toc-grid">
-        <div class="cover-toc-item"><span class="ch-num">0</span><a href="#preface">Preface</a><span class="ch-sub">Reading Guide</span></div>
-        <div class="cover-toc-item"><span class="ch-num">1</span><a href="#ch1">Math Foundations</a><span class="ch-sub">7 parts · 29 sections</span></div>
-        <div class="cover-toc-item"><span class="ch-num">2</span><a href="#ch2">Systems Software</a><span class="ch-sub">6 parts · 28 sections</span></div>
-        <div class="cover-toc-item"><span class="ch-num">3</span><a href="#ch3">AI Model Tech</a><span class="ch-sub">7 parts · 36 sections</span></div>
-        <div class="cover-toc-item"><span class="ch-num">4</span><a href="#ch4">LLM Technology</a><span class="ch-sub">12 parts · 37 sections</span></div>
-        <div class="cover-toc-item"><span class="ch-num">5</span><a href="#ch5">Paper Deep Dives</a><span class="ch-sub">26 selected papers</span></div>
-      </div>
-    </div>
-
-    <div class="cover-footer">
-      <div class="cover-footer-left">
-        <svg viewBox="0 0 689.98 148.18" xmlns="http://www.w3.org/2000/svg" style="width:80px;height:auto;opacity:0.7">
-          <path d="m 29.05,98.54 29.14,-16.35 0.49,-1.42 -0.49,-0.79 h -1.42 l -4.87,-0.3 -16.65,-0.45 -14.44,-0.6 -13.99,-0.75 -3.52,-0.75 -3.3,-4.35 0.34,-2.17 2.96,-1.99 4.24,0.37 9.37,0.64 14.06,0.97 10.2,0.6 15.11,1.57 h 2.4 l 0.34,-0.97 -0.82,-0.6 -0.64,-0.6 -14.55,-9.86 -15.75,-10.42 -8.25,-6 -4.46,-3.04 -2.25,-2.85 -0.97,-6.22 4.05,-4.46 5.44,0.37 1.39,0.37 5.51,4.24 11.77,9.11 15.37,11.32 2.25,1.87 0.9,-0.64 0.11,-0.45 -1.01,-1.69 -8.36,-15.11 -8.92,-15.37 -3.97,-6.37 -1.05,-3.82 c -0.37,-1.57 -0.64,-2.89 -0.64,-4.5 l 4.61,-6.26 2.55,-0.82 6.15,0.82 2.59,2.25 3.82,8.74 6.19,13.76 9.6,18.71 2.81,5.55 1.5,5.14 0.56,1.57 h 0.97 v -0.9 l 0.79,-10.54 1.46,-12.94 1.42,-16.65 0.49,-4.69 2.32,-5.62 4.61,-3.04 3.6,1.72 2.96,4.24 -0.41,2.74 -1.76,11.44 -3.45,17.92 -2.25,12 h 1.31 l 1.5,-1.5 6.07,-8.06 10.2,-12.75 4.5,-5.06 5.25,-5.59 3.37,-2.66 h 6.37 l 4.69,6.97 -2.1,7.2 -6.56,8.32 -5.44,7.05 -7.8,10.5 -4.87,8.4 0.45,0.67 1.16,-0.11 17.62,-3.75 9.52,-1.72 11.36,-1.95 5.14,2.4 0.56,2.44 -2.02,4.99 -12.15,3 -14.25,2.85 -21.22,5.02 -0.26,0.19 0.3,0.37 9.56,0.9 4.09,0.22 h 10.01 l 18.64,1.39 4.87,3.22 2.92,3.94 -0.49,3 -7.5,3.82 -10.12,-2.4 -23.62,-5.62 -8.1,-2.02 h -1.12 v 0.67 l 6.75,6.6 12.37,11.17 15.49,14.4 0.79,3.56 -1.99,2.81 -2.1,-0.3 -13.61,-10.24 -5.25,-4.61 -11.89,-10.01 h -0.79 v 1.05 l 2.74,4.01 14.47,21.75 0.75,6.67 -1.05,2.17 -3.75,1.31 -4.12,-0.75 -8.47,-11.89 -8.74,-13.39 -7.05,-12 -0.86,0.49 -4.16,44.81 -1.95,2.29 -4.5,1.72 -3.75,-2.85 -1.99,-4.61 1.99,-9.11 2.4,-11.89 1.95,-9.45 1.76,-11.74 1.05,-3.9 -0.07,-0.26 -0.86,0.11 -8.85,12.15 -13.46,18.19 -10.65,11.4 -2.55,1.01 -4.42,-2.29 0.41,-4.09 2.47,-3.64 14.74,-18.75 8.89,-11.62 5.74,-6.71 -0.04,-0.97 h -0.34 l -39.15,25.42 -6.97,0.9 -3,-2.81 0.37,-4.61 1.42,-1.5 11.77,-8.1 z" fill="#d97757"/>
-          <path d="m 241.77,125.8 c -18.82,0 -31.69,-10.5 -37.76,-26.66 -3.17,-8.42 -4.74,-17.36 -4.61,-26.36 0,-27.11 12.15,-45.94 39,-45.94 18.04,0 29.17,7.87 35.51,26.66 h 7.72 l -1.05,-25.91 c -10.8,-6.97 -24.3,-10.5 -40.72,-10.5 -23.14,0 -42.82,10.35 -53.77,29.02 -5.66,9.86 -8.53,21.07 -8.32,32.44 0,20.74 9.79,39.11 28.16,49.31 10.06,5.37 21.34,8.04 32.74,7.72 17.92,0 32.14,-3.41 44.74,-9.37 l 3.26,-28.57 h -7.87 c -4.72,13.05 -10.35,20.89 -19.69,25.05 -4.57,2.06 -10.35,3.11 -17.32,3.11 z m 81.18,-98.96 0.75,-12.75 h -5.32 l -23.7,7.12 v 3.86 l 10.5,4.87 v 89.17 c 0,6.07 -3.11,7.42 -11.25,8.44 v 6.52 h 40.31 v -6.52 c -8.17,-1.01 -11.25,-2.36 -11.25,-8.44 V 26.87 l -0.04,-0.04 z m 160.31,108.75 h 3.11 l 27.26,-5.17 v -6.67 l -3.82,-0.3 c -6.37,-0.6 -8.02,-1.91 -8.02,-7.12 v -47.55 l 0.75,-15.26 h -4.31 l -25.76,3.71 v 6.52 l 2.51,0.45 c 6.97,1.01 9.04,2.96 9.04,7.84 v 42.37 c -6.67,5.17 -13.05,8.44 -20.62,8.44 -8.4,0 -13.61,-4.27 -13.61,-14.25 v -39.79 l 0.75,-15.26 h -4.42 l -25.8,3.71 v 6.52 l 2.66,0.45 c 6.97,1.01 9.04,2.96 9.04,7.84 v 39.11 c 0,16.57 9.37,24.45 24.3,24.45 11.4,0 20.74,-6.07 27.75,-14.51 l -0.75,14.51 -0.04,-0.04 z M 408.34,82.83 c 0,-21.19 -11.25,-29.32 -31.57,-29.32 -17.92,0 -30.94,7.42 -30.94,19.72 0,3.67 1.31,6.49 3.97,8.44 l 13.65,-1.8 c -0.6,-4.12 -0.9,-6.64 -0.9,-7.69 0,-6.97 3.71,-10.5 11.25,-10.5 11.14,0 16.76,7.84 16.76,20.44 v 4.12 l -28.12,8.44 c -9.37,2.55 -14.7,4.76 -18.26,9.94 -1.89,3.17 -2.8,6.82 -2.62,10.5 0,12 8.25,20.47 22.35,20.47 10.2,0 19.24,-4.61 27.11,-13.35 2.81,8.74 7.12,13.35 14.81,13.35 6.22,0 11.85,-2.51 16.87,-7.42 l -1.5,-5.17 c -2.17,0.6 -4.27,0.9 -6.49,0.9 -4.31,0 -6.37,-3.41 -6.37,-10.09 v -30.97 z m -36,40.76 c -7.69,0 -12.45,-4.46 -12.45,-12.3 0,-5.32 2.51,-8.44 7.87,-10.24 l 22.8,-7.24 v 21.9 c -7.27,5.51 -11.55,7.87 -18.22,7.87 z m 237.36,6.82 v -6.67 l -3.86,-0.3 c -6.37,-0.6 -7.99,-1.91 -7.99,-7.12 v -89.47 l 0.75,-12.75 h -5.36 l -23.7,7.12 v 3.86 l 10.5,4.87 v 29.32 c -5.91,-4.05 -12.98,-6.08 -20.14,-5.77 -23.55,0 -41.92,17.92 -41.92,44.74 0,22.09 13.2,37.35 34.95,37.35 11.25,0 21.04,-5.47 27.11,-13.95 l -0.75,13.95 h 3.15 l 27.26,-5.17 v 0 z m -49.35,-68.02 c 11.25,0 19.69,6.52 19.69,18.52 v 33.75 c -5.18,5.16 -12.23,8 -19.54,7.87 -16.12,0 -24.3,-12.75 -24.3,-29.77 0,-19.12 9.34,-30.37 24.15,-30.37 z M 667.34,79.27 c -2.1,-9.9 -8.17,-15.52 -16.61,-15.52 -12.6,0 -21.34,9.49 -21.34,23.1 0,20.14 10.65,33.19 27.86,33.19 11.48,-0.12 22.04,-6.33 27.71,-16.31 l 5.02,1.35 c -2.25,17.47 -18.07,30.52 -37.5,30.52 -22.8,0 -38.51,-16.87 -38.51,-40.87 0,-24 17.06,-41.21 39.86,-41.21 17.02,0 29.02,10.24 32.89,28.01 l -59.4,18.22 v -8.02 l 40.01,-12.41 v -0.04 z" fill="#888"/>
-        </svg>
-        <span>Powered by Claude Opus 4.6</span>
-      </div>
-      <div class="cover-footer-right">v2026.04-en</div>
-    </div>
-  </div>
-</div>
-
-
-<section id="preface" class="chapter">
-<div class="chapter-divider">
-  <div class="chapter-divider-line"></div>
-  <div class="chapter-divider-label">Preface</div>
-  <div class="chapter-divider-sub">The Complete AI Engineer's Knowledge Map</div>
-</div>
+<section id="preface" class="chapter"><div class="chapter-divider"><div class="chapter-divider-line"></div><div class="chapter-divider-label">Preface</div><div class="chapter-divider-sub">The Complete AI Engineer's Knowledge Map</div></div>
 <header class="cover">
   <h1>Preface</h1>
   <div class="subtitle">From Mathematics to Agents — A Complete Knowledge Map for AI Engineers</div>
@@ -1030,14 +1020,7 @@ The blue orientation bar at the start of each section describes where that secti
 The book comprises 5 chapters, 130+ sections, covering five major modules: mathematics, systems, AI models, LLMs, and paper deep dives. Happy reading.
 </p>
 </section>
-
-
-<section id="ch1" class="chapter">
-<div class="chapter-divider">
-  <div class="chapter-divider-line"></div>
-  <div class="chapter-divider-label">Chapter 1: Mathematical Foundations</div>
-  <div class="chapter-divider-sub">A Review for AI Engineers</div>
-</div>
+<section id="ch1" class="chapter"><div class="chapter-divider"><div class="chapter-divider-line"></div><div class="chapter-divider-label">Chapter 1: Mathematical Foundations</div><div class="chapter-divider-sub">A Review for AI Engineers</div></div>
 <header class="cover">
   <h1>Mathematical Foundations</h1>
   <div class="subtitle">A Review for AI Engineers — Conceptual Intuition, Minimal Derivation, Engineering Application</div>
@@ -1403,7 +1386,7 @@ print("Variance after dimensionality reduction:", X_pca.var(axis=0))
 
 <p>SVD can be written as a sum of outer products:</p>
 <div class="formula"><span class="math-d">\mathbf{A} = \sum_{i=1}^r \sigma_i \mathbf{u}_i \mathbf{v}_i^\top</span></div>
-<p>where <span class="math-i">r = \text{rank}(\mathbf{A})</span>. The <strong>Eckart-Young theorem</strong> tells us: retaining only the largest <span class="math-i">k</span> terms (<span class="math-i">k &lt; r</span>), the result <span class="math-i">\mathbf{A}_k = \sum_{i=1}^k \sigma_i \mathbf{u}_i \mathbf{v}_i^\top</span> is the <em>optimal rank-<span class="math-i">k</span> approximation</em> to <span class="math-i">\mathbf{A}</span> under either the Frobenius norm or the spectral norm. No other rank-<span class="math-i">k</span> matrix is closer to <span class="math-i">\mathbf{A}</span>.</p>
+<p>where <span class="math-i">r = \text{rank}(\mathbf{A})</span>. The <strong>Eckart-Young theorem</strong> tells us: retaining only the largest <span class="math-i">k</span> terms (<span class="math-i">k &lt; r</span>), the result </span>\mathbf{A}_k = \sum_{i=1}^k \sigma_i \mathbf{u}_i \mathbf{v}_i^\top<span class="math-i"> is the <em>optimal rank-<span class="math-i">k</span> approximation</em> to <span class="math-i">\mathbf{A}</span> under either the Frobenius norm or the spectral norm. No other rank-<span class="math-i">k</span> matrix is closer to <span class="math-i">\mathbf{A}</span>.</p>
 
 <p>This is the unified mathematical foundation for compression, dimensionality reduction, and denoising. Image compression, matrix completion in recommendation systems, model weight compression — all rely on this theorem.</p>
 
@@ -2070,14 +2053,7 @@ def adam_step(params, grads, state, lr=1e-3, b1=0.9, b2=0.999, eps=1e-8):
 29 sections total · Next chapter: Systems Software (CPU, OS, Programming Languages, Databases, Network Stack)
 </p>
 </section>
-
-
-<section id="ch2" class="chapter">
-<div class="chapter-divider">
-  <div class="chapter-divider-line"></div>
-  <div class="chapter-divider-label">Chapter 2: Systems Software</div>
-  <div class="chapter-divider-sub">From CPU to DPDK</div>
-</div>
+<section id="ch2" class="chapter"><div class="chapter-divider"><div class="chapter-divider-line"></div><div class="chapter-divider-label">Chapter 2: Systems Software</div><div class="chapter-divider-sub">From CPU to DPDK</div></div>
 <header class="cover">
   <h1>Systems Software</h1>
   <div class="subtitle">The Systems Perspective for AI Engineers — From CPU to DPDK/VPP</div>
@@ -2199,7 +2175,7 @@ for (int j = 0; j &lt; N; j++)
 <h2 id="s2-1-3"><span class="num">2.1.3</span>GPU and NPU Acceleration</h2>
 <p class="pos">Scope: the carrier of AI compute — hardware for parallel computation and tensor acceleration. Brief here; details in Chapter 4.</p>
 
-<p>This section overlaps with Chapter 4 / Section 4.2. Here we only establish the basic reference frame.</p>
+<p>This section overlaps with Chapter 4 / Section 5.2. Here we only establish the basic reference frame.</p>
 
 <h3>The GPU Parallel Model</h3>
 
@@ -3582,7 +3558,7 @@ ip4_lookup_node_fn(vlib_main_t *vm, vlib_node_runtime_t *node,
 <p>AI training/inference communication primarily uses:</p>
 <ul style="list-style:none; padding-left:0;">
 <li>- <strong>TCP</strong>: gRPC/REST APIs, control plane for distributed training</li>
-<li>- <strong>RDMA</strong> (covered in Chapter 4, Section 4.7): Training data plane, completely bypassing TCP/IP</li>
+<li>- <strong>RDMA</strong> (covered in Chapter 4, Section 5.7): Training data plane, completely bypassing TCP/IP</li>
 <li>- <strong>UDP</strong>: Occasionally used in custom AllReduce implementations</li>
 </ul>
 
@@ -3736,18 +3712,11 @@ ip4_lookup_node_fn(vlib_main_t *vm, vlib_node_runtime_t *node,
 28 sections total &middot; Next chapter: AI Model Technology (Classical ML + Deep Learning + Training Optimization + AI Performance Engineering)
 </p>
 </section>
-
-
-<section id="ch3" class="chapter">
-<div class="chapter-divider">
-  <div class="chapter-divider-line"></div>
-  <div class="chapter-divider-label">Chapter 3: AI Model Technology</div>
-  <div class="chapter-divider-sub">From Traditional ML to Performance Engineering</div>
-</div>
+<section id="ch3" class="chapter"><div class="chapter-divider"><div class="chapter-divider-line"></div><div class="chapter-divider-label">Chapter 3: AI Model Technology</div><div class="chapter-divider-sub">From Traditional ML to Performance Engineering</div></div>
 <header class="cover">
   <h1>AI Model Technology</h1>
   <div class="subtitle">From Traditional Machine Learning to Performance Engineering — The Complete Path to Making AI Actually Run</div>
-  <div class="meta">Chapter 3 · 36 sections</div>
+  <div class="meta">Chapter 3 · Internal Learning Material · 36 sections</div>
 </header>
 
 <p>AI engineers in the LLM era still need traditional machine learning — not out of nostalgia, but because in scenarios with <strong>limited data, interpretable features, and tight latency constraints</strong> (traffic classification on network devices, KPI anomaly detection), a single XGBoost tree is often a better fit than an LLM. The structure of this chapter reflects that view: traditional ML first, then fundamental operators, then classic deep learning models, then training optimization, and finally performance engineering and domain applications. Each layer is the foundation for the next, yet each also holds an independent place in modern AI systems.</p>
@@ -5997,21 +5966,14 @@ forecast = m.predict(future)
 36 sections · Chapters 2–5 complete
 </p>
 </section>
-
-
-<section id="ch4" class="chapter">
-<div class="chapter-divider">
-  <div class="chapter-divider-line"></div>
-  <div class="chapter-divider-label">Chapter 4: LLM Technology</div>
-  <div class="chapter-divider-sub">From Transformer to Agent</div>
-</div>
+<section id="ch4" class="chapter"><div class="chapter-divider"><div class="chapter-divider-line"></div><div class="chapter-divider-label">Chapter 4: LLM Technology</div><div class="chapter-divider-sub">From Transformer to Agent</div></div>
 <header class="cover">
 <h1>LLM Technology</h1>
 <div class="subtitle">From Transformer to Agent — Complete Technical Stack of Large Language Models</div>
-<div class="meta">Chapter 4 · 37 sections</div>
+<div class="meta">Chapter 4 · Internal Learning Material · 37 Sections · Revised Early 2026</div>
 </header>
 
-<p>An LLM is no longer just a "model"—it is an entire technology stack. From low-level Transformer operators, to distributed training strategies, to inference-side scheduling optimizations, to RAG and Agent on the application side, every layer involves substantial engineering decisions and algorithm choices. This chapter ties these layers together so you can see the whole picture from top to bottom.</p>
+<p>An An LLM is no longer just a "model"—it is an entire technology stack. From low-level Transformer operators, to distributed training strategies, to inference-side scheduling optimizations, to RAG and Agent on the application side, every layer involves substantial engineering decisions and algorithm choices. This chapter ties these layers together so you can see the whole picture from top to bottom.</p>
 
 <p>37 sections, all deep dives. Key anchors include: complete derivation of Self-Attention (4.2.2), RoPE rotation matrices (4.3.2), DeepSeek's MLA low-rank decomposition (4.4.1), Mamba's selective state space (4.4.3), ZeRO three-stage memory sharding (4.7.2), PagedAttention's paging mechanism (4.8.3), acceptance rate analysis for speculative decoding (4.8.5), mathematics of AWQ/GPTQ (4.9.1), reranking and query rewriting in advanced RAG (4.10.2), and ReAct loop implementation (4.11.1). Other sections are written at the same level of depth: conceptual intuition, minimal derivation, and engineering details.</p>
 
@@ -6578,7 +6540,7 @@ K = apply_rope(K, freqs_cis)
 <h3>Why Sparse Attention Hasn't Dominated</h3>
 <p>Despite theoretical elegance, sparse attention in practice has <em>not replaced</em> full attention in large models. Reasons:</p>
 <ol>
-<li>FlashAttention optimizes full attention's constants to the extreme; the <span class="math-i">L^2</span> wall isn't as high</li>
+<li>FlashAttention optimizes full attention's constants to the extreme; the practical impact of <span class="math-i">L^2</span> complexity is less severe than theory suggests</li>
 <li>Capability gains from model scaling far exceed efficiency from sparse attention</li>
 <li>Hard-coded sparse patterns impose inductive biases that may not suit all tasks</li>
 </ol>
@@ -7673,6 +7635,114 @@ Action: finish("Max Verstappen, age 27")
 <p>"General-purpose agents" (personal assistants, all-purpose secretaries) remain far from practical in 2025–2026 — the main obstacles are error accumulation in long-horizon tasks and insufficient self-correction. In the second half of 2025, investment in this area accelerated rapidly: Google launched the Gemini Agent + Antigravity environment, and Anthropic continued polishing Claude's agent reliability. Reasoning models (R1, V3.2, Claude 4.5) offer strong long-horizon planning, forming the foundation for agent reliability.</p>
 <p>A parallel trend is the flourishing of <strong>agent programming frameworks</strong>: LangChain and LlamaIndex keep evolving, and 2025 saw more "code-first" frameworks emerge (DSPy, Pydantic AI, Mastra, smolagents), turning agent orchestration into a more explicit engineering problem rather than relying solely on prompt conventions.</p>
 
+
+<!-- 4.11.3 -->
+<h2 id="s4-11-3"><span class="num">4.11.3</span>Agent Framework Ecosystem</h2>
+<p class="pos">Orientation: A panoramic view of agent frameworks in 2025–2026 — from orchestration engines to multi-agent collaboration platforms.</p>
+
+<h3>Tier 1: Orchestration Frameworks</h3>
+
+<p><strong>LangChain / LangGraph</strong>: LangChain burst onto the scene in late 2022 and rapidly became the de facto standard for LLM application development. In 2025, LangChain 1.0 and LangGraph 1.0 were released as stable versions simultaneously. LangGraph is its agent orchestration layer, with <strong>persistent state</strong> as the core selling point — agent execution can be paused, resumed, and rolled back, with support for human-in-the-loop approval nodes. Companies such as Uber, LinkedIn, and Klarna are already using LangGraph in production.</p>
+
+<p><strong>CrewAI</strong>: A multi-agent framework centered on "role-playing." Each agent has an explicit role, goal, and backstory, and collaborates via task assignment. Supports three orchestration modes: sequential, hierarchical, and consensual. Over 45,000 GitHub stars, with more than 12 million agent invocations per day. Natively supports MCP and Agent-to-Agent (A2A) communication. For small and mid-sized teams, it offers the lowest barrier to entry for multi-agent development.</p>
+
+<p><strong>AutoGen → Microsoft Agent Framework</strong>: AutoGen, released by Microsoft in 2023, was a pioneer in multi-agent conversation research. In early 2025, v0.4 was rewritten as an async event-driven architecture, and the project subsequently evolved into the closed-source Microsoft Agent Framework, with AutoGen entering maintenance mode. Its core contribution was demonstrating that the "multi-agent conversation" paradigm is viable.</p>
+
+<h3>Tier 2: Platform-Level Products</h3>
+
+<p><strong>Dify</strong>: An open-source low-code agent platform with 60,000+ GitHub stars. It provides a visual workflow editor, RAG pipelines, 50+ built-in tools (search, DALL-E, Wolfram, etc.), model management, and monitoring. Its positioning is "enabling non-engineers to build agent applications." The company raised </span>30 million in a Pre-A funding round.</p>
+
+<p><strong>Coze (ByteDance)</strong>: In July 2025, ByteDance open-sourced the core components Coze Studio and Coze Loop. Version 2.0 was released in January 2026, transforming the product from a chat tool into an "intelligent work partner" — supporting long-running Agent Plans (spanning multiple days) and Agent Skills (a customizable skill marketplace). It competes head-to-head with Dify in Asian markets.</p>
+
+<h3>Tier 3: Vendor SDKs</h3>
+
+<table>
+<tr><th>SDK</th><th>Vendor</th><th>Released</th><th>Core Design</th></tr>
+<tr><td><strong>Agents SDK</strong></td><td>OpenAI</td><td>2025.3</td><td>Four primitives: Agent, Handoff, Guardrail, Tracing. Minimalist design, model-agnostic</td></tr>
+<tr><td><strong>Claude Agent SDK</strong></td><td>Anthropic</td><td>2025.9</td><td>Shares toolchain with Claude Code (file read/write, command execution, code editing); supports sub-agents and hooks</td></tr>
+<tr><td><strong>ADK</strong></td><td>Google</td><td>2025</td><td>Code-first, model-agnostic, deployment-agnostic. Supports Python, Go, Java, and TypeScript</td></tr>
+</table>
+
+<p>Trend: All three major vendors have released their own agent SDKs, but with distinct design philosophies — OpenAI pursues minimalism (4 concepts are enough), Anthropic pursues pragmatism (giving you direct access to the filesystem and terminal), and Google pursues universality (cross-language, cross-platform).</p>
+
+<h3>Framework Selection Decision Tree</h3>
+<ul style="list-style:none;padding-left:0;">
+<li>- Single agent + tool calling only → <strong>OpenAI Agents SDK</strong> or native Function Calling</li>
+<li>- Stateful, interruptible agent workflows → <strong>LangGraph</strong></li>
+<li>- Multi-agent role specialization → <strong>CrewAI</strong></li>
+<li>- Non-engineers building agents → <strong>Dify</strong> or <strong>Coze</strong></li>
+<li>- Building a coding agent → <strong>Claude Agent SDK</strong></li>
+<li>- Enterprise-grade, multi-cloud deployment → <strong>Google ADK</strong></li>
+</ul>
+
+<!-- 4.11.4 -->
+<h2 id="s4-11-4"><span class="num">4.11.4</span>Coding Agents: The Most Mature Agent Vertical</h2>
+<p class="pos">Orientation: Programming is the most successful real-world application of agents — the toolchain is self-contained, feedback is immediate, and evaluation is objective.</p>
+
+<h3>Why Coding Agents Matured First</h3>
+<p>Agents remain unreliable in general-purpose scenarios (all-purpose assistants), but the programming domain got there first. The reasons:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong>Closed-loop feedback</strong>: code compiles and runs tests — every step gives the agent an objective signal of correctness</li>
+<li>- <strong>Complete toolchain</strong>: file read/write, terminal execution, Git operations, browser testing — a mature MCP/tool ecosystem already exists</li>
+<li>- <strong>Standardized evaluation</strong>: benchmarks like SWE-bench, HumanEval, and MBPP enable quantitative comparison</li>
+<li>- <strong>High value</strong>: developer hourly rates are high, so automation ROI is immediate</li>
+</ul>
+
+<h3>Coding Agent Landscape (2025–2026)</h3>
+
+<table>
+<tr><th>Product</th><th>Type</th><th>Key Characteristics</th><th>Status (early 2026)</th></tr>
+<tr><td><strong>Claude Code</strong></td><td>Terminal Agent</td><td>Reads entire codebases, multi-file editing, Git workflow, parallel sub-agents; most code at Anthropic is now generated by it</td><td>Available across terminal, IDE, desktop, and web</td></tr>
+<tr><td><strong>Cursor</strong></td><td>AI-native IDE</td><td>VS Code-based; Composer 1.5 (RL-trained); Visual Editor (drag-and-drop UI generation); multi-repo support</td><td>v3.0; <span class="math-i">29.3B valuation; </span>2B+ annual revenue</td></tr>
+<tr><td><strong>Devin</strong></td><td>Autonomous Agent</td><td>Fully autonomous: starts from Jira/Linear tickets, plans → codes → debugs → deploys; handles tasks spanning 4–8 hours</td><td>v2.0; US$155M ARR; 12,000 Goldman Sachs developers in trial</td></tr>
+<tr><td><strong>GitHub Copilot</strong></td><td>IDE Plugin + Agent</td><td>Agent Mode (self-iterating error correction); Coding Agent (async execution in GitHub Actions); Project Padawan (future)</td><td>Full IDE coverage (VS Code/JetBrains/Xcode)</td></tr>
+<tr><td><strong>Windsurf</strong></td><td>AI-native IDE</td><td>Cascade system (whole-codebase understanding); acquired by Cognition in December 2025 (~US$250M); 1M+ users</td><td>Ranked #1 IDE (LogRocket Feb 2026)</td></tr>
+<tr><td><strong>Google Jules</strong></td><td>Async Agent</td><td>Powered by Gemini 2.5 Pro; GitHub integration; cloud VM execution; audio change logs</td><td>Public release; API available</td></tr>
+<tr><td><strong>Amazon Q Developer</strong></td><td>Multi-modal Agent</td><td>Deep AWS integration; SWE-bench Verified 66% (top-tier); 15+ languages; agentic code generation</td><td>Free + US$19/month</td></tr>
+<tr><td><strong>OpenAI Codex CLI</strong></td><td>Terminal Agent</td><td>Open-source Rust implementation; lightweight; parallel sub-agents; MCP integration; optimized codex-mini model</td><td>Actively developed</td></tr>
+<tr><td><strong>Augment Code</strong></td><td>Semantic Platform</td><td>Context Engine (full-stack semantic understanding); Intent desktop (spec-driven + multi-agent orchestration); highest code review accuracy in the industry</td><td>Enterprise-focused</td></tr>
+<tr><td><strong>OpenClaw</strong></td><td>Open-source Terminal Agent</td><td>Open-source Claude Code alternative; supports multiple model backends (Claude/GPT/Gemini/local); community-driven; native MCP support</td><td>Active open-source community</td></tr>
+<tr><td><strong>ZeroClaw</strong></td><td>Lightweight Terminal Agent</td><td>Zero-dependency minimalist design; single-file deployment; focused on rapid prototyping and small projects; low token overhead</td><td>Lightweight alternative</td></tr>
+<tr><td><strong>Hermes Agent</strong></td><td>AI Assistant Agent</td><td>General task automation (not limited to coding); browser control + file management + API calls; long-horizon task planning</td><td>Emerging 2025–2026</td></tr>
+</table>
+
+<h3>The Rise of Open-Source / Community Coding Agents</h3>
+<p>In the second half of 2025, closed-source terminal agents led by Claude Code spurred a wave of open-source alternatives:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong>OpenClaw</strong>: the earliest open-source Claude Code replacement, built on the philosophy of "the same agent loop (read code → edit → test → commit), but with a swappable model backend." Supports connecting any tool via MCP; the community has contributed hundreds of MCP servers</li>
+<li>- <strong>ZeroClaw</strong>: the minimalist approach — a single Python file, zero external dependencies, focused on "quick Q&amp;A + small edits." It sacrifices complex multi-file orchestration in exchange for fast startup and low cost</li>
+<li>- <strong>Hermes Agent</strong>: not limited to coding, but general task automation — can operate browsers, manage files, call APIs, and write documentation. Positioned between a coding agent and a general-purpose agent</li>
+<li>- <strong>Aider</strong>: an early open-source pair programming agent supporting multiple models; collaborates with developers in the terminal to edit code; remained actively developed throughout 2025</li>
+<li>- <strong>Continue</strong>: a VS Code/JetBrains plugin, open-source, supporting any model (local Ollama or cloud API), positioned as the "open-source Copilot"</li>
+</ul>
+<p>Trend: Coding agents are becoming <strong>infrastructure</strong> — no longer the exclusive product of any single company, but a standard component of every developer's toolchain. The standardization of the MCP protocol has accelerated this: write a tool once, and every agent can use it.</p>
+
+<h3>A Typical Coding Agent Workflow</h3>
+<p>Using Claude Code as an example, a typical bug-fix workflow:</p>
+<pre><code class="language-text">1. User: "Fix the white screen issue on the login page in Safari"
+2. Agent reads the project structure → locates the frontend code
+3. Agent searches relevant files (login.tsx, auth.ts, Safari-related CSS)
+4. Agent analyzes the problem → identifies a CSS property unsupported by Safari
+5. Agent edits the code → adds compatibility prefixes
+6. Agent runs tests → checks if they pass
+7. Agent runs browser tests → confirms Safari renders correctly
+8. Agent creates a Git commit → awaits user confirmation
+</code></pre>
+<p>Key insight: the entire process is an <strong>engineered implementation of the ReAct loop</strong> — Thought (analysis) → Action (read file / edit code / run tests) → Observation (result) → repeat. The difference is that tool calls go through Function Calling rather than prompt text, and state management includes checkpoints and rollback.</p>
+
+<h3>SWE-bench: The Standard Exam for Coding Agents</h3>
+<p>SWE-bench (Princeton 2024) draws programming tasks from real GitHub issues, requiring agents to fix bugs and add features on complete codebases. SWE-bench Verified is a human-validated subset and is considered more reliable.</p>
+<p>In early 2024, the best agents could solve only around 5% of SWE-bench problems. By early 2026, frontier systems (Amazon Q Developer, Claude Code) reached <strong>50–66%</strong> — a more than 10× improvement in eighteen months. This is the most direct evidence of progress in agent capabilities.</p>
+
+<h3>Limitations of Coding Agents</h3>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong>Weak creative design</strong>: excels at well-defined tasks (fixing bugs, writing tests, migrations); struggles with ambiguous ones (designing architecture from scratch)</li>
+<li>- <strong>Instability on long tasks</strong>: for complex tasks exceeding 30 minutes, error accumulation remains a problem</li>
+<li>- <strong>Security risks</strong>: autonomous code execution introduces risks such as prompt injection and credential leakage; sandbox isolation is required</li>
+<li>- <strong>Cost considerations</strong>: complex tasks may consume tens of thousands of tokens; ROI must be assessed</li>
+<li>- <strong>Human-agent collaboration is optimal</strong>: the current best practice is not "full autonomy" but rather agent drafts + human review and confirmation</li>
+</ul>
+
 <div class="part-header"><div class="part-label">PART TWELVE</div><h2 class="part-title">4.12 Multimodal</h2><p class="part-desc">LLMs that see and hear — the expansion from "language model" to "foundation model."</p></div>
 
 <h2 id="s4-12-1"><span class="num">4.12.1</span>VLM Architecture</h2>
@@ -7776,7 +7846,7 @@ flowchart LR
 
 <h3>Video Generation</h3>
 <p>Major breakthrough in 2024: OpenAI Sora, Google Veo, Runway Gen-3, Kling — capable of generating high-quality videos several minutes long. The underlying technology remains diffusion models + DiT (Diffusion Transformer) architecture, treating video as spatiotemporal patches.</p>
-<p>Open-source is catching up: <strong>CogVideoX</strong> (Tsinghua + Zhipu), <strong>Open-Sora</strong> (version 2.0 reached commercial-grade quality at just US$200K training cost), <strong>HunyuanVideo</strong> (Tencent), <strong>Mochi</strong>, <strong>LTX-Video</strong>. Quality is approaching closed-source, but the compute barrier remains high (a single training run takes hundreds of GPU-days).</p>
+<p>Open-source is catching up: <strong>CogVideoX</strong> (Tsinghua + Zhipu), <strong>Open-Sora</strong> (version 2.0 reached commercial-grade quality at just US<span class="math-i">200K training cost), <strong>HunyuanVideo</strong> (Tencent), <strong>Mochi</strong>, <strong>LTX-Video</strong>. Quality is approaching closed-source, but the compute barrier remains high (a single training run takes hundreds of GPU-days).</p>
 <p><strong>A significant pivot</strong>: on 2026.3.24, OpenAI announced the shutdown of the entire Sora product line, redirecting resources toward robotic world simulation. Sora 2 (released 2025.12) had supported 25-second generation and native audio sync, but commercial adoption fell short of expectations. The torch passed to <strong>Kling 3.0</strong> (native 4K 60fps broadcast-grade quality), <strong>Google Veo 3.1</strong>, and <strong>Seedance 1.5 Pro</strong> as the leading video generation platforms.</p>
 
 <h3>Unified Multimodal</h3>
@@ -7825,16 +7895,11 @@ Part B contains 7 sections · 36 sections total when merged with the full chapte
 37 sections total · Chapters 2–5 are now complete
 </p>
 </section>
+<section id="ch5" class="chapter"><div class="chapter-divider"><div class="chapter-divider-line"></div><div class="chapter-divider-label">Chapter 5: Paper Deep Dives</div><div class="chapter-divider-sub">26 Selected Papers</div></div>
+<div class="part-header"><div class="part-label">Ch 2 Related · Systems</div></div>
 
-
-<section id="ch5" class="chapter">
-<div class="chapter-divider">
-  <div class="chapter-divider-line"></div>
-  <div class="chapter-divider-label">Chapter 5: Paper Deep Dives</div>
-  <div class="chapter-divider-sub">26 Selected Papers</div>
-</div>
 <h2 id="p01"><span class="num">P01</span>HNSW: The Retrieval Engine of Vector Databases</h2>
-<p class="pos">Corresponds to main text: Chapter 2, Section 2.4.4 — Vector Databases</p>
+<p class="pos">Corresponds to main text: Chapter 2, Section 3.5.4 — Vector Databases</p>
 
 <div class="paper-meta">
 <div class="title-en">Efficient and robust approximate nearest neighbor using Hierarchical Navigable Small World graphs</div>
@@ -7960,7 +8025,7 @@ flowchart TB
 <li><strong>PostgreSQL pgvector</strong>: HNSW index added in version 0.5+</li>
 </ul>
 
-<p>In a RAG pipeline (main text, Section 2.10), the "retrieval" step of "embedding + vector retrieval" runs on HNSW under the hood. Without this paper, the vector database boom of 2023–2025 would not have happened.</p>
+<p>In a RAG pipeline (main text, Section 4.10), the "retrieval" step of "embedding + vector retrieval" runs on HNSW under the hood. Without this paper, the vector database boom of 2023–2025 would not have happened.</p>
 
 <h3>Critical Perspective</h3>
 <p>HNSW's main drawback is <strong>large memory footprint</strong> — the entire graph must reside in memory. One billion vectors × 768 dimensions × float32 ≈ 3 TB, and that does not even count the graph edge storage. In large-scale settings, HNSW is therefore typically combined with quantization (PQ/SQ) or sharding. Additionally, HNSW does not support dynamic deletion (vectors can only be soft-deleted), so long-running indices must eventually be rebuilt. DiskANN (Microsoft, 2019) is an alternative specifically designed for ANN on disk.</p>
@@ -8028,8 +8093,10 @@ stateDiagram-v2
 
 <!-- ============================ P20 GAN ============================ -->
 
+<div class="part-header"><div class="part-label">Ch 3 Related · Classic Models</div></div>
+
 <h2 id="p03"><span class="num">P03</span>ResNet: Making Networks Truly "Deep"</h2>
-<p class="pos">Corresponds to main text: Chapter 3, §3.4.1 CNN · Chapter 4, §3.2.4 (residual connection concept)</p>
+<p class="pos">Corresponds to main text: Chapter 3, §4.4.1 CNN · Chapter 4, §4.2.4 (residual connection concept)</p>
 
 <div class="paper-meta">
 <div class="title-en">Deep Residual Learning for Image Recognition</div>
@@ -8108,7 +8175,7 @@ class BasicBlock(nn.Module):
 <h3>Impact</h3>
 <p>ResNet's residual concept has long transcended CNNs—it has become a <strong>foundational component of all deep networks</strong>:</p>
 <ol>
-<li><strong>Transformer</strong>: every attention and FFN module is wrapped with a residual connection (main text §3.2.1). Without residuals, deep training of BERT/GPT would not be possible.</li>
+<li><strong>Transformer</strong>: every attention and FFN module is wrapped with a residual connection (main text §4.2.1). Without residuals, deep training of BERT/GPT would not be possible.</li>
 <li><strong>DenseNet, U-Net</strong>: variants of the residual idea—dense connections, skip connections</li>
 <li><strong>ControlNet, LoRA</strong>: both embody the architectural philosophy of "bypass + residual"</li>
 <li><strong>Neural ODE</strong>: treats the residual network as a discrete approximation of an ODE: <span class="math-i">\mathbf{y} = \mathbf{x} + \mathcal{F}(\mathbf{x}, t)</span></li>
@@ -8122,7 +8189,7 @@ class BasicBlock(nn.Module):
 <!-- ============================ P02 LSTM ============================ -->
 
 <h2 id="p04"><span class="num">P04</span>LSTM: The Classic Gatekeeper of Sequence Modeling</h2>
-<p class="pos">Corresponds to main text: Chapter 3, §3.4.2 RNN/LSTM/GRU</p>
+<p class="pos">Corresponds to main text: Chapter 3, §4.4.2 RNN/LSTM/GRU</p>
 
 <div class="paper-meta">
 <div class="title-en">Long Short-Term Memory</div>
@@ -8179,7 +8246,7 @@ class BasicBlock(nn.Module):
 <!-- ============================ P03 BatchNorm ============================ -->
 
 <h2 id="p05"><span class="num">P05</span>BatchNorm: Making Deep Network Training Simple</h2>
-<p class="pos">Corresponds to main text: Chapter 3, §3.3.5 Normalization</p>
+<p class="pos">Corresponds to main text: Chapter 3, §4.3.5 Normalization</p>
 
 <div class="paper-meta">
 <div class="title-en">Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift</div>
@@ -8209,14 +8276,14 @@ class BasicBlock(nn.Module):
 
 <h3>Impact</h3>
 <p>BN became standard equipment for CNNs after 2015. It made training 100+ layer networks possible and, together with ResNet, supported the deep era of computer vision.</p>
-<p>However, BN does not work well for RNNs or Transformers—batch-dimension statistics carry little meaning for sequential tasks. Transformers use LayerNorm throughout, which later evolved into RMSNorm. This is why, in main text §3.2.4, you see "Pre-Norm + RMSNorm" as the standard for LLMs. BN's story is largely confined to the CV domain.</p>
+<p>However, BN does not work well for RNNs or Transformers—batch-dimension statistics carry little meaning for sequential tasks. Transformers use LayerNorm throughout, which later evolved into RMSNorm. This is why, in main text §4.2.4, you see "Pre-Norm + RMSNorm" as the standard for LLMs. BN's story is largely confined to the CV domain.</p>
 
 <div class="refback"><strong>Why You Must Read This:</strong> Understanding that "normalization is not data preprocessing—it is a structural component of deep networks"—this shift in perspective is BatchNorm's true contribution. Reading this paper will give you a foundational understanding of why LayerNorm, RMSNorm, and GroupNorm exist in the main text.</div>
 
 <!-- ============================ P04 Adam ============================ -->
 
 <h2 id="p06"><span class="num">P06</span>Adam: The Default Optimizer for Deep Learning</h2>
-<p class="pos">Corresponds to main text: Chapter 1, §1.8.4 · Chapter 3, §3.5.1</p>
+<p class="pos">Corresponds to main text: Chapter 1, §2.8.4 · Chapter 3, §4.5.1</p>
 
 <div class="paper-meta">
 <div class="title-en">Adam: A Method for Stochastic Optimization</div>
@@ -8249,14 +8316,14 @@ class BasicBlock(nn.Module):
 <p>Typical hyperparameters: <span class="math-i">\beta_1 = 0.9, \beta_2 = 0.999, \epsilon = 10^{-8}, \alpha = 10^{-3}</span>. These numbers are the defaults in virtually every PyTorch/TensorFlow codebase.</p>
 
 <h3>AdamW</h3>
-<p>Loshchilov (2017) pointed out that "weight decay" regularization in Adam is incorrectly coupled with the learning rate. <strong>AdamW</strong> decouples them and is now the default choice for LLM training. The "AdamW" in LLaMA's training recipe in main text §3.7.4 refers to this.</p>
+<p>Loshchilov (2017) pointed out that "weight decay" regularization in Adam is incorrectly coupled with the learning rate. <strong>AdamW</strong> decouples them and is now the default choice for LLM training. The "AdamW" in LLaMA's training recipe in main text §4.7.4 refers to this.</p>
 
 <h3>Impact and Controversy</h3>
 <p>Adam is the most widely used optimizer in deep learning—present by default like air. But it has not been without controversy:</p>
 <ul style="list-style:none;padding-left:0;">
 <li>- <strong>Convergence</strong>: Reddi et al. (2018), "On the Convergence of Adam," proved that the original Adam can fail to converge on certain simple convex problems. AMSGrad was proposed as a fix (but is rarely used in practice)</li>
 <li>- <strong>Generalization</strong>: On CV tasks, SGD+Momentum often generalizes better. But for Transformer training, Adam/AdamW has no viable alternative</li>
-<li>- <strong>Memory</strong>: Adam requires storing <span class="math-i">\mathbf{m}</span> and <span class="math-i">\mathbf{v}</span>—twice the parameter footprint. In the era of large models, this is a GPU memory killer. ZeRO (main text §3.7.2) was created specifically to shard this state</li>
+<li>- <strong>Memory</strong>: Adam requires storing <span class="math-i">\mathbf{m}</span> and <span class="math-i">\mathbf{v}</span>—twice the parameter footprint. In the era of large models, this is a GPU memory killer. ZeRO (main text §4.7.2) was created specifically to shard this state</li>
 </ul>
 
 <div class="refback"><strong>Why You Must Read This:</strong> Every LLM training run uses AdamW under the hood. This is the power of defaults—but knowing the math behind the defaults lets you diagnose training instabilities when they arise.</div>
@@ -8264,7 +8331,7 @@ class BasicBlock(nn.Module):
 <!-- ============================ P05 XGBoost ============================ -->
 
 <h2 id="p07"><span class="num">P07</span>XGBoost: The De Facto Standard for Tabular Data</h2>
-<p class="pos">Corresponds to main text: Chapter 3, §3.2.2 Tree Models</p>
+<p class="pos">Corresponds to main text: Chapter 3, §4.2.2 Tree Models</p>
 
 <div class="paper-meta">
 <div class="title-en">XGBoost: A Scalable Tree Boosting System</div>
@@ -8297,7 +8364,7 @@ class BasicBlock(nn.Module):
 
 <div class="formula"><span class="math-d">\text{Gain} = \frac{1}{2}\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R + \lambda} - \frac{(G_L+G_R)^2}{H_L+H_R+\lambda}\right] - \gamma</span></div>
 
-<p>With this formula, a greedy search picks the split with the highest gain until gain &lt; 0 (or another stopping criterion). A detailed derivation is in main text §3.2.2.</p>
+<p>With this formula, a greedy search picks the split with the highest gain until gain &lt; 0 (or another stopping criterion). A detailed derivation is in main text §4.2.2.</p>
 
 <h3>Engineering Innovations</h3>
 <ul style="list-style:none;padding-left:0;">
@@ -8346,7 +8413,7 @@ print("Accuracy:", model.score(Xv, yv))
 <!-- ============================ P06 Attention ============================ -->
 
 <h2 id="p08"><span class="num">P08</span>GAN: The Birth of Adversarial Training</h2>
-<p class="pos">Corresponds to main text: Chapter 3, Section 3.4.4 — Generative Models</p>
+<p class="pos">Corresponds to main text: Chapter 3, Section 4.4.4 — Generative Models</p>
 
 <div class="paper-meta">
 <div class="title-en">Generative Adversarial Nets</div>
@@ -8474,7 +8541,7 @@ for epoch in range(num_epochs):
 <!-- ============================ P21 VAE ============================ -->
 
 <h2 id="p09"><span class="num">P09</span>VAE: Variational Inference Meets Deep Learning</h2>
-<p class="pos">Corresponds to main text: Chapter 3, Section 3.4.4 — Generative Models</p>
+<p class="pos">Corresponds to main text: Chapter 3, Section 4.4.4 — Generative Models</p>
 
 <div class="paper-meta">
 <div class="title-en">Auto-Encoding Variational Bayes</div>
@@ -8590,7 +8657,7 @@ def vae_loss(recon_x, x, mu, logvar):
 <!-- ============================ P22 DDPM ============================ -->
 
 <h2 id="p10"><span class="num">P10</span>DDPM: Diffusion Models, the Foundation of Modern Image Generation</h2>
-<p class="pos">Corresponds to main text: Chapter 3, Section 3.4.4 — Generative Models</p>
+<p class="pos">Corresponds to main text: Chapter 3, Section 4.4.4 — Generative Models</p>
 
 <div class="paper-meta">
 <div class="title-en">Denoising Diffusion Probabilistic Models</div>
@@ -8720,7 +8787,7 @@ def sample(model, shape):
 <!-- ============================ P23 Word2Vec ============================ -->
 
 <h2 id="p11"><span class="num">P11</span>Word2Vec: The Starting Point of Word Embeddings</h2>
-<p class="pos">Corresponds to main text: Chapter 3, Section 3.5.2 — Embeddings</p>
+<p class="pos">Corresponds to main text: Chapter 3, Section 4.5.2 — Embeddings</p>
 
 <div class="paper-meta">
 <div class="title-en">Efficient Estimation of Word Representations in Vector Space</div>
@@ -8772,8 +8839,10 @@ def sample(model, shape):
 
 <!-- ============================ P24 Mamba ============================ -->
 
+<div class="part-header"><div class="part-label">Ch 4 Related · Transformer & Pretraining</div></div>
+
 <h2 id="p12"><span class="num">P12</span>Attention Is All You Need: The Birth of the Transformer</h2>
-<p class="pos">Corresponds to main text: Chapter 4, §4.2 (entire section)</p>
+<p class="pos">Corresponds to main text: Chapter 4, §5.2 (entire section)</p>
 
 <div class="paper-meta">
 <div class="title-en">Attention Is All You Need</div>
@@ -8939,7 +9008,7 @@ logits = model(x)                       # [2, 50, 10000]
 </ol>
 
 <h3>An Interesting Footnote on an Engineering Detail</h3>
-<p>Section 4.2.2 of the original paper contains the statement: "We found that the Transformer with sinusoidal position encodings performs similarly to learned position embeddings." This claim later proved overly optimistic—learned positional embeddings fail completely when the sequence length exceeds training length, and sinusoidal encodings also extrapolate poorly. This detail was truly resolved by RoPE (P09), five years later.</p>
+<p>Section 3.2.2 of the original paper contains the statement: "We found that the Transformer with sinusoidal position encodings performs similarly to learned position embeddings." This claim later proved overly optimistic—learned positional embeddings fail completely when the sequence length exceeds training length, and sinusoidal encodings also extrapolate poorly. This detail was truly resolved by RoPE (P09), five years later.</p>
 
 <p>This is also the value of reading papers: even original authors can be wrong. Understanding these subtleties gives you a clearer picture of how the field evolves.</p>
 
@@ -9180,8 +9249,10 @@ K = apply_rope(K, freqs_cis)
 
 <div class="refback"><strong>Why You Must Read This:</strong> Long context (128K, 1M tokens) is one of the main battlegrounds for LLMs in 2024–2026, and RoPE + YaRN is the underlying technology for that direction. Understanding RoPE is what lets you understand why today's models can support such long contexts.</div>
 
+<div class="part-header"><div class="part-label">Ch 4 Related · Efficiency & Inference</div></div>
+
 <h2 id="p16"><span class="num">P16</span>FlashAttention: IO-Aware Exact Attention</h2>
-<p class="pos">Main text reference: Chapter 3, §4.7.3 Operator Optimization · Chapter 4, §4.2.2 / §4.8</p>
+<p class="pos">Main text reference: Chapter 3, §4.7.3 Operator Optimization · Chapter 4, §4.2.2 / §5.8</p>
 
 <div class="paper-meta">
 <div class="title-en">FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness</div>
@@ -9475,7 +9546,7 @@ for each query q_i:
 <!-- ============================ P13 MoE ============================ -->
 
 <h2 id="p19"><span class="num">P19</span>Switch Transformer &amp; Mixtral: Making MoE Practical</h2>
-<p class="pos">Main text reference: Chapter 4, §4.6</p>
+<p class="pos">Main text reference: Chapter 4, §5.6</p>
 
 <div class="paper-meta">
 <div class="title-en">Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity</div>
@@ -9691,6 +9762,8 @@ flowchart TB
 
 <!-- ============================ P25 RAG ============================ -->
 
+<div class="part-header"><div class="part-label">Ch 4 Related · Alignment & Applications</div></div>
+
 <h2 id="p21"><span class="num">P21</span>InstructGPT / RLHF: The Starting Point of Alignment</h2>
 <p class="pos">Main text reference: Chapter 3, §4.5.3 Fine-Tuning &amp; Alignment · Chapter 4, §4.1.1</p>
 
@@ -9900,7 +9973,7 @@ A: [let the model continue]
 <!-- ============================ P17 DeepSeek V3 ============================ -->
 
 <h2 id="p24"><span class="num">P24</span>DeepSeek-V3: The Culmination of Open-Source MoE</h2>
-<p class="pos">Main text reference: Chapter 4, §4.4.1 MLA · §4.6 MoE · §4.9.2 FP8</p>
+<p class="pos">Main text reference: Chapter 4, §4.4.1 MLA · §5.6 MoE · §4.9.2 FP8</p>
 
 <div class="paper-meta">
 <div class="title-en">DeepSeek-V3 Technical Report</div>
@@ -9910,7 +9983,7 @@ A: [let the model continue]
 </div>
 
 <h3>Why This Paper Is the Capstone</h3>
-<p>DeepSeek-V3 is not the first MoE, the first FP8 training run, or the first hybrid reasoning model — but it is the first open-source model to <em>integrate all of these techniques together and execute each to its limits</em>. 671B total parameters, 37B activated per token, trained in just 2.788M H800 GPU-hours (approximately US$5.6M), reaching GPT-4o-level capability.</p>
+<p>DeepSeek-V3 is not the first MoE, the first FP8 training run, or the first hybrid reasoning model — but it is the first open-source model to <em>integrate all of these techniques together and execute each to its limits</em>. 671B total parameters, 37B activated per token, trained in just 2.788M H800 GPU-hours (approximately US</span>5.6M), reaching GPT-4o-level capability.</p>
 <p>It is a case study in "engineering integration" winning over "single-point breakthroughs," and a decisive moment in open-source catching up to closed-source.</p>
 
 <h3>Architecture Overview</h3>
@@ -10104,7 +10177,7 @@ Action 4: Finish[Trump's alma mater, the University of Pennsylvania (1740), was 
 <table>
 <tr><th>Method</th><th>Reasoning</th><th>Action</th><th>Knowledge Source</th><th>Verifiability</th></tr>
 <tr><td>Standard prompting</td><td>None</td><td>None</td><td>Parameters</td><td>Low</td></tr>
-<tr><td>CoT (P23)</td><td>Yes</td><td>None</td><td>Parameters</td><td>Medium (reasoning visible)</td></tr>
+<tr><td>CoT (P16)</td><td>Yes</td><td>None</td><td>Parameters</td><td>Medium (reasoning visible)</td></tr>
 <tr><td>Act-only</td><td>None</td><td>Yes</td><td>External tools</td><td>Medium (tool calls visible)</td></tr>
 <tr><td>ReAct</td><td>Yes</td><td>Yes</td><td>Parameters + external</td><td>High (reasoning + tools both visible)</td></tr>
 </table>
@@ -10122,9 +10195,6 @@ Action 4: Finish[Trump's alma mater, the University of Pennsylvania (1740), was 
 
 <div class="refback"><strong>Why You Must Read This:</strong> If you are building LLM Agents — whether customer service bots, code assistants, or automated workflows — the architecture underneath is almost certainly a variant of the ReAct pattern. Understanding this simple but powerful "alternating reasoning and action" framework is the first step toward designing reliable Agents.</div>
 </section>
-
-
-
 <section id="refs" class="chapter">
 <div class="chapter-divider">
   <div class="chapter-divider-line"></div>
@@ -10193,29 +10263,19 @@ Action 4: Finish[Trump's alma mater, the University of Pennsylvania (1740), was 
 <li>[48] A. Dosovitskiy et al., "An Image is Worth 16x16 Words (ViT)," ICLR, 2021.</li>
 </ol>
 </section>
-
-
 </main>
-
-<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
-
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="↑">↑</button>
 <script>
-  hljs.highlightAll();
-  if (typeof mermaid !== 'undefined') { mermaid.initialize({ startOnLoad: true, theme: 'neutral' }); }
-  const btn = document.getElementById('backTop');
-  window.addEventListener('scroll', () => { btn.style.display = window.scrollY > 800 ? 'flex' : 'none'; });
+hljs.highlightAll();
+if(typeof mermaid!=='undefined'){mermaid.initialize({startOnLoad:true,theme:'neutral'});};
+document.getElementById('backTop').style.display='none';
+window.addEventListener('scroll',()=>{document.getElementById('backTop').style.display=window.scrollY>800?'flex':'none';});
 </script>
-
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll('.math-d').forEach(function(el) {
-      katex.render(el.textContent, el, { displayMode: true, throwOnError: false });
-    });
-    document.querySelectorAll('.math-i').forEach(function(el) {
-      katex.render(el.textContent, el, { displayMode: false, throwOnError: false });
-    });
-  });
+document.addEventListener("DOMContentLoaded",function(){
+document.querySelectorAll('.math-d').forEach(function(el){katex.render(el.textContent,el,{displayMode:true,throwOnError:false});});
+document.querySelectorAll('.math-i').forEach(function(el){katex.render(el.textContent,el,{displayMode:false,throwOnError:false});});
+});
 </script>
-
 </body>
 </html>

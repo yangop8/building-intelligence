@@ -74,7 +74,7 @@ th{background:var(--sidebar-bg);font-weight:600;}
 <div class="group">4.10 RAG</div>
 <ol><li><a href="#s4-10-1"><span class="num">1</span>Basic Pipeline</a></li><li><a href="#s4-10-2"><span class="num">2</span>Advanced RAG</a></li><li><a href="#s4-10-3"><span class="num">3</span>GraphRAG/Agentic RAG</a></li></ol>
 <div class="group">4.11 Agent</div>
-<ol><li><a href="#s4-11-1"><span class="num">1</span>From Prompt to ReAct</a></li><li><a href="#s4-11-2"><span class="num">2</span>Function Calling/MCP/Multi-Agent</a></li></ol>
+<ol><li><a href="#s4-11-1"><span class="num">1</span>From Prompt to ReAct</a></li><li><a href="#s4-11-2"><span class="num">2</span>Function Calling/MCP/Multi-Agent</a></li><li><a href="#s4-11-3"><span class="num">3</span>Agent Framework Ecosystem</a></li><li><a href="#s4-11-4"><span class="num">4</span>Coding Agents</a></li></ol>
 <div class="group">4.12 Multimodal</div>
 <ol><li><a href="#s4-12-1"><span class="num">1</span>VLM Architecture</a></li><li><a href="#s4-12-2"><span class="num">2</span>Audio, Video, and Unified Multimodal</a></li></ol>
 </aside>
@@ -86,7 +86,7 @@ th{background:var(--sidebar-bg);font-weight:600;}
 <div class="meta">Chapter 4 · Internal Learning Material · 37 Sections · Revised Early 2026</div>
 </header>
 
-<p>An LLM is no longer just a "model"—it is an entire technology stack. From low-level Transformer operators, to distributed training strategies, to inference-side scheduling optimizations, to RAG and Agent on the application side, every layer involves substantial engineering decisions and algorithm choices. This chapter ties these layers together so you can see the whole picture from top to bottom.</p>
+<p>An An LLM is no longer just a "model"—it is an entire technology stack. From low-level Transformer operators, to distributed training strategies, to inference-side scheduling optimizations, to RAG and Agent on the application side, every layer involves substantial engineering decisions and algorithm choices. This chapter ties these layers together so you can see the whole picture from top to bottom.</p>
 
 <p>37 sections, all deep dives. Key anchors include: complete derivation of Self-Attention (4.2.2), RoPE rotation matrices (4.3.2), DeepSeek's MLA low-rank decomposition (4.4.1), Mamba's selective state space (4.4.3), ZeRO three-stage memory sharding (4.7.2), PagedAttention's paging mechanism (4.8.3), acceptance rate analysis for speculative decoding (4.8.5), mathematics of AWQ/GPTQ (4.9.1), reranking and query rewriting in advanced RAG (4.10.2), and ReAct loop implementation (4.11.1). Other sections are written at the same level of depth: conceptual intuition, minimal derivation, and engineering details.</p>
 
@@ -1747,6 +1747,114 @@ Action: finish("Max Verstappen, age 27")
 </ul>
 <p>"General-purpose agents" (personal assistants, all-purpose secretaries) remain far from practical in 2025–2026 — the main obstacles are error accumulation in long-horizon tasks and insufficient self-correction. In the second half of 2025, investment in this area accelerated rapidly: Google launched the Gemini Agent + Antigravity environment, and Anthropic continued polishing Claude's agent reliability. Reasoning models (R1, V3.2, Claude 4.5) offer strong long-horizon planning, forming the foundation for agent reliability.</p>
 <p>A parallel trend is the flourishing of <strong>agent programming frameworks</strong>: LangChain and LlamaIndex keep evolving, and 2025 saw more "code-first" frameworks emerge (DSPy, Pydantic AI, Mastra, smolagents), turning agent orchestration into a more explicit engineering problem rather than relying solely on prompt conventions.</p>
+
+
+<!-- 4.11.3 -->
+<h2 id="s4-11-3"><span class="num">4.11.3</span>Agent Framework Ecosystem</h2>
+<p class="pos">Orientation: A panoramic view of agent frameworks in 2025–2026 — from orchestration engines to multi-agent collaboration platforms.</p>
+
+<h3>Tier 1: Orchestration Frameworks</h3>
+
+<p><strong>LangChain / LangGraph</strong>: LangChain burst onto the scene in late 2022 and rapidly became the de facto standard for LLM application development. In 2025, LangChain 1.0 and LangGraph 1.0 were released as stable versions simultaneously. LangGraph is its agent orchestration layer, with <strong>persistent state</strong> as the core selling point — agent execution can be paused, resumed, and rolled back, with support for human-in-the-loop approval nodes. Companies such as Uber, LinkedIn, and Klarna are already using LangGraph in production.</p>
+
+<p><strong>CrewAI</strong>: A multi-agent framework centered on "role-playing." Each agent has an explicit role, goal, and backstory, and collaborates via task assignment. Supports three orchestration modes: sequential, hierarchical, and consensual. Over 45,000 GitHub stars, with more than 12 million agent invocations per day. Natively supports MCP and Agent-to-Agent (A2A) communication. For small and mid-sized teams, it offers the lowest barrier to entry for multi-agent development.</p>
+
+<p><strong>AutoGen → Microsoft Agent Framework</strong>: AutoGen, released by Microsoft in 2023, was a pioneer in multi-agent conversation research. In early 2025, v0.4 was rewritten as an async event-driven architecture, and the project subsequently evolved into the closed-source Microsoft Agent Framework, with AutoGen entering maintenance mode. Its core contribution was demonstrating that the "multi-agent conversation" paradigm is viable.</p>
+
+<h3>Tier 2: Platform-Level Products</h3>
+
+<p><strong>Dify</strong>: An open-source low-code agent platform with 60,000+ GitHub stars. It provides a visual workflow editor, RAG pipelines, 50+ built-in tools (search, DALL-E, Wolfram, etc.), model management, and monitoring. Its positioning is "enabling non-engineers to build agent applications." The company raised $30 million in a Pre-A funding round.</p>
+
+<p><strong>Coze (ByteDance)</strong>: In July 2025, ByteDance open-sourced the core components Coze Studio and Coze Loop. Version 2.0 was released in January 2026, transforming the product from a chat tool into an "intelligent work partner" — supporting long-running Agent Plans (spanning multiple days) and Agent Skills (a customizable skill marketplace). It competes head-to-head with Dify in Asian markets.</p>
+
+<h3>Tier 3: Vendor SDKs</h3>
+
+<table>
+<tr><th>SDK</th><th>Vendor</th><th>Released</th><th>Core Design</th></tr>
+<tr><td><strong>Agents SDK</strong></td><td>OpenAI</td><td>2025.3</td><td>Four primitives: Agent, Handoff, Guardrail, Tracing. Minimalist design, model-agnostic</td></tr>
+<tr><td><strong>Claude Agent SDK</strong></td><td>Anthropic</td><td>2025.9</td><td>Shares toolchain with Claude Code (file read/write, command execution, code editing); supports sub-agents and hooks</td></tr>
+<tr><td><strong>ADK</strong></td><td>Google</td><td>2025</td><td>Code-first, model-agnostic, deployment-agnostic. Supports Python, Go, Java, and TypeScript</td></tr>
+</table>
+
+<p>Trend: All three major vendors have released their own agent SDKs, but with distinct design philosophies — OpenAI pursues minimalism (4 concepts are enough), Anthropic pursues pragmatism (giving you direct access to the filesystem and terminal), and Google pursues universality (cross-language, cross-platform).</p>
+
+<h3>Framework Selection Decision Tree</h3>
+<ul style="list-style:none;padding-left:0;">
+<li>- Single agent + tool calling only → <strong>OpenAI Agents SDK</strong> or native Function Calling</li>
+<li>- Stateful, interruptible agent workflows → <strong>LangGraph</strong></li>
+<li>- Multi-agent role specialization → <strong>CrewAI</strong></li>
+<li>- Non-engineers building agents → <strong>Dify</strong> or <strong>Coze</strong></li>
+<li>- Building a coding agent → <strong>Claude Agent SDK</strong></li>
+<li>- Enterprise-grade, multi-cloud deployment → <strong>Google ADK</strong></li>
+</ul>
+
+<!-- 4.11.4 -->
+<h2 id="s4-11-4"><span class="num">4.11.4</span>Coding Agents: The Most Mature Agent Vertical</h2>
+<p class="pos">Orientation: Programming is the most successful real-world application of agents — the toolchain is self-contained, feedback is immediate, and evaluation is objective.</p>
+
+<h3>Why Coding Agents Matured First</h3>
+<p>Agents remain unreliable in general-purpose scenarios (all-purpose assistants), but the programming domain got there first. The reasons:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong>Closed-loop feedback</strong>: code compiles and runs tests — every step gives the agent an objective signal of correctness</li>
+<li>- <strong>Complete toolchain</strong>: file read/write, terminal execution, Git operations, browser testing — a mature MCP/tool ecosystem already exists</li>
+<li>- <strong>Standardized evaluation</strong>: benchmarks like SWE-bench, HumanEval, and MBPP enable quantitative comparison</li>
+<li>- <strong>High value</strong>: developer hourly rates are high, so automation ROI is immediate</li>
+</ul>
+
+<h3>Coding Agent Landscape (2025–2026)</h3>
+
+<table>
+<tr><th>Product</th><th>Type</th><th>Key Characteristics</th><th>Status (early 2026)</th></tr>
+<tr><td><strong>Claude Code</strong></td><td>Terminal Agent</td><td>Reads entire codebases, multi-file editing, Git workflow, parallel sub-agents; most code at Anthropic is now generated by it</td><td>Available across terminal, IDE, desktop, and web</td></tr>
+<tr><td><strong>Cursor</strong></td><td>AI-native IDE</td><td>VS Code-based; Composer 1.5 (RL-trained); Visual Editor (drag-and-drop UI generation); multi-repo support</td><td>v3.0; $29.3B valuation; $2B+ annual revenue</td></tr>
+<tr><td><strong>Devin</strong></td><td>Autonomous Agent</td><td>Fully autonomous: starts from Jira/Linear tickets, plans → codes → debugs → deploys; handles tasks spanning 4–8 hours</td><td>v2.0; $155M ARR; 12,000 Goldman Sachs developers in trial</td></tr>
+<tr><td><strong>GitHub Copilot</strong></td><td>IDE Plugin + Agent</td><td>Agent Mode (self-iterating error correction); Coding Agent (async execution in GitHub Actions); Project Padawan (future)</td><td>Full IDE coverage (VS Code/JetBrains/Xcode)</td></tr>
+<tr><td><strong>Windsurf</strong></td><td>AI-native IDE</td><td>Cascade system (whole-codebase understanding); acquired by Cognition in December 2025 (~$250M); 1M+ users</td><td>Ranked #1 IDE (LogRocket Feb 2026)</td></tr>
+<tr><td><strong>Google Jules</strong></td><td>Async Agent</td><td>Powered by Gemini 2.5 Pro; GitHub integration; cloud VM execution; audio change logs</td><td>Public release; API available</td></tr>
+<tr><td><strong>Amazon Q Developer</strong></td><td>Multi-modal Agent</td><td>Deep AWS integration; SWE-bench Verified 66% (top-tier); 15+ languages; agentic code generation</td><td>Free + $19/month</td></tr>
+<tr><td><strong>OpenAI Codex CLI</strong></td><td>Terminal Agent</td><td>Open-source Rust implementation; lightweight; parallel sub-agents; MCP integration; optimized codex-mini model</td><td>Actively developed</td></tr>
+<tr><td><strong>Augment Code</strong></td><td>Semantic Platform</td><td>Context Engine (full-stack semantic understanding); Intent desktop (spec-driven + multi-agent orchestration); highest code review accuracy in the industry</td><td>Enterprise-focused</td></tr>
+<tr><td><strong>OpenClaw</strong></td><td>Open-source Terminal Agent</td><td>Open-source Claude Code alternative; supports multiple model backends (Claude/GPT/Gemini/local); community-driven; native MCP support</td><td>Active open-source community</td></tr>
+<tr><td><strong>ZeroClaw</strong></td><td>Lightweight Terminal Agent</td><td>Zero-dependency minimalist design; single-file deployment; focused on rapid prototyping and small projects; low token overhead</td><td>Lightweight alternative</td></tr>
+<tr><td><strong>Hermes Agent</strong></td><td>AI Assistant Agent</td><td>General task automation (not limited to coding); browser control + file management + API calls; long-horizon task planning</td><td>Emerging 2025–2026</td></tr>
+</table>
+
+<h3>The Rise of Open-Source / Community Coding Agents</h3>
+<p>In the second half of 2025, closed-source terminal agents led by Claude Code spurred a wave of open-source alternatives:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong>OpenClaw</strong>: the earliest open-source Claude Code replacement, built on the philosophy of "the same agent loop (read code → edit → test → commit), but with a swappable model backend." Supports connecting any tool via MCP; the community has contributed hundreds of MCP servers</li>
+<li>- <strong>ZeroClaw</strong>: the minimalist approach — a single Python file, zero external dependencies, focused on "quick Q&amp;A + small edits." It sacrifices complex multi-file orchestration in exchange for fast startup and low cost</li>
+<li>- <strong>Hermes Agent</strong>: not limited to coding, but general task automation — can operate browsers, manage files, call APIs, and write documentation. Positioned between a coding agent and a general-purpose agent</li>
+<li>- <strong>Aider</strong>: an early open-source pair programming agent supporting multiple models; collaborates with developers in the terminal to edit code; remained actively developed throughout 2025</li>
+<li>- <strong>Continue</strong>: a VS Code/JetBrains plugin, open-source, supporting any model (local Ollama or cloud API), positioned as the "open-source Copilot"</li>
+</ul>
+<p>Trend: Coding agents are becoming <strong>infrastructure</strong> — no longer the exclusive product of any single company, but a standard component of every developer's toolchain. The standardization of the MCP protocol has accelerated this: write a tool once, and every agent can use it.</p>
+
+<h3>A Typical Coding Agent Workflow</h3>
+<p>Using Claude Code as an example, a typical bug-fix workflow:</p>
+<pre><code class="language-text">1. User: "Fix the white screen issue on the login page in Safari"
+2. Agent reads the project structure → locates the frontend code
+3. Agent searches relevant files (login.tsx, auth.ts, Safari-related CSS)
+4. Agent analyzes the problem → identifies a CSS property unsupported by Safari
+5. Agent edits the code → adds compatibility prefixes
+6. Agent runs tests → checks if they pass
+7. Agent runs browser tests → confirms Safari renders correctly
+8. Agent creates a Git commit → awaits user confirmation
+</code></pre>
+<p>Key insight: the entire process is an <strong>engineered implementation of the ReAct loop</strong> — Thought (analysis) → Action (read file / edit code / run tests) → Observation (result) → repeat. The difference is that tool calls go through Function Calling rather than prompt text, and state management includes checkpoints and rollback.</p>
+
+<h3>SWE-bench: The Standard Exam for Coding Agents</h3>
+<p>SWE-bench (Princeton 2024) draws programming tasks from real GitHub issues, requiring agents to fix bugs and add features on complete codebases. SWE-bench Verified is a human-validated subset and is considered more reliable.</p>
+<p>In early 2024, the best agents could solve only around 5% of SWE-bench problems. By early 2026, frontier systems (Amazon Q Developer, Claude Code) reached <strong>50–66%</strong> — a more than 10× improvement in eighteen months. This is the most direct evidence of progress in agent capabilities.</p>
+
+<h3>Limitations of Coding Agents</h3>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong>Weak creative design</strong>: excels at well-defined tasks (fixing bugs, writing tests, migrations); struggles with ambiguous ones (designing architecture from scratch)</li>
+<li>- <strong>Instability on long tasks</strong>: for complex tasks exceeding 30 minutes, error accumulation remains a problem</li>
+<li>- <strong>Security risks</strong>: autonomous code execution introduces risks such as prompt injection and credential leakage; sandbox isolation is required</li>
+<li>- <strong>Cost considerations</strong>: complex tasks may consume tens of thousands of tokens; ROI must be assessed</li>
+<li>- <strong>Human-agent collaboration is optimal</strong>: the current best practice is not "full autonomy" but rather agent drafts + human review and confirmation</li>
+</ul>
 
 <div class="part-header"><div class="part-label">PART TWELVE</div><h2 class="part-title">4.12 Multimodal</h2><p class="part-desc">LLMs that see and hear — the expansion from "language model" to "foundation model."</p></div>
 

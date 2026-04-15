@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LLM Technology — From Transformer to Agent</title>
+<title>LLM技术 — From Transformer to Agent</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
@@ -52,38 +52,38 @@ th{background:var(--sidebar-bg);font-weight:600;}
 </head>
 <body>
 <aside class="toc">
-<h1>LLM Technology</h1><div class="sub">Chapter 4 · From Transformer to Agent</div>
-<div class="group">4.1 LLM Overview</div>
-<ol><li><a href="#s4-1-1"><span class="num">1</span>From LM to LLM</a></li><li><a href="#s4-1-2"><span class="num">2</span>Open-Source vs Closed-Source Ecosystems</a></li></ol>
-<div class="group">4.2 Transformer Architecture</div>
-<ol><li><a href="#s4-2-1"><span class="num">1</span>Overall Structure</a></li><li><a href="#s4-2-2"><span class="num">2</span>Self-Attention</a></li><li><a href="#s4-2-3"><span class="num">3</span>Multi-Head</a></li><li><a href="#s4-2-4"><span class="num">4</span>FFN, Residual Connections, Normalization</a></li><li><a href="#s4-2-5"><span class="num">5</span>Encoder/Decoder</a></li><li><a href="#s4-2-6"><span class="num">6</span>Transformer Evolution</a></li></ol>
-<div class="group">4.3 Positional Encoding</div>
-<ol><li><a href="#s4-3-1"><span class="num">1</span>History of Positional Encoding</a></li><li><a href="#s4-3-2"><span class="num">2</span>RoPE</a></li><li><a href="#s4-3-3"><span class="num">3</span>Long Context Extrapolation</a></li></ol>
-<div class="group">4.4 Attention Optimizations</div>
-<ol><li><a href="#s4-4-1"><span class="num">1</span>MQA/GQA/MLA</a></li><li><a href="#s4-4-2"><span class="num">2</span>Sparse Attention</a></li><li><a href="#s4-4-3"><span class="num">3</span>Linear Attention and Mamba</a></li></ol>
-<div class="group">4.5 Tokenizer and Embedding</div>
-<ol><li><a href="#s4-5-1"><span class="num">1</span>BPE Family</a></li><li><a href="#s4-5-2"><span class="num">2</span>Modern Tokenizer Engineering</a></li><li><a href="#s4-5-3"><span class="num">3</span>Embedding Models</a></li></ol>
+<h1>LLM技术</h1><div class="sub">Chapter 4 · 从Transformer到Agent</div>
+<div class="group">4.1 LLM全景</div>
+<ol><li><a href="#s4-1-1"><span class="num">1</span>从语言模型到LLM</a></li><li><a href="#s4-1-2"><span class="num">2</span>开源与闭源生态</a></li></ol>
+<div class="group">4.2 Transformer架构</div>
+<ol><li><a href="#s4-2-1"><span class="num">1</span>整体结构</a></li><li><a href="#s4-2-2"><span class="num">2</span>自注意力</a></li><li><a href="#s4-2-3"><span class="num">3</span>多头注意力</a></li><li><a href="#s4-2-4"><span class="num">4</span>FFN、残差连接、归一化</a></li><li><a href="#s4-2-5"><span class="num">5</span>编码器/解码器</a></li><li><a href="#s4-2-6"><span class="num">6</span>Transformer演进</a></li></ol>
+<div class="group">4.3 位置编码</div>
+<ol><li><a href="#s4-3-1"><span class="num">1</span>位置编码发展史</a></li><li><a href="#s4-3-2"><span class="num">2</span>RoPE</a></li><li><a href="#s4-3-3"><span class="num">3</span>长上下文外推</a></li></ol>
+<div class="group">4.4 注意力优化</div>
+<ol><li><a href="#s4-4-1"><span class="num">1</span>MQA/GQA/MLA</a></li><li><a href="#s4-4-2"><span class="num">2</span>稀疏注意力</a></li><li><a href="#s4-4-3"><span class="num">3</span>线性注意力与Mamba</a></li></ol>
+<div class="group">4.5 Tokenizer与Embedding</div>
+<ol><li><a href="#s4-5-1"><span class="num">1</span>BPE家族</a></li><li><a href="#s4-5-2"><span class="num">2</span>现代Tokenizer工程</a></li><li><a href="#s4-5-3"><span class="num">3</span>Embedding模型</a></li></ol>
 <div class="group">4.6 MoE</div>
-<ol><li><a href="#s4-6-1"><span class="num">1</span>MoE Fundamentals</a></li><li><a href="#s4-6-2"><span class="num">2</span>MoE Engineering Practice</a></li></ol>
-<div class="group">4.7 Distributed Training</div>
-<ol><li><a href="#s4-7-1"><span class="num">1</span>Data Parallelism (DDP)</a></li><li><a href="#s4-7-2"><span class="num">2</span>ZeRO Three Stages</a></li><li><a href="#s4-7-3"><span class="num">3</span>Tensor Parallelism and Pipeline Parallelism</a></li><li><a href="#s4-7-4"><span class="num">4</span>3D Parallelism and Training Stack</a></li></ol>
-<div class="group">4.8 Inference Engines</div>
-<ol><li><a href="#s4-8-1"><span class="num">1</span>Inference Workload Characteristics</a></li><li><a href="#s4-8-2"><span class="num">2</span>KV Cache</a></li><li><a href="#s4-8-3"><span class="num">3</span>PagedAttention/vLLM</a></li><li><a href="#s4-8-4"><span class="num">4</span>Continuous Batching</a></li><li><a href="#s4-8-5"><span class="num">5</span>Speculative Decoding</a></li></ol>
-<div class="group">4.9 Inference Compression</div>
-<ol><li><a href="#s4-9-1"><span class="num">1</span>AWQ/GPTQ</a></li><li><a href="#s4-9-2"><span class="num">2</span>KV Cache Quantization and FP8</a></li></ol>
+<ol><li><a href="#s4-6-1"><span class="num">1</span>MoE基本原理</a></li><li><a href="#s4-6-2"><span class="num">2</span>MoE工程实践</a></li></ol>
+<div class="group">4.7 分布式训练</div>
+<ol><li><a href="#s4-7-1"><span class="num">1</span>数据并行(DDP)</a></li><li><a href="#s4-7-2"><span class="num">2</span>ZeRO三阶段</a></li><li><a href="#s4-7-3"><span class="num">3</span>张量并行与流水线并行</a></li><li><a href="#s4-7-4"><span class="num">4</span>3D并行与训练栈</a></li></ol>
+<div class="group">4.8 推理引擎</div>
+<ol><li><a href="#s4-8-1"><span class="num">1</span>推理负载特征</a></li><li><a href="#s4-8-2"><span class="num">2</span>KV Cache</a></li><li><a href="#s4-8-3"><span class="num">3</span>PagedAttention/vLLM</a></li><li><a href="#s4-8-4"><span class="num">4</span>连续批处理</a></li><li><a href="#s4-8-5"><span class="num">5</span>推测解码</a></li></ol>
+<div class="group">4.9 推理压缩</div>
+<ol><li><a href="#s4-9-1"><span class="num">1</span>AWQ/GPTQ</a></li><li><a href="#s4-9-2"><span class="num">2</span>KV Cache量化与FP8</a></li></ol>
 <div class="group">4.10 RAG</div>
-<ol><li><a href="#s4-10-1"><span class="num">1</span>Basic Pipeline</a></li><li><a href="#s4-10-2"><span class="num">2</span>Advanced RAG</a></li><li><a href="#s4-10-3"><span class="num">3</span>GraphRAG/Agentic RAG</a></li></ol>
+<ol><li><a href="#s4-10-1"><span class="num">1</span>基础流水线</a></li><li><a href="#s4-10-2"><span class="num">2</span>高级RAG</a></li><li><a href="#s4-10-3"><span class="num">3</span>GraphRAG/Agentic RAG</a></li></ol>
 <div class="group">4.11 Agent</div>
-<ol><li><a href="#s4-11-1"><span class="num">1</span>From Prompt to ReAct</a></li><li><a href="#s4-11-2"><span class="num">2</span>Function Calling/MCP/Multi-Agent</a></li><li><a href="#s4-11-3"><span class="num">3</span>Agent Framework Ecosystem</a></li><li><a href="#s4-11-4"><span class="num">4</span>Coding Agents</a></li></ol>
-<div class="group">4.12 Multimodal</div>
-<ol><li><a href="#s4-12-1"><span class="num">1</span>VLM Architecture</a></li><li><a href="#s4-12-2"><span class="num">2</span>Audio, Video, and Unified Multimodal</a></li></ol>
+<ol><li><a href="#s4-11-1"><span class="num">1</span>从Prompt到ReAct</a></li><li><a href="#s4-11-2"><span class="num">2</span>Function Calling/MCP/多Agent</a></li><li><a href="#s4-11-3"><span class="num">3</span>Agent框架生态</a></li><li><a href="#s4-11-4"><span class="num">4</span>Coding Agent</a></li></ol>
+<div class="group">4.12 多模态</div>
+<ol><li><a href="#s4-12-1"><span class="num">1</span>VLM架构</a></li><li><a href="#s4-12-2"><span class="num">2</span>音频视频与统一多模态</a></li></ol>
 </aside>
 
 <main>
 <header class="cover">
-<h1>LLM Technology</h1>
-<div class="subtitle">From Transformer to Agent — Complete Technical Stack of Large Language Models</div>
-<div class="meta">Chapter 4 · Internal Learning Material · 37 Sections · Revised Early 2026</div>
+<h1>LLM技术</h1>
+<div class="subtitle">从Transformer到Agent — Complete Technical Stack of Large Language Models</div>
+<div class="meta">Chapter 4 · 内部学习材料 · 共37节</div>
 </header>
 
 <p>LLM is no longer just a "model"—it is an entire technology stack. From low-level Transformer operators, to distributed training strategies, to inference-side scheduling optimizations, to RAG and Agent on the application side, every layer involves substantial engineering decisions and algorithm choices. This chapter ties these layers together so you can see the whole picture from top to bottom.</p>
@@ -92,7 +92,7 @@ th{background:var(--sidebar-bg);font-weight:600;}
 
 <p>When discussing concrete products, we focus on <strong>open-source</strong> (Transformers, vLLM, TGI, llama.cpp, DeepSpeed, FSDP, LangChain, LlamaIndex, etc.), with OpenAI/Anthropic APIs mentioned for comparison. This way you see the full ecosystem landscape without being tied to any single vendor.</p>
 
-<div class="part-header"><div class="part-label">PART ONE</div><h2 class="part-title">4.1 LLM Overview</h2><p class="part-desc">Establish a coordinate system for the entire LLM field—where capabilities come from and how the landscape divides.</p></div>
+<div class="part-header"><div class="part-label">PART ONE</div><h2 class="part-title">4.1 LLM全景</h2><p class="part-desc">建立整个LLM领域的坐标系—能力从何而来,生态如何分化。</p></div>
 
 <h2 id="s4-1-1"><span class="num">4.1.1</span>From LM to LLM</h2>
 <p class="pos">Position: How Scaling transforms "language models" into "general reasoning systems"—history, key milestones, Scaling Law.</p>
