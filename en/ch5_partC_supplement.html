@@ -200,9 +200,9 @@ flowchart TB
 <h3>Complexity Analysis</h3>
 <table>
 <tr><th>Operation</th><th>Time Complexity</th><th>Notes</th></tr>
-<tr><td>Search</td><td>$O(\log N)$</td><td>$O(1)$ greedy steps per layer, $O(\log N)$ layers total</td></tr>
+<tr><td>Search</td><td>$O(\log N)$ \lt /td> \lt td>$O(1)$ greedy steps per layer, $O(\log N)$ layers total</td></tr>
 <tr><td>Insert</td><td>$O(\log N)$</td><td>Search + edge creation</td></tr>
-<tr><td>Space</td><td>$O(N \cdot M)$</td><td>$M$ edges per node</td></tr>
+<tr><td>Space</td><td>$O(N \cdot M)$ \lt /td> \lt td>$M$ edges per node</td></tr>
 </table>
 
 <h3>Key Parameters</h3>
@@ -312,7 +312,7 @@ stateDiagram-v2
 <h3>Core Method: Two-Player Zero-Sum Game</h3>
 <p>Two networks are trained simultaneously:</p>
 <ul style="list-style:none;padding-left:0;">
-<li><strong>Generator $G$</strong>: generates fake samples $G(z)$ from noise $z \sim p_z(z)$, with the goal of "fooling the discriminator"</li>
+<li><strong>Generator $G$ \lt /strong>: generates fake samples $G(z)$ from noise $z \sim p_z(z)$, with the goal of "fooling the discriminator"</li>
 <li><strong>Discriminator $D$</strong>: judges whether an input is a real or generated sample, with the goal of "not being fooled"</li>
 </ul>
 
@@ -569,7 +569,7 @@ def vae_loss(recon_x, x, mu, logvar):
 
 <div class="formula">$p_\theta(x_{t-1} | x_t) = \mathcal{N}(x_{t-1}; \mu_\theta(x_t, t), \sigma_t^2 I)$</div>
 
-<p>Ho et al.'s key simplification: instead of directly predicting $\mu$, the network <strong>predicts the noise $\epsilon$</strong>. The network $\epsilon_\theta(x_t, t)$ takes a noisy image and a timestep as input and outputs the predicted noise.</p>
+<p>Ho et al.'s key simplification: instead of directly predicting $\mu$, the network  \lt strong>predicts the noise $\epsilon$ \lt /strong>. The network $\epsilon_\theta(x_t, t)$ takes a noisy image and a timestep as input and outputs the predicted noise.</p>
 
 <div class="mermaid">
 flowchart LR
@@ -818,9 +818,9 @@ flowchart TB
 <h3>Complexity Comparison</h3>
 <table>
 <tr><th>Model</th><th>Training Complexity</th><th>Inference (per token)</th><th>Long-Sequence Support</th></tr>
-<tr><td>Transformer</td><td>$O(N^2 d)$</td><td>$O(N d)$ (KV cache)</td><td>Limited by quadratic complexity</td></tr>
-<tr><td>S4 (fixed SSM)</td><td>$O(N \log N \cdot d)$</td><td>$O(d)$</td><td>Good, but lacks selectivity</td></tr>
-<tr><td>Mamba</td><td>$O(N d)$</td><td>$O(d)$ (fixed state)</td><td>Theoretically unbounded</td></tr>
+<tr><td>Transformer</td><td>$O(N^2 d)$ \lt /td> \lt td>$O(N d)$ (KV cache)</td><td>Limited by quadratic complexity</td></tr>
+<tr><td>S4 (fixed SSM)</td><td>$O(N \log N \cdot d)$ \lt /td> \lt td>$O(d)$</td><td>Good, but lacks selectivity</td></tr>
+<tr><td>Mamba</td><td>$O(N d)$ \lt /td> \lt td>$O(d)$ (fixed state)</td><td>Theoretically unbounded</td></tr>
 </table>
 
 <h3>Experimental Results</h3>

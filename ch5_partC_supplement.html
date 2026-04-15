@@ -200,9 +200,9 @@ flowchart TB
 <h3>复杂度分析</h3>
 <table>
 <tr><th>操作</th><th>时间复杂度</th><th>说明</th></tr>
-<tr><td>搜索</td><td>$O(\log N)$</td><td>每层贪心搜索 $O(1)$ 步,共 $O(\log N)$ 层</td></tr>
+<tr><td>搜索</td><td>$O(\log N)$ \lt /td> \lt td>每层贪心搜索 $O(1)$ 步,共 $O(\log N)$ 层</td></tr>
 <tr><td>插入</td><td>$O(\log N)$</td><td>搜索 + 连边</td></tr>
-<tr><td>空间</td><td>$O(N \cdot M)$</td><td>每个节点 $M$ 条边</td></tr>
+<tr><td>空间</td><td>$O(N \cdot M)$ \lt /td> \lt td>每个节点 $M$ 条边</td></tr>
 </table>
 
 <h3>关键参数</h3>
@@ -312,7 +312,7 @@ stateDiagram-v2
 <h3>核心方法:二人零和博弈</h3>
 <p>两个网络同时训练:</p>
 <ul style="list-style:none;padding-left:0;">
-<li><strong>生成器 $G$</strong>:从噪声 $z \sim p_z(z)$ 生成假样本 $G(z)$,目标是"骗过判别器"</li>
+<li><strong>生成器 $G$ \lt /strong>:从噪声 $z \sim p_z(z)$ 生成假样本 $G(z)$,目标是"骗过判别器"</li>
 <li><strong>判别器 $D$</strong>:判断输入是真实样本还是生成样本,目标是"不被骗"</li>
 </ul>
 
@@ -569,7 +569,7 @@ def vae_loss(recon_x, x, mu, logvar):
 
 <div class="formula">$p_\theta(x_{t-1} | x_t) = \mathcal{N}(x_{t-1}; \mu_\theta(x_t, t), \sigma_t^2 I)$</div>
 
-<p>Ho 等人的关键简化:不直接预测 $\mu$,而是<strong>预测噪声 $\epsilon$</strong>。网络 $\epsilon_\theta(x_t, t)$ 输入带噪图像和时间步,输出预测的噪声。</p>
+<p>Ho 等人的关键简化:不直接预测 $\mu$,而是 \lt strong>预测噪声 $\epsilon$ \lt /strong>。网络 $\epsilon_\theta(x_t, t)$ 输入带噪图像和时间步,输出预测的噪声。</p>
 
 <div class="mermaid">
 flowchart LR
@@ -818,9 +818,9 @@ flowchart TB
 <h3>复杂度对比</h3>
 <table>
 <tr><th>模型</th><th>训练复杂度</th><th>推理(每 token)</th><th>长序列支持</th></tr>
-<tr><td>Transformer</td><td>$O(N^2 d)$</td><td>$O(N d)$(KV cache)</td><td>受限于二次复杂度</td></tr>
-<tr><td>S4 (固定 SSM)</td><td>$O(N \log N \cdot d)$</td><td>$O(d)$</td><td>好,但缺乏选择性</td></tr>
-<tr><td>Mamba</td><td>$O(N d)$</td><td>$O(d)$(固定状态)</td><td>理论上无上限</td></tr>
+<tr><td>Transformer</td><td>$O(N^2 d)$ \lt /td> \lt td>$O(N d)$(KV cache)</td><td>受限于二次复杂度</td></tr>
+<tr><td>S4 (固定 SSM)</td><td>$O(N \log N \cdot d)$ \lt /td> \lt td>$O(d)$</td><td>好,但缺乏选择性</td></tr>
+<tr><td>Mamba</td><td>$O(N d)$ \lt /td> \lt td>$O(d)$(固定状态)</td><td>理论上无上限</td></tr>
 </table>
 
 <h3>实验结果</h3>

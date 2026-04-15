@@ -417,7 +417,7 @@ def kmeans(X, k, max_iter=100, tol=1e-4):
     return centers, labels
 </code></pre>
 
-<p>Kmeans 的几个坑。第一,<strong>对初始化敏感</strong>——不同种子跑出完全不同的簇。Kmeans++ 初始化(上面代码里做的)显著改善。第二,<strong>必须指定 $k$</strong>——通常用 elbow method(画 $k$ vs SSE 曲线,找拐点)或 silhouette score 辅助选择。第三,<strong>假设簇是球形</strong>——条状、环形分布它搞不定,需要 DBSCAN 或 spectral clustering 这类。</p>
+<p>Kmeans 的几个坑。第一,<strong>对初始化敏感</strong>——不同种子跑出完全不同的簇。Kmeans++ 初始化(上面代码里做的)显著改善。第二,<strong>必须指定 $k$ \lt /strong>——通常用 elbow method(画 $k$ vs SSE 曲线,找拐点)或 silhouette score 辅助选择。第三,<strong>假设簇是球形</strong>——条状、环形分布它搞不定,需要 DBSCAN 或 spectral clustering 这类。</p>
 
 <h3>在网络领域</h3>
 
@@ -562,7 +562,7 @@ $\min_{\mathbf{w}, b} \frac{1}{2}\|\mathbf{w}\|^2 \quad \text{s.t. } y_i(\mathbf
 $\max_\alpha \sum_i \alpha_i - \frac{1}{2}\sum_{i,j} \alpha_i \alpha_j y_i y_j \mathbf{x}_i^\top \mathbf{x}_j, \quad \alpha_i \ge 0, \sum_i \alpha_i y_i = 0$
 </div>
 
-<p>解出 $\alpha^*$ 后,$\mathbf{w} = \sum_i \alpha_i y_i \mathbf{x}_i$。关键观察:<strong>绝大多数 $\alpha_i = 0$</strong>,只有在间隔边界上的少数点 $\alpha_i > 0$——这些就是<strong>支持向量</strong>。SVM 的名字由此而来。预测时只需要支持向量:</p>
+<p>解出 $\alpha^*$ 后,$\mathbf{w} = \sum_i \alpha_i y_i \mathbf{x}_i$。关键观察: \lt strong>绝大多数 $\alpha_i = 0$ \lt /strong>,只有在间隔边界上的少数点 $\alpha_i > 0$——这些就是<strong>支持向量</strong>。SVM 的名字由此而来。预测时只需要支持向量:</p>
 
 <div class="formula">
 $f(\mathbf{x}) = \text{sign}\left(\sum_{i \in \text{SV}} \alpha_i y_i \mathbf{x}_i^\top \mathbf{x} + b\right)$
@@ -570,7 +570,7 @@ $f(\mathbf{x}) = \text{sign}\left(\sum_{i \in \text{SV}} \alpha_i y_i \mathbf{x}
 
 <h3>核技巧</h3>
 
-<p>线性不可分怎么办?把数据映射到更高维空间 $\phi(\mathbf{x})$,希望在那里线性可分。注意对偶里只出现 $\mathbf{x}_i^\top \mathbf{x}_j$——换成 $\phi(\mathbf{x}_i)^\top \phi(\mathbf{x}_j)$ 就行。而这个内积可以定义一个<strong>核函数</strong> $K(\mathbf{x}_i, \mathbf{x}_j)$ 直接计算,不需要显式算 $\phi$——这就是核技巧。</p>
+<p>线性不可分怎么办?把数据映射到更高维空间 $\phi(\mathbf{x})$,希望在那里线性可分。注意对偶里只出现 $\mathbf{x}_i^\top \mathbf{x}_j$——换成 $\phi(\mathbf{x}_i)^\top \phi(\mathbf{x}_j)$ 就行。而这个内积可以定义一个 \lt strong>核函数 \lt /strong> $K(\mathbf{x}_i, \mathbf{x}_j)$ 直接计算,不需要显式算 $\phi$——这就是核技巧。</p>
 
 <p>常用核:</p>
 <ul style="list-style:none; padding-left:0;">
@@ -733,7 +733,7 @@ def dtw(x, y):
     return D[n, m]
 </code></pre>
 
-<p>优化:<strong>Sakoe-Chiba 带</strong>限制 $|i - j| \le w$,复杂度从 $O(nm)$ 降到 $O(nw)$;<strong>FastDTW</strong> 用多尺度递归逼近 $O(n)$。</p>
+<p>优化:<strong>Sakoe-Chiba 带</strong>限制 $|i - j| \le w$,复杂度从 $O(nm)$ 降到 $O(nw)$; \lt strong>FastDTW \lt /strong> 用多尺度递归逼近 $O(n)$。</p>
 
 <h3>DBA:Dynamic Time Warping Barycenter Averaging</h3>
 
@@ -1320,7 +1320,7 @@ $\log p_\theta(x) \ge \mathbb{E}_{q_\phi(z|x)}[\log p_\theta(x|z)] - D_{\text{KL
 
 <p>其中 $q_\phi(z|x)$ 是编码器(把 $x$ 编成 $z$ 的分布),$p_\theta(x|z)$ 是解码器(从 $z$ 重建 $x$)。两者都是神经网络。</p>
 
-<p>训练时同时优化两项:重建项(解码器能从 $z$ 还原 $x$)+ KL 项($q$ 和先验 $p(z)$ 接近)。训练用<strong>重参数化技巧</strong>:$z = \mu_\phi(x) + \sigma_\phi(x) \odot \epsilon, \epsilon \sim \mathcal{N}(0, I)$——让采样可微。</p>
+<p>训练时同时优化两项:重建项(解码器能从 $z$ 还原 $x$)+ KL 项($q$ 和先验 $p(z)$ 接近)。训练用 \lt strong>重参数化技巧 \lt /strong>:$z = \mu_\phi(x) + \sigma_\phi(x) \odot \epsilon, \epsilon \sim \mathcal{N}(0, I)$——让采样可微。</p>
 
 <p>VAE 的优点:显式潜空间(可插值、可控生成)、训练稳定。缺点:生成样本通常模糊(重建损失是像素 MSE,倾向平均)。</p>
 
@@ -1328,7 +1328,7 @@ $\log p_\theta(x) \ge \mathbb{E}_{q_\phi(z|x)}[\log p_\theta(x|z)] - D_{\text{KL
 
 <p>完全不同的路径。两个网络对抗:</p>
 <ul style="list-style:none; padding-left:0;">
-<li><strong>生成器 $G$</strong>:输入噪声 $z$,输出假样本 $G(z)$</li>
+<li><strong>生成器 $G$ \lt /strong>:输入噪声 $z$,输出假样本 $G(z)$</li>
 <li><strong>判别器 $D$</strong>:输入样本,判别真假(输出 0–1 概率)</li>
 </ul>
 
@@ -1815,7 +1815,7 @@ $\mathcal{L}_{\text{DPO}} = -\log \sigma\left(\beta \log \frac{\pi_\theta(y_w|x)
 
 <h3>MDP 框架</h3>
 
-<p>RL 的数学骨架是 Markov Decision Process(MDP):状态 $s$、动作 $a$、转移 $P(s'|s,a)$、奖励 $R(s,a)$、折扣因子 $\gamma$。目标是学一个<strong>策略</strong> $\pi(a|s)$,最大化期望累计回报:</p>
+<p>RL 的数学骨架是 Markov Decision Process(MDP):状态 $s$、动作 $a$、转移 $P(s'|s,a)$、奖励 $R(s,a)$、折扣因子 $\gamma$。目标是学一个 \lt strong>策略 \lt /strong> $\pi(a|s)$,最大化期望累计回报:</p>
 
 <div class="formula">
 $J(\pi) = \mathbb{E}_\pi\left[\sum_{t=0}^\infty \gamma^t R(s_t, a_t)\right]$
@@ -2015,7 +2015,7 @@ $\text{Perf} \le \min(P, I \cdot B)$
 <p>对数坐标画图:横轴算术强度,纵轴性能。$I \cdot B$ 是倾斜的"带宽屋顶",$P$ 是水平的"算力屋顶"。拐点 $I^* = P / B$ 是<strong>硬件的平衡点</strong>。</p>
 
 <ul style="list-style:none; padding-left:0;">
-<li>- $I < I^*$:内存受限(memory-bound)。花时间提升算力没用,要减少内存访问。</li>
+<li>- $I \lt I^*$:内存受限(memory-bound)。花时间提升算力没用,要减少内存访问。</li>
 <li>- $I > I^*$:计算受限(compute-bound)。硬件算力跑满,只能换更强硬件或优化算法减 FLOPs。</li>
 </ul>
 

@@ -417,7 +417,7 @@ def kmeans(X, k, max_iter=100, tol=1e-4):
     return centers, labels
 </code></pre>
 
-<p>A few pitfalls with K-means. First, <strong>sensitivity to initialization</strong> — different seeds can produce completely different clusters. K-means++ initialization (as done in the code above) significantly improves this. Second, <strong>you must specify $k$</strong> — typically the elbow method (plot $k$ vs. SSE, find the kink) or the silhouette score helps with selection. Third, <strong>it assumes spherical clusters</strong> — elongated or ring-shaped distributions are beyond its reach; DBSCAN or spectral clustering are needed for those cases.</p>
+<p>A few pitfalls with K-means. First, <strong>sensitivity to initialization</strong> — different seeds can produce completely different clusters. K-means++ initialization (as done in the code above) significantly improves this. Second, <strong>you must specify $k$ \lt /strong> — typically the elbow method (plot $k$ vs. SSE, find the kink) or the silhouette score helps with selection. Third, <strong>it assumes spherical clusters</strong> — elongated or ring-shaped distributions are beyond its reach; DBSCAN or spectral clustering are needed for those cases.</p>
 
 <h3>In the Networking Domain</h3>
 
@@ -562,7 +562,7 @@ $\min_{\mathbf{w}, b} \frac{1}{2}\|\mathbf{w}\|^2 \quad \text{s.t. } y_i(\mathbf
 $\max_\alpha \sum_i \alpha_i - \frac{1}{2}\sum_{i,j} \alpha_i \alpha_j y_i y_j \mathbf{x}_i^\top \mathbf{x}_j, \quad \alpha_i \ge 0, \sum_i \alpha_i y_i = 0$
 </div>
 
-<p>After solving for $\alpha^*$, $\mathbf{w} = \sum_i \alpha_i y_i \mathbf{x}_i$. A key observation: <strong>the vast majority of $\alpha_i = 0$</strong>; only the points on the margin boundary have $\alpha_i > 0$ — these are the <strong>support vectors</strong>, which is where the name SVM comes from. Prediction only requires the support vectors:</p>
+<p>After solving for $\alpha^*$, $\mathbf{w} = \sum_i \alpha_i y_i \mathbf{x}_i$. A key observation:  \lt strong>the vast majority of $\alpha_i = 0$ \lt /strong>; only the points on the margin boundary have $\alpha_i > 0$ — these are the <strong>support vectors</strong>, which is where the name SVM comes from. Prediction only requires the support vectors:</p>
 
 <div class="formula">
 $f(\mathbf{x}) = \text{sign}\left(\sum_{i \in \text{SV}} \alpha_i y_i \mathbf{x}_i^\top \mathbf{x} + b\right)$
@@ -570,7 +570,7 @@ $f(\mathbf{x}) = \text{sign}\left(\sum_{i \in \text{SV}} \alpha_i y_i \mathbf{x}
 
 <h3>The Kernel Trick</h3>
 
-<p>What about linearly inseparable data? Map the data to a higher-dimensional space $\phi(\mathbf{x})$ where linear separability holds. Notice that the dual only involves $\mathbf{x}_i^\top \mathbf{x}_j$ — replacing this with $\phi(\mathbf{x}_i)^\top \phi(\mathbf{x}_j)$ suffices. And this inner product can be defined as a <strong>kernel function</strong> $K(\mathbf{x}_i, \mathbf{x}_j)$ computed directly, without explicitly computing $\phi$ — this is the kernel trick.</p>
+<p>What about linearly inseparable data? Map the data to a higher-dimensional space $\phi(\mathbf{x})$ where linear separability holds. Notice that the dual only involves $\mathbf{x}_i^\top \mathbf{x}_j$ — replacing this with $\phi(\mathbf{x}_i)^\top \phi(\mathbf{x}_j)$ suffices. And this inner product can be defined as a  \lt strong>kernel function \lt /strong> $K(\mathbf{x}_i, \mathbf{x}_j)$ computed directly, without explicitly computing $\phi$ — this is the kernel trick.</p>
 
 <p>Common kernels:</p>
 <ul style="list-style:none; padding-left:0;">
@@ -733,7 +733,7 @@ def dtw(x, y):
     return D[n, m]
 </code></pre>
 
-<p>Optimizations: the <strong>Sakoe-Chiba band</strong> restricts $|i - j| \le w$, reducing complexity from $O(nm)$ to $O(nw)$; <strong>FastDTW</strong> uses multiscale recursion to approximate in $O(n)$.</p>
+<p>Optimizations: the <strong>Sakoe-Chiba band</strong> restricts $|i - j| \le w$, reducing complexity from $O(nm)$ to $O(nw)$;  \lt strong>FastDTW \lt /strong> uses multiscale recursion to approximate in $O(n)$.</p>
 
 <h3>DBA: Dynamic Time Warping Barycenter Averaging</h3>
 
@@ -1318,7 +1318,7 @@ $\log p_\theta(x) \ge \mathbb{E}_{q_\phi(z|x)}[\log p_\theta(x|z)] - D_{\text{KL
 
 <p>Here $q_\phi(z|x)$ is the encoder (maps $x$ to a distribution over $z$), and $p_\theta(x|z)$ is the decoder (reconstructs $x$ from $z$). Both are neural networks.</p>
 
-<p>Training jointly optimizes two terms: the reconstruction term (the decoder can recover $x$ from $z$) and the KL term ($q$ stays close to the prior $p(z)$). Training uses the <strong>reparameterization trick</strong>: $z = \mu_\phi(x) + \sigma_\phi(x) \odot \epsilon, \epsilon \sim \mathcal{N}(0, I)$ — making sampling differentiable.</p>
+<p>Training jointly optimizes two terms: the reconstruction term (the decoder can recover $x$ from $z$) and the KL term ($q$ stays close to the prior $p(z)$). Training uses the  \lt strong>reparameterization trick \lt /strong>: $z = \mu_\phi(x) + \sigma_\phi(x) \odot \epsilon, \epsilon \sim \mathcal{N}(0, I)$ — making sampling differentiable.</p>
 
 <p>VAE advantages: explicit latent space (supports interpolation and controllable generation), stable training. Disadvantage: generated samples tend to be blurry (reconstruction loss is pixel-level MSE, which averages across outcomes).</p>
 
@@ -1326,7 +1326,7 @@ $\log p_\theta(x) \ge \mathbb{E}_{q_\phi(z|x)}[\log p_\theta(x|z)] - D_{\text{KL
 
 <p>An entirely different approach. Two networks compete:</p>
 <ul style="list-style:none; padding-left:0;">
-<li><strong>Generator $G$</strong>: takes noise $z$ as input, outputs fake sample $G(z)$</li>
+<li><strong>Generator $G$ \lt /strong>: takes noise $z$ as input, outputs fake sample $G(z)$</li>
 <li><strong>Discriminator $D$</strong>: takes a sample as input, judges whether it is real or fake (outputs a 0–1 probability)</li>
 </ul>
 
@@ -1813,7 +1813,7 @@ $\mathcal{L}_{\text{DPO}} = -\log \sigma\left(\beta \log \frac{\pi_\theta(y_w|x)
 
 <h3>The MDP Framework</h3>
 
-<p>The mathematical backbone of RL is the Markov Decision Process (MDP): state $s$, action $a$, transition $P(s'|s,a)$, reward $R(s,a)$, discount factor $\gamma$. The objective is to learn a <strong>policy</strong> $\pi(a|s)$ that maximizes the expected cumulative return:</p>
+<p>The mathematical backbone of RL is the Markov Decision Process (MDP): state $s$, action $a$, transition $P(s'|s,a)$, reward $R(s,a)$, discount factor $\gamma$. The objective is to learn a  \lt strong>policy \lt /strong> $\pi(a|s)$ that maximizes the expected cumulative return:</p>
 
 <div class="formula">
 $J(\pi) = \mathbb{E}_\pi\left[\sum_{t=0}^\infty \gamma^t R(s_t, a_t)\right]$
@@ -2013,7 +2013,7 @@ $\text{Perf} \le \min(P, I \cdot B)$
 <p>Plotted on a log-log graph: the x-axis shows arithmetic intensity, the y-axis shows performance. $I \cdot B$ forms the sloped "bandwidth roof" and $P$ forms the horizontal "compute roof." The ridge point $I^* = P / B$ is the <strong>hardware balance point</strong>.</p>
 
 <ul style="list-style:none; padding-left:0;">
-<li>- $I < I^*$: memory-bound. Spending effort to increase compute is pointless; the goal is to reduce memory accesses.</li>
+<li>- $I \lt I^*$: memory-bound. Spending effort to increase compute is pointless; the goal is to reduce memory accesses.</li>
 <li>- $I > I^*$: compute-bound. The hardware's compute is saturated; the only options are upgrading hardware or reducing FLOPs through algorithmic improvements.</li>
 </ul>
 

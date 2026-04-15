@@ -253,7 +253,7 @@ flowchart TB
 <p class="pos">定位:LLM 灵魂算子——推导每一个细节,包括为什么要除 √d。</p>
 
 <h3>问题设定</h3>
-<p>输入:$L$ 个 token,每个是 $d$ 维向量 $\mathbf{x}_i \in \mathbb{R}^d$。目标:让每个位置 $i$ 的输出 $\mathbf{y}_i$ 是所有输入位置信息的<strong>动态加权组合</strong>,权重由 $\mathbf{x}_i$ 和其他位置的"相似度"决定。</p>
+<p>输入:$L$ 个 token,每个是 $d$ 维向量 $\mathbf{x}_i \in \mathbb{R}^d$。目标:让每个位置 $i$ 的输出 $\mathbf{y}_i$ 是所有输入位置信息的 \lt strong>动态加权组合 \lt /strong>,权重由 $\mathbf{x}_i$ 和其他位置的"相似度"决定。</p>
 
 <h3>Query / Key / Value 的角色</h3>
 <p>核心思想:每个位置扮演三个角色:</p>
@@ -571,7 +571,7 @@ K = apply_rope(K, freqs_cis)
 <p class="pos">定位:减少 KV Cache 的几代方案——从 MQA 到 DeepSeek 的 MLA。</p>
 
 <h3>为什么 KV Cache 是瓶颈</h3>
-<p>推理时,每生成一个新 token 都要算新 token 的 Q、K、V;把新 K、V 追加到之前的;新 Q 对所有 K、V 做 attention。如果每次都重新算前面所有位置的 K、V,是 $O(L^2)$ 计算。<strong>KV Cache</strong> 缓存前面算过的 K、V,新 token 只算自己那份,总计算 $O(L)$。</p>
+<p>推理时,每生成一个新 token 都要算新 token 的 Q、K、V;把新 K、V 追加到之前的;新 Q 对所有 K、V 做 attention。如果每次都重新算前面所有位置的 K、V,是 $O(L^2)$ 计算。 \lt strong>KV Cache \lt /strong> 缓存前面算过的 K、V,新 token 只算自己那份,总计算 $O(L)$。</p>
 <p>但 KV Cache 占显存。估算:<code>2 × layers × H × d_head × seq_len × 2 bytes (FP16)</code>。LLaMA-3-70B 在 L=8K 时 KV Cache ≈ 2.5 GB/样本。batch=10 就 25GB——比模型权重还大。长上下文下 KV Cache 是显存主要杀手。</p>
 
 <h3>MHA / MQA / GQA</h3>
@@ -688,7 +688,7 @@ K = apply_rope(K, freqs_cis)
 <table>
 <tr><th>维度</th><th>Transformer</th><th>Mamba</th></tr>
 <tr><td>训练</td><td>全并行</td><td>并行扫描 ($O(L)$)</td></tr>
-<tr><td>推理</td><td>$O(L)$ attention + $O(L)$ KV Cache</td><td>$O(1)$ 状态更新</td></tr>
+<tr><td>推理</td><td>$O(L)$ attention + $O(L)$ KV Cache \lt /td> \lt td>$O(1)$ 状态更新</td></tr>
 <tr><td>推理内存</td><td>随 L 增长(KV Cache)</td><td>固定</td></tr>
 <tr><td>长序列</td><td>受 KV Cache 限制</td><td>天然支持</td></tr>
 <tr><td>可解释性</td><td>attention 可视化</td><td>状态不可直接观察</td></tr>
@@ -1167,7 +1167,7 @@ model = FSDP(
 <p class="pos">定位:LLM 推理的灵魂——把 $O(L^2)$ 复杂度砍到 $O(L)$,但带来显存压力。</p>
 
 <h3>为什么需要</h3>
-<p>Decode 阶段生成第 $t$ 个 token,要做的 attention 只需要新 token 的 $\mathbf{q}_t$,但需要<strong>所有之前位置的 K、V</strong>。如果每次都重算 $\mathbf{k}_1, \ldots, \mathbf{k}_{t-1}$,是 $O(t)$ 额外计算每步——总 $O(t^2)$。KV Cache 缓存之前所有位置的 K、V——每步新 token 只算自己的 $\mathbf{k}_t, \mathbf{v}_t$,追加到 cache。总计算 $O(t)$。</p>
+<p>Decode 阶段生成第 $t$ 个 token,要做的 attention 只需要新 token 的 $\mathbf{q}_t$,但需要 \lt strong>所有之前位置的 K、V \lt /strong>。如果每次都重算 $\mathbf{k}_1, \ldots, \mathbf{k}_{t-1}$,是 $O(t)$ 额外计算每步——总 $O(t^2)$。KV Cache 缓存之前所有位置的 K、V——每步新 token 只算自己的 $\mathbf{k}_t, \mathbf{v}_t$,追加到 cache。总计算 $O(t)$。</p>
 
 <h3>显存占用</h3>
 <p>LLaMA-3-70B(80 层,64 头,d_head=128,GQA=8):</p>

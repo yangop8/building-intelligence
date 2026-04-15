@@ -365,13 +365,13 @@ th { background: var(--sidebar-bg); font-weight: 600; }
 
 <h3>Multiple Variables: From Scalar Fields to Vector Fields</h3>
 
-<p>Switching to $f: \mathbb{R}^n \to \mathbb{R}$, the input is an $n$-dimensional vector and the output is still a scalar. We can differentiate with respect to each dimension separately to obtain the <strong>partial derivatives</strong> $\frac{\partial f}{\partial x_i}$. Stacking all partial derivatives into a vector gives the <strong>gradient</strong>:</p>
+<p>Switching to $f: \mathbb{R}^n \to \mathbb{R}$, the input is an $n$-dimensional vector and the output is still a scalar. We can differentiate with respect to each dimension separately to obtain the  \lt strong>partial derivatives \lt /strong> $\frac{\partial f}{\partial x_i}$. Stacking all partial derivatives into a vector gives the <strong>gradient</strong>:</p>
 <div class="formula">$\nabla f(\mathbf{x}) = \left(\frac{\partial f}{\partial x_1}, \frac{\partial f}{\partial x_2}, \ldots, \frac{\partial f}{\partial x_n}\right)^\top$</div>
 <p>The gradient has one crucial geometric meaning: <strong>it points in the direction of steepest ascent of $f$, with magnitude equal to the rate of increase in that direction</strong>. The negative gradient is the direction of steepest descent — and that is the entire rationale for gradient descent.</p>
 
-<p>Going further, the derivative of $f: \mathbb{R}^n \to \mathbb{R}^m$ (input $n$-dimensional, output $m$-dimensional) is an $m \times n$ matrix called the <strong>Jacobian matrix</strong> $\mathbf{J}$, whose $(i,j)$ entry is $\frac{\partial f_i}{\partial x_j}$. Backpropagation in neural networks is essentially a chain of Jacobian matrix products.</p>
+<p>Going further, the derivative of $f: \mathbb{R}^n \to \mathbb{R}^m$ (input $n$-dimensional, output $m$-dimensional) is an $m \times n$ matrix called the  \lt strong>Jacobian matrix \lt /strong> $\mathbf{J}$, whose $(i,j)$ entry is $\frac{\partial f_i}{\partial x_j}$. Backpropagation in neural networks is essentially a chain of Jacobian matrix products.</p>
 
-<p>The $n \times n$ matrix formed by the second-order partial derivatives of $f$ is called the <strong>Hessian matrix</strong> $\mathbf{H}$, with $(i,j)$ entry $\frac{\partial^2 f}{\partial x_i \partial x_j}$. The Hessian describes the local curvature of a function: positive definite means it is a bowl (local minimum), negative definite means it is a hilltop (local maximum), and indefinite means it is a saddle point.</p>
+<p>The $n \times n$ matrix formed by the second-order partial derivatives of $f$ is called the  \lt strong>Hessian matrix \lt /strong> $\mathbf{H}$, with $(i,j)$ entry $\frac{\partial^2 f}{\partial x_i \partial x_j}$. The Hessian describes the local curvature of a function: positive definite means it is a bowl (local minimum), negative definite means it is a hilltop (local maximum), and indefinite means it is a saddle point.</p>
 
 <h3>In AI</h3>
 <p>The loss function $L(\boldsymbol{\theta})$ of a neural network maps from a million-dimensional parameter space to a scalar. What we need is $\nabla_\boldsymbol{\theta} L$ — a million-dimensional vector pointing in the direction of fastest loss increase. Each step $\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \eta \nabla L$ is gradient descent. The Hessian matrix is far too large to store ($10^6 \times 10^6$), so optimizers like Adam <em>approximate</em> Hessian information using the second moment of the gradient — this is the dividing line between first-order and second-order optimization.</p>
@@ -382,7 +382,7 @@ th { background: var(--sidebar-bg); font-weight: 600; }
 
 <h3>Convexity and Concavity</h3>
 
-<p>A function $f$ is <strong>convex</strong> on an interval if, for any $x_1, x_2$ and $t \in [0,1]$:</p>
+<p>A function $f$ is  \lt strong>convex \lt /strong> on an interval if, for any $x_1, x_2$ and $t \in [0,1]$:</p>
 <div class="formula">$f(t x_1 + (1-t) x_2) \le t f(x_1) + (1-t) f(x_2)$</div>
 <p>Geometric interpretation: the line segment connecting any two points does not fall below the function's graph. The greatest advantage of convex functions is that <strong>every local minimum is a global minimum</strong> — a paradise for optimization algorithms. The squared loss in linear regression and the cross-entropy loss in logistic regression are both convex, which is why these classical algorithms are guaranteed to converge to the global optimum.</p>
 
@@ -467,7 +467,7 @@ print(conv1d(x, k))   # [-2, -2, -2]
 
 <h3>The Chain Rule Is All of Backpropagation</h3>
 
-<p>The chain rule: $\frac{d}{dx} f(g(x)) = f'(g(x)) \cdot g'(x)$. High-school mathematics. But the output of a neural network is a chain of nested functions $y = f_L(f_{L-1}(\ldots f_1(x)))$, so computing the partial derivative with respect to some intermediate parameter $w_i$ means a long chain of multiplications. The key engineering observation is: <strong>many intermediate quantities in this chain are shared</strong>. If each parameter independently computes a full chain, the total work is $O(L \cdot N)$ ($N$ being the number of parameters); if the computation proceeds in "output-to-input" order and is done in a single pass, the total work is $O(L + N)$. This orders-of-magnitude difference is the reason backpropagation exists.</p>
+<p>The chain rule: $\frac{d}{dx} f(g(x)) = f'(g(x)) \cdot g'(x)$. High-school mathematics. But the output of a neural network is a chain of nested functions $y = f_L(f_{L-1}(\ldots f_1(x)))$, so computing the partial derivative with respect to some intermediate parameter $w_i$ means a long chain of multiplications. The key engineering observation is:  \lt strong>many intermediate quantities in this chain are shared \lt /strong>. If each parameter independently computes a full chain, the total work is $O(L \cdot N)$ ($N$ being the number of parameters); if the computation proceeds in "output-to-input" order and is done in a single pass, the total work is $O(L + N)$. This orders-of-magnitude difference is the reason backpropagation exists.</p>
 
 <h3>Backpropagation Through a Two-Layer Network</h3>
 
@@ -548,13 +548,13 @@ print("dL/dW1 =\n", dL_dW1)
 
 <h3>Vectors, Matrices, and Tensors</h3>
 
-<p>A vector $\mathbf{v} \in \mathbb{R}^n$ is an ordered arrangement of $n$ real numbers. What matters is that it supports two operations: addition $\mathbf{u} + \mathbf{v}$ and scalar multiplication $\alpha \mathbf{v}$, and that these operations satisfy 8 axioms (associativity, distributivity, etc.). Any set satisfying these axioms is called a <strong>linear space</strong> (or vector space). $\mathbb{R}^n$ is the most fundamental linear space, but abstractly it can be a space of continuous functions, a space of probability distributions, and so on — this is the power of "linear" thinking.</p>
+<p>A vector $\mathbf{v} \in \mathbb{R}^n$ is an ordered arrangement of $n$ real numbers. What matters is that it supports two operations: addition $\mathbf{u} + \mathbf{v}$ and scalar multiplication $\alpha \mathbf{v}$, and that these operations satisfy 8 axioms (associativity, distributivity, etc.). Any set satisfying these axioms is called a  \lt strong>linear space \lt /strong> (or vector space). $\mathbb{R}^n$ is the most fundamental linear space, but abstractly it can be a space of continuous functions, a space of probability distributions, and so on — this is the power of "linear" thinking.</p>
 
 <p>A matrix $\mathbf{A} \in \mathbb{R}^{m \times n}$ arranges $m \times n$ real numbers in a two-dimensional grid. A tensor is a higher-dimensional generalization: a three-dimensional tensor can be thought of as a stack of matrices, and a four-dimensional tensor as a stack of three-dimensional tensors. In deep learning, "tensor" is used more loosely than its strict mathematical definition — in PyTorch, any multi-dimensional array is called a tensor.</p>
 
 <h3>Dimension and Rank</h3>
 
-<p>A set of vectors $\{\mathbf{v}_1, \ldots, \mathbf{v}_k\}$ is called <strong>linearly independent</strong> if $\sum \alpha_i \mathbf{v}_i = \mathbf{0}$ has only the solution $\alpha_i = 0$. The <strong>dimension</strong> of a linear space is the size of the largest linearly independent set that can be found.</p>
+<p>A set of vectors $\{\mathbf{v}_1, \ldots, \mathbf{v}_k\}$ is called  \lt strong>linearly independent \lt /strong> if $\sum \alpha_i \mathbf{v}_i = \mathbf{0}$ has only the solution $\alpha_i = 0$. The <strong>dimension</strong> of a linear space is the size of the largest linearly independent set that can be found.</p>
 
 <p>The <strong>rank</strong> $\text{rank}(\mathbf{A})$ of a matrix $\mathbf{A}$ is the maximum number of linearly independent columns (or rows) in the matrix. $\text{rank}(\mathbf{A}) \le \min(m, n)$. Rank directly reflects "information redundancy": a low-rank matrix can be compressed into a lower-dimensional representation. This is the starting point for SVD and LoRA later on.</p>
 
@@ -604,9 +604,9 @@ print("dL/dW1 =\n", dL_dW1)
 
 <table>
 <tr><th>Case</th><th>Condition</th><th>Result</th></tr>
-<tr><td>Square, full rank ($m = n, \text{rank} = n$)</td><td>$\det(\mathbf{A}) \ne 0$</td><td>Unique solution $\mathbf{x} = \mathbf{A}^{-1}\mathbf{b}$</td></tr>
+<tr><td>Square, full rank ($m = n, \text{rank} = n$) \lt /td> \lt td>$\det(\mathbf{A}) \ne 0$ \lt /td> \lt td>Unique solution $\mathbf{x} = \mathbf{A}^{-1}\mathbf{b}$</td></tr>
 <tr><td>Overdetermined ($m > n$)</td><td>Usually no exact solution</td><td>Least squares solution</td></tr>
-<tr><td>Underdetermined ($m < n$)</td><td>Usually infinitely many solutions</td><td>Minimum-norm solution</td></tr>
+<tr><td>Underdetermined ($m \lt n$)</td><td>Usually infinitely many solutions</td><td>Minimum-norm solution</td></tr>
 </table>
 
 <h3>Gaussian Elimination</h3>
@@ -615,7 +615,7 @@ print("dL/dW1 =\n", dL_dW1)
 
 <h3>Generalized Inverse (Moore-Penrose Pseudoinverse)</h3>
 
-<p>When $\mathbf{A}$ is not square, or is square but not invertible, the traditional $\mathbf{A}^{-1}$ does not exist. The <strong>pseudoinverse</strong> $\mathbf{A}^+$ is the generalization:</p>
+<p>When $\mathbf{A}$ is not square, or is square but not invertible, the traditional $\mathbf{A}^{-1}$ does not exist. The  \lt strong>pseudoinverse \lt /strong> $\mathbf{A}^+$ is the generalization:</p>
 <ul style="list-style:none; padding-left:0;">
 <li>- If $\mathbf{A}$ has full column rank ($m \ge n$, $\text{rank} = n$): $\mathbf{A}^+ = (\mathbf{A}^\top \mathbf{A})^{-1} \mathbf{A}^\top$</li>
 <li>- If $\mathbf{A}$ has full row rank ($m \le n$, $\text{rank} = m$): $\mathbf{A}^+ = \mathbf{A}^\top (\mathbf{A} \mathbf{A}^\top)^{-1}$</li>
@@ -638,7 +638,7 @@ print("dL/dW1 =\n", dL_dW1)
 
 <p>For a square matrix $\mathbf{A}$, if there exists a nonzero vector $\mathbf{v}$ and a scalar $\lambda$ such that:</p>
 <div class="formula">$\mathbf{A}\mathbf{v} = \lambda \mathbf{v}$</div>
-<p>then $\mathbf{v}$ is called an <strong>eigenvector</strong> and $\lambda$ the corresponding <strong>eigenvalue</strong>. Geometric meaning: $\mathbf{A}$ acting on $\mathbf{v}$ <em>only changes its length, not its direction</em> (when $\lambda < 0$, the direction is reversed). These are the "intrinsic" directions of the matrix — the simplest directions under its action.</p>
+<p>then $\mathbf{v}$ is called an  \lt strong>eigenvector \lt /strong> and $\lambda$ the corresponding  \lt strong>eigenvalue \lt /strong>. Geometric meaning: $\mathbf{A}$ acting on $\mathbf{v}$  \lt em>only changes its length, not its direction \lt /em> (when $\lambda < 0$, the direction is reversed). These are the "intrinsic" directions of the matrix — the simplest directions under its action.</p>
 
 <h3>Diagonalization</h3>
 
@@ -693,19 +693,19 @@ print("Variance after dimensionality reduction:", X_pca.var(axis=0))
 
 <h3>Geometric Meaning</h3>
 
-<p>Break down $\mathbf{A}\mathbf{x}$ into three steps: <strong>$\mathbf{V}^\top$ rotates the coordinate system → $\boldsymbol{\Sigma}$ scales along each axis → $\mathbf{U}$ rotates again into the output space</strong>. Therefore any linear transformation is a combination of "rotation + scaling + rotation." This conclusion is remarkably powerful.</p>
+<p>Break down $\mathbf{A}\mathbf{x}$ into three steps:  \lt strong>$\mathbf{V}^\top$ rotates the coordinate system → $\boldsymbol{\Sigma}$ scales along each axis → $\mathbf{U}$ rotates again into the output space</strong>. Therefore any linear transformation is a combination of "rotation + scaling + rotation." This conclusion is remarkably powerful.</p>
 
 <h3>Low-Rank Approximation</h3>
 
 <p>SVD can be written as a sum of outer products:</p>
 <div class="formula">$\mathbf{A} = \sum_{i=1}^r \sigma_i \mathbf{u}_i \mathbf{v}_i^\top$</div>
-<p>where $r = \text{rank}(\mathbf{A})$. The <strong>Eckart-Young theorem</strong> tells us: retaining only the largest $k$ terms ($k < r$), the result $\mathbf{A}_k = \sum_{i=1}^k \sigma_i \mathbf{u}_i \mathbf{v}_i^\top$ is the <em>optimal rank-$k$ approximation</em> to $\mathbf{A}$ under either the Frobenius norm or the spectral norm. No other rank-$k$ matrix is closer to $\mathbf{A}$.</p>
+<p>where $r = \text{rank}(\mathbf{A})$. The  \lt strong>Eckart-Young theorem \lt /strong> tells us: retaining only the largest $k$ terms ($k \lt r$), the result $\mathbf{A}_k = \sum_{i=1}^k \sigma_i \mathbf{u}_i \mathbf{v}_i^\top$ is the  \lt em>optimal rank-$k$ approximation \lt /em> to $\mathbf{A}$ under either the Frobenius norm or the spectral norm. No other rank-$k$ matrix is closer to $\mathbf{A}$.</p>
 
 <p>This is the unified mathematical foundation for compression, dimensionality reduction, and denoising. Image compression, matrix completion in recommendation systems, model weight compression — all rely on this theorem.</p>
 
 <h3>In AI: LoRA</h3>
 
-<p>LoRA's hypothesis is that the weight change $\Delta \mathbf{W}$ induced by fine-tuning an LLM is <em>low-rank</em>. Mathematically: $\Delta \mathbf{W} \approx \mathbf{B}\mathbf{A}$, where $\mathbf{A} \in \mathbb{R}^{r \times d}$ and $\mathbf{B} \in \mathbb{R}^{d \times r}$ with $r \ll d$. The parameter count drops from $d^2$ to $2rd$ — for a 7B model with $d \approx 4096$ and $r = 16$, that is a 128× compression.</p>
+<p>LoRA's hypothesis is that the weight change $\Delta \mathbf{W}$ induced by fine-tuning an LLM is  \lt em>low-rank \lt /em>. Mathematically: $\Delta \mathbf{W} \approx \mathbf{B}\mathbf{A}$, where $\mathbf{A} \in \mathbb{R}^{r \times d}$ and $\mathbf{B} \in \mathbb{R}^{d \times r}$ with $r \ll d$. The parameter count drops from $d^2$ to $2rd$ — for a 7B model with $d \approx 4096$ and $r = 16$, that is a 128× compression.</p>
 
 <p>Why does this work? Empirical observation: the "effective information dimensionality" of each layer in a neural network is far lower than its parameter dimensionality, and truncating SVD to retain the top $r$ components loses almost no performance. This is not a mathematically proven result but an empirical regularity — yet SVD provides the theoretical language for it.</p>
 
@@ -787,11 +787,11 @@ for r in [5, 10, 20, 50, 100]:
 
 <p>Throw $n$ balls randomly into $n$ bins. The question: how many balls are in the fullest bin? This is the mathematical abstraction of <strong>load balancing</strong>.</p>
 
-<p>Each ball independently picks a bin uniformly at random, so the number of balls each bin receives is approximately $\text{Poisson}(1)$. By analyzing tail probabilities, one can show: <em>the maximum load is with high probability approximately $\Theta(\log n / \log\log n)$</em>. For $n = 1000$, the fullest bin holds about 5 balls — not terrible, but already 5 times the average.</p>
+<p>Each ball independently picks a bin uniformly at random, so the number of balls each bin receives is approximately $\text{Poisson}(1)$. By analyzing tail probabilities, one can show:  \lt em>the maximum load is with high probability approximately $\Theta(\log n / \log\log n)$ \lt /em>. For $n = 1000$, the fullest bin holds about 5 balls — not terrible, but already 5 times the average.</p>
 
 <h3>POTC: Power of Two Choices</h3>
 
-<p>Improved strategy: each ball independently picks <em>two</em> bins at random and goes into the less loaded one. This seemingly minor change produces a dramatic effect — <em>the maximum load is with high probability approximately $\Theta(\log\log n)$</em> — an exponential improvement. For $n = 1000$, the maximum drops from 5 balls to 2.</p>
+<p>Improved strategy: each ball independently picks <em>two</em> bins at random and goes into the less loaded one. This seemingly minor change produces a dramatic effect — <em>the maximum load is with high probability approximately $\Theta(\log\log n)$ \lt /em> — an exponential improvement. For $n = 1000$, the maximum drops from 5 balls to 2.</p>
 
 <p>This is one of the most striking results in probability theory: "looking at one extra option" yields an exponential improvement. The intuition: worse bins are less likely to be chosen, pushing the distribution toward uniformity.</p>
 
@@ -826,10 +826,10 @@ print("POTC     max load:", np.mean([simulate_balls_bins(n, 'potc')   for _ in r
 
 <table>
 <tr><th>Distribution</th><th>Meaning</th><th>PMF</th><th>Mean / Variance</th></tr>
-<tr><td>Bernoulli Ber(p)</td><td>One coin flip</td><td>$P(X=1) = p$</td><td>$p, p(1-p)$</td></tr>
-<tr><td>Binomial Bin(n, p)</td><td>Sum of n Bernoullis</td><td>$\binom{n}{k} p^k (1-p)^{n-k}$</td><td>$np, np(1-p)$</td></tr>
-<tr><td>Poisson Poi(λ)</td><td>Count of rare events</td><td>$\frac{\lambda^k e^{-\lambda}}{k!}$</td><td>$\lambda, \lambda$</td></tr>
-<tr><td>Geometric Geo(p)</td><td>Number of trials until success</td><td>$(1-p)^{k-1} p$</td><td>$1/p, (1-p)/p^2$</td></tr>
+<tr><td>Bernoulli Ber(p)</td><td>One coin flip</td><td>$P(X=1) = p$ \lt /td> \lt td>$p, p(1-p)$</td></tr>
+<tr><td>Binomial Bin(n, p)</td><td>Sum of n Bernoullis</td><td>$\binom{n}{k} p^k (1-p)^{n-k}$ \lt /td> \lt td>$np, np(1-p)$</td></tr>
+<tr><td>Poisson Poi(λ)</td><td>Count of rare events</td><td>$\frac{\lambda^k e^{-\lambda}}{k!}$ \lt /td> \lt td>$\lambda, \lambda$</td></tr>
+<tr><td>Geometric Geo(p)</td><td>Number of trials until success</td><td>$(1-p)^{k-1} p$ \lt /td> \lt td>$1/p, (1-p)/p^2$</td></tr>
 </table>
 
 <p>Poisson is the limit of Binomial as $n \to \infty, p \to 0, np = \lambda$. It describes "a large number of independent rare events" — user traffic, system crashes, genetic mutations.</p>
@@ -917,21 +917,21 @@ print("POTC     max load:", np.mean([simulate_balls_bins(n, 'potc')   for _ in r
 
 <h3>Core Concepts</h3>
 
-<p><strong>Null hypothesis $H_0$</strong>: the default position we wish to disprove ("the new model is no different from the old one"). <strong>Alternative hypothesis $H_1$</strong>: the claim we wish to establish ("the new model is better").</p>
+<p><strong>Null hypothesis $H_0$ \lt /strong>: the default position we wish to disprove ("the new model is no different from the old one").  \lt strong>Alternative hypothesis $H_1$</strong>: the claim we wish to establish ("the new model is better").</p>
 
-<p><strong>Test statistic</strong>: a number computed from the data that has a known distribution under $H_0$. <strong>p-value</strong>: the probability of observing "the current statistic or a more extreme value" under $H_0$. A small p-value means "if $H_0$ were true, the current data would be unlikely," and we therefore reject $H_0$.</p>
+<p><strong>Test statistic</strong>: a number computed from the data that has a known distribution under $H_0$.  \lt strong>p-value \lt /strong>: the probability of observing "the current statistic or a more extreme value" under $H_0$. A small p-value means "if $H_0$ were true, the current data would be unlikely," and we therefore reject $H_0$.</p>
 
 <p>Common p-value thresholds are 0.05 or 0.01. These thresholds are historical conventions, not mathematical laws — in recent years many fields have recommended 0.005 or even abandoning p-values altogether in favor of Bayesian approaches, due to widespread "p-value abuse."</p>
 
 <h3>Two Types of Errors</h3>
 
 <table>
-<tr><th></th><th>Truth: $H_0$ is true</th><th>Truth: $H_1$ is true</th></tr>
+<tr><th></th><th>Truth: $H_0$ is true \lt /th> \lt th>Truth: $H_1$ is true</th></tr>
 <tr><td>Accept $H_0$</td><td>Correct</td><td>Type II error (false negative, β)</td></tr>
 <tr><td>Reject $H_0$</td><td>Type I error (false positive, α)</td><td>Correct (power 1-β)</td></tr>
 </table>
 
-<p>$\alpha$ and $\beta$ cannot both be reduced simultaneously — only increasing the sample size can reduce both at once. Before running an experiment you should perform a <strong>power analysis</strong>: target effect size + desired $\alpha$ and $\beta$ → required sample size. Many AI experiments have too few samples, insufficient power, and cannot detect a real difference even when one exists.</p>
+<p>$\alpha$ and $\beta$ cannot both be reduced simultaneously — only increasing the sample size can reduce both at once. Before running an experiment you should perform a  \lt strong>power analysis \lt /strong>: target effect size + desired $\alpha$ and $\beta$ → required sample size. Many AI experiments have too few samples, insufficient power, and cannot detect a real difference even when one exists.</p>
 
 <h3>t-Test</h3>
 
@@ -1067,7 +1067,7 @@ print("POTC     max load:", np.mean([simulate_balls_bins(n, 'potc')   for _ in r
 <p>Interpretation: Using the optimal code designed for distribution $q$ to encode data actually drawn from distribution $p$, the average number of bits required per symbol. Clearly $H(p,q) \ge H(p)$, and the excess is the <strong>KL divergence</strong>:</p>
 <div class="formula">$D_{\text{KL}}(p \parallel q) = H(p, q) - H(p) = \sum_x p(x) \log \frac{p(x)}{q(x)}$</div>
 
-<p>$D_{\text{KL}} \ge 0$, with equality if and only if $p = q$. <strong>Asymmetry</strong>: $D_{\text{KL}}(p \| q) \ne D_{\text{KL}}(q \| p)$ — this is not a mathematical defect, but actually useful: "approximating $p$ with $q$" and "approximating $q$ with $p$" are genuinely different operations, and KL's asymmetry faithfully reflects this.</p>
+<p>$D_{\text{KL}} \ge 0$, with equality if and only if $p = q$.  \lt strong>Asymmetry \lt /strong>: $D_{\text{KL}}(p \| q) \ne D_{\text{KL}}(q \| p)$ — this is not a mathematical defect, but actually useful: "approximating $p$ with $q$" and "approximating $q$ with $p$" are genuinely different operations, and KL's asymmetry faithfully reflects this.</p>
 
 <h3>Mutual Information</h3>
 
@@ -1093,7 +1093,7 @@ print("POTC     max load:", np.mean([simulate_balls_bins(n, 'potc')   for _ in r
 
 <h3>Huffman Coding</h3>
 
-<p>A greedy algorithm: repeatedly merge the two symbols with the lowest probabilities to form a binary tree, with left branch 0 and right branch 1. Result: high-frequency symbols get short codes, low-frequency symbols get long codes. Average code length is close to entropy (gap $< 1$ bit per symbol).</p>
+<p>A greedy algorithm: repeatedly merge the two symbols with the lowest probabilities to form a binary tree, with left branch 0 and right branch 1. Result: high-frequency symbols get short codes, low-frequency symbols get long codes. Average code length is close to entropy (gap $ \lt  1$ bit per symbol).</p>
 
 <p>Drawback: each symbol must be encoded with an integer number of bits. If a symbol has probability 0.9, its information content is only $-\log 0.9 \approx 0.15$ bits, yet Huffman still uses 1 bit — wasteful.</p>
 
@@ -1109,7 +1109,7 @@ print("POTC     max load:", np.mean([simulate_balls_bins(n, 'potc')   for _ in r
 <h2 id="s1-6-4"><span class="num">1.6.4</span>Transmitting Information: Channel Coding</h2>
 <p class="pos">Orientation: Adding redundancy to combat noise — the core technology of communications. Less directly relevant to AI, kept brief.</p>
 
-<p>Shannon's second theorem: a noisy channel has capacity $C = \max_{p(x)} I(X; Y)$; at transmission rate $R < C$, there exists an encoding scheme that drives the error probability to zero.</p>
+<p>Shannon's second theorem: a noisy channel has capacity $C = \max_{p(x)} I(X; Y)$; at transmission rate $R \lt C$, there exists an encoding scheme that drives the error probability to zero.</p>
 
 <p>Implementation: add redundant bits. The simplest repetition code $(0 \to 000, 1 \to 111)$ decodes by majority vote. But it is inefficient — 3 bits to transmit 1 bit.</p>
 
@@ -1168,7 +1168,7 @@ print("POTC     max load:", np.mean([simulate_balls_bins(n, 'potc')   for _ in r
 
 <h3>Machine Epsilon</h3>
 
-<p>The smallest floating-point number greater than 1 is $1 + \epsilon$, where $\epsilon$ is the <strong>machine epsilon</strong>. FP32 $\epsilon \approx 1.19 \times 10^{-7}$, FP16 $\epsilon \approx 9.77 \times 10^{-4}$, BF16 $\epsilon \approx 3.91 \times 10^{-3}$. BF16 has four times worse precision than FP16, but it has a larger dynamic range (same exponent bits as FP32), which is why training uses BF16 rather than FP16.</p>
+<p>The smallest floating-point number greater than 1 is $1 + \epsilon$, where $\epsilon$ is the  \lt strong>machine epsilon \lt /strong>. FP32 $\epsilon \approx 1.19 \times 10^{-7}$, FP16 $\epsilon \approx 9.77 \times 10^{-4}$, BF16 $\epsilon \approx 3.91 \times 10^{-3}$. BF16 has four times worse precision than FP16, but it has a larger dynamic range (same exponent bits as FP32), which is why training uses BF16 rather than FP16.</p>
 
 <h3>Classic Numerical Pitfalls</h3>
 
@@ -1216,7 +1216,7 @@ print(y - x)   # Expected 1.0, may actually be 0.0 — 1.0 is swallowed by the p
 
 <p>Small matrices: solve the characteristic polynomial $\det(\mathbf{A} - \lambda \mathbf{I}) = 0$ directly. Large matrices: the <strong>QR algorithm</strong> (iteratively applying QR decomposition until convergence to diagonal/triangular form) is the standard approach — it is what <code>numpy.linalg.eig</code> uses under the hood.</p>
 
-<p><strong>When only the top $k$ eigenvalues are needed</strong>: use <strong>power iteration</strong>. Starting from a random vector $\mathbf{v}_0$, repeatedly apply $\mathbf{v}_{k+1} = \mathbf{A}\mathbf{v}_k / \|\mathbf{A}\mathbf{v}_k\|$, which converges to the eigenvector corresponding to the largest eigenvalue. Combined with deflation or the Lanczos method, multiple leading eigenvectors can be obtained.</p>
+<p><strong>When only the top $k$ eigenvalues are needed \lt /strong>: use  \lt strong>power iteration \lt /strong>. Starting from a random vector $\mathbf{v}_0$, repeatedly apply $\mathbf{v}_{k+1} = \mathbf{A}\mathbf{v}_k / \|\mathbf{A}\mathbf{v}_k\|$, which converges to the eigenvector corresponding to the largest eigenvalue. Combined with deflation or the Lanczos method, multiple leading eigenvectors can be obtained.</p>
 
 <p>PageRank is power iteration — repeatedly multiplying the web link matrix converges to the steady-state probability of each page. Google's original core algorithm.</p>
 
@@ -1289,7 +1289,7 @@ $\hat{\mathbf{m}}_t = \mathbf{m}_t / (1 - \beta_1^t), \quad \hat{\mathbf{v}}_t =
 $\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta \frac{\hat{\mathbf{m}}_t}{\sqrt{\hat{\mathbf{v}}_t} + \epsilon}$
 </div>
 
-<p>$\beta_1 = 0.9, \beta_2 = 0.999, \epsilon = 10^{-8}$ are the default values. <strong>Bias correction</strong> is a detail but an important one: at the start, $\mathbf{m}_0 = \mathbf{v}_0 = 0$ causes early estimates to be biased low; dividing by $(1 - \beta^t)$ corrects for this.</p>
+<p>$\beta_1 = 0.9, \beta_2 = 0.999, \epsilon = 10^{-8}$ are the default values.  \lt strong>Bias correction \lt /strong> is a detail but an important one: at the start, $\mathbf{m}_0 = \mathbf{v}_0 = 0$ causes early estimates to be biased low; dividing by $(1 - \beta^t)$ corrects for this.</p>
 
 <p>Intuition: parameters with large gradients automatically get a small learning rate (because $\sqrt{\mathbf{v}}$ is large), while parameters with small gradients get a large learning rate — automatic per-dimension adjustment. This is what "adaptive learning rate" means.</p>
 
@@ -1349,7 +1349,7 @@ def adam_step(params, grads, state, lr=1e-3, b1=0.9, b2=0.999, eps=1e-8):
 
 <h3>Root Finding</h3>
 
-<p><strong>Bisection</strong>: find $f(x) = 0$ on $[a, b]$, requiring $f(a) f(b) < 0$. Halves the interval at each step. Slow to converge but unconditionally stable.</p>
+<p><strong>Bisection</strong>: find $f(x) = 0$ on $[a, b]$, requiring $f(a) f(b) \lt 0$. Halves the interval at each step. Slow to converge but unconditionally stable.</p>
 
 <p><strong>Newton's method</strong>: $x_{n+1} = x_n - f(x_n)/f'(x_n)$. Second-order convergence (extremely fast), but requires a computable derivative, a good initial guess, and no poles. Failure rate is not low.</p>
 

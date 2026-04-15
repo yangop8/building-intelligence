@@ -449,7 +449,7 @@ print("Accuracy:", model.score(Xv, yv))
 
 <div class="formula">$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right) V$</div>
 
-<p>Key detail: the <strong>$\sqrt{d_k}$</strong> scaling. The variance of the dot product of $d$-dimensional vectors is $d$; dividing by $\sqrt{d}$ normalizes the variance and prevents the softmax from becoming oversaturated (main text §4.2.2 contains a detailed derivation).</p>
+<p>Key detail: the <strong>$\sqrt{d_k}$ \lt /strong> scaling. The variance of the dot product of $d$-dimensional vectors is $d$; dividing by $\sqrt{d}$ normalizes the variance and prevents the softmax from becoming oversaturated (main text §4.2.2 contains a detailed derivation).</p>
 
 <h3>Multi-Head Attention</h3>
 <p>Q, K, and V are projected into $H$ subspaces; attention is computed independently in each subspace, and the results are concatenated and projected:</p>

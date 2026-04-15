@@ -119,7 +119,7 @@ th{background:var(--sidebar-bg);font-weight:600;}
 <p>At $L = 4096$, the $S$ matrix alone is 64 MB. Each read/write is a 128 MB round-trip to HBM. As $L$ grows, this cost scales linearly while compute utilization stays extremely low.</p>
 
 <h3>Core Method: Tiling + Online Softmax</h3>
-<p>FlashAttention splits Q, K, V into tiles sized to fit in the GPU's on-chip SRAM. The outer loop iterates over Q tiles $Q_i$; the inner loop iterates over K, V tiles $(K_j, V_j)$. <strong>The full $S$ or $P$ matrix is never materialized</strong> — all intermediate results stay in SRAM.</p>
+<p>FlashAttention splits Q, K, V into tiles sized to fit in the GPU's on-chip SRAM. The outer loop iterates over Q tiles $Q_i$; the inner loop iterates over K, V tiles $(K_j, V_j)$.  \lt strong>The full $S$ or $P$ matrix is never materialized</strong> — all intermediate results stay in SRAM.</p>
 
 <div class="mermaid">
 flowchart TB
@@ -131,7 +131,7 @@ flowchart TB
 </div>
 
 <h3>The Key Challenge: Online Softmax</h3>
-<p>Softmax requires normalization — $\text{softmax}(x_i) = \exp(x_i) / \sum_j \exp(x_j)$. It seems like you must see all $x_j$ before computing the denominator. FlashAttention uses an <strong>incremental update</strong> instead: each time a new $S_{ij}$ tile arrives, it maintains a running max and running sum, producing a result that is mathematically equivalent to the full softmax.</p>
+<p>Softmax requires normalization — $\text{softmax}(x_i) = \exp(x_i) / \sum_j \exp(x_j)$. It seems like you must see all $x_j$ before computing the denominator. FlashAttention uses an  \lt strong>incremental update \lt /strong> instead: each time a new $S_{ij}$ tile arrives, it maintains a running max and running sum, producing a result that is mathematically equivalent to the full softmax.</p>
 
 <p>Say we have processed up to tile $j-1$, with state $(m_{j-1}, l_{j-1}, O_{j-1})$ — the current running max $m$, running denominator $l$, and current weighted output $O$. A new tile $(K_j, V_j)$ arrives:</p>
 
@@ -686,7 +686,7 @@ A: [let the model continue]
 </div>
 
 <h3>Why This Paper Is the Capstone</h3>
-<p>DeepSeek-V3 is not the first MoE, the first FP8 training run, or the first hybrid reasoning model — but it is the first open-source model to <em>integrate all of these techniques together and execute each to its limits</em>. 671B total parameters, 37B activated per token, trained in just 2.788M H800 GPU-hours (approximately $5.6M), reaching GPT-4o-level capability.</p>
+<p>DeepSeek-V3 is not the first MoE, the first FP8 training run, or the first hybrid reasoning model — but it is the first open-source model to <em>integrate all of these techniques together and execute each to its limits</em>. 671B total parameters, 37B activated per token, trained in just 2.788M H800 GPU-hours (approximately US$5.6M), reaching GPT-4o-level capability.</p>
 <p>It is a case study in "engineering integration" winning over "single-point breakthroughs," and a decisive moment in open-source catching up to closed-source.</p>
 
 <h3>Architecture Overview</h3>
@@ -740,13 +740,13 @@ flowchart TB
 <tr><th>Metric</th><th>Value</th></tr>
 <tr><td>Total parameters / Activated</td><td>671B / 37B</td></tr>
 <tr><td>Training tokens</td><td>14.8T</td></tr>
-<tr><td>Pretraining GPU-hours</td><td>2.664M H800 (~$5.3M)</td></tr>
+<tr><td>Pretraining GPU-hours</td><td>2.664M H800 (~US$5.3M)</td></tr>
 <tr><td>Total training GPU-hours (incl. SFT + RLHF)</td><td>2.788M</td></tr>
 <tr><td>Estimated comparison: GPT-4</td><td>~50–100M GPU-hours</td></tr>
 <tr><td>Capability level</td><td>Comparable to GPT-4o / Claude 3.5 Sonnet</td></tr>
 </table>
 
-<p>Approximately $5.6M to train a GPT-4-level model — over 10× cheaper than closed-source estimates. This is the economic foundation of the "DeepSeek moment" (February 2025) — a cost low enough to shock the global industry.</p>
+<p>Approximately US$5.6M to train a GPT-4-level model — over 10× cheaper than closed-source estimates. This is the economic foundation of the "DeepSeek moment" (February 2025) — a cost low enough to shock the global industry.</p>
 
 <h3>Subsequent Evolution</h3>
 <ul style="list-style:none;padding-left:0;">
@@ -769,7 +769,7 @@ flowchart TB
 
 <h3>Critical Perspectives</h3>
 <ul style="list-style:none;padding-left:0;">
-<li>- The training cost figures are debated — $5.6M may count only GPU time, excluding data, infrastructure, and labor</li>
+<li>- The training cost figures are debated — US$5.6M may count only GPU time, excluding data, infrastructure, and labor</li>
 <li>- "GPT-4 level" varies across benchmarks — V3 leads on some and trails on others</li>
 <li>- MLA's engineering complexity is high; small teams may find it difficult to reproduce</li>
 </ul>
