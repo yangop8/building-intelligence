@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paper Deep Dives C — Building Intelligence</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+:root{--bg:#fbfaf7;--fg:#1d1d1b;--muted:#6b6b68;--accent:#5a3a7a;--accent-soft:#ece6f2;--rule:#e3dfd6;--code-bg:#282c34;--sidebar-bg:#f4f1ea;--mono:"SFMono-Regular","JetBrains Mono",Consolas,Menlo,monospace;--serif:"Source Serif Pro","Songti SC","STSong",Georgia,serif;--sans:"Inter",-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;}
+*{box-sizing:border-box;}html,body{margin:0;padding:0;}
+body{font-family:var(--serif);font-size:16px;line-height:1.75;color:var(--fg);background:var(--bg);display:flex;}
+aside.toc{position:sticky;top:0;width:310px;height:100vh;overflow-y:auto;background:var(--sidebar-bg);border-right:1px solid var(--rule);padding:24px 20px;font-family:var(--sans);font-size:13px;flex-shrink:0;}
+aside.toc h1{font-family:var(--serif);font-size:18px;margin:0 0 4px 0;color:var(--accent);}
+aside.toc .sub{color:var(--muted);font-size:12px;margin-bottom:20px;font-style:italic;}
+aside.toc .group{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin-top:14px;margin-bottom:4px;padding-bottom:3px;border-bottom:1px solid var(--rule);}
+aside.toc ol{list-style:none;padding:0;margin:0;}aside.toc ol li{margin-bottom:2px;}
+aside.toc a{color:var(--fg);text-decoration:none;display:block;padding:3px 6px;border-radius:3px;}
+aside.toc a:hover{background:var(--accent-soft);color:var(--accent);}
+aside.toc .num{color:var(--muted);font-family:var(--mono);margin-right:6px;font-size:11px;}
+main{flex:1;max-width:880px;padding:60px 72px 120px 72px;min-width:0;}
+header.cover{border-bottom:2px solid var(--fg);padding-bottom:32px;margin-bottom:48px;}
+header.cover h1{font-size:42px;line-height:1.15;margin:0 0 12px 0;font-weight:700;}
+header.cover .subtitle{font-size:20px;color:var(--muted);font-style:italic;margin-bottom:20px;}
+header.cover .meta{font-family:var(--sans);font-size:13px;color:var(--muted);}
+h2{font-size:26px;margin-top:72px;margin-bottom:6px;padding-bottom:8px;border-bottom:1px solid var(--rule);scroll-margin-top:20px;}
+h2 .num{color:var(--accent);font-family:var(--mono);font-weight:400;margin-right:10px;font-size:20px;}
+.pos{font-family:var(--sans);font-size:13px;color:var(--muted);font-style:italic;margin-top:0;margin-bottom:16px;padding:6px 12px;background:var(--accent-soft);border-left:2px solid var(--accent);}
+h3{font-size:18px;margin-top:28px;margin-bottom:8px;font-weight:600;}
+h4{font-size:15px;margin-top:18px;margin-bottom:4px;font-weight:600;color:var(--accent);}
+p{margin:0 0 14px 0;text-align:justify;}
+code{font-family:var(--mono);font-size:14px;background:var(--accent-soft);color:var(--accent);padding:1px 5px;border-radius:3px;}
+pre{background:var(--code-bg);border-radius:6px;padding:14px 18px;overflow-x:auto;font-size:13px;line-height:1.55;margin:16px 0;}
+pre code{background:transparent;color:inherit;padding:0;font-size:inherit;}
+.formula{font-family:var(--serif);padding:10px 18px;background:#f6f0fa;border-left:2px solid var(--muted);margin:12px 0;font-size:16px;overflow-x:auto;}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;font-family:var(--sans);}
+th,td{border-bottom:1px solid var(--rule);padding:7px 10px;text-align:left;vertical-align:top;}
+th{background:var(--sidebar-bg);font-weight:600;}
+.paper-meta{font-family:var(--sans);font-size:13px;margin:12px 0 24px 0;padding:14px 18px;background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:4px;}
+.paper-meta .title-en{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--accent);margin-bottom:6px;}
+.paper-meta .row{margin:2px 0;}
+.paper-meta .label{font-weight:600;display:inline-block;min-width:70px;color:var(--muted);}
+.part-header{margin-top:100px;margin-bottom:24px;padding:24px 28px;background:linear-gradient(to right,var(--accent-soft),transparent);border-left:4px solid var(--accent);}
+.part-header .part-label{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:0.15em;color:var(--accent);}
+.part-header h2.part-title{font-size:32px;margin:4px 0 8px 0;padding:0;border:none;}
+.part-header .part-desc{font-size:15px;color:var(--muted);font-style:italic;margin:0;}
+.mermaid{margin:20px 0;text-align:center;}
+.refback{font-family:var(--sans);font-size:13px;color:var(--muted);margin-top:20px;padding-top:10px;border-top:1px dashed var(--rule);}
+.refback strong{color:var(--accent);}
+@media (max-width:1100px){aside.toc{display:none;}main{padding:40px 32px;}}
+</style>
+</head>
+<body>
+
+<aside class="toc">
+<h1>Paper Deep Dives</h1>
+<div class="sub">Ch 5C · Systems &amp; Generative Models</div>
+
+<div class="group">Ch. 2 Related · Systems &amp; Software</div>
+<ol>
+<li><a href="#p18"><span class="num">18</span>HNSW</a></li>
+<li><a href="#p19"><span class="num">19</span>Raft</a></li>
+</ol>
+
+<div class="group">Ch. 3 Related · Classic Model Supplements</div>
+<ol>
+<li><a href="#p20"><span class="num">20</span>GAN</a></li>
+<li><a href="#p21"><span class="num">21</span>VAE</a></li>
+<li><a href="#p22"><span class="num">22</span>DDPM</a></li>
+<li><a href="#p23"><span class="num">23</span>Word2Vec</a></li>
+</ol>
+
+<div class="group">Ch. 4 Related · LLM Supplements</div>
+<ol>
+<li><a href="#p24"><span class="num">24</span>Mamba / SSM</a></li>
+<li><a href="#p25"><span class="num">25</span>RAG</a></li>
+<li><a href="#p26"><span class="num">26</span>ReAct</a></li>
+</ol>
+</aside>
+
+<main>
+
+<header class="cover">
+<h1>Paper Deep Dives</h1>
+<div class="subtitle">Systems, Generative Models &amp; LLM Supplements</div>
+<div class="meta">Chapter 5C · Papers P18–P26</div>
+</header>
+
+<p>This is the supplementary volume of the Paper Deep Dives series, covering 9 papers not addressed in the main volume (P01–P17) that are equally important for understanding the full technical stack of the book. The selection spans three chapters: the systems and software foundations of Chapter 2 (vector retrieval, distributed consensus), the classic generative models of Chapter 3 (GAN, VAE, diffusion models, word vectors), and the new LLM paradigms of Chapter 4 (state space models, retrieval-augmented generation, the reasoning-action framework).</p>
+
+<p>The length of each entry reflects engineering impact and mathematical depth: papers with significant current engineering impact and rich mathematics worth unpacking (HNSW, GAN, VAE, DDPM, Mamba) receive 2–3 pages; papers whose core ideas can be conveyed clearly in one page (Raft, Word2Vec, RAG, ReAct) are treated concisely.</p>
+
+<!-- ============================ PART 5: Ch.2 ============================ -->
+<div class="part-header">
+<div class="part-label">PART FIVE</div>
+<h2 class="part-title">Chapter 2 Related · Systems &amp; Software</h2>
+<p class="part-desc">The core retrieval algorithm powering vector databases, and the consensus foundation of distributed systems.</p>
+</div>
+
+<!-- ============================ P18 HNSW ============================ -->
+<h2 id="p18"><span class="num">P18</span>HNSW: The Retrieval Engine of Vector Databases</h2>
+<p class="pos">Corresponds to main text: Chapter 2, Section 3.5.4 — Vector Databases</p>
+
+<div class="paper-meta">
+<div class="title-en">Efficient and robust approximate nearest neighbor using Hierarchical Navigable Small World graphs</div>
+<div class="row"><span class="label">Authors</span>Yu. A. Malkov, D. A. Yashunin</div>
+<div class="row"><span class="label">Affiliation</span>Yandex (independent research)</div>
+<div class="row"><span class="label">Published</span>IEEE TPAMI 2020 (preprint 2016/2018)</div>
+<div class="row"><span class="label">Citations</span>3,500+</div>
+<div class="row"><span class="label">Link</span>arXiv:1603.09320</div>
+</div>
+
+<h3>The Problem: The Curse of High-Dimensional Nearest Neighbor Search</h3>
+<p>Given a 768-dimensional vector (say, the output embedding of BERT), find the top-10 most similar vectors among one million candidates — this is the Approximate Nearest Neighbor (ANN) problem. Exact methods require linear scan, and $O(N)$ is unacceptable. Traditional approaches like KD-trees degrade to linear time in high dimensions; LSH (Locality-Sensitive Hashing) demands large memory for multiple hash tables and offers a poor recall-speed tradeoff.</p>
+
+<p>HNSW's starting point: organize vectors into a <strong>multi-layer graph</strong> and perform greedy search on that graph. The graph construction guarantees the "small-world" property — any two nodes are reachable in a small number of hops.</p>
+
+<h3>Core Method: Hierarchical Navigable Small World Graphs</h3>
+
+<h4>The Intuition Behind NSW (Single Layer)</h4>
+<p>Start with the single-layer Navigable Small World graph: each vector is a node, and each node is connected to several "neighbors." Search starts from an entry point and greedily jumps to the neighbor closest to the query until no closer neighbor can be found — this is greedy search. The key insight of NSW: if the graph simultaneously contains <strong>short-range links</strong> (local precision) and <strong>long-range links</strong> (spanning large distances), the average number of hops in greedy search is $O(\log N)$.</p>
+
+<h4>Layered Structure (What the "H" Means)</h4>
+<p>HNSW adds a hierarchical structure on top of NSW, analogous to a skip list: the top layer holds only a small number of nodes connected by long-range edges for rapid coarse localization; each successive layer down adds more nodes with shorter edges for increasingly fine-grained approximation of the target.</p>
+
+<div class="mermaid">
+flowchart TB
+    subgraph Layer2["Layer 2 (sparsest)"]
+        A2((v_3)) ---|long-range edge| B2((v_89))
+    end
+    subgraph Layer1["Layer 1"]
+        A1((v_3)) --- C1((v_17))
+        C1 --- D1((v_45))
+        D1 --- B1((v_89))
+    end
+    subgraph Layer0["Layer 0 (all nodes)"]
+        A0((v_3)) --- E0((v_5))
+        E0 --- F0((v_12))
+        F0 --- C0((v_17))
+        C0 --- G0((v_23))
+        G0 --- D0((v_45))
+        D0 --- H0((v_67))
+        H0 --- B0((v_89))
+    end
+    A2 -.-> A1 -.-> A0
+    B2 -.-> B1 -.-> B0
+    C1 -.-> C0
+    D1 -.-> D0
+</div>
+
+<h4>Insertion Algorithm</h4>
+<p>To insert a new vector $q$:</p>
+<ol>
+<li>Randomly draw a layer $l = \lfloor -\ln(\text{uniform}(0,1)) \cdot m_L \rfloor$, where $m_L = 1/\ln(M)$. This ensures an exponentially decaying distribution of layer assignments.</li>
+<li>Starting from the entry point at the highest layer, greedily search down to the closest node to $q$, descending layer by layer until reaching layer $l$.</li>
+<li>From layer $l$ down to layer 0: at each layer, find the $ef_{\text{Construction}}$ nearest neighbors of $q$, select the best $M$ of them as $q$'s neighbors, and add bidirectional edges.</li>
+</ol>
+
+<h4>Search Algorithm Pseudocode</h4>
+<pre><code class="language-python">def hnsw_search(query, entry_point, top_k, ef):
+    """HNSW approximate nearest neighbor search"""
+    current_nearest = entry_point
+
+    # Phase 1: greedy descent from the top layer down to layer 1
+    for layer in range(top_layer, 0, -1):
+        changed = True
+        while changed:
+            changed = False
+            for neighbor in get_neighbors(current_nearest, layer):
+                if dist(neighbor, query) < dist(current_nearest, query):
+                    current_nearest = neighbor
+                    changed = True
+
+    # Phase 2: beam search on layer 0 (ef controls beam width)
+    candidates = MinHeap([current_nearest])   # candidate set
+    visited = set([current_nearest])
+    result = MaxHeap([current_nearest])       # result set, ordered by descending distance
+
+    while len(candidates) > 0:
+        c = candidates.pop_min()
+        f = result.peek_max()  # furthest node currently in result set
+        if dist(c, query) > dist(f, query):
+            break  # candidate is farther than the worst result, stop
+
+        for neighbor in get_neighbors(c, layer=0):
+            if neighbor not in visited:
+                visited.add(neighbor)
+                if dist(neighbor, query) < dist(f, query) or len(result) < ef:
+                    candidates.push(neighbor)
+                    result.push(neighbor)
+                    if len(result) > ef:
+                        result.pop_max()
+
+    return result.top(top_k)
+</code></pre>
+
+<h3>Complexity Analysis</h3>
+<table>
+<tr><th>Operation</th><th>Time Complexity</th><th>Notes</th></tr>
+<tr><td>Search</td><td>$O(\log N)$</td><td>$O(1)$ greedy steps per layer, $O(\log N)$ layers total</td></tr>
+<tr><td>Insert</td><td>$O(\log N)$</td><td>Search + edge creation</td></tr>
+<tr><td>Space</td><td>$O(N \cdot M)$</td><td>$M$ edges per node</td></tr>
+</table>
+
+<h3>Key Parameters</h3>
+<table>
+<tr><th>Parameter</th><th>Meaning</th><th>Typical Value</th></tr>
+<tr><td>$M$</td><td>Maximum number of neighbors per node</td><td>16–64</td></tr>
+<tr><td>$ef_{\text{Construction}}$</td><td>Beam width during index construction</td><td>100–200</td></tr>
+<tr><td>$ef_{\text{Search}}$</td><td>Beam width during search (higher = more accurate but slower)</td><td>50–500</td></tr>
+</table>
+
+<p>$ef_{\text{Search}}$ is tunable at runtime — this gives HNSW a "precision-speed dial" that users can adjust per use case on the fly.</p>
+
+<h3>Experimental Results</h3>
+<p>On ANN-Benchmarks (128-dimensional SIFT 1M dataset), HNSW achieves a recall@10 of 0.99 while exceeding all contemporary methods (Annoy, FLANN, IVF-PQ) by an order of magnitude in QPS. The advantage is even more pronounced in higher dimensions (768-dim GloVe), because quantization-based methods (PQ) suffer severe precision degradation in high dimensions while HNSW's graph search is not directly affected by dimensionality.</p>
+
+<h3>Impact</h3>
+<p>HNSW is the <strong>default index in every mainstream vector database today</strong>:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Milvus</strong>: HNSW is the recommended in-memory index type</li>
+<li><strong>Qdrant</strong>: entirely built on HNSW under the hood</li>
+<li><strong>FAISS</strong>: HNSW used both as a standalone index and as the coarse quantizer in IVF</li>
+<li><strong>Pinecone, Weaviate, Chroma</strong>: all support HNSW</li>
+<li><strong>PostgreSQL pgvector</strong>: HNSW index added in version 0.5+</li>
+</ul>
+
+<p>In a RAG pipeline (main text, Section 4.10), the "retrieval" step of "embedding + vector retrieval" runs on HNSW under the hood. Without this paper, the vector database boom of 2023–2025 would not have happened.</p>
+
+<h3>Critical Perspective</h3>
+<p>HNSW's main drawback is <strong>large memory footprint</strong> — the entire graph must reside in memory. One billion vectors × 768 dimensions × float32 ≈ 3 TB, and that does not even count the graph edge storage. In large-scale settings, HNSW is therefore typically combined with quantization (PQ/SQ) or sharding. Additionally, HNSW does not support dynamic deletion (vectors can only be soft-deleted), so long-running indices must eventually be rebuilt. DiskANN (Microsoft, 2019) is an alternative specifically designed for ANN on disk.</p>
+
+<div class="refback"><strong>Why You Must Read This:</strong> If you are building RAG, semantic search, or recommendation systems, the vector queries in your stack are almost certainly running on HNSW under the hood. Understanding its graph construction and search logic is what lets you tune parameters correctly ($M$, $ef$) and decide when to switch to IVF-PQ or DiskANN.</div>
+
+<!-- ============================ P19 Raft ============================ -->
+<h2 id="p19"><span class="num">P19</span>Raft: The Understandable Consensus Algorithm</h2>
+<p class="pos">Corresponds to main text: Chapter 2 — Distributed Systems Foundations</p>
+
+<div class="paper-meta">
+<div class="title-en">In Search of an Understandable Consensus Algorithm</div>
+<div class="row"><span class="label">Authors</span>Diego Ongaro, John Ousterhout</div>
+<div class="row"><span class="label">Affiliation</span>Stanford University</div>
+<div class="row"><span class="label">Published</span>USENIX ATC 2014</div>
+<div class="row"><span class="label">Citations</span>6,000+</div>
+<div class="row"><span class="label">Link</span>raft.github.io</div>
+</div>
+
+<h3>The Problem: Paxos Is Too Hard to Understand</h3>
+<p>Distributed consensus — getting multiple machines to agree on a single, ordered log — is the foundational problem of distributed systems. Lamport's Paxos (1989/1998) is the theoretical gold standard, but is notorious for being "extremely difficult to understand": the original paper uses a Greek parliament as a metaphor, real-world engineering requires numerous patches (Multi-Paxos), and no two Paxos implementations are quite the same.</p>
+
+<p>The goal of Ongaro's doctoral dissertation is explicit: <strong>design a consensus algorithm equivalent to Paxos but far easier to understand and implement</strong>.</p>
+
+<h3>Core Method: Leader Election + Log Replication + Safety</h3>
+<p>Raft decomposes consensus into three relatively independent subproblems:</p>
+
+<p><strong>1. Leader Election:</strong> The cluster always has exactly one Leader. Each node is in one of three states: Follower, Candidate, or Leader. A Follower that times out without receiving a heartbeat becomes a Candidate and initiates an election; it becomes Leader upon receiving a majority of votes. Terms (monotonically increasing integers) ensure that an old Leader automatically steps down when it sees a higher term.</p>
+
+<p><strong>2. Log Replication:</strong> All write requests are forwarded to the Leader, which appends the log entry locally and then sends it in parallel to all Followers. Once a majority of nodes acknowledge the entry, it is "committed" and the Leader notifies the client.</p>
+
+<p><strong>3. Safety:</strong> The core constraint is the Election Restriction: only a node that already holds all committed log entries can be elected Leader. This guarantees that a new Leader will never overwrite committed data.</p>
+
+<div class="mermaid">
+stateDiagram-v2
+    [*] --> Follower
+    Follower --> Candidate: Election timeout
+    Candidate --> Leader: Receives majority votes
+    Candidate --> Follower: Discovers higher term
+    Candidate --> Candidate: Election timeout (retry)
+    Leader --> Follower: Discovers higher term
+</div>
+
+<h3>Impact</h3>
+<p>Raft's industrial impact far exceeds its academic reception — it is the standard consensus layer in today's distributed infrastructure:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>etcd</strong>: Kubernetes' metadata store, built on Raft</li>
+<li><strong>TiKV</strong>: TiDB's storage engine, using Multi-Raft (one Raft Group per Region)</li>
+<li><strong>CockroachDB</strong>: distributed SQL database with Raft consensus</li>
+<li><strong>Consul</strong>: HashiCorp's service discovery, using Raft consensus</li>
+<li><strong>RabbitMQ Quorum Queues</strong>: durable queues based on Raft</li>
+</ul>
+
+<p>The success of the Raft paper validates an important principle in systems research: <strong>understandability is itself a form of value</strong>. An algorithm that is "good enough" but easy to implement correctly is more valuable in engineering practice than one that is "theoretically optimal" but easy to implement incorrectly.</p>
+
+<div class="refback"><strong>Why You Must Read This:</strong> Distributed systems are the substrate of AI infrastructure — training clusters, inference services, vector databases, and configuration centers all depend on consensus. Understanding Raft's leader election and log replication is the entry point for understanding the reliability guarantees of all these systems.</div>
+
+<!-- ============================ PART 6: Ch.3 ============================ -->
+<div class="part-header">
+<div class="part-label">PART SIX</div>
+<h2 class="part-title">Chapter 3 Related · Classic Model Supplements</h2>
+<p class="part-desc">The three major generative models (GAN, VAE, diffusion) and word vectors — the intellectual origins of modern generative AI.</p>
+</div>
+
+<!-- ============================ P20 GAN ============================ -->
+<h2 id="p20"><span class="num">P20</span>GAN: The Birth of Adversarial Training</h2>
+<p class="pos">Corresponds to main text: Chapter 3, Section 4.4.4 — Generative Models</p>
+
+<div class="paper-meta">
+<div class="title-en">Generative Adversarial Nets</div>
+<div class="row"><span class="label">Authors</span>Ian J. Goodfellow, Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley, Sherjil Ozair, Aaron Courville, Yoshua Bengio</div>
+<div class="row"><span class="label">Affiliation</span>Universite de Montreal</div>
+<div class="row"><span class="label">Published</span>NeurIPS 2014</div>
+<div class="row"><span class="label">Citations</span>70,000+</div>
+<div class="row"><span class="label">Link</span>arXiv:1406.2661</div>
+</div>
+
+<h3>The Problem: Why Generative Models Were So Hard</h3>
+<p>Before 2014, the dominant generative models were: Restricted Boltzmann Machines (RBMs), Variational Autoencoders (VAEs, introduced the same year), and autoregressive models (PixelRNN would not arrive for another two years). Their shared limitation: either they required explicitly defining a likelihood function and performing complex inference, or they produced blurry outputs. Goodfellow, while discussing the problem with a friend at a bar, conceived a way to circumvent the likelihood function entirely — have two networks engage in <strong>adversarial competition</strong>.</p>
+
+<h3>Core Method: Two-Player Zero-Sum Game</h3>
+<p>Two networks are trained simultaneously:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Generator $G$</strong>: generates fake samples $G(z)$ from noise $z \sim p_z(z)$, with the goal of "fooling the discriminator"</li>
+<li><strong>Discriminator $D$</strong>: judges whether an input is a real or generated sample, with the goal of "not being fooled"</li>
+</ul>
+
+<h4>Objective Function</h4>
+<div class="formula">$\min_G \max_D V(D, G) = \mathbb{E}_{x \sim p_{\text{data}}}[\log D(x)] + \mathbb{E}_{z \sim p_z}[\log(1 - D(G(z)))]$</div>
+
+<p>The game-theoretic meaning of this minimax: $D$ wants to maximize its discriminative ability (pulling $V$ up), while $G$ wants to minimize $D$'s discriminative ability (pushing $V$ down).</p>
+
+<h4>Theoretical Results</h4>
+<p>Goodfellow proves two key theorems:</p>
+<ol>
+<li><strong>Optimal discriminator</strong>: given $G$, the optimal $D^*(x) = \frac{p_{\text{data}}(x)}{p_{\text{data}}(x) + p_g(x)}$</li>
+<li><strong>Global optimum</strong>: when $p_g = p_{\text{data}}$, $D^* = 1/2$ and $V$ reaches its global minimum of $-\log 4$. That is, at equilibrium the generated distribution perfectly matches the data distribution.</li>
+</ol>
+
+<p>Substituting $D^*$ into $V$ reveals that $V$ is equivalent to a transformation of the Jensen-Shannon divergence between the data distribution and the generated distribution:</p>
+<div class="formula">$V(D^*, G) = -\log 4 + 2 \cdot \text{JSD}(p_{\text{data}} \| p_g)$</div>
+
+<h3>Training Loop</h3>
+<div class="mermaid">
+flowchart LR
+    Z["Noise z ~ N(0,I)"] --> G["Generator G"]
+    G --> FakeImg["Fake samples G(z)"]
+    RealImg["Real samples x"] --> D["Discriminator D"]
+    FakeImg --> D
+    D --> Loss["D: max log D(x) + log(1-D(G(z)))
+    G: min log(1-D(G(z)))"]
+</div>
+
+<pre><code class="language-python">import torch
+import torch.nn as nn
+
+class Generator(nn.Module):
+    def __init__(self, z_dim=100, img_dim=784):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(z_dim, 256), nn.LeakyReLU(0.2),
+            nn.Linear(256, 512), nn.LeakyReLU(0.2),
+            nn.Linear(512, img_dim), nn.Tanh(),
+        )
+
+    def forward(self, z):
+        return self.net(z)
+
+class Discriminator(nn.Module):
+    def __init__(self, img_dim=784):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(img_dim, 512), nn.LeakyReLU(0.2),
+            nn.Linear(512, 256), nn.LeakyReLU(0.2),
+            nn.Linear(256, 1), nn.Sigmoid(),
+        )
+
+    def forward(self, x):
+        return self.net(x)
+
+# Training loop
+z_dim = 100
+G = Generator(z_dim)
+D = Discriminator()
+opt_G = torch.optim.Adam(G.parameters(), lr=2e-4, betas=(0.5, 0.999))
+opt_D = torch.optim.Adam(D.parameters(), lr=2e-4, betas=(0.5, 0.999))
+bce = nn.BCELoss()
+
+for epoch in range(num_epochs):
+    for real_batch, _ in dataloader:
+        batch_size = real_batch.size(0)
+        real_batch = real_batch.view(batch_size, -1)
+
+        # --- Train discriminator ---
+        z = torch.randn(batch_size, z_dim)
+        fake = G(z).detach()
+        loss_D = bce(D(real_batch), torch.ones(batch_size, 1)) + \
+                 bce(D(fake), torch.zeros(batch_size, 1))
+        opt_D.zero_grad(); loss_D.backward(); opt_D.step()
+
+        # --- Train generator ---
+        z = torch.randn(batch_size, z_dim)
+        fake = G(z)
+        # Trick: use -log D(G(z)) instead of log(1 - D(G(z))) for stronger gradients
+        loss_G = bce(D(fake), torch.ones(batch_size, 1))
+        opt_G.zero_grad(); loss_G.backward(); opt_G.step()
+</code></pre>
+
+<h3>Training Instability: GAN's "Original Sin"</h3>
+<p>GAN's theory is elegant, but training in practice is extremely difficult:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Mode collapse</strong>: $G$ learns to produce only a few types of samples that are sufficient to fool $D$, sacrificing diversity</li>
+<li><strong>Training oscillation</strong>: $G$ and $D$ must stay balanced in capability — if one becomes too strong, the other receives no useful learning signal</li>
+<li><strong>Vanishing gradients</strong>: when $D$ is too accurate, $\log(1 - D(G(z))) \to 0$ and $G$ receives no gradient</li>
+</ul>
+
+<p>A large body of subsequent work addressed these issues: WGAN (replacing JSD with Wasserstein distance), SNGAN (spectral normalization), Progressive GAN (progressively increasing resolution), StyleGAN (disentangling style and content).</p>
+
+<h3>Impact and Decline</h3>
+<p>From 2014 to 2021, GANs were the undisputed leaders in image generation. StyleGAN2 (2019) produced synthetic faces that remain the benchmark for "fake faces." But in 2022, diffusion models (DDPM / Stable Diffusion) surpassed GANs comprehensively in both quality and diversity, and GAN's dominant position rapidly eroded. By 2025, GANs are primarily used for:</p>
+<ol>
+<li>Real-time applications (inference requires only one forward pass, roughly 100× faster than diffusion models)</li>
+<li>Specific tasks such as super-resolution and style transfer</li>
+<li>Accelerating diffusion models (e.g., consistency distillation uses adversarial training)</li>
+</ol>
+
+<h3>Critical Perspective</h3>
+<p>The "adversarial training" idea outlasts the GAN architecture itself. The reward model in RLHF that discriminates between "good" and "bad" responses is, in a sense, a discriminator; adversarial example attacks and defenses (adversarial robustness) draw directly from GAN's game-theoretic framework. Goodfellow himself later shifted toward adversarial security research.</p>
+
+<div class="refback"><strong>Why You Must Read This:</strong> "Adversarial training" is one of the most important paradigms in deep learning. Even though GANs have ceded ground in image generation to diffusion models, their game-theoretic perspective has influenced RLHF, adversarial robustness, and data augmentation, among other areas. Understanding GANs is what lets you understand why RLHF requires a reward model.</div>
+
+<!-- ============================ P21 VAE ============================ -->
+<h2 id="p21"><span class="num">P21</span>VAE: Variational Inference Meets Deep Learning</h2>
+<p class="pos">Corresponds to main text: Chapter 3, Section 4.4.4 — Generative Models</p>
+
+<div class="paper-meta">
+<div class="title-en">Auto-Encoding Variational Bayes</div>
+<div class="row"><span class="label">Authors</span>Diederik P. Kingma, Max Welling</div>
+<div class="row"><span class="label">Affiliation</span>University of Amsterdam</div>
+<div class="row"><span class="label">Published</span>ICLR 2014</div>
+<div class="row"><span class="label">Citations</span>45,000+</div>
+<div class="row"><span class="label">Link</span>arXiv:1312.6114</div>
+</div>
+
+<h3>The Problem: A Missing Probabilistic Framework for Deep Generative Models</h3>
+<p>GANs sidestep the likelihood function, but at the cost of training instability and an inability to compute probabilities. Traditional Bayesian methods support probabilistic inference but cannot handle high-dimensional data (images, text). Kingma and Welling's question: can we <strong>use neural networks for variational inference while preserving a probabilistic framework</strong>?</p>
+
+<h3>Core Method: The Variational Lower Bound (ELBO)</h3>
+
+<h4>Generative Model Assumption</h4>
+<p>Assume data $x$ is generated by latent variable $z$: first sample $z \sim p_\theta(z)$ (prior, typically a standard Gaussian), then decode $x \sim p_\theta(x|z)$ using a neural network. We want to maximize the marginal likelihood of the data:</p>
+
+<div class="formula">$\log p_\theta(x) = \log \int p_\theta(x|z) p_\theta(z) \, dz$</div>
+
+<p>This integral is intractable for high-dimensional $z$.</p>
+
+<h4>Variational Inference</h4>
+<p>Introduce an "encoder" $q_\phi(z|x)$ to approximate the true posterior $p_\theta(z|x)$. Applying Jensen's inequality yields the ELBO (Evidence Lower BOund):</p>
+
+<div class="formula">$\log p_\theta(x) \geq \underbrace{\mathbb{E}_{q_\phi(z|x)}[\log p_\theta(x|z)]}_{\text{reconstruction term}} - \underbrace{D_{\text{KL}}(q_\phi(z|x) \| p_\theta(z))}_{\text{regularization term}} = \text{ELBO}$</div>
+
+<p>The intuition behind each term:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Reconstruction term</strong>: how well $x$ can be recovered from $z$ (maximize)</li>
+<li><strong>KL divergence term</strong>: prevents the encoder's output distribution from straying too far from the prior (minimize; encourages a structured latent space)</li>
+</ul>
+
+<h4>The Reparameterization Trick</h4>
+<p>The key technical innovation: sampling from $q_\phi(z|x) = \mathcal{N}(\mu_\phi(x), \sigma^2_\phi(x))$ does not allow gradients to flow back through the sampling operation (which is non-differentiable). Kingma's solution: factor out the randomness:</p>
+
+<div class="formula">$z = \mu_\phi(x) + \sigma_\phi(x) \odot \epsilon, \quad \epsilon \sim \mathcal{N}(0, I)$</div>
+
+<p>Now $z$ is a deterministic function of $\phi$ (with external noise $\epsilon$), and gradients can backpropagate normally.</p>
+
+<div class="mermaid">
+flowchart LR
+    X["Input x"] --> Enc["Encoder q_phi"]
+    Enc --> Mu["mu"]
+    Enc --> Sigma["sigma"]
+    Eps["epsilon ~ N(0,I)"] --> RP["z = mu + sigma * epsilon"]
+    Mu --> RP
+    Sigma --> RP
+    RP --> Dec["Decoder p_theta"]
+    Dec --> Xhat["Reconstruction x'"]
+</div>
+
+<h3>PyTorch Implementation</h3>
+<pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class VAE(nn.Module):
+    def __init__(self, input_dim=784, z_dim=20):
+        super().__init__()
+        # Encoder
+        self.fc1 = nn.Linear(input_dim, 400)
+        self.fc_mu = nn.Linear(400, z_dim)
+        self.fc_logvar = nn.Linear(400, z_dim)
+        # Decoder
+        self.fc3 = nn.Linear(z_dim, 400)
+        self.fc4 = nn.Linear(400, input_dim)
+
+    def encode(self, x):
+        h = F.relu(self.fc1(x))
+        return self.fc_mu(h), self.fc_logvar(h)
+
+    def reparameterize(self, mu, logvar):
+        std = torch.exp(0.5 * logvar)
+        eps = torch.randn_like(std)       # external noise
+        return mu + std * eps             # reparameterization
+
+    def decode(self, z):
+        h = F.relu(self.fc3(z))
+        return torch.sigmoid(self.fc4(h))
+
+    def forward(self, x):
+        mu, logvar = self.encode(x.view(-1, 784))
+        z = self.reparameterize(mu, logvar)
+        return self.decode(z), mu, logvar
+
+def vae_loss(recon_x, x, mu, logvar):
+    # Reconstruction loss (binary cross-entropy)
+    BCE = F.binary_cross_entropy(recon_x, x.view(-1, 784), reduction='sum')
+    # KL divergence: -0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
+    KLD = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
+    return BCE + KLD
+</code></pre>
+
+<h3>VAE's "Blurriness" Problem and Subsequent Developments</h3>
+<p>VAE's generation quality (especially for images) has always lagged behind GANs — outputs tend to be blurry. The cause: pixel-level reconstruction loss (MSE/BCE) encourages "averaging" over all plausible outputs. Subsequent improvements include:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>VQ-VAE</strong> (van den Oord, 2017): discrete latent space replacing the continuous Gaussian, yielding sharper generations</li>
+<li><strong>VQ-VAE-2</strong> (Razavi, 2019): hierarchical discrete codes, quality approaching BigGAN</li>
+<li><strong>Stable Diffusion</strong>: diffusion performed in VQ-VAE's latent space — the VAE handles compression, diffusion handles generation. This is the standard image generation pipeline of 2023–2025.</li>
+</ul>
+
+<h3>Impact</h3>
+<p>VAE's influence extends well beyond the application of image generation:</p>
+<ol>
+<li><strong>Reparameterization trick</strong>: has become the standard method for any setting that requires backpropagating gradients through sampling operations (reinforcement learning, Gumbel-Softmax, etc.)</li>
+<li><strong>Latent space learning</strong>: VAE defines the "encoder–latent space–decoder" paradigm, which directly shaped the Latent Diffusion architecture of Stable Diffusion</li>
+<li><strong>Variational inference + deep learning</strong>: opened the door to probabilistic deep learning, spawning variational sequence models, variational graph neural networks, and more</li>
+</ol>
+
+<div class="refback"><strong>Why You Must Read This:</strong> VAE is a prerequisite for understanding the Stable Diffusion architecture — the "Latent" in Latent Diffusion is exactly the VAE's latent space. The reparameterization trick is also widely used in the LLM domain (e.g., Gumbel-Softmax for discrete selection). Kingma is the author of both Adam and VAE; together, those two papers may constitute the highest-citation combination in all of deep learning.</div>
+
+<!-- ============================ P22 DDPM ============================ -->
+<h2 id="p22"><span class="num">P22</span>DDPM: Diffusion Models, the Foundation of Modern Image Generation</h2>
+<p class="pos">Corresponds to main text: Chapter 3, Section 4.4.4 — Generative Models</p>
+
+<div class="paper-meta">
+<div class="title-en">Denoising Diffusion Probabilistic Models</div>
+<div class="row"><span class="label">Authors</span>Jonathan Ho, Ajay Jain, Pieter Abbeel</div>
+<div class="row"><span class="label">Affiliation</span>UC Berkeley</div>
+<div class="row"><span class="label">Published</span>NeurIPS 2020</div>
+<div class="row"><span class="label">Citations</span>15,000+</div>
+<div class="row"><span class="label">Link</span>arXiv:2006.11239</div>
+</div>
+
+<h3>The Problem: Where Is the Alternative to GANs?</h3>
+<p>In 2020, GANs (particularly StyleGAN2) held the highest image generation quality, but training instability and mode collapse continued to frustrate the community. The theoretical framework of diffusion models had been proposed as early as 2015 by Sohl-Dickstein, but generation quality remained far below GANs. Ho et al.'s contribution was <strong>the first time a diffusion model matched GAN quality</strong> — and with dramatically simpler training.</p>
+
+<h3>Core Method: Forward Noising + Reverse Denoising</h3>
+
+<h4>Forward Process (Diffusion)</h4>
+<p>Starting from a real image $x_0$, Gaussian noise is added incrementally over $T$ steps until the result is pure noise:</p>
+
+<div class="formula">$q(x_t | x_{t-1}) = \mathcal{N}(x_t; \sqrt{1 - \beta_t} \, x_{t-1}, \beta_t I)$</div>
+
+<p>Here $\beta_t$ is a predefined noise schedule that increases from small to large (e.g., $\beta_1 = 10^{-4}$ to $\beta_T = 0.02$). A key property: one can jump directly from $x_0$ to any $x_t$ without sequential computation:</p>
+
+<div class="formula">$q(x_t | x_0) = \mathcal{N}(x_t; \sqrt{\bar{\alpha}_t} \, x_0, (1 - \bar{\alpha}_t) I)$</div>
+
+<p>where $\alpha_t = 1 - \beta_t$ and $\bar{\alpha}_t = \prod_{s=1}^{t} \alpha_s$. For sufficiently large $T$, $x_T \approx \mathcal{N}(0, I)$.</p>
+
+<h4>Reverse Process (Denoising)</h4>
+<p>If we can learn to reverse each step — predicting $x_{t-1}$ from $x_t$ — we can generate images starting from pure noise. The reverse process is also Gaussian:</p>
+
+<div class="formula">$p_\theta(x_{t-1} | x_t) = \mathcal{N}(x_{t-1}; \mu_\theta(x_t, t), \sigma_t^2 I)$</div>
+
+<p>Ho et al.'s key simplification: instead of directly predicting $\mu$, the network <strong>predicts the noise $\epsilon$</strong>. The network $\epsilon_\theta(x_t, t)$ takes a noisy image and a timestep as input and outputs the predicted noise.</p>
+
+<div class="mermaid">
+flowchart LR
+    subgraph Forward["Forward Process (fixed)"]
+        X0["x_0 (original)"] -->|"add noise"| X1["x_1"]
+        X1 -->|"add noise"| X2["x_2"]
+        X2 -->|"..."| XT["x_T (pure noise)"]
+    end
+    subgraph Reverse["Reverse Process (learned)"]
+        XT2["x_T ~ N(0,I)"] -->|"denoise"| XTm1["x_{T-1}"]
+        XTm1 -->|"denoise"| XTm2["x_{T-2}"]
+        XTm2 -->|"..."| X02["x_0 (generated)"]
+    end
+</div>
+
+<h4>Training Objective: Radical Simplification</h4>
+<p>DDPM's training loss is the simplest of any deep generative model:</p>
+
+<div class="formula">$L_{\text{simple}} = \mathbb{E}_{t, x_0, \epsilon}\left[\|\epsilon - \epsilon_\theta(\sqrt{\bar{\alpha}_t} x_0 + \sqrt{1-\bar{\alpha}_t} \epsilon, \, t)\|^2\right]$</div>
+
+<p>In plain terms: randomly sample a timestep $t$, randomly sample noise $\epsilon$, add the noise to $x_0$ to obtain $x_t$, have the network predict the added noise, and train with MSE. That is all.</p>
+
+<h3>Training and Sampling Code</h3>
+<pre><code class="language-python">import torch
+import torch.nn as nn
+
+# Noise schedule
+def linear_schedule(T, beta_start=1e-4, beta_end=0.02):
+    return torch.linspace(beta_start, beta_end, T)
+
+T = 1000
+betas = linear_schedule(T)
+alphas = 1.0 - betas
+alpha_bars = torch.cumprod(alphas, dim=0)
+
+# Forward noising: jump directly from x_0 to x_t
+def q_sample(x_0, t, noise=None):
+    if noise is None:
+        noise = torch.randn_like(x_0)
+    sqrt_alpha_bar = alpha_bars[t].sqrt().view(-1, 1, 1, 1)
+    sqrt_one_minus = (1 - alpha_bars[t]).sqrt().view(-1, 1, 1, 1)
+    return sqrt_alpha_bar * x_0 + sqrt_one_minus * noise, noise
+
+# Training loop
+model = UNet(...)  # U-Net that predicts noise
+optimizer = torch.optim.Adam(model.parameters(), lr=2e-4)
+
+for batch in dataloader:
+    x_0 = batch['image']
+    t = torch.randint(0, T, (x_0.size(0),))       # random timestep
+    x_t, noise = q_sample(x_0, t)                   # add noise
+    pred_noise = model(x_t, t)                       # predict noise
+    loss = nn.functional.mse_loss(pred_noise, noise) # just MSE
+    optimizer.zero_grad(); loss.backward(); optimizer.step()
+
+# Sampling: iteratively denoise from pure noise
+@torch.no_grad()
+def sample(model, shape):
+    x = torch.randn(shape)  # x_T ~ N(0, I)
+    for t in reversed(range(T)):
+        t_batch = torch.full((shape[0],), t, dtype=torch.long)
+        pred_noise = model(x, t_batch)
+        # Compute mean of x_{t-1}
+        alpha = alphas[t]; alpha_bar = alpha_bars[t]
+        x = (1 / alpha.sqrt()) * (x - (1 - alpha) / (1 - alpha_bar).sqrt() * pred_noise)
+        if t > 0:
+            x = x + betas[t].sqrt() * torch.randn_like(x)  # reintroduce stochasticity
+    return x
+</code></pre>
+
+<h3>Why Diffusion Models Surpassed GANs</h3>
+<table>
+<tr><th>Dimension</th><th>GAN</th><th>DDPM</th></tr>
+<tr><td>Training stability</td><td>Poor (minimax game)</td><td>Good (simple MSE)</td></tr>
+<tr><td>Mode coverage</td><td>Prone to mode collapse</td><td>Naturally covers all modes (iterative denoising)</td></tr>
+<tr><td>Generation diversity</td><td>Limited</td><td>Very high</td></tr>
+<tr><td>Inference speed</td><td>One forward pass (fast)</td><td>Requires T steps (slow)</td></tr>
+<tr><td>Conditional generation</td><td>Requires specialized architecture</td><td>Classifier-free guidance suffices</td></tr>
+</table>
+
+<h3>Downstream Development Chain</h3>
+<ol>
+<li><strong>DDIM</strong> (Song, 2020): deterministic sampling — 50 steps is enough, no need for 1000</li>
+<li><strong>Classifier-Free Guidance</strong> (Ho &amp; Salimans, 2022): conditional generation without a separate classifier, dramatically improving quality</li>
+<li><strong>Latent Diffusion / Stable Diffusion</strong> (Rombach, 2022): diffusion in VAE latent space; 64× compression makes the process tractable</li>
+<li><strong>DALL-E 2/3, Midjourney, Imagen</strong>: text-to-image generation, all based on diffusion</li>
+<li><strong>Sora</strong> (OpenAI, 2024): video generation using diffusion + Transformer (DiT)</li>
+</ol>
+
+<h3>Critical Perspective</h3>
+<p>The inference speed problem of diffusion models is not fully solved — compressing 1000 steps to 4–8 (consistency distillation) incurs quality degradation. Additionally, the theoretical framework of diffusion models limits their applicability to discrete data (text) — text generation remains the domain of autoregressive models (GPT). There are some 2024–2025 attempts at discrete diffusion models (e.g., MDLM), but no substantial breakthrough has emerged yet.</p>
+
+<div class="refback"><strong>Why You Must Read This:</strong> Stable Diffusion, DALL-E, Midjourney, Sora — every stunning image and video generation result from 2022–2025 builds on DDPM's ideas. Once you understand the mathematics of forward noising and reverse denoising, you can grasp why text-to-image generation requires so many inference steps, and why Latent Diffusion moves the diffusion process into latent space.</div>
+
+<!-- ============================ P23 Word2Vec ============================ -->
+<h2 id="p23"><span class="num">P23</span>Word2Vec: The Starting Point of Word Embeddings</h2>
+<p class="pos">Corresponds to main text: Chapter 3, Section 4.5.2 — Embeddings</p>
+
+<div class="paper-meta">
+<div class="title-en">Efficient Estimation of Word Representations in Vector Space</div>
+<div class="row"><span class="label">Authors</span>Tomas Mikolov, Kai Chen, Greg Corrado, Jeffrey Dean</div>
+<div class="row"><span class="label">Affiliation</span>Google</div>
+<div class="row"><span class="label">Published</span>ICLR 2013 Workshop</div>
+<div class="row"><span class="label">Citations</span>40,000+</div>
+<div class="row"><span class="label">Link</span>arXiv:1301.3781</div>
+</div>
+
+<h3>The Problem: A Mathematical Representation of Words</h3>
+<p>The first challenge in NLP: how do we turn words into numbers? Before 2013, the mainstream approach was one-hot vectors (a $V$-dimensional vector with a single 1, where $V$ is the vocabulary size) or TF-IDF. The problems: one-hot vectors are extremely high-dimensional (vocabularies of tens to hundreds of thousands), and the distance between any two words is identical (zero semantic information).</p>
+
+<p>Mikolov's goal: train dense, low-dimensional (100–300 dimensions) vectors such that semantically similar words are close together in the vector space.</p>
+
+<h3>Core Method: Two Architectures</h3>
+<p><strong>CBOW (Continuous Bag of Words)</strong>: predict the center word from the words in a context window. For example, given "the cat sat on the ___", use {the, cat, sat, on, the} to predict "mat."</p>
+
+<p><strong>Skip-gram</strong>: the reverse — predict the context from the center word. Given "sat", predict {cat, on}, etc. In practice, Skip-gram performs better (especially for rare words) and became the standard.</p>
+
+<div class="formula">$P(w_o | w_c) = \frac{\exp(\mathbf{v}_{w_o}' \cdot \mathbf{v}_{w_c})}{\sum_{w \in V} \exp(\mathbf{v}_w' \cdot \mathbf{v}_{w_c})}$</div>
+
+<p>Summing the denominator over the entire vocabulary is too slow. Two speedup strategies were introduced: Hierarchical Softmax (using a Huffman tree) and <strong>Negative Sampling</strong> (randomly sample a few "negatives" from the vocabulary and update only those). Negative Sampling is extremely simple and efficient and has become the de facto standard.</p>
+
+<h3>A Surprising Property: Vector Arithmetic</h3>
+<p>The most famous phenomenon discovered by Word2Vec:</p>
+<div class="formula">$\text{king} - \text{man} + \text{woman} \approx \text{queen}$</div>
+<p>Semantic relationships are encoded as directions in vector space. This finding directly shaped the design objectives of every subsequent embedding method.</p>
+
+<h3>Impact</h3>
+<p>Word2Vec ushered in the era of "everything can be embedded":</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>GloVe</strong> (Stanford, 2014): replaces the local window with a global co-occurrence matrix for a more elegant mathematical framework</li>
+<li><strong>FastText</strong> (Facebook, 2016): subword-level embeddings that handle out-of-vocabulary words</li>
+<li><strong>ELMo</strong> (Peters, 2018): contextual word vectors (the same word has different vectors in different sentences)</li>
+<li><strong>BERT/GPT</strong>: essentially upgrading "static embeddings" to "dynamic contextual embeddings"</li>
+</ul>
+
+<p>By 2025, no one uses Word2Vec for NLP tasks — BERT/GPT contextual embeddings have replaced them entirely. Yet Word2Vec's ideas live on: Item2Vec in recommendation systems, Node2Vec in graph embeddings, Code2Vec in code embeddings — all are extensions of Word2Vec's paradigm of "mapping discrete objects into continuous space."</p>
+
+<div class="refback"><strong>Why You Must Read This:</strong> Word2Vec is the best entry point for understanding the concept of "embedding." The token embeddings in BERT, the positional encodings in Transformers, the vector retrieval in RAG — all of these trace their intellectual origins to "representing discrete symbols with low-dimensional dense vectors." Mikolov's paper transformed this idea from an academic concept into an engineering standard.</div>
+
+<!-- ============================ PART 7: Ch.4 ============================ -->
+<div class="part-header">
+<div class="part-label">PART SEVEN</div>
+<h2 class="part-title">Chapter 4 Related · LLM Supplements</h2>
+<p class="part-desc">Challengers to the Transformer, retrieval-augmented generation, and the reasoning framework for Agents.</p>
+</div>
+
+<!-- ============================ P24 Mamba ============================ -->
+<h2 id="p24"><span class="num">P24</span>Mamba: Linear-Time Sequence Modeling</h2>
+<p class="pos">Corresponds to main text: Chapter 4, Section 4.4.3 — Non-Transformer Architectures</p>
+
+<div class="paper-meta">
+<div class="title-en">Mamba: Linear-Time Sequence Modeling with Selective State Spaces</div>
+<div class="row"><span class="label">Authors</span>Albert Gu, Tri Dao</div>
+<div class="row"><span class="label">Affiliation</span>Carnegie Mellon University, Princeton University</div>
+<div class="row"><span class="label">Published</span>COLM 2024 (preprint 2023)</div>
+<div class="row"><span class="label">Citations</span>3,000+</div>
+<div class="row"><span class="label">Link</span>arXiv:2312.00752</div>
+</div>
+
+<h3>The Problem: Transformer's Quadratic Complexity</h3>
+<p>Transformer's self-attention is $O(N^2)$ in both time and memory with respect to sequence length $N$ — a fundamental limitation. FlashAttention (P10) reduces the constant factor through hardware-level optimization, but the quadratic asymptotic complexity remains. For ultra-long sequences at the million-token scale (genomes, long videos, code repositories), Transformers remain impractical.</p>
+
+<p>From 2020 to 2023, Gu explored <strong>State Space Models (SSMs)</strong> — a sequence modeling framework rooted in control theory with $O(N)$ complexity. Prior work S4 (2021) and H3 (2022) demonstrated feasibility, but these models consistently fell short of Transformers in language modeling. Mamba is the breakthrough in this line of research.</p>
+
+<h3>Background: Structured State Space Models (S4)</h3>
+<p>The continuous-time SSM is defined as:</p>
+<div class="formula">$h'(t) = Ah(t) + Bx(t)$</div>
+<div class="formula">$y(t) = Ch(t) + Dx(t)$</div>
+
+<p>After discretization (using zero-order hold or bilinear transform):</p>
+<div class="formula">$h_t = \bar{A} h_{t-1} + \bar{B} x_t$</div>
+<div class="formula">$y_t = C h_t + D x_t$</div>
+
+<p>This is a linear recurrence — similar to an RNN, but with fixed parameters $\bar{A}, \bar{B}, C$ that do not depend on the input. Fixed parameters mean: the recurrence can be unrolled into a convolution and accelerated with FFT ($O(N \log N)$ training), while also supporting $O(1)$ per-step inference via the recurrence form.</p>
+
+<p>S4's limitation: because $A, B, C$ do not depend on the input, the model <strong>cannot selectively remember or forget information based on content</strong>. This is precisely the core strength of Transformer attention (attention weights are entirely determined by the input).</p>
+
+<h3>Core Innovation: Selective State Spaces</h3>
+<p>Mamba's key insight: make $B$, $C$, and the discretization step size $\Delta$ <strong>input-dependent</strong>:</p>
+
+<div class="formula">$B_t = \text{Linear}(x_t), \quad C_t = \text{Linear}(x_t), \quad \Delta_t = \text{softplus}(\text{Linear}(x_t))$</div>
+
+<p>This allows the model to decide "how much to remember" and "what to output" based on the content of the current token. $\Delta_t$ controls the discretization step size — when $\Delta$ is large, $\bar{A}$ approaches 0 (forgetting history); when $\Delta$ is small, $\bar{A}$ approaches 1 (retaining history).</p>
+
+<p>Input dependence means FFT can no longer be used (the convolution kernel is no longer fixed). Gu and Dao (also the author of FlashAttention) designed a <strong>hardware-aware selective scan algorithm</strong> — essentially replacing the naive recurrence with parallel prefix sums (parallel scan) for efficient GPU execution.</p>
+
+<div class="mermaid">
+flowchart TB
+    X["Input x_t"] --> Lin1["Linear -> B_t"]
+    X --> Lin2["Linear -> C_t"]
+    X --> Lin3["Linear -> Delta_t"]
+    Lin3 --> Disc["Discretize A, B"]
+    Lin1 --> Disc
+    Disc --> Scan["Selective scan (parallel scan)"]
+    H["h_{t-1}"] --> Scan
+    Scan --> H2["h_t"]
+    H2 --> Out["y_t = C_t * h_t"]
+    Lin2 --> Out
+</div>
+
+<h3>Mamba Block Architecture</h3>
+<p>The full Mamba block is more than just the SSM — it also wraps a structure similar to the Transformer FFN:</p>
+
+<pre><code class="language-python">class MambaBlock(nn.Module):
+    """Simplified Mamba block"""
+    def __init__(self, d_model, d_state=16, d_conv=4, expand=2):
+        super().__init__()
+        d_inner = d_model * expand
+        self.in_proj = nn.Linear(d_model, d_inner * 2, bias=False)  # split into two branches
+        self.conv1d = nn.Conv1d(d_inner, d_inner, d_conv, padding=d_conv-1,
+                                groups=d_inner)  # local convolution
+        self.act = nn.SiLU()
+
+        # SSM parameters (input-dependent)
+        self.x_proj = nn.Linear(d_inner, d_state * 2 + 1, bias=False)  # B, C, delta
+        self.A_log = nn.Parameter(torch.log(torch.arange(1, d_state+1).float()))
+        self.D = nn.Parameter(torch.ones(d_inner))
+
+        self.out_proj = nn.Linear(d_inner, d_model, bias=False)
+
+    def forward(self, x):
+        # x: (batch, seq_len, d_model)
+        xz = self.in_proj(x)
+        x_branch, z = xz.chunk(2, dim=-1)
+
+        # Local convolution (captures nearby context)
+        x_branch = self.conv1d(x_branch.transpose(1, 2))[:, :, :x.size(1)]
+        x_branch = x_branch.transpose(1, 2)
+        x_branch = self.act(x_branch)
+
+        # Selective SSM
+        y = self.selective_ssm(x_branch)
+        y = y + self.D.unsqueeze(0).unsqueeze(0) * x_branch  # skip connection
+
+        # Gated output
+        output = y * self.act(z)
+        return self.out_proj(output)
+
+    def selective_ssm(self, x):
+        # Compute B, C, delta from input
+        proj = self.x_proj(x)
+        # ... discretization + parallel scan (in practice uses a Triton kernel)
+        pass  # full implementation requires selective_scan_cuda
+</code></pre>
+
+<h3>Complexity Comparison</h3>
+<table>
+<tr><th>Model</th><th>Training Complexity</th><th>Inference (per token)</th><th>Long-Sequence Support</th></tr>
+<tr><td>Transformer</td><td>$O(N^2 d)$</td><td>$O(N d)$ (KV cache)</td><td>Limited by quadratic complexity</td></tr>
+<tr><td>S4 (fixed SSM)</td><td>$O(N \log N \cdot d)$</td><td>$O(d)$</td><td>Good, but lacks selectivity</td></tr>
+<tr><td>Mamba</td><td>$O(N d)$</td><td>$O(d)$ (fixed state)</td><td>Theoretically unbounded</td></tr>
+</table>
+
+<h3>Experimental Results</h3>
+<ul style="list-style:none;padding-left:0;">
+<li>- Language modeling: Mamba-3B matches same-parameter-count Transformer++ perplexity on The Pile</li>
+<li>- Inference throughput: at sequence length 64K, Mamba is 5× faster than Transformer</li>
+<li>- DNA modeling: substantially surpasses Transformers on the HG38 human genome (natural advantage on ultra-long sequences)</li>
+<li>- Audio: leads on SC09 speech classification</li>
+</ul>
+
+<h3>Impact and Controversy</h3>
+<p>Mamba sparked a wave of interest in "Transformer alternatives":</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Mamba-2</strong> (Gu &amp; Dao, 2024): unifies SSMs into a matrix multiplication framework for further speedup</li>
+<li><strong>Jamba</strong> (AI21, 2024): hybrid Mamba + Transformer architecture</li>
+<li><strong>RWKV</strong> (Peng, 2023): another RNN revival approach, complementary in spirit to Mamba</li>
+<li><strong>Zamba</strong> (Zyphra, 2024): Mamba backbone with a small number of attention layers</li>
+</ul>
+
+<p>Yet the controversy is significant: as of 2025, <strong>no Mamba-only model has genuinely surpassed a same-scale Transformer in large-scale (&gt;10B) language modeling</strong>. The mainstream direction has shifted toward hybrid architectures (a few attention layers combined with many SSM layers). Mamba's value is more likely as a "complementary component" to Transformers than as a "replacement."</p>
+
+<div class="refback"><strong>Why You Must Read This:</strong> Understanding "why Transformer's quadratic complexity is a problem" and "where the tradeoffs in linear alternatives lie" is foundational for evaluating the trajectory of LLM architecture evolution. Mamba's selective state space idea — letting the model decide its memory strategy based on content — is the modern 2024 revival of LSTM's gating concept.</div>
+
+<!-- ============================ P25 RAG ============================ -->
+<h2 id="p25"><span class="num">P25</span>RAG: Giving LLMs Access to External Knowledge</h2>
+<p class="pos">Corresponds to main text: Chapter 4, Section 4.10 — RAG</p>
+
+<div class="paper-meta">
+<div class="title-en">Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</div>
+<div class="row"><span class="label">Authors</span>Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir Karpukhin, Naman Goyal, Heinrich Kuttler, Mike Lewis, Wen-tau Yih, Tim Rocktaschel, Sebastian Riedel, Douwe Kiela</div>
+<div class="row"><span class="label">Affiliation</span>Facebook AI Research, University College London</div>
+<div class="row"><span class="label">Published</span>NeurIPS 2020</div>
+<div class="row"><span class="label">Citations</span>4,000+</div>
+<div class="row"><span class="label">Link</span>arXiv:2005.11401</div>
+</div>
+
+<h3>The Problem: The Closed-Knowledge Nature of LLMs</h3>
+<p>Pretrained language models "bake" knowledge into their parameters. The problems this creates:</p>
+<ol>
+<li><strong>Hallucination</strong>: knowledge not seen during training gets fabricated</li>
+<li><strong>Staleness</strong>: information after the training cutoff is unknown</li>
+<li><strong>Traceability</strong>: answers cannot cite their sources</li>
+</ol>
+
+<p>Lewis et al. propose a simple but far-reaching paradigm: retrieve relevant documents first, then feed those documents into the generative model's input.</p>
+
+<h3>Core Method: Retrieve-then-Generate</h3>
+<p>The RAG model consists of two components:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Retriever</strong>: given a query $q$, use DPR (Dense Passage Retrieval) to retrieve top-$k$ documents $\{d_1, \ldots, d_k\}$ from a knowledge base</li>
+<li><strong>Generator</strong>: concatenate the query with the retrieved documents and use a seq2seq model (the paper uses BART) to generate the answer</li>
+</ul>
+
+<p>The paper defines two marginalization strategies:</p>
+<div class="formula">$p_{\text{RAG-Sequence}}(y|x) = \sum_{z \in \text{top-}k} p_\eta(z|x) \, p_\theta(y|x, z)$</div>
+<div class="formula">$p_{\text{RAG-Token}}(y|x) = \prod_i \sum_{z \in \text{top-}k} p_\eta(z|x) \, p_\theta(y_i|x, z, y_{1:i-1})$</div>
+
+<p>RAG-Sequence: each document independently generates a complete answer, then results are weighted and combined. RAG-Token: each token can attend to a different document. In engineering practice, most RAG systems use a further simplified version — concatenating retrieved documents directly into the prompt without any probabilistic marginalization.</p>
+
+<h3>Impact: From Paper to Industry Paradigm</h3>
+<p>From 2023 to 2025, RAG evolved from an academic paper into the <strong>standard architecture for LLM applications</strong>:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Enterprise knowledge Q&amp;A</strong>: embed company documents into a vector store and use RAG to answer employee questions</li>
+<li><strong>Code assistants</strong>: retrieve relevant files from a code repository to assist code generation (Cursor, GitHub Copilot)</li>
+<li><strong>Search engines</strong>: Perplexity and Bing Chat are both "search + generation" RAG variants</li>
+<li><strong>Vector database boom</strong>: the rise of Milvus, Pinecone, Qdrant, and others was directly driven by RAG demand (connecting to P18 HNSW)</li>
+</ul>
+
+<p>In engineering practice, the main challenges of RAG are not the probabilistic framework discussed in the original paper, but rather: chunking granularity (how large should chunks be), retrieval quality (semantic search vs. keyword search), context window limitations (too many retrieved chunks won't fit), and the "lost-in-the-middle" problem of retrieving context that the model fails to use effectively.</p>
+
+<div class="refback"><strong>Why You Must Read This:</strong> RAG is the dominant paradigm for deploying LLMs in production from 2023 to 2025 — almost every enterprise AI application starts with "build a RAG." Understanding the retrieve-then-generate framework from the original paper, and the gap between that framework and current engineering practice, is a fundamental skill for any AI engineer.</div>
+
+<!-- ============================ P26 ReAct ============================ -->
+<h2 id="p26"><span class="num">P26</span>ReAct: Synergizing Reasoning and Acting in LLMs</h2>
+<p class="pos">Corresponds to main text: Chapter 4, Section 4.11 — Agents</p>
+
+<div class="paper-meta">
+<div class="title-en">ReAct: Synergizing Reasoning and Acting in Language Models</div>
+<div class="row"><span class="label">Authors</span>Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan, Yuan Cao</div>
+<div class="row"><span class="label">Affiliation</span>Princeton University, Google Research</div>
+<div class="row"><span class="label">Published</span>ICLR 2023</div>
+<div class="row"><span class="label">Citations</span>3,000+</div>
+<div class="row"><span class="label">Link</span>arXiv:2210.03629</div>
+</div>
+
+<h3>The Problem: The Disconnect Between Reasoning and Acting</h3>
+<p>Chain-of-Thought (P16) taught LLMs to "think" — but only as internal reasoning, with no ability to interact with the external world. On the other hand, "tool use" (having LLMs call APIs) provides action without reasoning — the model offers no explanation for why it is invoking a particular API. Yao et al.'s observation: when humans solve problems, reasoning and action <strong>alternate</strong> — "I think I should look this up (reasoning) → search (action) → the search results show... (observation) → so the answer is... (reasoning)."</p>
+
+<h3>Core Method: Thought-Action-Observation Loop</h3>
+<p>ReAct has the LLM interleave three types of content within the prompt:</p>
+
+<p><strong>Thought</strong>: reason about the current state and decide the next step ("I need to find X's birth year")</p>
+<p><strong>Action</strong>: invoke an external tool (search, calculator, database query, etc.)</p>
+<p><strong>Observation</strong>: the result returned by the tool (search results, computed value, etc.)</p>
+
+<p>A typical ReAct trace:</p>
+<pre><code class="language-text">Question: Which was founded earlier — Obama's alma mater or Trump's alma mater?
+
+Thought 1: I need to find Obama's alma mater first.
+Action 1: Search[Barack Obama education]
+Observation 1: Barack Obama attended Columbia University and Harvard Law School.
+
+Thought 2: Obama's alma mater is Columbia University and Harvard Law School. Now find Trump's.
+Action 2: Search[Donald Trump education]
+Observation 2: Donald Trump attended the Wharton School at the University of Pennsylvania.
+
+Thought 3: Trump's alma mater is Penn. Now compare founding dates. Columbia was founded in 1754, Penn in 1740.
+Action 3: Lookup[University of Pennsylvania founding year]
+Observation 3: The University of Pennsylvania was founded in 1740.
+
+Thought 4: Penn (1740) was founded earlier than Columbia (1754).
+Action 4: Finish[Trump's alma mater, the University of Pennsylvania (1740), was founded earlier than Obama's alma mater, Columbia University (1754).]
+</code></pre>
+
+<h3>Comparison with CoT</h3>
+<table>
+<tr><th>Method</th><th>Reasoning</th><th>Action</th><th>Knowledge Source</th><th>Verifiability</th></tr>
+<tr><td>Standard prompting</td><td>None</td><td>None</td><td>Parameters</td><td>Low</td></tr>
+<tr><td>CoT (P16)</td><td>Yes</td><td>None</td><td>Parameters</td><td>Medium (reasoning visible)</td></tr>
+<tr><td>Act-only</td><td>None</td><td>Yes</td><td>External tools</td><td>Medium (tool calls visible)</td></tr>
+<tr><td>ReAct</td><td>Yes</td><td>Yes</td><td>Parameters + external</td><td>High (reasoning + tools both visible)</td></tr>
+</table>
+
+<h3>Impact: The Starting Point of the Agent Paradigm</h3>
+<p>ReAct directly defined the basic pattern of LLM Agents from 2023 to 2025:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>LangChain Agent</strong>: the default agent type is the ReAct pattern</li>
+<li><strong>AutoGPT, BabyAGI</strong>: essentially automated versions of the ReAct loop (with added task decomposition and memory)</li>
+<li><strong>OpenAI Function Calling</strong>: formats ReAct's Action from free text into structured JSON calls</li>
+<li><strong>Claude Code, Cursor Agent</strong>: ReAct in a programming context — "analyze the problem → read files → modify code → run tests"</li>
+</ul>
+
+<p>The essence of ReAct is not any specific technology, but a <strong>paradigm shift</strong>: an LLM is not just "a model that answers questions" but "an Agent capable of reasoning and acting." This shift in perspective gave rise to the entire AI Agent ecosystem.</p>
+
+<div class="refback"><strong>Why You Must Read This:</strong> If you are building LLM Agents — whether customer service bots, code assistants, or automated workflows — the architecture underneath is almost certainly a variant of the ReAct pattern. Understanding this simple but powerful "alternating reasoning and action" framework is the first step toward designing reliable Agents.</div>
+
+</main>
+<script>
+hljs.highlightAll();
+mermaid.initialize({startOnLoad:true,theme:'neutral',fontFamily:'Inter,sans-serif'});
+</script>
+</body>
+</html>

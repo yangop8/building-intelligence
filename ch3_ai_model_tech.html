@@ -1,0 +1,2719 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 模型技术 — 从传统机器学习到性能工程</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+:root {
+  --bg: #fbfaf7;
+  --fg: #1d1d1b;
+  --muted: #6b6b68;
+  --accent: #7a4a2f;
+  --accent-soft: #f2e9e2;
+  --rule: #e3dfd6;
+  --code-bg: #282c34;
+  --sidebar-bg: #f4f1ea;
+  --mono: "SFMono-Regular", "JetBrains Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --serif: "Source Serif Pro", "Songti SC", "STSong", Georgia, "Times New Roman", serif;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--fg);
+  background: var(--bg);
+  display: flex;
+}
+aside.toc {
+  position: sticky;
+  top: 0;
+  width: 300px;
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--rule);
+  padding: 24px 20px;
+  font-family: var(--sans);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+aside.toc h1 {
+  font-family: var(--serif);
+  font-size: 18px;
+  margin: 0 0 4px 0;
+  color: var(--accent);
+}
+aside.toc .sub {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+aside.toc .group {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 14px;
+  margin-bottom: 4px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--rule);
+}
+aside.toc ol { list-style: none; padding: 0; margin: 0; }
+aside.toc ol li { margin-bottom: 2px; }
+aside.toc a {
+  color: var(--fg);
+  text-decoration: none;
+  display: block;
+  padding: 3px 6px;
+  border-radius: 3px;
+  transition: all 0.15s;
+}
+aside.toc a:hover { background: var(--accent-soft); color: var(--accent); }
+aside.toc .num { color: var(--muted); font-family: var(--mono); margin-right: 6px; font-size: 11px; }
+
+main {
+  flex: 1;
+  max-width: 880px;
+  padding: 60px 72px 120px 72px;
+  min-width: 0;
+}
+header.cover {
+  border-bottom: 2px solid var(--fg);
+  padding-bottom: 32px;
+  margin-bottom: 48px;
+}
+header.cover h1 {
+  font-size: 42px;
+  line-height: 1.15;
+  margin: 0 0 12px 0;
+  font-weight: 700;
+}
+header.cover .subtitle {
+  font-size: 20px;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 20px;
+}
+header.cover .meta {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+h2 {
+  font-size: 26px;
+  margin-top: 72px;
+  margin-bottom: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+  scroll-margin-top: 20px;
+}
+h2 .num {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-weight: 400;
+  margin-right: 10px;
+  font-size: 20px;
+}
+.pos {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: 0;
+  margin-bottom: 16px;
+  padding: 6px 12px;
+  background: var(--accent-soft);
+  border-left: 2px solid var(--accent);
+}
+h3 {
+  font-size: 18px;
+  margin-top: 28px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+h4 {
+  font-size: 15px;
+  margin-top: 18px;
+  margin-bottom: 4px;
+  font-weight: 600;
+  color: var(--accent);
+}
+p { margin: 0 0 14px 0; text-align: justify; }
+
+code {
+  font-family: var(--mono);
+  font-size: 14px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+pre {
+  background: var(--code-bg);
+  border-radius: 6px;
+  padding: 14px 18px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 16px 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+
+.callout {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  padding: 10px 16px;
+  margin: 16px 0;
+  font-size: 15px;
+}
+.callout .tag {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.formula {
+  font-family: var(--serif);
+  padding: 10px 18px;
+  background: #faf7f0;
+  border-left: 2px solid var(--muted);
+  margin: 12px 0;
+  font-size: 16px;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+  font-family: var(--sans);
+}
+th, td {
+  border-bottom: 1px solid var(--rule);
+  padding: 7px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+th { background: var(--sidebar-bg); font-weight: 600; }
+
+.part-header {
+  margin-top: 100px;
+  margin-bottom: 24px;
+  padding: 24px 28px;
+  background: linear-gradient(to right, var(--accent-soft), transparent);
+  border-left: 4px solid var(--accent);
+}
+.part-header .part-label {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+}
+.part-header h2.part-title {
+  font-size: 32px;
+  margin: 4px 0 8px 0;
+  padding: 0;
+  border: none;
+}
+.part-header .part-desc {
+  font-size: 15px;
+  color: var(--muted);
+  font-style: italic;
+  margin: 0;
+}
+
+.mermaid {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.footnote {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+@media (max-width: 1100px) {
+  aside.toc { display: none; }
+  main { padding: 40px 32px; }
+}
+</style>
+</head>
+<body>
+
+<aside class="toc">
+  <h1>AI 模型技术</h1>
+  <div class="sub">Chapter 3 · 从传统 ML 到性能工程</div>
+
+  <div class="group">3.1 传统 ML</div>
+  <ol>
+    <li><a href="#s3-1-1"><span class="num">1</span>Kmeans 与 KNN</a></li>
+    <li><a href="#s3-1-2"><span class="num">2</span>树模型</a></li>
+    <li><a href="#s3-1-3"><span class="num">3</span>SVM</a></li>
+    <li><a href="#s3-1-4"><span class="num">4</span>N-gram 与 LPA</a></li>
+    <li><a href="#s3-1-5"><span class="num">5</span>回归预测</a></li>
+    <li><a href="#s3-1-6"><span class="num">6</span>时序:DTW 与 DBA</a></li>
+  </ol>
+
+  <div class="group">3.2 基础算子</div>
+  <ol>
+    <li><a href="#s3-2-1"><span class="num">1</span>矩阵乘与基础运算</a></li>
+    <li><a href="#s3-2-2"><span class="num">2</span>数据搬运算子</a></li>
+    <li><a href="#s3-2-3"><span class="num">3</span>卷积与池化</a></li>
+    <li><a href="#s3-2-4"><span class="num">4</span>激活函数</a></li>
+    <li><a href="#s3-2-5"><span class="num">5</span>归一化</a></li>
+  </ol>
+
+  <div class="group">3.3 经典 DL 模型</div>
+  <ol>
+    <li><a href="#s3-3-1"><span class="num">1</span>CNN</a></li>
+    <li><a href="#s3-3-2"><span class="num">2</span>RNN / LSTM / GRU</a></li>
+    <li><a href="#s3-3-3"><span class="num">3</span>GNN 与 GAT</a></li>
+    <li><a href="#s3-3-4"><span class="num">4</span>GAN 与 VAE</a></li>
+  </ol>
+
+  <div class="group">3.4 数据特征工程</div>
+  <ol>
+    <li><a href="#s3-4-1"><span class="num">1</span>样本评分、生成、增强</a></li>
+    <li><a href="#s3-4-2"><span class="num">2</span>预处理与特征构建</a></li>
+    <li><a href="#s3-4-3"><span class="num">3</span>降维算法</a></li>
+    <li><a href="#s3-4-4"><span class="num">4</span>特征选择</a></li>
+  </ol>
+
+  <div class="group">3.5 训练优化</div>
+  <ol>
+    <li><a href="#s3-5-1"><span class="num">1</span>监督学习</a></li>
+    <li><a href="#s3-5-2"><span class="num">2</span>自监督预训练</a></li>
+    <li><a href="#s3-5-3"><span class="num">3</span>微调与对齐</a></li>
+    <li><a href="#s3-5-4"><span class="num">4</span>强化学习</a></li>
+    <li><a href="#s3-5-5"><span class="num">5</span>蒸馏/迁移/多任务</a></li>
+    <li><a href="#s3-5-6"><span class="num">6</span>联邦学习</a></li>
+    <li><a href="#s3-5-7"><span class="num">7</span>AutoML</a></li>
+  </ol>
+
+  <div class="group">3.6 AI 性能工程</div>
+  <ol>
+    <li><a href="#s3-6-1"><span class="num">1</span>NPU 性能建模</a></li>
+    <li><a href="#s3-6-2"><span class="num">2</span>结构优化/量化/剪枝</a></li>
+    <li><a href="#s3-6-3"><span class="num">3</span>算子优化</a></li>
+    <li><a href="#s3-6-4"><span class="num">4</span>软件栈优化</a></li>
+  </ol>
+
+  <div class="group">3.7 AI 在网络领域</div>
+  <ol>
+    <li><a href="#s3-7-1"><span class="num">1</span>流量分类:需求</a></li>
+    <li><a href="#s3-7-2"><span class="num">2</span>流量分类:特征与模型</a></li>
+    <li><a href="#s3-7-3"><span class="num">3</span>日志异常:需求</a></li>
+    <li><a href="#s3-7-4"><span class="num">4</span>日志异常:方法</a></li>
+    <li><a href="#s3-7-5"><span class="num">5</span>KPI 预测:需求</a></li>
+    <li><a href="#s3-7-6"><span class="num">6</span>KPI 预测:方法</a></li>
+  </ol>
+</aside>
+
+<main>
+
+<header class="cover">
+  <h1>AI 模型技术</h1>
+  <div class="subtitle">从传统机器学习到性能工程 —— 让 AI 真正跑起来的完整路径</div>
+  <div class="meta">Chapter 3 · 内部学习材料 · 共 36 节</div>
+</header>
+
+<p>LLM 时代的 AI 工程师仍然需要传统机器学习——不是因为怀旧,而是因为在<strong>数据量有限、特征可解释、延迟敏感</strong>的场景里(网络设备上的流量分类、KPI 异常检测),一棵 XGBoost 树往往比一个 LLM 更合适。这一章的结构反映这个观点:先传统 ML、再基础算子、再经典深度模型、再训练优化、最后性能工程和领域应用。每一层都是下一层的基础,但也都在现代 AI 系统里有独立位置。</p>
+
+<p>36 节全深挖。重点锚点是这几节:3.1.2 树模型(从决策树到 XGBoost 完整推导)、3.2.3 卷积(含 im2col 和 Winograd)、3.3.2 LSTM 门控推导、3.5.3 微调对齐(SFT/DPO/RLHF 全链路)、3.6.3 算子优化(Roofline + tiling + FlashAttention)、3.7.2 流量分类的特征工程实战。其它节也不注水——每节都到"一个有经验的同事能给你讲 30 分钟"的密度,不到"教科书式铺陈"的密度。</p>
+
+<!-- ==================== 3.1 传统机器学习 ==================== -->
+<div class="part-header">
+  <div class="part-label">PART ONE</div>
+  <h2 class="part-title">3.1 传统机器学习</h2>
+  <p class="part-desc">在深度学习之前的几十年积累——很多场景下仍是最佳答案。</p>
+</div>
+
+<!-- 3.1.1 -->
+<h2 id="s3-1-1"><span class="num">3.1.1</span>Kmeans 与 KNN</h2>
+<p class="pos">定位:两个最基础的基于距离的算法——聚类和分类的入门。</p>
+
+<h3>KNN:最近邻分类</h3>
+
+<p>K-Nearest Neighbors 不训练——它只记住所有训练样本。预测时,找到和查询点距离最近的 $k$ 个训练样本,用它们的标签投票(分类)或平均(回归)。参数只有 $k$ 和距离度量。</p>
+
+<p>看起来简陋,但在低维、数据密集的场景下效果不差。它的理论性质也漂亮——当样本数 $n \to \infty$ 时 KNN 的错误率最多是贝叶斯最优错误率的 2 倍。这在机器学习里是极少见的"无分布假设"保证。</p>
+
+<p>KNN 的问题全在工程:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>预测时间</strong>: $O(nd)$ 每查询。大数据集用 KD-Tree、Ball Tree 或近似最近邻(参见第 2 章向量数据库)加速。</li>
+<li>- <strong>维度灾难</strong>:高维空间里所有点距离都差不多,KNN 失效。</li>
+<li>- <strong>特征尺度敏感</strong>:范围 [0, 1] 的特征和范围 [0, 10000] 的特征直接算欧式距离,后者完全支配。必须标准化。</li>
+</ul>
+
+<h3>Kmeans:最近邻聚类</h3>
+
+<p>给定数据 $\{\mathbf{x}_i\}$,把它们分成 $k$ 个簇,使得<strong>每点到其所属簇中心的距离平方和最小</strong>:</p>
+
+<div class="formula">
+$\min_{\{\mathbf{c}_j\}, \{S_j\}} \sum_{j=1}^k \sum_{\mathbf{x} \in S_j} \|\mathbf{x} - \mathbf{c}_j\|^2$
+</div>
+
+<p>这是一个组合优化问题(NP-hard),Kmeans 用交替优化求近似解:</p>
+<ol>
+<li>初始化 $k$ 个簇中心(随机选或 Kmeans++)</li>
+<li><strong>分配</strong>:每个点分到最近的簇中心</li>
+<li><strong>更新</strong>:每个簇中心重新设为该簇点的均值</li>
+<li>重复 2-3 直到中心不变</li>
+</ol>
+
+<pre><code class="language-python">import numpy as np
+
+def kmeans(X, k, max_iter=100, tol=1e-4):
+    # Kmeans++ 初始化: 让初始中心相互远离
+    n = len(X)
+    centers = [X[np.random.randint(n)]]
+    for _ in range(k - 1):
+        # 对每个点算到已有最近中心的距离平方
+        d2 = np.min([np.sum((X - c)**2, axis=1) for c in centers], axis=0)
+        # 按距离平方作为概率采样下一个中心
+        idx = np.random.choice(n, p=d2/d2.sum())
+        centers.append(X[idx])
+    centers = np.array(centers)
+
+    for it in range(max_iter):
+        # Assign
+        dists = ((X[:, None] - centers[None, :])**2).sum(axis=2)
+        labels = dists.argmin(axis=1)
+        # Update
+        new_centers = np.array([X[labels == j].mean(axis=0) for j in range(k)])
+        if np.linalg.norm(new_centers - centers) < tol:
+            break
+        centers = new_centers
+    return centers, labels
+</code></pre>
+
+<p>Kmeans 的几个坑。第一,<strong>对初始化敏感</strong>——不同种子跑出完全不同的簇。Kmeans++ 初始化(上面代码里做的)显著改善。第二,<strong>必须指定 $k$</strong>——通常用 elbow method(画 $k$ vs SSE 曲线,找拐点)或 silhouette score 辅助选择。第三,<strong>假设簇是球形</strong>——条状、环形分布它搞不定,需要 DBSCAN 或 spectral clustering 这类。</p>
+
+<h3>在网络领域</h3>
+
+<p>KNN 在流量分类的早期工作里用得很多——给一条连接提取特征(包大小分布、到达间隔),和训练集里的标注流做 KNN 匹配。缺点是流量数据库一大,预测延迟就不可接受。现在多用树模型或小型 NN 替代。</p>
+
+<p>Kmeans 做异常检测:正常流量聚成几簇,不属于任何簇的点(离最近中心远)可能异常。但真实异常往往太少太散,Kmeans 效果一般,更多用 Isolation Forest。</p>
+
+<!-- 3.1.2 -->
+<h2 id="s3-1-2"><span class="num">3.1.2</span>树模型:决策树、随机森林、XGBoost</h2>
+<p class="pos">定位:表格数据的王者。深挖:从决策树到 GBDT 到 XGBoost 的完整推导。</p>
+
+<h3>决策树</h3>
+
+<p>树的每个内部节点是一个特征测试(如 <code>age &lt; 30</code>),叶子节点给出预测。构建的关键是怎么选分裂点。对分类任务,选能让子节点<strong>纯度</strong>提升最多的分裂。纯度度量常用<strong>基尼不纯度</strong>或<strong>熵</strong>:</p>
+
+<div class="formula">
+$\text{Gini} = 1 - \sum_c p_c^2, \quad H = -\sum_c p_c \log p_c$
+</div>
+
+<p>$p_c$ 是节点里类别 $c$ 的比例。分裂后加权平均子节点的不纯度,与父节点比较,差值叫信息增益。贪心选最大信息增益的分裂。</p>
+
+<p>决策树天然可解释("age > 30 → 高收入 → ..."),无需特征归一化,能处理缺失值,支持数值和类别特征。但单棵树容易过拟合——长到叶子每个样本一个点,训练集完美拟合,测试集灾难。剪枝(pre-pruning: 限制深度/叶子数;post-pruning: 先长大再剪)是必要的。</p>
+
+<h3>从单树到集成</h3>
+
+<p>集成学习的直觉:多个弱学习器投票 > 一个强学习器。两条主线:</p>
+
+<p><strong>Bagging</strong>(Bootstrap AGGregating):每棵树用原始数据的有放回采样(bootstrap)训练,每次分裂时只看随机子集的特征。多棵树预测取平均/投票。<strong>随机森林(RF)</strong> 就是 bagging 决策树。降方差是主要收益——单树高方差低偏差,平均后方差大降。</p>
+
+<p><strong>Boosting</strong>:树<em>串行</em>训练,每棵树学习前一棵树没学好的残差。<strong>GBDT</strong>(Gradient Boosting Decision Tree)和 <strong>XGBoost</strong>、<strong>LightGBM</strong> 都走这条路。</p>
+
+<h3>GBDT 的数学</h3>
+
+<p>回归任务为例。模型是 $F(x) = \sum_{t=1}^T f_t(x)$,$f_t$ 是第 $t$ 棵树。每轮拟合<em>负梯度</em>(对应当前损失的最速下降方向)。</p>
+
+<p>对平方损失 $L(y, F(x)) = \frac{1}{2}(y - F(x))^2$,负梯度恰好是残差 $r_i = y_i - F_{t-1}(x_i)$——所以 GBDT 在平方损失下就是"拟合上一步残差"。对其他损失(log loss、Huber),伪残差是对应梯度。</p>
+
+<p>GBDT 的关键是把"训练第 $t$ 棵树"变成一个普通回归问题(拟合伪残差),然后加到累积预测上。</p>
+
+<h3><a href="ch5_partA_preview.html#p05">XGBoost</a> 的创新</h3>
+
+<p>XGBoost 是 GBDT 的精细工程版,陈天奇 2014 年提出。它做了几件大事。</p>
+
+<p><strong>二阶泰勒展开</strong>。传统 GBDT 只用一阶梯度,XGBoost 同时用二阶。对损失 $L$ 在 $F_{t-1}$ 处泰勒展开到二阶:</p>
+
+<div class="formula">
+$L(y, F_{t-1} + f_t) \approx L(y, F_{t-1}) + g_i f_t(x_i) + \frac{1}{2} h_i f_t(x_i)^2$
+</div>
+
+<p>$g_i = \partial L / \partial F$,$h_i = \partial^2 L / \partial F^2$。这让分裂增益有闭式最优解。</p>
+
+<p><strong>叶子权重的闭式</strong>。设第 $t$ 棵树把 $x$ 映射到叶子 $j$,$w_j$ 是叶子值。目标函数加 L2 正则 $\Omega(f) = \gamma T + \frac{1}{2}\lambda \sum_j w_j^2$($T$ 是叶子数):</p>
+
+<div class="formula">
+$\text{Obj}^{(t)} = \sum_j \left[ (\sum_{i \in I_j} g_i) w_j + \frac{1}{2}(\sum_{i \in I_j} h_i + \lambda) w_j^2 \right] + \gamma T$
+</div>
+
+<p>对 $w_j$ 求导为 0,得到最优叶子权重:</p>
+
+<div class="formula">
+$w_j^* = -\frac{G_j}{H_j + \lambda}, \quad G_j = \sum_{i \in I_j} g_i, \quad H_j = \sum_{i \in I_j} h_i
+$
+</div>
+
+<p>代回目标,得到树结构固定时的最小损失:</p>
+
+<div class="formula">
+$\text{Obj}^* = -\frac{1}{2} \sum_j \frac{G_j^2}{H_j + \lambda} + \gamma T$
+</div>
+
+<p>这给出分裂增益的闭式:把一个节点拆成左右子节点 $L, R$,增益 = 原损失 - 拆后损失:</p>
+
+<div class="formula">
+$\text{Gain} = \frac{1}{2}\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R + \lambda} - \frac{(G_L+G_R)^2}{H_L+H_R+\lambda}\right] - \gamma$
+</div>
+
+<p>所有分裂候选按这个增益排序选最大。$\gamma$ 控制是否分裂(增益不到 $\gamma$ 就不分),$\lambda$ 防过拟合。</p>
+
+<p><strong>工程优化</strong>:直方图近似(LightGBM 把特征离散化成 256 个 bin,O(n×d) 变 O(n×bins));稀疏感知(缺失值自动选默认方向);列分块并行;GPU 加速。</p>
+
+<pre><code class="language-python">import xgboost as xgb
+import numpy as np
+
+# 一个网络流量二分类的典型流程
+X_train, y_train = load_data()   # 特征矩阵和 0/1 标签
+
+model = xgb.XGBClassifier(
+    n_estimators=500,       # 树数
+    max_depth=6,            # 树深度
+    learning_rate=0.05,     # 每棵树贡献缩放
+    subsample=0.8,          # 每棵树用 80% 样本 (随机化,防过拟合)
+    colsample_bytree=0.8,   # 每棵树用 80% 特征
+    reg_lambda=1.0,         # L2 正则
+    reg_alpha=0.1,          # L1 正则
+    min_child_weight=1,     # 叶子最少 hessian 和,控制过拟合
+    tree_method='hist',     # 直方图算法,训练快
+    eval_metric='logloss',
+    early_stopping_rounds=50,
+)
+model.fit(X_train, y_train,
+          eval_set=[(X_val, y_val)],
+          verbose=50)
+
+# 特征重要性
+importance = model.feature_importances_
+for feat, imp in sorted(zip(feature_names, importance), key=lambda x: -x[1])[:10]:
+    print(f"{feat}: {imp:.4f}")
+</code></pre>
+
+<h3>何时选树模型</h3>
+
+<p>XGBoost/LightGBM 在<strong>表格数据</strong>(每行一个样本、列是特征)上至今仍是顶级基线。Kaggle 表格比赛 90% 以上 top solution 含 GBDT。优势:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- 不需要特征归一化</li>
+<li>- 自动处理特征交互(深度树能表达复杂非线性)</li>
+<li>- 训练快(百万样本分钟级)</li>
+<li>- 推理快(树深度有限,每样本百微秒级)</li>
+<li>- 特征重要性可解释</li>
+</ul>
+
+<p>什么时候让位给深度学习?图像、文本、音频等<em>非结构化数据</em>——深度学习做端到端特征学习,几乎完胜手工特征 + 树。但只要你的数据是"行-列"表格形式,XGBoost 几乎总是第一选择。</p>
+
+<!-- 3.1.3 -->
+<h2 id="s3-1-3"><span class="num">3.1.3</span>SVM</h2>
+<p class="pos">定位:最大间隔分类——曾经的统治者,现在的参考基线。</p>
+
+<h3>最大间隔超平面</h3>
+
+<p>二分类线性 SVM 的目标:找一个超平面 $\mathbf{w}^\top \mathbf{x} + b = 0$ 把两类分开,而且让到最近点的距离(间隔)最大。这叫<strong>最大间隔分类器</strong>。</p>
+
+<p>几何直觉:不止一条线能分开两类,但"宽"的那条对噪声容忍度高。最大间隔等价于最小化 $\|\mathbf{w}\|$。加上分类约束 $y_i(\mathbf{w}^\top \mathbf{x}_i + b) \ge 1$,得到凸二次规划:</p>
+
+<div class="formula">
+$\min_{\mathbf{w}, b} \frac{1}{2}\|\mathbf{w}\|^2 \quad \text{s.t. } y_i(\mathbf{w}^\top \mathbf{x}_i + b) \ge 1, \forall i$
+</div>
+
+<h3>对偶形式与支持向量</h3>
+
+<p>用拉格朗日对偶转换,得到对偶问题:</p>
+
+<div class="formula">
+$\max_\alpha \sum_i \alpha_i - \frac{1}{2}\sum_{i,j} \alpha_i \alpha_j y_i y_j \mathbf{x}_i^\top \mathbf{x}_j, \quad \alpha_i \ge 0, \sum_i \alpha_i y_i = 0$
+</div>
+
+<p>解出 $\alpha^*$ 后,$\mathbf{w} = \sum_i \alpha_i y_i \mathbf{x}_i$。关键观察:<strong>绝大多数 $\alpha_i = 0$</strong>,只有在间隔边界上的少数点 $\alpha_i > 0$——这些就是<strong>支持向量</strong>。SVM 的名字由此而来。预测时只需要支持向量:</p>
+
+<div class="formula">
+$f(\mathbf{x}) = \text{sign}\left(\sum_{i \in \text{SV}} \alpha_i y_i \mathbf{x}_i^\top \mathbf{x} + b\right)$
+</div>
+
+<h3>核技巧</h3>
+
+<p>线性不可分怎么办?把数据映射到更高维空间 $\phi(\mathbf{x})$,希望在那里线性可分。注意对偶里只出现 $\mathbf{x}_i^\top \mathbf{x}_j$——换成 $\phi(\mathbf{x}_i)^\top \phi(\mathbf{x}_j)$ 就行。而这个内积可以定义一个<strong>核函数</strong> $K(\mathbf{x}_i, \mathbf{x}_j)$ 直接计算,不需要显式算 $\phi$——这就是核技巧。</p>
+
+<p>常用核:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>线性核</strong>:$K = \mathbf{x}_i^\top \mathbf{x}_j$(等价不用核)</li>
+<li>- <strong>多项式核</strong>:$K = (\mathbf{x}_i^\top \mathbf{x}_j + c)^d$</li>
+<li>- <strong>RBF 核</strong>(高斯核):$K = \exp(-\gamma \|\mathbf{x}_i - \mathbf{x}_j\|^2)$——对应无穷维空间,最常用</li>
+</ul>
+
+<p>RBF 核的超参数 $\gamma$ 控制决策边界的"弯曲度"——$\gamma$ 大则决策面紧贴训练点(过拟合),$\gamma$ 小则决策面平滑。配合正则参数 $C$ 网格搜索即可。</p>
+
+<h3>软间隔</h3>
+
+<p>现实数据常有噪声、部分样本混杂。硬间隔(必须全分对)太苛刻。软间隔引入松弛变量 $\xi_i \ge 0$:</p>
+
+<div class="formula">
+$\min \frac{1}{2}\|\mathbf{w}\|^2 + C \sum_i \xi_i, \quad y_i(\mathbf{w}^\top \mathbf{x}_i + b) \ge 1 - \xi_i$
+</div>
+
+<p>$C$ 控制"容忍多少错分"——$C$ 大严格,$C$ 小宽松。</p>
+
+<h3>现状</h3>
+
+<p>SVM 在 2000s 是文本分类、图像分类的 SOTA。深度学习时代它地位下降,但在<strong>小样本、高维、可解释</strong>场景仍有价值——生物信息学、某些文本分类仍用。缺点是训练复杂度 $O(n^2)$ 到 $O(n^3)$,大数据集不现实。</p>
+
+<!-- 3.1.4 -->
+<h2 id="s3-1-4"><span class="num">3.1.4</span>N-gram 与标签传播</h2>
+<p class="pos">定位:两个老但有用的工具——N-gram 统计语言模型,LPA 图半监督学习。</p>
+
+<h3>N-gram 语言模型</h3>
+
+<p>N-gram 是"前 N-1 个词预测下一个词"的概率模型,靠计数:</p>
+
+<div class="formula">
+$P(w_n | w_1, ..., w_{n-1}) \approx P(w_n | w_{n-k+1}, ..., w_{n-1}) = \frac{\text{count}(w_{n-k+1}...w_n)}{\text{count}(w_{n-k+1}...w_{n-1})}$
+</div>
+
+<p>典型 $k = 2$(bigram)或 $k = 3$(trigram)。神经网络语言模型之前这是 NLP 主流。</p>
+
+<p>核心问题是<strong>稀疏性</strong>——训练集里没见过的组合概率为 0。平滑技术应对:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>加一平滑(Laplace)</strong>:所有计数 +1,最粗糙</li>
+<li><strong>Good-Turing</strong>:用出现 $r+1$ 次的频次估计出现 $r$ 次的概率</li>
+<li><strong>Kneser-Ney</strong>:最精细,考虑"一个词作为后缀出现在多少不同前缀后"</li>
+</ul>
+
+<p>今天 LLM 统治了 NLP,N-gram 不再是主角。但<strong>字符级 N-gram</strong> 仍在做:未知语言检测、拼写纠错、快速近似匹配(MinHash 的 shingle)。</p>
+
+<h3>LPA:Label Propagation Algorithm</h3>
+
+<p>图上的半监督学习:少量节点有标签、大部分没有。LPA 假设"<strong>连接紧密的节点应有相同标签</strong>",迭代地把标签沿边传播:</p>
+
+<ol>
+<li>给已标注节点设初始标签,未标注节点初始为空或均匀分布</li>
+<li>每个节点把自己的标签分布设为所有邻居标签分布的(加权)平均</li>
+<li>固定已标注节点的标签不变(clamp)</li>
+<li>重复到收敛</li>
+</ol>
+
+<p>矩阵形式:设 $F \in \mathbb{R}^{n \times C}$ 是每个节点的类别分布,$W$ 是邻接矩阵(或归一化的)。更新 $F \leftarrow D^{-1} W F$,$D$ 是度对角矩阵。clamp 标注节点后重复。这个迭代有闭式解(可证收敛)。</p>
+
+<p>LPA 的优势:计算便宜、不需要训练,特别适合大图社区发现、标签扩散。缺点:对图结构强依赖,图构造不好效果就差。</p>
+
+<h3>在网络领域</h3>
+
+<p>N-gram 在 DGA 域名检测里仍活跃——恶意软件生成的随机域名,用字符级 N-gram 算困惑度可以和正常域名区分(恶意域名困惑度高)。</p>
+
+<p>LPA 在网络拓扑的社区发现(找互联紧密的设备子群)、恶意 IP 传播检测(已知恶意 IP 通过连接图影响可疑度评分)里有直接应用。</p>
+
+<!-- 3.1.5 -->
+<h2 id="s3-1-5"><span class="num">3.1.5</span>回归预测</h2>
+<p class="pos">定位:从线性回归到广义回归——机器学习最古老的方法,在今天依然重要。</p>
+
+<h3>线性回归</h3>
+
+<p>$y = \mathbf{w}^\top \mathbf{x} + b + \epsilon$,最小二乘求 $\mathbf{w}, b$。闭式解已经在第 1 章讲过。三个常被忽略的点:</p>
+
+<p><strong>假设</strong>:误差 $\epsilon$ 独立同分布正态(均值 0)。违反这个假设时,估计量仍无偏但不再是最小方差;更严重时结论可能误导。实际做回归分析要看残差图。</p>
+
+<p><strong>共线性</strong>:特征间高度相关时,$\mathbf{X}^\top \mathbf{X}$ 接近奇异,$\mathbf{w}$ 估计方差大、不稳定。Ridge(L2)或 PCA 降维是应对。</p>
+
+<p><strong>异常值</strong>:平方损失对异常值极其敏感(一个离群点损失贡献是其距离的平方)。Huber 损失(小残差平方、大残差线性)更稳健。</p>
+
+<h3>Logistic 回归</h3>
+
+<p>名字有"回归"但做分类。模型:</p>
+
+<div class="formula">
+$P(y=1|\mathbf{x}) = \sigma(\mathbf{w}^\top \mathbf{x} + b), \quad \sigma(z) = \frac{1}{1+e^{-z}}$
+</div>
+
+<p>训练用极大似然(等价于最小化交叉熵)。没有闭式解,用梯度下降或 IRLS(迭代重加权最小二乘)。</p>
+
+<p>Logistic 回归的<strong>对数几率</strong>(log-odds)是线性的:$\log\frac{P(y=1)}{P(y=0)} = \mathbf{w}^\top \mathbf{x} + b$。这让系数 $w_i$ 有直接解释——特征 $x_i$ 每增加 1,log-odds 增加 $w_i$,即几率乘以 $e^{w_i}$。</p>
+
+<h3>Ridge 和 Lasso</h3>
+
+<p>正则化的两个标杆。</p>
+
+<p><strong>Ridge</strong>(L2):最小化 $\|\mathbf{X}\mathbf{w} - \mathbf{y}\|^2 + \lambda \|\mathbf{w}\|_2^2$。解析解 $\mathbf{w} = (\mathbf{X}^\top \mathbf{X} + \lambda \mathbf{I})^{-1} \mathbf{X}^\top \mathbf{y}$。$\lambda$ 越大系数越小。</p>
+
+<p><strong>Lasso</strong>(L1):最小化 $\|\mathbf{X}\mathbf{w} - \mathbf{y}\|^2 + \lambda \|\mathbf{w}\|_1$。没有解析解(L1 不可导),用坐标下降或 ISTA 解。关键性质:<strong>Lasso 会把无关特征的系数精确压到 0</strong>——自动特征选择。</p>
+
+<p>为什么 L1 能产生稀疏解?几何直觉:L2 的等值面是球面,和损失函数等值面切点几乎不在坐标轴上;L1 的等值面是菱形(有尖角),尖角在坐标轴上,切点更容易落在那里(对应某些系数为 0)。</p>
+
+<p>ElasticNet = L1 + L2 组合,兼顾 Lasso 的稀疏和 Ridge 对共线性的稳定。</p>
+
+<h3>广义线性模型(GLM)</h3>
+
+<p>把线性回归扩展到"预测目标不是实数"的情形。核心:用一个"链接函数"$g$ 把线性预测 $\eta = \mathbf{w}^\top \mathbf{x}$ 映射到分布参数。</p>
+
+<table>
+<tr><th>分布</th><th>链接函数</th><th>任务</th></tr>
+<tr><td>Normal</td><td>恒等 $\mu = \eta$</td><td>实数回归</td></tr>
+<tr><td>Bernoulli</td><td>logit $\log\frac{p}{1-p} = \eta$</td><td>二分类 (logistic)</td></tr>
+<tr><td>Poisson</td><td>log $\log\mu = \eta$</td><td>计数预测</td></tr>
+<tr><td>Gamma</td><td>log $\log\mu = \eta$</td><td>正实数(持续时间、费用)</td></tr>
+</table>
+
+<p>Poisson 回归在预测网络连接数/日、攻击次数/小时等计数场景有用——用普通线性回归会得到负预测,用 Poisson 则保证正。</p>
+
+<h3>在网络领域</h3>
+
+<p>线性/Logistic 回归在网络领域主要做<strong>基线</strong>——任何复杂模型都应该和 logistic 回归比,跑不赢 LR 说明特征/数据/任务有问题。Ridge/Lasso 用于流量预测的可解释模型(系数告诉你哪些特征重要)。Poisson 回归用于到达率建模。</p>
+
+<!-- 3.1.6 -->
+<h2 id="s3-1-6"><span class="num">3.1.6</span>时序:DTW 与 DBA</h2>
+<p class="pos">定位:时序相似度和时序聚类的经典算法——在 KPI 监控、模式挖掘中仍有独特位置。</p>
+
+<h3>为什么时序不能用欧式距离</h3>
+
+<p>两条 KPI 曲线形状相似但时间上有错位——欧式距离按位对齐会得出"很不像"。DTW(Dynamic Time Warping)通过<em>非线性时间对齐</em>来度量形状相似度,允许一段对应另一段的多段。</p>
+
+<h3>DTW 算法</h3>
+
+<p>给定序列 $X = (x_1, ..., x_n)$ 和 $Y = (y_1, ..., y_m)$,DTW 找一条对齐路径 $\{(i_k, j_k)\}$,使得:</p>
+<ol>
+<li>起点 $(1, 1)$,终点 $(n, m)$</li>
+<li>每步 $(i, j) \to (i+1, j), (i, j+1),$ 或 $(i+1, j+1)$</li>
+<li>路径上点距之和最小</li>
+</ol>
+
+<p>动态规划求解。定义 $D(i, j)$ 为 $X_{1:i}$ 到 $Y_{1:j}$ 的最优对齐代价:</p>
+
+<div class="formula">
+$D(i, j) = |x_i - y_j| + \min\{D(i-1, j), D(i, j-1), D(i-1, j-1)\}$
+</div>
+
+<p>填表 $O(nm)$ 时间/空间。DTW 距离就是 $D(n, m)$。</p>
+
+<pre><code class="language-python">import numpy as np
+
+def dtw(x, y):
+    n, m = len(x), len(y)
+    D = np.full((n+1, m+1), np.inf)
+    D[0, 0] = 0
+    for i in range(1, n+1):
+        for j in range(1, m+1):
+            cost = abs(x[i-1] - y[j-1])
+            D[i, j] = cost + min(D[i-1, j], D[i, j-1], D[i-1, j-1])
+    return D[n, m]
+</code></pre>
+
+<p>优化:<strong>Sakoe-Chiba 带</strong>限制 $|i - j| \le w$,复杂度从 $O(nm)$ 降到 $O(nw)$;<strong>FastDTW</strong> 用多尺度递归逼近 $O(n)$。</p>
+
+<h3>DBA:Dynamic Time Warping Barycenter Averaging</h3>
+
+<p>有了 DTW 距离,自然想做时序聚类——比如 Kmeans 里用 DTW 代替欧氏距离。但 Kmeans 每步要算簇中心(平均),时序的 DTW 平均不等于逐点平均(会扭曲形状)。DBA 就是"在 DTW 意义下的时序平均":</p>
+<ol>
+<li>初始化候选平均序列(随机选一个成员)</li>
+<li>对每个成员和候选做 DTW,得到对齐关系</li>
+<li>对齐后的位置做逐点平均,得到新候选</li>
+<li>重复直到收敛</li>
+</ol>
+
+<p>DBA + Kmeans 就是经典的时序聚类方案。在 KPI 模式发现(什么样的曲线模式经常出现)、异常模式库构建里很常用。</p>
+
+<h3>现代替代</h3>
+
+<p>时序深度学习现在有 Transformer 变种(Informer、Autoformer、PatchTST)、MLP 类(N-BEATS),在大数据集上通常更强。但 DTW 的优势是<strong>无需训练、样本少也能用、完全可解释</strong>——两条曲线的对齐路径可视化出来直观。在初期分析、小样本场景里仍然值得用。</p>
+
+<!-- ==================== 3.2 基础算子 ==================== -->
+<div class="part-header">
+  <div class="part-label">PART TWO</div>
+  <h2 class="part-title">3.2 基础神经网络算子</h2>
+  <p class="part-desc">深度学习的原子操作——每个都有独立的优化空间。</p>
+</div>
+
+<!-- 3.2.1 -->
+<h2 id="s3-2-1"><span class="num">3.2.1</span>矩阵乘与基础运算</h2>
+<p class="pos">定位:GEMM 是一切——深度学习 70%+ 计算在矩阵乘。还有聚合、Cast、逐元素运算。</p>
+
+<h3>GEMM</h3>
+
+<p>General Matrix Multiply:$\mathbf{C} = \alpha \mathbf{A} \mathbf{B} + \beta \mathbf{C}$,$\mathbf{A} \in \mathbb{R}^{M \times K}$,$\mathbf{B} \in \mathbb{R}^{K \times N}$,$\mathbf{C} \in \mathbb{R}^{M \times N}$。所有线性代数库的核心 API(BLAS level 3)。</p>
+
+<p>朴素三重循环复杂度 $O(MNK)$:</p>
+<pre><code class="language-c">for (i = 0; i < M; i++)
+    for (j = 0; j < N; j++)
+        for (k = 0; k < K; k++)
+            C[i][j] += A[i][k] * B[k][j];
+</code></pre>
+
+<p>朴素实现性能极差——每次 <code>B[k][j]</code> 跳行访问 cache 不命中。实际高性能 GEMM(OpenBLAS、MKL、cuBLAS)用多层 blocking:内层循环在 L1/L2 cache 内做,小块结果累加到大块。</p>
+
+<p>AI 的矩阵乘还有 <strong>batched GEMM</strong>:同时做多个独立 GEMM(比如 batch 里每个样本一次)——专门优化减少 kernel launch 开销。</p>
+
+<h3>聚合类(Reduce)</h3>
+
+<p>跨某维度求和/取最大/取平均。典型:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><code>sum(x, dim=-1)</code>:最后一维求和,常见于 softmax 分母</li>
+<li><code>mean(x, dim=(2,3))</code>:空间平均池化</li>
+<li><code>max(x, dim=-1)</code>:softmax 数值稳定减最大值</li>
+</ul>
+
+<p>GPU 上的 reduction 有精巧实现——树状规约(每步线程数减半),或 warp-level primitive(<code>__shfl_down_sync</code>)。朴素循环会 $O(n)$ 串行,优化后能 $O(\log n)$ 并行。</p>
+
+<h3>Cast 与精度转换</h3>
+
+<p>FP32 ↔ FP16 ↔ BF16 ↔ INT8 ↔ INT4 之间互转。看似简单但细节多:</p>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>FP32 → FP16</strong>:可能下溢(小值变 0)或上溢(大值变 inf)。训练中要配合 loss scaling。</li>
+<li><strong>BF16 ↔ FP32</strong>:BF16 就是 FP32 截断尾数,转换便宜,动态范围不变。</li>
+<li><strong>FP ↔ INT</strong>:需要 scale 和 zero-point,量化(见 3.6.2)。</li>
+</ul>
+
+<h3>逐元素运算(Elementwise)</h3>
+
+<p>单目运算:<code>abs</code>、<code>neg</code>、<code>exp</code>、<code>log</code>、<code>sqrt</code>。双目运算:<code>+</code>、<code>-</code>、<code>*</code>、<code>/</code>、<code>pow</code>、<code>max</code>。</p>
+
+<p>这些的<strong>性能瓶颈是内存带宽</strong>,不是计算。对一个 $N$ 个元素的张量做 <code>x * 2</code>,读 $N$ 写 $N$,而只做 $N$ 次乘法——arithmetic intensity(算术强度)只有 0.5 FLOP/byte。GPU Tensor Core 能 1000 TFLOPS 但如果完全内存 bound,实际只能达到内存带宽的上限。</p>
+
+<p>所以<strong>算子融合</strong>在逐元素算子上收益最大——把 <code>relu(bn(conv(x)))</code> 融成一个 kernel,数据只读一次写一次,省去中间张量的 HBM 往返。这是 FlashAttention、PyTorch inductor 优化的核心思路。</p>
+
+<h3>比较与选择类</h3>
+
+<p><code>greater</code>、<code>equal</code>、<code>where(cond, a, b)</code>、<code>topk</code>。<code>where</code> 是条件选择,在 mask 实现里常用(注意力里的 causal mask 就是 <code>where(mask, score, -inf)</code>)。<code>topk</code> 在推理采样(top-k sampling)、MoE 路由(选 top-k 专家)里关键。</p>
+
+<h3>Broadcasting</h3>
+
+<p>两个不同 shape 的张量做逐元素运算时,numpy/PyTorch 的广播规则:从后往前对齐每一维,要么相等要么某一方为 1(可扩展)。</p>
+
+<p>典型用法:bias 加到每行。<code>x</code> shape <code>[B, N, D]</code>,<code>bias</code> shape <code>[D]</code>,<code>x + bias</code> 自动把 bias 广播到每个 batch 每个位置。</p>
+
+<p>工程提醒:<strong>广播可能产生意料之外的大中间张量</strong>。<code>[N, 1] + [1, N]</code> 得到 <code>[N, N]</code>——内存爆炸常源于此。</p>
+
+<!-- 3.2.2 -->
+<h2 id="s3-2-2"><span class="num">3.2.2</span>数据搬运算子</h2>
+<p class="pos">定位:Transpose、Gather、Scatter、Concat——不做计算,只挪数据,但开销可能超预期。</p>
+
+<h3>Transpose</h3>
+
+<p>调换维度顺序。数学上是恒等变换,实际是内存重排。<code>[B, N, H, D]</code> transpose 到 <code>[B, H, N, D]</code> 意味着每个元素的新物理位置都变了。</p>
+
+<p>GPU 上 transpose 的优化关键是 <strong>shared memory tiling</strong>——把一块矩阵读到片上共享内存,再按新顺序写回全局内存,避免 strided memory access。</p>
+
+<p>但最好的 transpose 是<strong>不做 transpose</strong>——很多情况下可以用"虚拟 transpose"(只改 shape/stride 元数据,不动数据)。PyTorch 的 <code>.transpose()</code> 返回的是 view,只有后续需要连续内存(如传给 CUDA kernel)时才真复制。</p>
+
+<h3>Reshape / View</h3>
+
+<p>改变形状但不改总元素数。如果原数据在内存是连续的,reshape 几乎零成本(只改元数据)。不连续时需要 <code>contiguous()</code> 先复制一份。</p>
+
+<h3>Gather / Scatter</h3>
+
+<p><strong>Gather</strong>:按索引从源张量取值。<code>y[i] = x[idx[i]]</code>。embedding 查询就是 gather——输入 token id 序列,从 embedding 表取对应行。</p>
+
+<p><strong>Scatter</strong>:反向——按索引写入目标张量。<code>y[idx[i]] = x[i]</code>。</p>
+
+<p>两者在 GPU 上都是 <strong>irregular memory access</strong> 问题:相邻线程访问不相邻的位置,cache miss 严重。对 embedding 这种大表(词汇表 10 万以上),gather 经常是推理瓶颈。优化方向:按 idx 分桶排序批量访问、用 TLB-friendly 的布局。</p>
+
+<h3>Concat / Split</h3>
+
+<p>拼接或拆分。Concat 需要分配新内存 + 拷贝;Split 通常可以零拷贝(如果切分维度使各片连续)。</p>
+
+<p>典型用法:MHA 里 <code>concat(head_1, ..., head_H, dim=-1)</code> 合并多头输出。但现代实现往往用"合并 Q/K/V 到一个大 Linear、reshape 出 head 维"避免显式 concat,省一个算子。</p>
+
+<h3>Pad</h3>
+
+<p>给张量边缘补 0(或其他值)。卷积前补零保持 output shape = input shape;变长序列 padding 到同长度做 batching。</p>
+
+<p>Pad 的代价:<strong>浪费</strong>。一个 batch 里最长 2048 的序列和 16 的序列一起 pad 到 2048,短序列的计算全浪费。这就是为什么连续批处理(continuous batching,见第 4 章 5.13)对 LLM 推理价值巨大——避免 padding 浪费。</p>
+
+<h3>数据搬运的隐藏成本</h3>
+
+<p>经验:<strong>一个深度学习模型里,数据搬运占 20–40% 时间很常见</strong>。不像矩阵乘那样显眼,它们散落各处,但累积起来惊人。Profile 时如果看到 transpose、reshape、cat 占比高,通常意味着模型结构设计可以简化。</p>
+
+<!-- 3.2.3 -->
+<h2 id="s3-2-3"><span class="num">3.2.3</span>卷积与池化</h2>
+<p class="pos">定位:CNN 的命脉算子。深挖:im2col 展开、Winograd 加速。</p>
+
+<h3>2D 卷积的定义</h3>
+
+<p>输入 $\mathbf{X}$ shape <code>[C_in, H, W]</code>,卷积核 $\mathbf{W}$ shape <code>[C_out, C_in, kH, kW]</code>,输出 $\mathbf{Y}$ shape <code>[C_out, H', W']</code>:</p>
+
+<div class="formula">
+$Y_{c, h, w} = \sum_{c'} \sum_{i, j} W_{c, c', i, j} \cdot X_{c', h+i, w+j}$
+</div>
+
+<p>(这是"互相关",工程上统称卷积。)每个输出位置是卷积核与输入对应区域的内积。</p>
+
+<p>参数:stride(滑动步长)、padding(边缘补多少)、dilation(核内采样间隔)、group(分组卷积,每组只看部分通道)。</p>
+
+<h3>朴素实现与 im2col</h3>
+
+<p>直接实现是 7 重循环:output C、H、W 三维 × kernel C、H、W 三维 × sum over in C。GPU 上用这种方式性能差。</p>
+
+<p><strong>im2col</strong> 是经典技巧:把卷积<em>转换成矩阵乘</em>。思路:</p>
+
+<ol>
+<li>把输入的每个 $kH \times kW \times C_{in}$ 局部块"展开"成一行,所有输出位置的块堆成一个大矩阵 $\mathbf{X}_{col}$,shape <code>[C_in×kH×kW, H'×W']</code></li>
+<li>把卷积核 reshape 成 <code>[C_out, C_in×kH×kW]</code></li>
+<li>做矩阵乘:$\mathbf{Y} = \mathbf{W} \cdot \mathbf{X}_{col}$,shape <code>[C_out, H'×W']</code></li>
+<li>reshape 结果到 <code>[C_out, H', W']</code></li>
+</ol>
+
+<p>这样能直接调 GEMM kernel,拿到接近峰值算力。代价是 $\mathbf{X}_{col}$ 的内存放大 <code>kH × kW</code> 倍——每个输入像素被复制到多个位置。</p>
+
+<pre><code class="language-python">import numpy as np
+
+def im2col(X, kh, kw, stride=1):
+    # X: [C, H, W]
+    C, H, W = X.shape
+    oh, ow = (H - kh) // stride + 1, (W - kw) // stride + 1
+    cols = np.zeros((C * kh * kw, oh * ow))
+    for y in range(oh):
+        for x in range(ow):
+            patch = X[:, y*stride:y*stride+kh, x*stride:x*stride+kw]
+            cols[:, y*ow + x] = patch.flatten()
+    return cols, (oh, ow)
+
+def conv2d_im2col(X, W):
+    # X: [C, H, W], W: [C_out, C, kh, kw]
+    C_out, _, kh, kw = W.shape
+    cols, (oh, ow) = im2col(X, kh, kw)       # [C*kh*kw, oh*ow]
+    W_mat = W.reshape(C_out, -1)              # [C_out, C*kh*kw]
+    Y = W_mat @ cols                           # [C_out, oh*ow]
+    return Y.reshape(C_out, oh, ow)
+</code></pre>
+
+<h3>Winograd 算法</h3>
+
+<p>对小卷积核(3×3)有神奇加速。核心思想:通过变换,把直接卷积需要的 9 次乘法减少到 4 次(对每个 2×2 输出 tile)。</p>
+
+<p>对 F(2, 3) 变换:要算 2 个输出 $y_1, y_2$,直接做需要 6 次乘法。Winograd 通过:</p>
+
+<div class="formula">
+$\mathbf{y} = \mathbf{A}^\top[(\mathbf{G}\mathbf{w}) \odot (\mathbf{B}^\top \mathbf{x})]$
+</div>
+
+<p>其中 $\mathbf{G}, \mathbf{B}, \mathbf{A}$ 是固定的变换矩阵($\odot$ 是逐元素乘)。展开后只需 4 次乘法(省 33%)。推广到 F(2×2, 3×3):输出 2×2 块,直接做 36 次乘,Winograd 只要 16 次(省 56%)。</p>
+
+<p>代价:变换有额外的加减法,且只对小核有效(F(6×6, 3×3) 变换开销开始超过节省的乘法)。cuDNN、ACL 等库会根据 input/kernel 大小自动选择 Winograd 还是 im2col+GEMM 还是 FFT。</p>
+
+<h3>深度可分离卷积</h3>
+
+<p>标准卷积:<code>[C_out, C_in, kH, kW]</code> 参数 $C_{out} C_{in} kH kW$。</p>
+
+<p>MobileNet 提出<strong>深度可分离</strong>:拆成 depthwise(每通道独立 kH×kW 卷积)+ pointwise(1×1 卷积跨通道混合)。参数:$C_{in} kH kW + C_{in} C_{out}$。$kH = kW = 3$、$C = 64$ 时参数减少约 9 倍。</p>
+
+<p>代价是表达能力略降,但在移动/嵌入式场景值得——MobileNet、EfficientNet 的基础。</p>
+
+<h3>池化</h3>
+
+<p>下采样操作。<strong>Max pooling</strong>:每 2×2 窗口取最大值,输出尺寸减半。<strong>Average pooling</strong>:取平均。<strong>Global pooling</strong>:整张特征图压成一个值(用于分类前的特征聚合)。</p>
+
+<p>池化的作用:</p>
+<ol>
+<li>减少计算量(H, W 减半)</li>
+<li>扩大感受野(下一层卷积看到更大范围)</li>
+<li>平移近似不变性</li>
+</ol>
+
+<p>现代架构有时用 stride=2 的卷积替代池化,参数化可学习。</p>
+
+<!-- 3.2.4 -->
+<h2 id="s3-2-4"><span class="num">3.2.4</span>激活函数</h2>
+<p class="pos">定位:神经网络的"非线性"来源——没它网络再深也只等于一层线性。</p>
+
+<h3>为什么需要非线性</h3>
+
+<p>线性层的复合仍然是线性:$W_2(W_1 x + b_1) + b_2 = (W_2 W_1) x + (W_2 b_1 + b_2)$。整个网络等价于单层线性变换——表达能力不够。激活函数引入非线性,让网络能逼近任意连续函数(万能近似定理)。</p>
+
+<h3>Sigmoid</h3>
+
+<p>$\sigma(x) = 1/(1 + e^{-x})$。输出在 (0, 1)。历史最悠久,在 logistic 回归、LSTM 门控里还在用。</p>
+
+<p>问题:<strong>梯度消失</strong>。$\sigma'(x) = \sigma(x)(1 - \sigma(x))$,最大值 0.25。深层网络反传时每层乘一次,层数一多梯度归零。深度 CNN/Transformer 的隐藏层不用 sigmoid。</p>
+
+<h3>Tanh</h3>
+
+<p>$\tanh(x) = (e^x - e^{-x})/(e^x + e^{-x})$。输出在 (-1, 1),是 sigmoid 的中心化版本,梯度最大值 1,略好。RNN 历史里常用。</p>
+
+<h3>ReLU</h3>
+
+<p>$\text{ReLU}(x) = \max(0, x)$。2012 年 AlexNet 让 ReLU 成为主流。优点:计算极简、正半轴导数恒为 1(解决梯度消失)。</p>
+
+<p>缺点:<strong>Dead ReLU</strong>——神经元输出长期为 0 后,该神经元的梯度也为 0,永远不再更新。尤其 lr 过大时发生。</p>
+
+<h3>ReLU 变种</h3>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>LeakyReLU</strong>:$\max(\alpha x, x)$,$\alpha = 0.01$。负半轴有小斜率,避免 dead。</li>
+<li><strong>PReLU</strong>:$\alpha$ 变成可学习参数。</li>
+<li><strong>ELU</strong>:负半轴用 $e^x - 1$,平滑。</li>
+</ul>
+
+<h3>GELU 和 SiLU/Swish</h3>
+
+<p>Transformer 时代流行两个:</p>
+
+<p><strong>GELU</strong>:$x \cdot \Phi(x)$,$\Phi$ 是标准正态 CDF。相当于"按输入大小的概率做 dropout"。BERT、GPT 系列都用。实际计算用近似公式 $0.5 x (1 + \tanh(\sqrt{2/\pi}(x + 0.044715 x^3)))$。</p>
+
+<p><strong>SiLU / Swish</strong>:$x \cdot \sigma(x)$。更简洁。LLaMA 系列用它(准确说是 SwiGLU,下面讲)。</p>
+
+<p>GELU 和 SiLU 在形状上很像——都是平滑版 ReLU,负半轴有轻微下凹。实验上比 ReLU 在大模型上略好(1% 左右)。</p>
+
+<h3>SwiGLU / GeGLU</h3>
+
+<p>LLaMA、Qwen 的 FFN 用这个。不是纯激活函数,是"门控线性单元"结合激活:</p>
+
+<div class="formula">
+$\text{SwiGLU}(x) = \text{SiLU}(W_1 x) \odot (W_2 x)$
+</div>
+
+<p>两条并行线性变换,一条过激活、另一条不过,再逐元素乘。相当于给每个位置学一个乘性门。代价是参数从 <code>[d, 4d] + [4d, d]</code> 变成 <code>[d, 8d/3] + [d, 8d/3] + [8d/3, d]</code>(为保持总参数不变,通常把中间维度从 4d 缩到 8d/3)。</p>
+
+<h3>Softmax</h3>
+
+<p>严格不是"激活函数",但作用类似——把向量转成概率分布:</p>
+
+<div class="formula">
+$\text{softmax}(\mathbf{x})_i = \frac{e^{x_i}}{\sum_j e^{x_j}}$
+</div>
+
+<p>特性:输出和为 1、处处可导、单调。用在分类输出层、attention 权重。</p>
+
+<p>数值稳定的实现必须减最大值(见第 1 章 2.8.1)。</p>
+
+<!-- 3.2.5 -->
+<h2 id="s3-2-5"><span class="num">3.2.5</span>归一化</h2>
+<p class="pos">定位:BatchNorm、LayerNorm、RMSNorm——训练稳定性的支柱。</p>
+
+<h3>为什么需要归一化</h3>
+
+<p>深层网络训练有<strong>内部协变量漂移</strong>(internal covariate shift):前面层参数微变,后面层输入分布跟着剧变,训练不稳。归一化把每层输入强制回到标准分布附近,让训练更稳、学习率可以更大。</p>
+
+<h3><a href="ch5_partA_preview.html#p03">BatchNorm</a></h3>
+
+<p>对 batch 里每个特征(按 channel 维度),减去 batch 均值、除以 batch 标准差,再用可学习的 $\gamma, \beta$ 缩放平移:</p>
+
+<div class="formula">
+$\hat{x}_i = \frac{x_i - \mu_B}{\sqrt{\sigma_B^2 + \epsilon}}, \quad y_i = \gamma \hat{x}_i + \beta$
+</div>
+
+<p>训练时 $\mu_B, \sigma_B^2$ 从当前 batch 算,推理时用训练阶段维护的 running mean/var(或者最后一次 batch 的)。</p>
+
+<p>BatchNorm 在 CNN 训练上是革命性的——2015 年提出,一夜之间成为标配,让 ResNet 这种 100+ 层网络训练成为可能。</p>
+
+<p>问题:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- batch size 敏感:batch 太小时统计量不稳(推荐 ≥ 16)</li>
+<li>- 训练/推理行为不同:容易出 subtle bug</li>
+<li>- 不适合 RNN/Transformer(序列长度可变,batch 维统计没意义)</li>
+</ul>
+
+<h3>LayerNorm</h3>
+
+<p>对<em>每个样本的特征维度</em>(而不是 batch 维)归一化:</p>
+
+<div class="formula">
+$\mu = \frac{1}{D}\sum_i x_i, \quad \sigma^2 = \frac{1}{D}\sum_i (x_i - \mu)^2$
+</div>
+
+<p>每个样本独立,不依赖 batch。Transformer 全用 LayerNorm。</p>
+
+<p>训练和推理行为一致,batch size 不敏感。成了 NLP 标配。</p>
+
+<h3>RMSNorm</h3>
+
+<p>LayerNorm 的简化:去掉均值中心化(认为不重要),只归一化幅度:</p>
+
+<div class="formula">
+$\text{RMS}(x) = \sqrt{\frac{1}{D}\sum_i x_i^2}, \quad y_i = \frac{x_i}{\text{RMS}(x)} \cdot \gamma_i$
+</div>
+
+<p>省掉均值计算和 $\beta$ 偏置参数。LLaMA、Qwen、DeepSeek 都用 RMSNorm——<em>少一点计算,精度没差</em>,这种事在 LLM 里就是划算。</p>
+
+<h3>GroupNorm / InstanceNorm</h3>
+
+<p>BatchNorm 的变种。GroupNorm 按 channel 分组,组内归一化(不依赖 batch)。InstanceNorm 每 sample 每 channel 独立归一化(常用于图像风格迁移)。BatchNorm/GroupNorm/InstanceNorm 是 channel 维度粒度上的连续谱。</p>
+
+<h3>Pre-Norm vs Post-Norm</h3>
+
+<p>Transformer 里归一化放哪儿有争议。</p>
+
+<p><strong>Post-Norm</strong>(原始 Transformer):<code>LN(x + Sublayer(x))</code>。稳定性较差,训练大模型需要 warmup。</p>
+
+<p><strong>Pre-Norm</strong>(GPT 系列):<code>x + Sublayer(LN(x))</code>。残差连接直接连接输入和输出,梯度传递更顺畅,训练大模型更稳。</p>
+
+<p>现代大模型全用 Pre-Norm。</p>
+
+<!-- ==================== 3.3 经典 DL 模型 ==================== -->
+<div class="part-header">
+  <div class="part-label">PART THREE</div>
+  <h2 class="part-title">3.3 经典深度学习模型</h2>
+  <p class="part-desc">在 Transformer 之前的主力架构——在各自领域仍有独立价值。</p>
+</div>
+
+<!-- 3.3.1 -->
+<h2 id="s3-3-1"><span class="num">3.3.1</span>CNN</h2>
+<p class="pos">定位:视觉领域的基石。理解了 CNN 就理解了"归纳偏置"这个核心概念。</p>
+
+<h3>CNN 的归纳偏置</h3>
+
+<p>CNN 成功的秘密在两个假设:</p>
+<ol>
+<li><strong>局部性</strong>:相关特征通常空间上靠近(一个像素的含义和它邻居相关)</li>
+<li><strong>平移等变性</strong>:特征不管出现在图的哪里,识别方式相同(猫不管在左上还是右下都是猫)</li>
+</ol>
+
+<p>卷积恰好编码这两点——核是局部的、在整张图上共享。参数效率比全连接 MLP 高几个数量级,训练数据需求也少得多。</p>
+
+<h3>经典架构演进</h3>
+
+<p><strong>LeNet</strong>(1998):CNN 始祖,手写识别。几层卷积 + 池化 + 全连接。</p>
+
+<p><strong>AlexNet</strong>(2012):深度学习复兴的标志。8 层,用 ReLU、Dropout、data augmentation、GPU 训练。ImageNet top-5 错误从 26% 降到 15%,震动整个 CV 社区。</p>
+
+<p><strong>VGG</strong>(2014):重复使用 3×3 小卷积核加深网络。证明"深度很重要"。16-19 层。</p>
+
+<p><strong>Inception / GoogLeNet</strong>(2014):并行多尺度卷积(1×1、3×3、5×5)。引入 1×1 卷积做降维(减少参数)。</p>
+
+<p><strong><a href="ch5_partA_preview.html#p01">ResNet</a></strong>（2015）:残差连接。这是 CNN 历史的关键创新。</p>
+
+<h3>残差连接:深网络能训起来的秘密</h3>
+
+<p>VGG 之后发现,继续加深不涨点反而掉——不是过拟合(训练集也差),而是优化难。ResNet 提出:不学 $F(x)$,改学 $F(x) - x$,输出 $x + F(x)$。</p>
+
+<div class="mermaid">
+flowchart LR
+    X[x] --> F[Conv-BN-ReLU-Conv-BN]
+    X --> ADD((+))
+    F --> ADD
+    ADD --> RELU[ReLU]
+    RELU --> Y[y]
+</div>
+
+<p>为什么好使?两个视角:</p>
+
+<p><strong>梯度视角</strong>:残差路径的梯度直接传给输入,不经过中间层的非线性和乘法——缓解梯度消失。</p>
+
+<p><strong>恒等映射视角</strong>:如果某一层最优就是做恒等映射(不变换),残差版本只需让 $F = 0$,比全学一个恒等 $F(x) = x$ 容易得多。</p>
+
+<p>ResNet 让 152 层甚至 1000 层网络都能训,彻底解锁了深度。</p>
+
+<h3>更近期</h3>
+
+<p><strong>DenseNet</strong>(2016):每层和之前所有层密集连接。</p>
+
+<p><strong>EfficientNet</strong>(2019):在深度、宽度、分辨率之间找最优缩放比例。</p>
+
+<p><strong>ConvNeXt</strong>(2022):用 Transformer 的设计哲学(大核、GELU、LayerNorm)重新设计 CNN,证明 CNN 和 Transformer 各有千秋。</p>
+
+<h3>CNN 在今天的位置</h3>
+
+<p>CV 领域 Transformer(ViT)已主导大模型,但小模型、边缘部署 CNN 仍占优——归纳偏置在小数据上胜出、计算图规整更利于硬件优化。在嵌入式、工控、医学影像这些场景,CNN 仍是首选。</p>
+
+<!-- 3.3.2 -->
+<h2 id="s3-3-2"><span class="num">3.3.2</span>RNN / <a href="ch5_partA_preview.html#p02">LSTM</a> / GRU</h2>
+<p class="pos">定位:Transformer 之前的序列建模主力。深挖 LSTM 门控机制。</p>
+
+<h3>朴素 RNN</h3>
+
+<p>对每个时间步,把当前输入 $\mathbf{x}_t$ 和上一步隐状态 $\mathbf{h}_{t-1}$ 融合成新隐状态:</p>
+
+<div class="formula">
+$\mathbf{h}_t = \tanh(W_{xh} \mathbf{x}_t + W_{hh} \mathbf{h}_{t-1} + \mathbf{b})$
+</div>
+
+<p>展开成时间序列:</p>
+
+<div class="mermaid">
+flowchart LR
+    X1[x_1] --> H1[h_1]
+    X2[x_2] --> H2[h_2]
+    X3[x_3] --> H3[h_3]
+    H1 --> H2
+    H2 --> H3
+    H1 --> Y1[y_1]
+    H2 --> Y2[y_2]
+    H3 --> Y3[y_3]
+</div>
+
+<p>同样的权重 $W_{hh}$ 在每个时间步反复使用。这让 RNN 能处理任意长度序列,参数量不随序列长而增。</p>
+
+<p>问题:<strong>梯度消失/爆炸</strong>。反向传播时梯度经过 $W_{hh}$ 的 $T$ 次矩阵乘($T$ 是序列长度),如果 $W_{hh}$ 的特征值 < 1 梯度指数衰减,> 1 梯度指数增长。导致朴素 RNN 只能记住很短的历史。</p>
+
+<h3>LSTM 的门控</h3>
+
+<p>Long Short-Term Memory(1997)通过<strong>显式的记忆单元和门控机制</strong>解决这个问题。核心创新是引入<strong>细胞状态</strong> $\mathbf{c}_t$,它有一条"高速通道"让梯度能长距离传递。</p>
+
+<p>三个门控决定信息如何流动:</p>
+
+<div class="formula">
+$\mathbf{f}_t = \sigma(W_f [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_f) \quad (\text{遗忘门})$
+</div>
+<div class="formula">
+$\mathbf{i}_t = \sigma(W_i [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_i) \quad (\text{输入门})$
+</div>
+<div class="formula">
+$\mathbf{o}_t = \sigma(W_o [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_o) \quad (\text{输出门})$
+</div>
+<div class="formula">
+$\tilde{\mathbf{c}}_t = \tanh(W_c [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_c) \quad (\text{候选细胞})$
+</div>
+<div class="formula">
+$\mathbf{c}_t = \mathbf{f}_t \odot \mathbf{c}_{t-1} + \mathbf{i}_t \odot \tilde{\mathbf{c}}_t$
+</div>
+<div class="formula">
+$\mathbf{h}_t = \mathbf{o}_t \odot \tanh(\mathbf{c}_t)$
+</div>
+
+<p>直觉:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>遗忘门</strong>决定从旧细胞保留多少信息(接近 1:保留;接近 0:遗忘)</li>
+<li><strong>输入门</strong>决定接受多少新信息</li>
+<li><strong>输出门</strong>决定从细胞往外暴露多少</li>
+</ul>
+
+<p>关键的梯度通道在 <code>c_t = f_t * c_{t-1} + ...</code>——当遗忘门长期接近 1,<code>c_t</code> 通过加法保留了长历史,反传时梯度几乎无衰减。这就是 "long short-term memory" 的含义。</p>
+
+<h3>GRU</h3>
+
+<p>Gated Recurrent Unit(2014)简化 LSTM:合并细胞状态和隐状态,合并遗忘门和输入门成"更新门"。参数少 25%,实验效果和 LSTM 差不多。</p>
+
+<div class="formula">
+$\mathbf{z}_t = \sigma(W_z [\mathbf{h}_{t-1}, \mathbf{x}_t]) \quad (\text{更新门})$
+</div>
+<div class="formula">
+$\mathbf{r}_t = \sigma(W_r [\mathbf{h}_{t-1}, \mathbf{x}_t]) \quad (\text{重置门})$
+</div>
+<div class="formula">
+$\tilde{\mathbf{h}}_t = \tanh(W [\mathbf{r}_t \odot \mathbf{h}_{t-1}, \mathbf{x}_t])$
+</div>
+<div class="formula">
+$\mathbf{h}_t = (1 - \mathbf{z}_t) \odot \mathbf{h}_{t-1} + \mathbf{z}_t \odot \tilde{\mathbf{h}}_t$
+</div>
+
+<h3>Bi-RNN 与深层 RNN</h3>
+
+<p><strong>双向 RNN</strong>:正向和反向各跑一遍,每个位置的表示拼接两个方向。适合理解任务(每个词的表示考虑上下文)。</p>
+
+<p><strong>多层 RNN</strong>:上一层的输出作为下一层的输入,堆叠几层。表达能力更强。</p>
+
+<h3>为什么让位给 Transformer</h3>
+
+<p>RNN 的根本限制是<strong>无法并行</strong>——时间步必须按顺序算。GPU 算力上不去。2017 年 Transformer 用 self-attention 彻底替代循环,训练时全并行,效果还更好。今天 LSTM/GRU 在工业界主要剩下:小模型场景(嵌入式时序预测)、经典基线、研究用。</p>
+
+<h3><a href="ch5_partC_supplement.html#p24">Mamba</a> 的复兴</h3>
+
+<p>2023 年 Mamba（选择性 SSM）把"类 RNN 结构"重新带回视野——训练能并行扫描,推理又是 $O(1)$ 每步。在长上下文场景挑战 Transformer。RNN 精神没死,只是需要更巧的设计(见第 4 章 5.6)。</p>
+
+<!-- 3.3.3 -->
+<h2 id="s3-3-3"><span class="num">3.3.3</span>GNN 与 GAT</h2>
+<p class="pos">定位:图神经网络——处理非欧数据的主流范式。</p>
+
+<h3>为什么图数据需要专门的模型</h3>
+
+<p>图的特点:节点数量可变、邻居数量可变、无固定顺序。CNN 的"局部+平移等变"假设不成立(图上没有规则网格)。RNN 也不行(图无天然序列)。GNN 专为图数据设计。</p>
+
+<h3>消息传递范式</h3>
+
+<p>几乎所有主流 GNN 都在"消息传递"框架里。每一层做两步:</p>
+<ol>
+<li><strong>聚合</strong>:每个节点收集邻居的消息</li>
+<li><strong>更新</strong>:根据聚合结果 + 自身当前表示更新新表示</li>
+</ol>
+
+<div class="formula">
+$\mathbf{h}_v^{(l+1)} = \text{UPDATE}\left(\mathbf{h}_v^{(l)}, \text{AGG}\left(\{\mathbf{h}_u^{(l)}: u \in \mathcal{N}(v)\}\right)\right)$
+</div>
+
+<p>$\mathcal{N}(v)$ 是 $v$ 的邻居集。不同 GNN 的差异在于 AGG 和 UPDATE 具体怎么做。</p>
+
+<h3>GCN</h3>
+
+<p>Graph Convolutional Network(2017)。聚合方式是归一化的加权平均:</p>
+
+<div class="formula">
+$\mathbf{h}_v^{(l+1)} = \sigma\left(\sum_{u \in \mathcal{N}(v) \cup \{v\}} \frac{1}{\sqrt{\deg(u) \deg(v)}} W^{(l)} \mathbf{h}_u^{(l)}\right)$
+</div>
+
+<p>归一化系数 $1/\sqrt{d_u d_v}$ 防止高度节点主导聚合。推导来自图拉普拉斯的谱域近似,细节复杂但思路简单——对邻居做加权平均再线性变换。</p>
+
+<h3>GraphSAGE</h3>
+
+<p>GCN 需要整图做拉普拉斯,大图不可扩展。GraphSAGE 改用<strong>采样邻居</strong>:每个节点随机采 $k$ 个邻居聚合。这样可以做 mini-batch 训练,支持超大图(数十亿节点)。</p>
+
+<h3>GAT:图注意力</h3>
+
+<p>GCN 的邻居权重是结构决定的(度归一化),不能表达"这个邻居更重要"。GAT 引入注意力:</p>
+
+<div class="formula">
+$\alpha_{vu} = \frac{\exp(\text{LeakyReLU}(\mathbf{a}^\top [W \mathbf{h}_v \| W \mathbf{h}_u]))}{\sum_{k \in \mathcal{N}(v)} \exp(\text{LeakyReLU}(\mathbf{a}^\top [W \mathbf{h}_v \| W \mathbf{h}_k]))}$
+</div>
+
+<div class="formula">
+$\mathbf{h}_v^{(l+1)} = \sigma\left(\sum_{u \in \mathcal{N}(v)} \alpha_{vu} W \mathbf{h}_u\right)$
+</div>
+
+<p>每个节点对邻居算注意力权重,加权聚合。$\|$ 是拼接,$\mathbf{a}$ 是可学习向量。可以做多头(和 Transformer 一样)。</p>
+
+<p>GAT 的优势在异质图(邻居重要性不均)、可解释性(权重可视化)。</p>
+
+<h3>应用</h3>
+
+<p>节点分类(给每个节点预测类别)、链接预测(预测两节点之间是否该有边)、图分类(整张图的属性)、图生成。用于:社交网络推荐、分子性质预测、知识图谱补全、网络拓扑分析。</p>
+
+<h3>过平滑问题</h3>
+
+<p>GNN 深度不能像 CNN 那么深——几层之后所有节点表示趋同(因为每层都在做邻居平均)。实践中 2-3 层常见,更深需要专门设计(残差、PairNorm 等)。</p>
+
+<!-- 3.3.4 -->
+<h2 id="s3-3-4"><span class="num">3.3.4</span><a href="ch5_partC_supplement.html#p20">GAN</a> 与 <a href="ch5_partC_supplement.html#p21">VAE</a></h2>
+<p class="pos">定位:两大生成模型范式——对抗 vs 变分。今天让位给扩散模型但思想仍在。</p>
+
+<h3>生成模型要做什么</h3>
+
+<p>给定数据样本 $\{x_i\} \sim p_{\text{data}}$,学一个模型 $p_\theta$ 使得从 $p_\theta$ 采样得到的样本"像"真实数据。两大挑战:</p>
+<ol>
+<li>高维数据(图像、音频)的分布极复杂</li>
+<li>直接最大似然 $\max \prod p_\theta(x_i)$ 需要归一化常数,高维下算不出</li>
+</ol>
+
+<p>GAN 和 VAE 从两个完全不同的方向绕开这些问题。</p>
+
+<h3>VAE:变分推断</h3>
+
+<p>假设数据由潜变量 $z$ 生成:$z \sim p(z) = \mathcal{N}(0, I)$,$x \sim p_\theta(x|z)$。我们想最大化似然 $\log p_\theta(x) = \log \int p_\theta(x|z) p(z) dz$,但积分算不出。</p>
+
+<p>VAE 用<strong>变分下界</strong>(ELBO)近似:</p>
+
+<div class="formula">
+$\log p_\theta(x) \ge \mathbb{E}_{q_\phi(z|x)}[\log p_\theta(x|z)] - D_{\text{KL}}(q_\phi(z|x) \| p(z))$
+</div>
+
+<p>其中 $q_\phi(z|x)$ 是编码器(把 $x$ 编成 $z$ 的分布),$p_\theta(x|z)$ 是解码器(从 $z$ 重建 $x$)。两者都是神经网络。</p>
+
+<p>训练时同时优化两项:重建项(解码器能从 $z$ 还原 $x$)+ KL 项($q$ 和先验 $p(z)$ 接近)。训练用<strong>重参数化技巧</strong>:$z = \mu_\phi(x) + \sigma_\phi(x) \odot \epsilon, \epsilon \sim \mathcal{N}(0, I)$——让采样可微。</p>
+
+<p>VAE 的优点:显式潜空间(可插值、可控生成)、训练稳定。缺点:生成样本通常模糊(重建损失是像素 MSE,倾向平均)。</p>
+
+<h3>GAN:博弈对抗</h3>
+
+<p>完全不同的路径。两个网络对抗:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>生成器 $G$</strong>:输入噪声 $z$,输出假样本 $G(z)$</li>
+<li><strong>判别器 $D$</strong>:输入样本,判别真假(输出 0–1 概率)</li>
+</ul>
+
+<p>目标函数:</p>
+
+<div class="formula">
+$\min_G \max_D \mathbb{E}_{x \sim p_{\text{data}}}[\log D(x)] + \mathbb{E}_{z \sim p_z}[\log(1 - D(G(z)))]$
+</div>
+
+<p>$D$ 想把真样本判为真、假样本判为假;$G$ 想骗过 $D$。双方博弈直到 $G$ 生成的样本 $D$ 分不清真假——此时 $G$ 学到了 $p_{\text{data}}$。</p>
+
+<p>GAN 的优点:生成样本锐利、视觉质量高。缺点:<strong>训练极不稳定</strong>(博弈平衡难)、模式崩塌(generator 只生成几种样本)、没有显式似然。</p>
+
+<p>后续改进:<strong>WGAN</strong> 用 Wasserstein 距离替代 JS 散度,训练稳定得多;<strong>StyleGAN</strong>(NVIDIA)在风格控制上做到极致,早期 deepfake 的主要技术。</p>
+
+<h3>扩散模型的兴起</h3>
+
+<p>2020 年以后,<strong><a href="ch5_partC_supplement.html#p22">扩散模型</a></strong>（Diffusion）快速取代 GAN/VAE 成为图像生成主流。</p>
+
+<p>核心思想:把数据逐步加噪声直到变成纯噪声(前向过程,固定),训练一个神经网络去噪(反向过程,学习)。生成时从纯噪声开始反向去噪 T 步,得到样本。</p>
+
+<p>优势:训练极稳(纯去噪问题,无对抗)、样本质量高、可控(guidance、conditioning)。DALL-E 2、Stable Diffusion、Imagen、Sora 都是扩散。</p>
+
+<p>代价:采样慢(要 20–50 步,每步一次前向)。加速方向:DDIM、DPM-Solver、Consistency Models(1 步生成)。</p>
+
+<!-- ==================== 3.4 数据特征工程 ==================== -->
+<div class="part-header">
+  <div class="part-label">PART FOUR</div>
+  <h2 class="part-title">3.4 数据与特征工程</h2>
+  <p class="part-desc">"garbage in, garbage out"——数据质量决定模型效果的上限。</p>
+</div>
+
+<!-- 3.3.0 -->
+<h2 id="s3-4-1"><span class="num">3.4.1</span>样本评分、生成、增强</h2>
+<p class="pos">定位:数据不够怎么办——合成样本、增强、主动学习。</p>
+
+<h3>数据增强</h3>
+
+<p>同一个真实样本通过变换生成多个"新"样本,扩充训练集。领域相关:</p>
+
+<table>
+<tr><th>领域</th><th>常见增强</th></tr>
+<tr><td>图像</td><td>翻转、旋转、裁剪、色彩抖动、Cutout、Mixup、CutMix、AutoAugment</td></tr>
+<tr><td>文本</td><td>同义词替换、回译、随机插入/删除、EDA、Back-translation</td></tr>
+<tr><td>音频</td><td>时间伸缩、音调变换、加背景噪声、SpecAugment(频谱掩码)</td></tr>
+<tr><td>时序</td><td>时间扭曲、加噪、窗口切片、DBA 合成</td></tr>
+</table>
+
+<p><strong>Mixup</strong> 是个有趣的增强:两个样本和标签都做凸组合 $x' = \lambda x_1 + (1-\lambda) x_2, y' = \lambda y_1 + (1-\lambda) y_2$。让模型学到"线性插值的样本应该有线性插值的标签"——正则化效果显著,分类任务普遍受益。</p>
+
+<h3>样本评分</h3>
+
+<p>不是所有样本一样重要。评分方法:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>困难度</strong>:当前模型在这个样本上损失多大(loss-based)</li>
+<li><strong>不确定性</strong>:模型预测的置信度(entropy、variance)</li>
+<li><strong>代表性</strong>:这个样本和其他样本差异度</li>
+<li><strong>影响力</strong>:去掉这个样本训练,对测试集的影响(influence function)</li>
+</ul>
+
+<p><strong>课程学习</strong>(curriculum learning):先用简单样本训,逐步加入困难样本——类似人类学习。对某些任务能显著加速收敛。</p>
+
+<p><strong>主动学习</strong>:标注预算有限时,用模型选最值得标注的样本(通常是不确定性高的)让人标。减少标注成本。</p>
+
+<h3>合成数据</h3>
+
+<p>两种主要路径:</p>
+
+<p><strong>规则生成</strong>:对特定领域用规则生成样本(如用已知的恶意攻击规则合成对抗流量、用物理引擎合成自动驾驶场景)。可控但可能过于"干净"不像真实分布。</p>
+
+<p><strong>模型生成</strong>:用生成模型(GAN、扩散、LLM)产生合成样本。LLM 时代特别流行:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Self-Instruct</strong>:让强模型生成指令 + 回答,用作弱模型的训练数据</li>
+<li><strong>Distillation</strong>:小模型跟着大模型学,大模型的输出就是"合成标签"</li>
+<li><strong>Rejection Sampling</strong>:大模型生成多个答案,用打分器挑出好的做训练集</li>
+</ul>
+
+<p>合成数据的风险:<strong>模型坍缩</strong>——如果新一代模型不断用上一代合成的数据训练,分布会逐代漂移,最终失去多样性。至少要混入真实数据才安全。</p>
+
+<h3>类别不平衡处理</h3>
+
+<p>正例 1%、负例 99% 的极端情况下,模型直接预测全部负例就有 99% 准确率——但毫无用处。应对:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>重采样</strong>:对少数类过采样、对多数类欠采样</li>
+<li><strong>SMOTE</strong>:少数类之间插值生成新样本</li>
+<li><strong>类别权重</strong>:损失函数给少数类更大权重</li>
+<li><strong>Focal Loss</strong>:$-\alpha(1-p)^\gamma \log(p)$,对简单样本(高 p)降权,让模型聚焦困难样本</li>
+</ul>
+
+<!-- 3.3.1 -->
+<h2 id="s3-4-2"><span class="num">3.4.2</span>预处理与特征构建</h2>
+<p class="pos">定位:清洗、归一化、编码——传统 ML 里特征工程常比模型选择更重要。</p>
+
+<h3>数据清洗</h3>
+
+<p>现实数据脏:缺失、异常、类型不一致、重复。清洗是脏活但必须做:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>缺失值</strong>:删行、均值/中位数填充、模型预测填充、加"是否缺失"标志位</li>
+<li><strong>异常值</strong>:用 IQR($Q_1 - 1.5 \cdot \text{IQR}, Q_3 + 1.5 \cdot \text{IQR}$)或 Z-score 识别,然后删、截断、或标记</li>
+<li><strong>重复</strong>:精确/近似去重</li>
+</ul>
+
+<h3>数值特征处理</h3>
+
+<p><strong>归一化</strong>:Min-Max 到 [0, 1] —— $x' = (x - \min)/(\max - \min)$。对异常值敏感。</p>
+
+<p><strong>标准化</strong>:减均值除标准差 —— $x' = (x - \mu)/\sigma$。更稳健,正态分布数据首选。</p>
+
+<p><strong>对数变换</strong>:重尾/偏态数据先取 $\log(1+x)$ 再处理。网络流量的包大小、文件大小、费用都是典型重尾。</p>
+
+<p><strong>分箱</strong>:连续变量离散成区间。可以用等宽、等频或基于决策树。好处是能处理非线性关系、对异常值鲁棒、可解释性强。</p>
+
+<h3>类别特征编码</h3>
+
+<p><strong>One-Hot</strong>:每个类别一个二元列。简单,但类别多时维度爆炸。</p>
+
+<p><strong>Label Encoding</strong>:每类一个整数。适合树模型(树能处理类别),不适合线性模型(会错误地假设数值有序)。</p>
+
+<p><strong>Target Encoding</strong>:每类映射成该类样本的目标变量均值。信息丰富但有泄漏风险——必须在训练集上计算、用到验证/测试集。</p>
+
+<p><strong>Embedding</strong>:把类别映射到低维连续向量(通过网络学)。是深度学习处理类别的通用方法。</p>
+
+<h3>时间特征</h3>
+
+<p>时间戳本身直接用效果差。常见展开:hour of day、day of week、day of month、month、quarter、is_weekend、节假日 flag、距特定事件的天数等。</p>
+
+<p><strong>周期编码</strong>:hour 不是线性量(23 点和 0 点相近但数值相远)。用 $\sin(2\pi h/24), \cos(2\pi h/24)$ 对编码保留周期性。</p>
+
+<h3>文本特征</h3>
+
+<p>传统:TF-IDF、N-gram、词袋。现代:用预训练模型(BERT、Sentence-BERT)直接提取 embedding 作为特征。</p>
+
+<h3>特征交叉</h3>
+
+<p>两个特征乘或组合。树模型会自动做(深度树天然能表达特征交叉),但线性模型需要显式特征工程。推荐系统的 FM(Factorization Machines)、FFM 就是自动化的特征交叉。</p>
+
+<!-- 3.3.2 -->
+<h2 id="s3-4-3"><span class="num">3.4.3</span>降维算法</h2>
+<p class="pos">定位:高维数据的诅咒,以及解药——PCA、t-SNE、UMAP。</p>
+
+<h3>PCA</h3>
+
+<p>第 1 章 2.3.4 已讲过数学。工程要点:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>必须先标准化</strong>——PCA 对方差敏感,不标准化的话范围大的特征主导</li>
+<li>- 选几个主成分:看累计方差贡献率(通常保留 95% 方差)</li>
+<li>- PCA 是<strong>线性</strong>降维——非线性结构(如瑞士卷)它搞不定</li>
+</ul>
+
+<p>变种:Kernel PCA 用核技巧做非线性;Incremental PCA 支持流式数据;Sparse PCA 产生稀疏的主成分便于解释。</p>
+
+<h3>t-SNE</h3>
+
+<p>t-distributed Stochastic Neighbor Embedding(2008)。专为<strong>可视化</strong>设计的降维到 2D/3D。</p>
+
+<p>思路:高维空间里计算每对点的"相似度"(高斯核),低维空间里用 t 分布(重尾)计算相似度,最小化两者的 KL 散度。让高维近邻在低维仍是近邻。</p>
+
+<p>t-SNE 效果惊艳——MNIST 的 10 类数字在 2D 上清晰分开。但有坑:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- 超参数 <code>perplexity</code> 影响大(典型 5–50),不同值结果不同</li>
+<li>- 不保留全局结构(簇间距离没意义)</li>
+<li>- 每次跑结果不一样(随机初始化)</li>
+<li>- 只做可视化,不能用作下游模型特征</li>
+</ul>
+
+<h3>UMAP</h3>
+
+<p>Uniform Manifold Approximation and Projection(2018)。比 t-SNE 更快、效果相当甚至更好,保留的全局结构也更好。基于 Riemannian 几何和代数拓扑(听起来吓人,实际用就是调用库)。</p>
+
+<p>现代可视化首选。还支持<strong>transform</strong>(把新数据投到已训练的空间),t-SNE 严格不支持。</p>
+
+<h3>自编码器降维</h3>
+
+<p>神经网络的"编码器"部分:输入 $x$ → 低维潜向量 $z$ → 解码回 $\hat{x}$。让重建损失 $\|x - \hat{x}\|^2$ 最小。$z$ 就是降维表示。</p>
+
+<p>对非线性结构强于 PCA。VAE 是自编码器的概率版本。但训练耗时,中等规模以下 PCA 往往已经够用。</p>
+
+<h3>何时用哪个</h3>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>PCA</strong>:作为下游模型的特征、大数据量、需要快、可解释</li>
+<li><strong>t-SNE / UMAP</strong>:数据探索、可视化聚类</li>
+<li><strong>自编码器</strong>:非线性结构、需要端到端的场景</li>
+</ul>
+
+<!-- 3.3.3 -->
+<h2 id="s3-4-4"><span class="num">3.4.4</span>特征选择</h2>
+<p class="pos">定位:从众多特征中挑出真正有用的——降低过拟合、提高可解释性、减少推理开销。</p>
+
+<h3>三大类方法</h3>
+
+<p><strong>Filter 方法</strong>:独立评估每个特征,不考虑模型。快。</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- 方差阈值:方差太小的特征(几乎是常量)删掉</li>
+<li>- 相关系数:和目标相关系数低的删掉(线性关系)</li>
+<li>- 互信息:捕捉非线性关系的"相关"</li>
+<li>- Chi-squared:类别特征 vs 类别目标</li>
+</ul>
+
+<p><strong>Wrapper 方法</strong>:用一个模型评估不同特征子集的性能,贪心搜索。</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>向前选择</strong>:从空开始,每轮加一个使性能最大提升的特征</li>
+<li>- <strong>向后删除</strong>:从全特征开始,每轮删一个对性能影响最小的</li>
+<li>- <strong>RFE</strong>(Recursive Feature Elimination):训练模型看系数/重要性,删最不重要的,重训,循环</li>
+</ul>
+
+<p><strong>Embedded 方法</strong>:模型自带特征选择能力。</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- Lasso 回归:L1 正则把无关特征系数压到 0</li>
+<li>- 树模型的特征重要性</li>
+</ul>
+
+<h3>特征重要性的陷阱</h3>
+
+<p>树模型的特征重要性有多种定义:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Gain</strong>:每次分裂带来的信息增益总和</li>
+<li><strong>Split count</strong>:分裂使用该特征的次数</li>
+<li><strong>Permutation importance</strong>:打乱该特征后,模型性能下降多少</li>
+</ul>
+
+<p>不同定义给出不同排名。更重要的是:<strong>特征重要性 ≠ 因果性</strong>。高相关特征可能共同重要(组合起来有预测力),去掉其中一个重要性会重新分配;也可能某特征只是泄漏信号(比如"医院 ID"预测疾病——不是它有因果关系,是不同医院有不同疾病分布)。</p>
+
+<h3>SHAP</h3>
+
+<p>SHapley Additive exPlanations(2017)。用博弈论的 Shapley 值给每个特征对<em>单次预测</em>的贡献一个公平的归因。比全局特征重要性更精细——你可以看"对这个样本,各特征分别贡献了多少"。</p>
+
+<pre><code class="language-python">import shap, xgboost
+
+model = xgboost.XGBClassifier().fit(X_train, y_train)
+explainer = shap.TreeExplainer(model)
+shap_values = explainer.shap_values(X_test)
+
+# 单样本解释
+shap.force_plot(explainer.expected_value, shap_values[0], X_test.iloc[0])
+
+# 全局特征重要性 (按 SHAP 值)
+shap.summary_plot(shap_values, X_test)
+</code></pre>
+
+<p>工业界的"可解释 AI"很大程度上是 SHAP 的推广。金融风控、医疗诊断这些对解释有法律要求的场景标配。</p>
+
+<!-- ==================== 3.5 训练优化 ==================== -->
+<div class="part-header">
+  <div class="part-label">PART FIVE</div>
+  <h2 class="part-title">3.5 训练优化算法</h2>
+  <p class="part-desc">从监督到自监督到对齐——驱动模型能力演进的核心技术。</p>
+</div>
+
+<!-- 3.5.1 -->
+<h2 id="s3-5-1"><span class="num">3.5.1</span>监督学习</h2>
+<p class="pos">定位:最经典的范式——给定标签数据,训模型拟合。细节里有大学问。</p>
+
+<h3>基本循环</h3>
+
+<p>监督学习是深度学习的基础范式。数据 $(x_i, y_i)$,模型 $f_\theta$,损失 $\ell$,优化器更新:</p>
+
+<div class="formula">
+$\theta_{t+1} = \theta_t - \eta \nabla_\theta \sum_i \ell(f_\theta(x_i), y_i)$
+</div>
+
+<h3>损失函数选择</h3>
+
+<table>
+<tr><th>任务</th><th>损失</th></tr>
+<tr><td>回归</td><td>MSE、MAE、Huber</td></tr>
+<tr><td>二分类</td><td>Binary cross-entropy</td></tr>
+<tr><td>多分类</td><td>Categorical cross-entropy</td></tr>
+<tr><td>多标签分类</td><td>Binary CE per label</td></tr>
+<tr><td>序列生成</td><td>Token-level cross-entropy</td></tr>
+<tr><td>目标检测</td><td>Classification loss + bbox regression + IoU</td></tr>
+<tr><td>分割</td><td>Pixel-wise CE + Dice loss</td></tr>
+</table>
+
+<h3>过拟合与正则化</h3>
+
+<p>监督学习最主要的敌人就是过拟合——训练集完美、测试集糟糕。应对方法层层叠加:</p>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>L2 正则(weight decay)</strong>:$\ell + \lambda \|\theta\|^2$。让参数小,决策边界平滑。</li>
+<li><strong>Dropout</strong>:训练时随机丢弃部分神经元(如 50%),强迫模型不依赖单个神经元。推理时保留全部但按概率缩放。</li>
+<li><strong>数据增强</strong>:扩充数据多样性。</li>
+<li><strong>Early stopping</strong>:验证集性能不再提升就停。</li>
+<li><strong>Label smoothing</strong>:硬标签 [0,1,0] 改成 [0.05, 0.9, 0.05],防止模型过度自信。</li>
+</ul>
+
+<h3>训练/验证/测试划分</h3>
+
+<p>经典 70/15/15 或 80/10/10。要点:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>测试集只看最终一次</strong>——反复在测试集上调是泄漏</li>
+<li>- <strong>分层抽样</strong>:保持各类比例</li>
+<li>- <strong>时间序列分割</strong>:按时间切,不能随机切(未来数据用于训练是作弊)</li>
+<li>- <strong>按实体分组切</strong>:同一用户/同一设备的数据不能同时出现在训练和测试(信息泄漏)</li>
+</ul>
+
+<h3>交叉验证</h3>
+
+<p>数据少时,K-fold 交叉验证:数据分 K 份,每次用 K-1 份训、1 份验,轮 K 次取平均。消除单次划分的随机性。</p>
+
+<p>时间序列要用 <strong>time series split</strong>:逐步扩大训练窗口。</p>
+
+<h3>训练诊断</h3>
+
+<p>看 loss 曲线能判断很多问题:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- 训练 loss 不降:学习率太小、梯度消失、模型容量不够、数据有问题</li>
+<li>- 训练 loss 震荡爆炸:学习率太大、数值不稳</li>
+<li>- 训练降、验证不降:过拟合</li>
+<li>- 两者都降但差距大:也是过拟合但在可控</li>
+<li>- 两者都不降:模型或数据有根本问题</li>
+</ul>
+
+<!-- 3.5.2 -->
+<h2 id="s3-5-2"><span class="num">3.5.2</span>自监督预训练</h2>
+<p class="pos">定位:LLM/大基础模型的基础范式——从无标注数据中"造"标签。</p>
+
+<h3>核心思想</h3>
+
+<p>标注数据贵——但无标注数据(网页、代码、视频)无限量。自监督学习设计一个"辅助任务",标签可以<em>从数据本身自动生成</em>。训练后的模型在这个辅助任务上学到的表示,在下游任务上往往很有用。</p>
+
+<h3>NLP 的预训练目标</h3>
+
+<p><strong>MLM</strong>(Masked Language Modeling, BERT):随机遮 15% 的 token,让模型预测被遮的。标签就是原词。Encoder-only 架构。</p>
+
+<p><strong>CLM</strong>(Causal Language Modeling, GPT):给前 $t$ 个 token 预测第 $t+1$ 个。标签是下一个词。Decoder-only 架构。</p>
+
+<p><strong>Span Corruption</strong>(T5):遮连续一段 token,让模型生成被遮段。</p>
+
+<p>GPT 系列的成功证明 CLM 的 scaling 最好——数据越多模型越大,能力越强,且能 zero-shot/few-shot 迁移到各种任务。</p>
+
+<h3>CV 的预训练</h3>
+
+<p><strong>对比学习</strong>(SimCLR、MoCo):对同一张图做两种增强(裁剪、颜色抖动等),让这两个视图的表示相似,和其他图的表示远离。</p>
+
+<p><strong>MAE</strong>(Masked Autoencoders):借鉴 MLM,遮住图像 75% 的 patch,让模型重建。简单但极其有效。</p>
+
+<p><strong>DINO</strong>(self-distillation):学生网络模仿教师网络的输出,不需要显式负样本。</p>
+
+<h3>为什么有效</h3>
+
+<p>自监督预训练的一个核心发现:<strong>表示学习是可以从"预测"任务中涌现的</strong>。模型为了预测被遮的词或重建图像,必须学会语法、语义、物体概念——这些知识是学来"解题"的副产品,但恰好也是下游任务需要的。</p>
+
+<h3><a href="ch5_partA_preview.html#p08">Scaling Law</a></h3>
+
+<p>OpenAI、DeepMind 观察到一个现象:模型能力随<strong>数据量 × 模型大小 × 计算量</strong>呈幂律提升,且很长时间内没有饱和。这就是 scaling law:</p>
+
+<div class="formula">
+$L(N, D) \approx \left(\frac{N_c}{N}\right)^{\alpha_N} + \left(\frac{D_c}{D}\right)^{\alpha_D}$
+</div>
+
+<p>Loss 作为参数数 $N$、数据量 $D$ 的函数是幂律衰减。这让大模型训练变成"工程问题"(只要加算力就能变好),而不是"科研问题"(需要算法突破)。</p>
+
+<p>Chinchilla(2022)细化了这一点:对给定算力预算,最优分配是数据量和参数量大致相等比例增长(而不是之前一味堆参数)。</p>
+
+<!-- 3.5.3 -->
+<h2 id="s3-5-3"><span class="num">3.5.3</span>微调与对齐</h2>
+<p class="pos">定位:从预训练模型到可用产品——SFT、DPO、RLHF 完整链路。</p>
+
+<p>这一节挖深,是 LLM 时代最核心的训练技术。</p>
+
+<h3>三阶段训练流程</h3>
+
+<p>现代 LLM 从 pretrain 到 release 要三步:</p>
+
+<div class="mermaid">
+flowchart LR
+    PT[Pretrain<br/>海量文本 CLM] --> SFT[SFT<br/>指令-回答对]
+    SFT --> RM[Reward Model<br/>偏好数据]
+    RM --> RLHF[RLHF / DPO<br/>对齐人类偏好]
+    RLHF --> REL[Released Model]
+</div>
+
+<p>Pretrain 是 3.5.2 的范畴,产物是<strong>基础模型</strong>——它知道很多世界知识,能续写,但不会"对话"。后续三步让它变成对话助手。</p>
+
+<h3>SFT:Supervised Fine-Tuning</h3>
+
+<p>用人工标注的"指令 → 理想回答"对训练。损失就是 CLM——让模型在这些数据上学会"给定指令,生成指令后面的回答"。</p>
+
+<pre><code class="language-python"># SFT 数据格式 (简化)
+{
+    "instruction": "解释一下什么是梯度下降",
+    "response": "梯度下降是一种优化算法, 它通过计算损失函数的梯度..."
+}
+
+# 构造训练序列 (加入系统 prompt 和角色标识)
+prompt = f"&lt;|system|&gt;你是有用的助手&lt;|user|&gt;{instruction}&lt;|assistant|&gt;"
+full   = prompt + response + "&lt;|end|&gt;"
+
+# 损失只在 response 部分算 (prompt 部分的 loss mask 掉)
+labels = [-100] * len(tokenize(prompt)) + tokenize(response + "&lt;|end|&gt;")
+</code></pre>
+
+<p>SFT 的数据量关键但不需要特别多——几万条高质量指令数据就能让基础模型变成可用的对话模型。OpenAI 的 <a href="ch5_partB_preview.html#p14">InstructGPT</a> 论文揭示过大致量级。</p>
+
+<p>SFT 的局限:它只教模型"这样回答是对的",没教"不这样回答是错的"。模型学会的是模仿,不是偏好排序。这就需要 RLHF 或 DPO。</p>
+
+<h3><a href="ch5_partB_preview.html#p14">RLHF</a>:经典方案</h3>
+
+<p>Reinforcement Learning from Human Feedback。三步:</p>
+
+<p><strong>步骤 1:收集偏好数据</strong>。对同一个 prompt,让 SFT 模型生成多个回答,人工标注哪个更好——产出 $(x, y_{\text{win}}, y_{\text{lose}})$ 三元组。</p>
+
+<p><strong>步骤 2:训 Reward Model</strong>。一个神经网络 $r_\phi$(通常由 SFT 模型初始化)学习"给好回答打高分、坏回答打低分"。损失用 Bradley-Terry 偏好模型:</p>
+
+<div class="formula">
+$\mathcal{L}_{\text{RM}} = -\log \sigma(r_\phi(x, y_{\text{win}}) - r_\phi(x, y_{\text{lose}}))$
+</div>
+
+<p><strong>步骤 3:PPO 优化策略</strong>。用 RM 的奖励做强化学习。策略 $\pi_\theta$ 生成回答,得到 reward,更新 $\theta$ 增大高 reward 回答概率。</p>
+
+<p>为了防止策略漂离原 SFT 太远(保持语言流畅、不学到 hack RM 的怪招),加 KL 惩罚:</p>
+
+<div class="formula">
+$\mathcal{L}_{\text{PPO}} = -\mathbb{E}[r_\phi(x, y) - \beta \cdot D_{\text{KL}}(\pi_\theta \| \pi_{\text{SFT}})]$
+</div>
+
+<p>实际用 PPO 算法的 clipping 变种。</p>
+
+<h3>RLHF 的工程复杂度</h3>
+
+<p>RLHF 训练一次需要同时装 4 个模型:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- Policy(要训的模型)</li>
+<li>- Reference(冻结的 SFT,算 KL)</li>
+<li>- Reward Model(冻结,打分)</li>
+<li>- Critic(PPO 的价值函数估计)</li>
+</ul>
+
+<p>显存吃紧、训练不稳、调参困难、reward hacking 风险高。所以有了 DPO。</p>
+
+<h3><a href="ch5_partB_preview.html#p15">DPO</a>:绕过 RL</h3>
+
+<p>Direct Preference Optimization（2023）。关键洞察:PPO + KL 惩罚 + RM 的组合,数学上等价于一个闭式的分类损失。具体地,Bradley-Terry 偏好下的最优策略和参考策略有显式关系:</p>
+
+<div class="formula">
+$\pi^*(y|x) \propto \pi_{\text{ref}}(y|x) \exp\left(\frac{1}{\beta} r(x, y)\right)$
+</div>
+
+<p>反解得:</p>
+
+<div class="formula">
+$r(x, y) = \beta \log \frac{\pi^*(y|x)}{\pi_{\text{ref}}(y|x)}$
+</div>
+
+<p>把它代回 RM 的偏好损失:</p>
+
+<div class="formula">
+$\mathcal{L}_{\text{DPO}} = -\log \sigma\left(\beta \log \frac{\pi_\theta(y_w|x)}{\pi_{\text{ref}}(y_w|x)} - \beta \log \frac{\pi_\theta(y_l|x)}{\pi_{\text{ref}}(y_l|x)}\right)$
+</div>
+
+<p><em>不需要 RM、不需要 RL、不需要 critic</em>——只需要 policy 和 reference 两个模型,标准监督损失。训练稳、简单、效果和 PPO 相当甚至更好。</p>
+
+<p>这是过去两年对齐训练最重要的简化。今天大量开源模型(Zephyr、Tulu、Nous-Hermes)都用 DPO 而不是 PPO。</p>
+
+<h3>更新的变种</h3>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>IPO</strong>:修复 DPO 在偏好数据噪声下的一个问题</li>
+<li><strong>KTO</strong>:用单点二元反馈(好/不好)替代成对比较,数据更易收集</li>
+<li><strong>ORPO</strong>:SFT 和偏好对齐合一,一次训练</li>
+<li><strong>RLAIF</strong>:用 AI 替代人标偏好数据,规模化</li>
+</ul>
+
+<h3>对齐的目标</h3>
+
+<p>技术层面:让模型输出符合"人类偏好的分布"。但偏好本身是多元的——helpful、harmless、honest 三个目标有时冲突(过于 helpful 可能帮了坏事,过于 harmless 可能拒绝合理请求)。实践中通过多样化的 RLHF 数据平衡。</p>
+
+<p>宪法 AI(Constitutional AI,Anthropic)和 rule-based 偏好是对"纯人工标注"的改进方向——用明确规则生成对比偏好,减少标注一致性问题。</p>
+
+<h3>参数高效微调（PEFT）</h3>
+<p>全量微调需要更新模型所有参数,在 LLM 时代成本极高。<strong>参数高效微调</strong>（Parameter-Efficient Fine-Tuning）只训练极少量参数即可达到接近全量微调的效果:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong><a href="ch5_partB_preview.html#p11">LoRA</a></strong>（Low-Rank Adaptation）:冻结原始权重 $W_0$,旁路注入低秩矩阵 $BA$（$r \ll d$）,训练参数量可降低 100–1000 倍。推理时可将 $BA$ 合并回 $W_0$,零额外延迟。</li>
+<li>- <strong>QLoRA</strong>:在 LoRA 基础上将冻结权重量化为 NF4（4-bit）,配合双重量化和分页优化器,可在单张消费级 GPU 上微调 65B 模型。</li>
+<li>- <strong>Adapter</strong>:在每层 Transformer 中插入小型瓶颈模块,只训练 Adapter 参数。</li>
+<li>- <strong>Prefix Tuning / P-Tuning</strong>:在输入前添加可训练的虚拟 token。</li>
+</ul>
+<p>详细数学推导与代码实现见<a href="ch5_partB_preview.html#p11">第 5 章论文精读 P11（LoRA / QLoRA）</a>。</p>
+
+<!-- 3.5.4 -->
+<h2 id="s3-5-4"><span class="num">3.5.4</span>强化学习</h2>
+<p class="pos">定位:从游戏到对齐——RL 的核心概念和几个关键算法。</p>
+
+<h3>MDP 框架</h3>
+
+<p>RL 的数学骨架是 Markov Decision Process(MDP):状态 $s$、动作 $a$、转移 $P(s'|s,a)$、奖励 $R(s,a)$、折扣因子 $\gamma$。目标是学一个<strong>策略</strong> $\pi(a|s)$,最大化期望累计回报:</p>
+
+<div class="formula">
+$J(\pi) = \mathbb{E}_\pi\left[\sum_{t=0}^\infty \gamma^t R(s_t, a_t)\right]$
+</div>
+
+<h3>两条主线</h3>
+
+<p><strong>Value-based</strong>:学状态值函数 $V(s)$ 或状态-动作值 $Q(s, a)$。代表:Q-learning、DQN。</p>
+
+<p><strong>Policy-based</strong>:直接学策略 $\pi_\theta$。代表:REINFORCE、PPO。</p>
+
+<p><strong>Actor-Critic</strong>:两者结合——policy(actor)生成动作,value(critic)评估好坏。现代主流(A3C、PPO、SAC)全是 AC 架构。</p>
+
+<h3>Q-learning 与 DQN</h3>
+
+<p>Q-learning 的 Bellman 最优方程:</p>
+
+<div class="formula">
+$Q^*(s, a) = R(s, a) + \gamma \mathbb{E}_{s'}[\max_{a'} Q^*(s', a')]$
+</div>
+
+<p>可以通过迭代更新逼近 $Q^*$。状态空间大时 $Q$ 表存不下,DQN(2015)用神经网络近似 $Q$。关键技巧:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>经验回放</strong>:存储 (s, a, r, s') 到 buffer,训练时随机采样——打破时序相关性</li>
+<li><strong>目标网络</strong>:用滞后的权重算目标 $y = r + \gamma \max_{a'} Q_{\text{target}}(s', a')$,稳定训练</li>
+</ul>
+
+<p>DQN 第一次在 Atari 游戏上做到超越人类,RL 走出象牙塔的标志。</p>
+
+<h3>Policy Gradient 与 PPO</h3>
+
+<p>策略梯度定理:</p>
+
+<div class="formula">
+$\nabla_\theta J(\pi_\theta) = \mathbb{E}_\pi[\nabla_\theta \log \pi_\theta(a|s) \cdot A(s, a)]$
+</div>
+
+<p>$A(s, a) = Q(s, a) - V(s)$ 是优势函数(这个动作比平均好多少)。</p>
+
+<p>朴素 policy gradient 方差巨大、更新不稳。TRPO(2015)和 PPO(2017)通过限制每次更新幅度稳定训练。PPO 用 <strong>clipping</strong> 代替 TRPO 的硬约束,简单高效,成为默认 RL 算法:</p>
+
+<div class="formula">
+$\mathcal{L}^{\text{CLIP}} = \mathbb{E}\left[\min(r_t A_t, \text{clip}(r_t, 1-\epsilon, 1+\epsilon) A_t)\right]$
+</div>
+
+<p>$r_t = \pi_\theta / \pi_{\theta_{\text{old}}}$ 是新旧策略的概率比。不让 $r$ 偏离 1 太远($\epsilon = 0.2$ 典型)。</p>
+
+<h3>应用</h3>
+
+<p>RL 在游戏(AlphaGo、AlphaStar、OpenAI Five)、机器人、自动驾驶、LLM 对齐(RLHF)都有成功。但 RL 训练极难——样本效率低、奖励工程棘手、调参玄学。</p>
+
+<p>在网络领域,RL 用于拥塞控制(PCC、BBR 的变种)、路由优化、资源调度、广告竞价,但工业部署仍相对少见——监督学习和规则系统在工业界是默认选择,RL 是补丁。</p>
+
+<!-- 3.5.5 -->
+<h2 id="s3-5-5"><span class="num">3.5.5</span>蒸馏、迁移、多任务</h2>
+<p class="pos">定位:用一个模型加速另一个、用一个任务帮另一个——参数高效、数据高效的三板斧。</p>
+
+<h3>知识蒸馏</h3>
+
+<p>大模型(teacher)把知识"教给"小模型(student)。Hinton 2015 年提出:小模型不只学 hard label,还学 teacher 输出的 soft label(整个概率分布)。</p>
+
+<div class="formula">
+$\mathcal{L} = \alpha \cdot \text{CE}(y_{\text{true}}, p_s) + (1-\alpha) \cdot T^2 \cdot \text{KL}(p_t^T \| p_s^T)$
+</div>
+
+<p>$T$ 是温度,用来"软化"分布($T > 1$ 让分布更平)。高温下 teacher 的"次选类别"信息被保留——比如"这张图最像猫,但也有点像狗"这种信息。</p>
+
+<p>DistilBERT、TinyBERT、TinyLLaMA 都是蒸馏产物。压缩比通常 2–5×,性能损失几个点。</p>
+
+<h3>迁移学习</h3>
+
+<p>源领域训好的模型,迁移到目标领域。典型流程:</p>
+<ol>
+<li>加载预训练 backbone</li>
+<li>替换最后一层为目标任务的输出头</li>
+<li>冻结 backbone,只训头(linear probing);或全参数一起训但学习率更小(fine-tuning)</li>
+</ol>
+
+<p>关键决定是<strong>冻结什么、训什么</strong>。数据少:冻结多数层。数据多:都训,但前几层(通用特征)用更小学习率。</p>
+
+<p>域自适应(Domain Adaptation)是更进一步——目标域可能无标签,用对齐特征分布的方法迁移。</p>
+
+<h3>多任务学习</h3>
+
+<p>一个模型同时学多个任务。共享 backbone,每个任务一个 head。</p>
+
+<p>好处:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- 参数共享,省内存</li>
+<li>- 隐式正则化,一任务可能帮另一任务泛化</li>
+<li>- 低资源任务受益于高资源任务</li>
+</ul>
+
+<p>挑战:<strong>任务冲突</strong>——不同任务梯度方向可能相反,互相拖累。应对:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>损失加权</strong>:重要任务权大</li>
+<li><strong>梯度投影</strong>(PCGrad):冲突梯度投影掉冲突分量</li>
+<li><strong>MoE</strong>:不同任务激活不同专家</li>
+</ul>
+
+<p>T5、FLAN 是多任务训练的代表——几百种 NLP 任务混训,产出通用模型。</p>
+
+<h3>持续学习</h3>
+
+<p>模型已学会任务 A,现在要学任务 B。朴素微调会导致<strong>灾难性遗忘</strong>——学 B 的过程中忘了 A。应对:EWC(在 A 的重要参数上加大正则)、Replay(混入一部分 A 的数据)、Adapter(给每个任务加小模块,冻结主干)。</p>
+
+<!-- 3.5.6 -->
+<h2 id="s3-5-6"><span class="num">3.5.6</span>联邦学习</h2>
+<p class="pos">定位:数据不出本地的分布式训练——隐私合规场景的解法。</p>
+
+<h3>动机</h3>
+
+<p>医院有患者数据但不能共享,手机有用户输入但不能上传,银行有交易数据但受合规限制。传统集中训练不行——联邦学习让数据留在本地,只上传模型更新。</p>
+
+<h3>FedAvg</h3>
+
+<p>最基本的联邦算法(Google 2017):</p>
+<ol>
+<li>服务器分发当前全局模型 $\theta_t$ 给参与客户端</li>
+<li>每个客户端本地训几轮,得到本地更新 $\theta_t^k$</li>
+<li>客户端上传 $\theta_t^k - \theta_t$(或直接 $\theta_t^k$)到服务器</li>
+<li>服务器加权平均:$\theta_{t+1} = \sum_k \frac{n_k}{n} \theta_t^k$</li>
+</ol>
+
+<h3>挑战</h3>
+
+<p><strong>数据非独立同分布(Non-IID)</strong>:不同客户端数据分布不同(一个客户的照片全是猫,另一个全是狗),FedAvg 收敛变慢甚至不收敛。改进:FedProx 加近端项、SCAFFOLD 用控制变量修偏。</p>
+
+<p><strong>通信成本</strong>:模型大时上传下载昂贵。压缩(量化梯度、Top-K 稀疏化)是主要优化方向。</p>
+
+<p><strong>异构</strong>:客户端设备性能差异大。异步 FedAsync、分层 FL 应对。</p>
+
+<p><strong>隐私</strong>:只上传更新也可能泄漏(model inversion 攻击能从梯度恢复输入)。<strong>差分隐私</strong>(加噪声)和<strong>安全聚合</strong>(加密后聚合,服务器只看总和看不到单个)是主流防御。</p>
+
+<h3>应用</h3>
+
+<p>Google 的 Gboard(手机输入法)用联邦学习在手机上训语言模型。医疗领域联合训练(FeTS 挑战赛)多家医院合作训肿瘤分割模型。网络领域:多站点攻击检测模型协同训练。</p>
+
+<p>工业部署仍不多——工程复杂度高、效果相对集中训练有差距。随着隐私法规收紧(GDPR、CCPA)可能更重要。</p>
+
+<!-- 3.5.7 -->
+<h2 id="s3-5-7"><span class="num">3.5.7</span>AutoML</h2>
+<p class="pos">定位:自动化机器学习流程——超参数搜索、架构搜索、特征工程。</p>
+
+<h3>超参数搜索</h3>
+
+<p>传统方法:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>网格搜索</strong>:枚举所有组合。维度高时爆炸。</li>
+<li><strong>随机搜索</strong>:每个超参独立随机采样。Bergstra 2012 证明在大多数场景比网格搜索好——大部分超参其实不敏感,不需要精细网格。</li>
+<li><strong>贝叶斯优化</strong>:用高斯过程或 TPE 建模"超参 → 验证集 loss"函数,按获取函数(EI、UCB)选下一个试的点。Optuna、Hyperopt、Ax 是主流库。</li>
+<li><strong>Hyperband / BOHB</strong>:早停差的配置、给好的配置更多预算。</li>
+</ul>
+
+<h3>NAS:神经架构搜索</h3>
+
+<p>自动找最佳网络结构。Google 2017 年 NASNet 用 RL 搜索,在 ImageNet 达到 SOTA,但算力成本恐怖(数千 GPU-days)。</p>
+
+<p>后续改进:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>DARTS</strong>:把离散架构选择松弛成连续权重,用梯度下降优化,几个 GPU 天就能跑</li>
+<li><strong>EfficientNet</strong>:NAS 找到的典型架构家族</li>
+<li><strong>One-shot NAS</strong>:训一个超网,所有候选架构都是超网子图</li>
+</ul>
+
+<p>NAS 在 CV 早期红火,大模型时代 Transformer 主导,NAS 在主流架构选型上不重要了。但在小模型、硬件适配场景仍有用。</p>
+
+<h3>自动特征工程</h3>
+
+<p>Featuretools、TSFresh 等库自动从表格/时序数据生成大量特征(聚合、交叉、时间窗口),然后用特征选择筛出有用的。对传统 ML 流水线能显著减少手工工作。</p>
+
+<h3>端到端 AutoML 系统</h3>
+
+<p>H2O AutoML、AutoGluon、Auto-sklearn、Google Vertex AI AutoML——上传数据,系统自动做预处理、特征工程、模型选择、超参调优、集成。适合没有 ML 专家的团队快速起步。</p>
+
+<p>但有经验的 ML 工程师通常比 AutoML 做得更好——领域知识能提供 AutoML 不知道的先验(比如知道某些特征组合无意义)。AutoML 是加速器不是替代品。</p>
+
+<!-- ==================== 3.6 AI 性能工程 ==================== -->
+<div class="part-header">
+  <div class="part-label">PART SIX</div>
+  <h2 class="part-title">3.6 AI 性能工程</h2>
+  <p class="part-desc">把模型从 demo 跑到生产——推理延迟、吞吐、功耗的全面优化。</p>
+</div>
+
+<!-- 3.6.1 -->
+<h2 id="s3-6-1"><span class="num">3.6.1</span>NPU 性能建模</h2>
+<p class="pos">定位:算理论峰值和实际瓶颈——Roofline 模型。</p>
+
+<h3>Roofline 模型</h3>
+
+<p>给定一个硬件(算力 $P$ FLOPS、带宽 $B$ bytes/s)和一个 kernel(算术强度 $I$ = FLOPs / bytes accessed),性能上限是:</p>
+
+<div class="formula">
+$\text{Perf} \le \min(P, I \cdot B)$
+</div>
+
+<p>对数坐标画图:横轴算术强度,纵轴性能。$I \cdot B$ 是倾斜的"带宽屋顶",$P$ 是水平的"算力屋顶"。拐点 $I^* = P / B$ 是<strong>硬件的平衡点</strong>。</p>
+
+<ul style="list-style:none; padding-left:0;">
+<li>- $I < I^*$:内存受限(memory-bound)。花时间提升算力没用,要减少内存访问。</li>
+<li>- $I > I^*$:计算受限(compute-bound)。硬件算力跑满,只能换更强硬件或优化算法减 FLOPs。</li>
+</ul>
+
+<h3>算典型算子</h3>
+
+<p><strong>GEMM</strong>:$M \times K \times N$ 乘法,读 $MK + KN + MN$ 元素。算术强度约 $O(\min(M, N, K))$。大矩阵时高,compute-bound。</p>
+
+<p><strong>Elementwise</strong>:每元素 1 FLOP、读写 2 元素。算术强度 0.5 FLOP/byte。严重 memory-bound。</p>
+
+<p><strong>Attention</strong>(标准实现):算术强度随序列长度 $n$ 变化。短序列 memory-bound,长序列逐渐 compute-bound。FlashAttention 把 attention 彻底重写成 compute-bound 形态。</p>
+
+<h3>H100 的平衡点</h3>
+
+<p>NVIDIA H100 SXM5:FP16 Tensor Core 算力约 989 TFLOPS（密集）/ 1979 TFLOPS（2:4 稀疏）,HBM3 带宽 3.35 TB/s。以密集算力计算平衡点 $I^* = 989000 / 3350 \approx 295$ FLOP/byte；若利用 2:4 结构稀疏则 $I^* \approx 591$ FLOP/byte。</p>
+
+<p>即每从 HBM 读一字节,要做 333 次浮点运算才能跑满算力。大部分 kernel 达不到——这就是为什么 tiling、算子融合、片上 SRAM 利用是优化核心。</p>
+
+<h3>NPU 的特殊性</h3>
+
+<p>NPU 通常有:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- 张量核心算力 >> 通用算力(不做 GEMM 用不上大部分算力)</li>
+<li>- 片上 SRAM 比 GPU 共享内存大得多(几 MB 级)</li>
+<li>- HBM 带宽稍低但能耗比更好</li>
+</ul>
+
+<p>意味着 NPU 的"Roofline 拐点"可能在更高的算术强度——更要用好片上 SRAM。</p>
+
+<!-- 3.6.2 -->
+<h2 id="s3-6-2"><span class="num">3.6.2</span>模型结构优化、量化、剪枝、查代算</h2>
+<p class="pos">定位:从算法层面减少计算——压缩的三驾马车。</p>
+
+<h3>结构优化</h3>
+
+<p>从设计阶段就考虑效率:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>深度可分离卷积</strong>(MobileNet):参数和计算 1/9</li>
+<li><strong>分组卷积</strong>(ShuffleNet、ResNeXt):降计算</li>
+<li><strong>GQA</strong>(Grouped Query Attention):多个 Q 共享一组 K、V。LLaMA2 以后主流,显著降 KV Cache 大小</li>
+<li><strong>MLA</strong>(Multi-head Latent Attention, DeepSeek):把 KV 压到潜空间,省更多</li>
+<li><strong>MoE</strong>:稀疏激活,总参数多但每次只激活一小部分</li>
+</ul>
+
+<h3>量化</h3>
+
+<p>之前多次提过,这里系统化。</p>
+
+<p><strong>PTQ</strong>(Post-Training Quantization):训完再量化,不重训。校准几百条数据估算激活范围,算 scale/zero-point。</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- Weight-only INT8:最保守,几乎无损</li>
+<li>- Weight-only INT4:GPTQ / AWQ / AutoGPTQ,LLM 推理主流</li>
+<li>- W8A8(权重激活都 INT8):推理加速但精度掉</li>
+</ul>
+
+<p><strong>QAT</strong>(Quantization-Aware Training):训练时模拟量化(伪量化节点),让模型学会在量化下工作。精度比 PTQ 高,代价是要重训。</p>
+
+<p><strong>AWQ 的核心</strong>:观察到"重要权重"对应"激活幅度大的通道"。直接量化让这些重要权重的量化误差支配输出。AWQ 先给重要通道的权重缩放,让它们"变大"(量化时相对误差小),再对激活反缩放——数学等价,但量化误差重新分配。</p>
+
+<p><strong>GPTQ 的核心</strong>:把量化看成逐列求最优,根据 Hessian 信息让已量化列的误差被剩余列吸收。算法复杂但 INT4 下效果最好。</p>
+
+<h3>剪枝</h3>
+
+<p><strong>非结构化剪枝</strong>:把绝对值小的单个权重置 0。压缩率高但稀疏矩阵加速需要特殊硬件支持。</p>
+
+<p><strong>结构化剪枝</strong>:整个通道、整个 head、整层删掉。直接加速,无需特殊支持。</p>
+
+<p><strong>2:4 稀疏</strong>:每 4 个连续权重里强制 2 个为 0。NVIDIA Ampere 及以后的 Tensor Core 硬件原生支持,直接 2× 加速。效果比非结构化差一点,但工程完胜。</p>
+
+<p>剪枝通常需要<strong>微调恢复</strong>——剪完精度必降,微调几个 epoch 能恢复大部分。剪枝 + 微调反复几轮(iterative pruning)效果最好。</p>
+
+<h3>以查代算</h3>
+
+<p>某些情况下,离线算好结果存查找表,运行时查而不算,能大幅加速。典型:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Softmax LUT</strong>:离散值域下 $\exp(x)$ 预先表查</li>
+<li><strong>Embedding Cache</strong>:高频 token 的 embedding 预取</li>
+<li><strong>Activation LUT</strong>:非线性激活用分段线性近似 + 表查</li>
+<li><strong>PQ in 检索</strong>:把向量量化后用预算 codebook 距离表代替实时计算</li>
+</ul>
+
+<p>适合嵌入式场景——查表比算快,且功耗低。</p>
+
+<h3>蒸馏</h3>
+
+<p>上面 3.5.5 讲过。小模型跟大模型学,压缩比最高(可以 10×+),但需要从头训。通常和量化、剪枝组合用——蒸馏出小模型,再量化到 INT4,最终加速 20–50×。</p>
+
+<!-- 3.6.3 -->
+<h2 id="s3-6-3"><span class="num">3.6.3</span>算子优化</h2>
+<p class="pos">定位:算子级别压榨硬件——tiling、fusion、FlashAttention 实战。</p>
+
+<p>这一节是深度下潜的技术密集段。</p>
+
+<h3>tiling:把问题搬进片上 SRAM</h3>
+
+<p>GEMM 的标准优化。朴素实现里 $\mathbf{A}, \mathbf{B}, \mathbf{C}$ 全在 HBM,每个元素被反复读取。Tiling 把矩阵分小块,每块整个塞进 SRAM 算完。</p>
+
+<pre><code class="language-c">// 三级 tiling: block (HBM→SRAM) / warp / thread
+#define BM 128
+#define BN 128
+#define BK 16
+
+for (int bi = 0; bi < M; bi += BM) {
+    for (int bj = 0; bj < N; bj += BN) {
+        // 结果 tile: BM × BN, 装在 SRAM
+        float C_tile[BM][BN] = {0};
+
+        for (int bk = 0; bk < K; bk += BK) {
+            // 从 HBM 加载 A[bi:bi+BM, bk:bk+BK] 和 B[bk:bk+BK, bj:bj+BN] 到 SRAM
+            load_to_sram(A_tile, A + bi*K + bk, BM, BK);
+            load_to_sram(B_tile, B + bk*N + bj, BK, BN);
+
+            // 在 SRAM 内做小矩阵乘
+            for (int i = 0; i < BM; i++)
+                for (int j = 0; j < BN; j++)
+                    for (int k = 0; k < BK; k++)
+                        C_tile[i][j] += A_tile[i][k] * B_tile[k][j];
+        }
+        // 把 C_tile 写回 HBM
+        store_from_sram(C + bi*N + bj, C_tile, BM, BN);
+    }
+}
+</code></pre>
+
+<p>每个元素从 HBM 读的次数从朴素实现的 $O(N)$ 降到 $O(N/BN)$——内存带宽压力减少 $BN$ 倍。实际 cuBLAS、CUTLASS 还有更多层级(block / warp / thread fragment),原理一样。</p>
+
+<h3><a href="ch5_partB_preview.html#p10">FlashAttention</a> 的工程美</h3>
+
+<p>标准 attention:$Q, K, V \in \mathbb{R}^{n \times d}$,计算 $S = QK^\top$(shape $n \times n$),$P = \text{softmax}(S)$,$O = PV$。内存瓶颈在 $S$ 和 $P$——$n = 4096, d = 64$ 时 $S$ 占 64MB,HBM 往返一趟就是 128MB。</p>
+
+<p>FlashAttention 的核心:<strong>把 attention 融成一个 kernel,永不物化 $S$ 和 $P$</strong>。流程:</p>
+<ol>
+<li>把 $Q$ 分块 $Q_1, Q_2, \ldots$,每块一个 SRAM tile</li>
+<li>把 $K, V$ 分块 $K_j, V_j$</li>
+<li>外层循环 $Q_i$,内层循环 $K_j, V_j$</li>
+<li>对每对 $(Q_i, K_j)$ 算部分 $S_{ij}$、部分 softmax、部分输出 $O_i += P_{ij} V_j$</li>
+<li>用<strong>在线 softmax</strong>算法把不同 $j$ 的部分结果合并</li>
+</ol>
+
+<p>在线 softmax 用 running max 和 running sum:</p>
+
+<div class="formula">
+$m_i^{\text{new}} = \max(m_i, \max(S_{ij}))$
+</div>
+
+<div class="formula">
+$l_i^{\text{new}} = e^{m_i - m_i^{\text{new}}} \cdot l_i + \sum_k e^{S_{ij,k} - m_i^{\text{new}}}$
+</div>
+
+<div class="formula">
+$O_i^{\text{new}} = \frac{l_i}{l_i^{\text{new}}} e^{m_i - m_i^{\text{new}}} O_i + \frac{1}{l_i^{\text{new}}} \sum_k e^{S_{ij,k} - m_i^{\text{new}}} V_{j,k}$
+</div>
+
+<p>每次新来一块 $K_j, V_j$,更新 running max、running sum、running output。最终等价于完整 softmax,但从未物化 $n \times n$ 的 $S$ 或 $P$。</p>
+
+<p>好处:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- HBM 访问从 $O(n^2)$ 降到 $O(n^2 / \text{tile\_size})$</li>
+<li>- 显存占用从 $O(n^2)$ 降到 $O(n)$(只存中间 m, l, O)</li>
+<li>- 速度 2–4×,长序列下更大收益</li>
+</ul>
+
+<p>FlashAttention-2 进一步优化 warp 调度;FlashAttention-3 专为 Hopper 架构设计,利用 TMA（Tensor Memory Accelerator）和 WGMMA 实现异步计算与数据搬运重叠,BF16 达到 840 TFLOPS/s（85% 利用率）,FP8 达到 1.3 PFLOPS/s;FlashAttention-4 使用 CuTeDSL 编写,同时优化 Hopper 和 Blackwell。今天所有主流推理引擎必用。</p>
+
+<h3>算子融合</h3>
+
+<p>PyTorch 2.0 的 <code>torch.compile</code> 背后做的就是自动算子融合。经典融合模式:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><code>Conv + BN + ReLU</code>:BN 参数可折到 Conv 里,三合一</li>
+<li><code>GEMM + Bias + Activation</code>:一个 CUTLASS epilogue 搞定</li>
+<li><code>LayerNorm</code>:本身就是"减均值除方差+scale"三步融合</li>
+<li><code>RMSNorm + SwiGLU</code>:LLM 里常见融合</li>
+</ul>
+
+<p>手工融合看性能收益。一般规则:<em>相邻逐元素 / 广播 / 规约算子全都应该融合</em>。</p>
+
+<h3>算子 autotuning</h3>
+
+<p>同一个算子,不同 shape 和硬件下最优的 tile 大小、线程布局不同。Triton AutoTuner、TVM Ansor、cuDNN 的 algorithm selection 都是这个思路——对每个目标 shape,尝试多种配置,记录最好的。编译期或首次运行时做一次,后续缓存。</p>
+
+<!-- 3.6.4 -->
+<h2 id="s3-6-4"><span class="num">3.6.4</span>软件栈优化</h2>
+<p class="pos">定位:框架、运行时、调度——算子之上的系统级优化。</p>
+
+<h3>图级优化</h3>
+
+<p>计算图经过一系列 pass:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>常量折叠、死代码消除</li>
+<li>算子融合</li>
+<li>内存规划(重用张量 buffer)</li>
+<li>布局优化(NCHW ↔ NHWC)</li>
+<li>算子选择(不同算子实现之间选最快)</li>
+</ul>
+
+<p>ONNX Runtime、TensorRT、OpenVINO、CoreML 都是这类图编译器。在推理部署时能带来 2–5× 加速。</p>
+
+<h3>调度优化</h3>
+
+<p>多 kernel 并发、CPU-GPU 流水、异步拷贝——这些在训练和推理都重要。CUDA Streams 允许多个 kernel 同时在 GPU 跑,只要它们独立。</p>
+
+<p>一个经典优化:<strong>overlap 通信和计算</strong>。分布式训练里,每层反传产生的梯度立即开始 AllReduce,同时下一层继续反传。正确配置下通信完全隐藏在计算后,扩展效率接近线性。</p>
+
+<h3>内存优化</h3>
+
+<p><strong>梯度检查点</strong>(Gradient Checkpointing):前向只存部分中间激活,反传时重算未存的。用 30% 额外计算换 2–5× 显存。训练大模型必用。</p>
+
+<p><strong>ZeRO</strong>(见第 4 章 5.10):把优化器状态、梯度、参数切片到不同卡,每卡只存一部分。</p>
+
+<p><strong>CPU Offload</strong>:把不常访问的东西(优化器状态)放 CPU,需要时再搬。省显存但慢。</p>
+
+<p><strong>PagedAttention</strong>(第 4 章 5.13):推理的 KV Cache 虚拟内存分页。</p>
+
+<h3>I/O 优化</h3>
+
+<p>训练瓶颈常在数据加载:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- 多进程 DataLoader + pinned memory</li>
+<li>- 预取(prefetch)</li>
+<li>- 压缩格式(WebDataset、TFRecord)</li>
+<li>- 分布式文件系统(Lustre、GlusterFS)或对象存储(S3)</li>
+</ul>
+
+<p>推理瓶颈:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- 模型加载:用 <code>mmap</code> + safetensors 而不是 pickle</li>
+<li>- 首请求冷启动:预热模型、keep-alive</li>
+</ul>
+
+<h3>内核运行时</h3>
+
+<p>Triton、CUDA Graphs、CUTLASS 各有位置:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Triton</strong>:写新 kernel 的首选,Python-like 语法</li>
+<li><strong>CUDA Graphs</strong>:把一系列 kernel 录制成图,一次 launch 跑整图。省 launch 开销(小 batch 推理关键)</li>
+<li><strong>CUTLASS</strong>:高性能 GEMM 和相关模板库</li>
+</ul>
+
+<!-- ==================== 3.7 AI 在网络领域 ==================== -->
+<div class="part-header">
+  <div class="part-label">PART SEVEN</div>
+  <h2 class="part-title">3.7 AI 在网络领域的应用</h2>
+  <p class="part-desc">AI 不只是 ChatGPT——在网络运维、安全、性能优化中有成熟应用。</p>
+</div>
+
+<!-- 3.7.1 -->
+<h2 id="s3-7-1"><span class="num">3.7.1</span>流量分类:需求与挑战</h2>
+<p class="pos">定位:加密时代的流量识别——传统方法失效,AI 成为必选。</p>
+
+<h3>为什么需要流量分类</h3>
+
+<p>网络设备需要知道"这是什么流量"才能做 QoS、安全策略、计费、合规审计。传统方法:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>基于端口</strong>:80 HTTP、443 HTTPS、53 DNS...</li>
+<li><strong>深度包检测(DPI)</strong>:匹配 payload 里的特征串(User-Agent、SNI、协议签名)</li>
+</ul>
+
+<p>这两条在 2010 年代还管用,今天不行了——</p>
+<ol>
+<li><strong>端口混淆</strong>:应用不再遵守固定端口,P2P、VPN 随机选</li>
+<li><strong>TLS 普及</strong>:HTTPS 占绝大部分流量,payload 加密,DPI 看不进去</li>
+<li><strong>QUIC</strong>:连握手都加密(TLS 1.3 Encrypted ClientHello 普及后 SNI 也看不到)</li>
+<li><strong>CDN/云</strong>:同一个 IP 承载成百上千应用</li>
+</ol>
+
+<p>所以今天工业界几乎只剩 AI 方法——从<strong>统计特征和行为模式</strong>中识别,不依赖 payload 内容。</p>
+
+<h3>分类的粒度</h3>
+
+<p>"流量分类"是个多层问题:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>流量类型</strong>:Web / Video / VoIP / Gaming / File Transfer</li>
+<li><strong>应用识别</strong>:Netflix / YouTube / TikTok / Zoom</li>
+<li><strong>行为识别</strong>:普通浏览 / 视频会议 / 下载 / 恶意扫描</li>
+<li><strong>用户/设备类型</strong>:IoT 设备 / 手机 / 桌面</li>
+</ul>
+
+<p>粒度越细,需要的特征和模型越复杂。</p>
+
+<h3>数据获取的挑战</h3>
+
+<p>训练数据怎么来?几种方式:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>受控抓包</strong>:已知应用下抓 pcap,标签明确但数量有限</li>
+<li><strong>公开数据集</strong>:ISCX、USTC、CICIDS、MAWI——标签不总准</li>
+<li><strong>弱监督</strong>:用传统方法打粗粒度标签,AI 精细化</li>
+<li><strong>自监督</strong>:利用流量的自然结构(前向后向流、连接建立序列)</li>
+</ul>
+
+<h3>部署位置与约束</h3>
+
+<p>分类器放哪儿决定了可用资源:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>边缘设备</strong>(路由器、CPE):算力 < 10 GFLOPS,必须极轻量</li>
+<li><strong>核心设备</strong>(DC 防火墙):有 GPU/NPU,可以跑较大模型</li>
+<li><strong>云端分析</strong>:离线深度分析,模型可以任意大</li>
+</ul>
+
+<p>边缘部署是最卷的——XGBoost + 数十个手工特征是典型方案;近年小型 CNN/Transformer 也能塞进去。</p>
+
+<!-- 3.7.2 -->
+<h2 id="s3-7-2"><span class="num">3.7.2</span>流量分类:特征与模型</h2>
+<p class="pos">定位:特征工程实战——哪些特征真正有用,用什么模型。</p>
+
+<h3>特征三大类</h3>
+
+<p><strong>统计特征</strong>(per-flow):一条流(5-tuple 相同的包序列)的统计量。</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- 总包数、总字节数、持续时间</li>
+<li>- 包大小统计:min / max / mean / std / 中位数 / 分位数</li>
+<li>- 包间隔统计:同上</li>
+<li>- 方向性:前向/后向包数比、字节比</li>
+<li>- TCP flags 出现次数(SYN、ACK、PSH、RST...)</li>
+<li>- 窗口大小均值、方差</li>
+</ul>
+
+<p><strong>时序特征</strong>:包的时序模式,不聚合。</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- 前 N 个包的大小序列(N = 20-100)</li>
+<li>- 前 N 个包的到达时间序列</li>
+<li>- 前 N 个包的方向序列(二进制:前向 0,后向 1)</li>
+</ul>
+
+<p><strong>包头特征</strong>(可用时):TLS ClientHello 的 cipher suite 列表、SNI(未加密时)、TCP 选项、QUIC 版本、TLS ALPN 等。</p>
+
+<h3>手工特征 + 树模型</h3>
+
+<p>工业界最常见方案。几十个特征 + XGBoost / LightGBM。训练快、推理快、可解释、精度在 90%+ 常见任务够用。</p>
+
+<pre><code class="language-python">import numpy as np
+import xgboost as xgb
+
+def extract_flow_features(packets):
+    """从一条流的包序列提取特征"""
+    sizes    = np.array([p.size for p in packets])
+    times    = np.array([p.timestamp for p in packets])
+    fwd      = np.array([p.direction == 'fwd' for p in packets])
+
+    feat = {}
+    # 基础统计
+    feat['n_packets']      = len(packets)
+    feat['total_bytes']    = sizes.sum()
+    feat['duration']       = times[-1] - times[0] if len(packets) > 1 else 0
+    feat['bytes_per_sec']  = feat['total_bytes'] / max(feat['duration'], 1e-6)
+
+    # 包大小分布
+    for stat, fn in [('mean', np.mean), ('std', np.std),
+                     ('min', np.min), ('max', np.max),
+                     ('p25', lambda x: np.percentile(x, 25)),
+                     ('p50', lambda x: np.percentile(x, 50)),
+                     ('p75', lambda x: np.percentile(x, 75))]:
+        feat[f'size_{stat}'] = fn(sizes)
+
+    # 方向分布
+    feat['fwd_ratio']      = fwd.mean()
+    feat['fwd_bytes']      = sizes[fwd].sum()
+    feat['bwd_bytes']      = sizes[~fwd].sum()
+    feat['fwd_bwd_ratio']  = feat['fwd_bytes'] / max(feat['bwd_bytes'], 1)
+
+    # 包间隔 (iat = inter-arrival time)
+    if len(times) > 1:
+        iat = np.diff(times)
+        feat['iat_mean'] = iat.mean()
+        feat['iat_std']  = iat.std()
+        feat['iat_max']  = iat.max()
+
+    # 前 20 个包的大小序列 (作为单独特征)
+    for i in range(20):
+        feat[f'pkt_size_{i}'] = sizes[i] if i < len(sizes) else 0
+
+    return feat
+
+# 训练
+X = np.array([extract_flow_features(f).values() for f in flows])
+y = np.array(labels)
+
+model = xgb.XGBClassifier(
+    n_estimators=300, max_depth=8, learning_rate=0.1,
+    tree_method='hist', eval_metric='mlogloss'
+)
+model.fit(X_train, y_train, eval_set=[(X_val, y_val)])
+
+# 查看关键特征
+importance = sorted(zip(feature_names, model.feature_importances_),
+                    key=lambda x: -x[1])
+print("Top 10 features:", importance[:10])
+</code></pre>
+
+<h3>深度学习方案</h3>
+
+<p>把流看作"序列",用 1D-CNN 或 LSTM 直接处理:</p>
+
+<pre><code class="language-python">import torch.nn as nn
+
+class FlowCNN(nn.Module):
+    """输入: 前 N 个包的 (size, iat, direction) 三元组序列"""
+    def __init__(self, num_classes, seq_len=50):
+        super().__init__()
+        # 3 channels: size (归一化), iat (归一化), direction (0/1)
+        self.conv = nn.Sequential(
+            nn.Conv1d(3, 32, kernel_size=5, padding=2), nn.ReLU(),
+            nn.Conv1d(32, 64, kernel_size=5, padding=2), nn.ReLU(),
+            nn.MaxPool1d(2),
+            nn.Conv1d(64, 128, kernel_size=3, padding=1), nn.ReLU(),
+            nn.AdaptiveAvgPool1d(1),
+        )
+        self.fc = nn.Linear(128, num_classes)
+
+    def forward(self, x):
+        # x: [B, 3, seq_len]
+        h = self.conv(x).squeeze(-1)
+        return self.fc(h)
+</code></pre>
+
+<p>优势:端到端学习,不手工设计特征。劣势:数据量需求大、计算量高、黑盒。边缘部署难。</p>
+
+<p>近年兴起<strong>FlowTransformer</strong> 类工作——把包序列当 token 序列,用小型 Transformer(3-6 层)处理。效果好但更重。</p>
+
+<h3>实际部署注意</h3>
+
+<p><strong>早期分类</strong>:不能等一条流结束才分类——这时已经放过去了。必须在前 N 个包(N = 5-20)内完成。特征提取要 incrementally 做,随着包到达更新。</p>
+
+<p><strong>概念漂移</strong>:应用频繁更新(Netflix 改视频编码、Zoom 改传输协议),流量模式变化,模型会退化。需要定期重训,或用在线学习。</p>
+
+<p><strong>类别不平衡</strong>:主流应用(YouTube、Netflix)占 90% 流量,小众应用极少。用 focal loss 或过采样。</p>
+
+<p><strong>真实世界的 ood 样本</strong>:训练没见过的新应用怎么办?引入"Other" 类 + 置信度阈值。</p>
+
+<!-- 3.7.3 -->
+<h2 id="s3-7-3"><span class="num">3.7.3</span>日志异常检测:需求与挑战</h2>
+<p class="pos">定位:从海量日志里找出"不对劲"——运维自动化的基石问题之一。</p>
+
+<h3>场景</h3>
+
+<p>网络设备、服务器、应用会产生日志:系统日志、协议日志(BGP 状态变化)、安全日志(登录失败)、应用日志(error / warn)。几百台设备一天上亿条,运维不可能人工看。</p>
+
+<p>目标:实时发现"异常模式",报警人工关注。异常定义往往模糊——既有已知的"这条就是故障"(监督学习),更多是"从未见过的怪事"(异常检测,无监督)。</p>
+
+<h3>两条路线</h3>
+
+<p><strong>基于规则</strong>:正则匹配特定模式 → 报警。简单、可解释、零样本能生效。但规则维护地狱——新类型故障永远漏。主流 SIEM(Security Information and Event Management)仍大量靠规则。</p>
+
+<p><strong>基于机器学习</strong>:从历史日志学"什么是正常",偏离正常就是异常。不能替代规则,是补充——规则抓已知,ML 抓未知。</p>
+
+<h3>数据的挑战</h3>
+
+<p>日志数据有几个独特挑战:</p>
+
+<p><strong>模板化</strong>:同一种事件不同参数。<code>"Connection from 1.2.3.4 failed"</code> 和 <code>"Connection from 5.6.7.8 failed"</code> 是同一种事件,参数不同。分析前必须做<strong>日志解析</strong>——把日志抽取成"模板 + 参数"(Drain、Spell 等算法)。</p>
+
+<p><strong>非结构化 + 半结构化混合</strong>:syslog 是非结构化,JSON 日志结构化。现代系统逐渐结构化,老系统还是乱七八糟。</p>
+
+<p><strong>时序性</strong>:单条日志可能正常,但"登录失败 1000 次后成功"就异常——必须看上下文。</p>
+
+<p><strong>极度不平衡</strong>:异常占比 < 0.1%。</p>
+
+<p><strong>Ground truth 稀缺</strong>:谁去给百万条日志打标签?</p>
+
+<!-- 3.7.4 -->
+<h2 id="s3-7-4"><span class="num">3.7.4</span>日志异常检测:方法</h2>
+<p class="pos">定位:从模板提取到序列建模,到 LLM-based 异常解释。</p>
+
+<h3>流水线</h3>
+
+<div class="mermaid">
+flowchart LR
+    LOG[Raw Logs] --> PARSE[Log Parsing<br/>Drain / Spell]
+    PARSE --> TEMP[Template ID Sequence]
+    TEMP --> FEAT[Feature Extraction]
+    FEAT --> DETECT[Detection Model]
+    DETECT --> ALERT[Anomaly Alert]
+    DETECT --> EXPLAIN[LLM Explanation]
+</div>
+
+<h3>日志解析:Drain 算法</h3>
+
+<p>Drain(2017)是最流行的日志解析算法。核心思想:日志模板有固定前缀,可变部分主要是参数。用一棵固定深度的解析树——按日志长度分类、按前几个 token 逐层分支,到叶子再做细粒度匹配。</p>
+
+<p>结果是一个"模板库":每条日志被归到一个模板 ID,加上参数值。后续分析基于模板 ID 序列,不再是原始文本。</p>
+
+<h3>经典方法:PCA / Isolation Forest</h3>
+
+<p>把一段时间窗口内每个模板出现的次数做成向量,用异常检测算法:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>PCA</strong>:正常样本在低维主成分空间紧密,异常远离。重建误差高即异常。</li>
+<li><strong>Isolation Forest</strong>:随机切分数据,异常点平均只需较少切分就被孤立。无需假设分布。</li>
+<li><strong>One-Class SVM</strong>:在正常样本周围找最紧凑的边界。</li>
+</ul>
+
+<p>简单、快、无监督。在基线水平能抓到流量激增、异常错误模板这类粗粒度异常。</p>
+
+<h3>深度学习:DeepLog / LogAnomaly</h3>
+
+<p>DeepLog(2017)是第一个工业影响力的深度学习日志异常检测。思路:把日志模板 ID 当作"词",整段日志是一个"序列"。用 LSTM 学"给定前 k 个模板,预测下一个",预测错了就是异常。</p>
+
+<pre><code class="language-python">import torch.nn as nn
+
+class DeepLog(nn.Module):
+    def __init__(self, num_templates, hidden_size=128, num_layers=2):
+        super().__init__()
+        self.emb  = nn.Embedding(num_templates, 64)
+        self.lstm = nn.LSTM(64, hidden_size, num_layers, batch_first=True)
+        self.fc   = nn.Linear(hidden_size, num_templates)
+
+    def forward(self, x):
+        # x: [B, seq_len] 模板 ID
+        e = self.emb(x)
+        h, _ = self.lstm(e)
+        return self.fc(h[:, -1])   # 预测下一个模板的分布
+
+# 推理时: 如果真实下一个不在 top-k 预测中, 标记异常
+def detect(model, seq, k=9):
+    logits = model(seq)
+    topk = logits.topk(k).indices.squeeze()
+    return seq[-1] not in topk
+</code></pre>
+
+<p>LogAnomaly 进一步考虑参数值的异常。更新的工作(LogBERT, NeuralLog)用 Transformer 替代 LSTM。</p>
+
+<h3>LLM 时代的日志分析</h3>
+
+<p>LLM 改变了游戏——直接把日志片段喂给 LLM,问"这里面有什么异常、是什么原因"。优势:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- 无需日志解析,自然语言直接处理</li>
+<li>- 跨日志模式联合推理</li>
+<li>- 输出是人类可读的解释,而不只是"异常/正常"</li>
+</ul>
+
+<p>劣势:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- 上下文窗口限制,看不了太多日志</li>
+<li>- 推理成本高,实时处理难</li>
+<li>- 幻觉</li>
+</ul>
+
+<p>工业实践:两阶段。经典模型做粗筛 → LLM 对可疑片段做解释和根因分析。结合双方优势。</p>
+
+<h3>异常检测的评估难题</h3>
+
+<p>没有 ground truth 时怎么评估?几个妥协方案:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- 人工审核一段时间,标注召回</li>
+<li>- 注入已知故障(chaos engineering),看能否检测</li>
+<li>- 和告警系统对比,看告警时刻是否模型也报</li>
+</ul>
+
+<p>部署后的一个重要指标:<strong>告警抑制率</strong>——总告警数减少多少,同时不漏关键故障。运维团队最痛苦的不是漏报,是"告警疲劳"。</p>
+
+<!-- 3.7.5 -->
+<h2 id="s3-7-5"><span class="num">3.7.5</span>KPI 时序预测:需求与挑战</h2>
+<p class="pos">定位:预测 QPS、CPU、带宽——容量规划和主动运维的基础。</p>
+
+<h3>场景</h3>
+
+<p>网络运营中的核心 KPI 时序:带宽利用率、CPU/内存、连接数、丢包率、延迟、错误率。典型预测需求:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>容量规划</strong>:预测未来 3 个月流量趋势,决定扩容</li>
+<li><strong>自动扩缩容</strong>:预测下一小时负载,提前扩容避免抖动</li>
+<li><strong>异常预警</strong>:预测"正常"轨迹,实际偏离即报警</li>
+<li><strong>SLA 管理</strong>:预测未来可能的 SLA violation,提前干预</li>
+</ul>
+
+<h3>时序的特性</h3>
+
+<p>KPI 时序数据有典型模式:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>趋势</strong>(trend):长期上升/下降</li>
+<li><strong>季节性</strong>(seasonality):日周期(白天/晚上)、周周期(周末)、年周期</li>
+<li><strong>不规则</strong>(residual):噪声和异常</li>
+</ul>
+
+<p>一个 QPS 曲线通常是三者叠加。</p>
+
+<p><strong>变化点</strong>(change point)特别棘手——发版、促销、故障恢复都会让统计性质突变。预测模型必须要么能检测变化点,要么在变化点后快速适应。</p>
+
+<h3>挑战</h3>
+
+<p><strong>多变量</strong>:CPU、内存、QPS 互相相关,联合预测比独立预测好。</p>
+
+<p><strong>多尺度</strong>:秒级、分钟级、小时级、日级都要预测,不同尺度模型不一样。</p>
+
+<p><strong>冷启动</strong>:新服务上线时历史数据不足。</p>
+
+<p><strong>异常注入</strong>:训练数据里已经包含过往故障时段,预测会学到这些异常作为"正常"。需要预先剔除异常时段。</p>
+
+<p><strong>不确定性量化</strong>:点预测不够,要给预测区间——"未来 1 小时 QPS 大概 5000–7000"比"大概 6000"更有用。</p>
+
+<!-- 3.7.6 -->
+<h2 id="s3-7-6"><span class="num">3.7.6</span>KPI 时序预测:方法</h2>
+<p class="pos">定位:从 ARIMA 到 Prophet 到 Transformer——演进和何时用哪种。</p>
+
+<h3>经典统计方法</h3>
+
+<p><strong>ARIMA</strong>(AutoRegressive Integrated Moving Average):</p>
+
+<div class="formula">
+$\phi(L)(1-L)^d y_t = \theta(L) \epsilon_t$
+</div>
+
+<p>三个参数 $(p, d, q)$:$p$ 自回归阶、$d$ 差分次数(让序列平稳)、$q$ 移动平均阶。选参用 ACF/PACF 图或信息准则(AIC、BIC)。</p>
+
+<p>ARIMA 对平稳线性序列表现好,计算极便宜,可解释。对强季节性用 SARIMA(seasonal ARIMA)。今天仍是很多场景的首选基线。</p>
+
+<p><strong>指数平滑</strong>:Holt-Winters 三重指数平滑分离趋势和季节性。Excel 内置那种——简单、够用、老派。</p>
+
+<h3>Prophet</h3>
+
+<p>Facebook 2017 年开源。把时序分解为<strong>趋势 + 季节性 + 节假日 + 噪声</strong>,每部分独立建模:</p>
+
+<div class="formula">
+$y(t) = g(t) + s(t) + h(t) + \epsilon$
+</div>
+
+<ul style="list-style:none; padding-left:0;">
+<li>- 趋势 $g$:分段线性或 logistic</li>
+<li>- 季节性 $s$:傅里叶级数</li>
+<li>- 节假日 $h$:用户指定的日期列表</li>
+</ul>
+
+<p>Prophet 的优势是<strong>对分析师友好</strong>——可以手工加入业务知识(下周双十一、上线新功能、年度订阅续约)。参数意义明确,出了问题能调。</p>
+
+<pre><code class="language-python">from prophet import Prophet
+import pandas as pd
+
+# 数据要是 (ds, y) 两列
+df = pd.DataFrame({'ds': timestamps, 'y': qps_values})
+
+m = Prophet(
+    yearly_seasonality=False,
+    weekly_seasonality=True,
+    daily_seasonality=True,
+    changepoint_prior_scale=0.05,  # 越大越允许趋势变化
+)
+m.add_country_holidays(country_name='CN')
+m.fit(df)
+
+# 预测未来 24 小时, 每 5 分钟一个点
+future = m.make_future_dataframe(periods=24*12, freq='5min')
+forecast = m.predict(future)
+# forecast 有 yhat (点预测), yhat_lower, yhat_upper (80% 置信区间)
+</code></pre>
+
+<h3>深度学习方法</h3>
+
+<p><strong>LSTM / GRU</strong>:最朴素的深度时序。输入历史窗口,输出未来 1 步(或多步)。多步常用 seq2seq 或迭代预测。</p>
+
+<p><strong>N-BEATS</strong>(2019):全 MLP,用"backcast/forecast"架构。在 M4 时序竞赛上击败所有 RNN/Transformer。证明 MLP 在时序上仍有竞争力。</p>
+
+<p><strong>Temporal Fusion Transformer</strong>(2020):Transformer 变种,专门处理时序。支持多变量、静态协变量、未来已知协变量(如预定的促销日期)。</p>
+
+<p><strong>PatchTST</strong>(2023):把时序切成 patch(类似 ViT 对图像),再用 Transformer 编码。简单但效果强。</p>
+
+<p><strong>Informer / Autoformer</strong>:专为长序列预测优化的 Transformer 变种。</p>
+
+<h3>基础模型</h3>
+
+<p>2024 起出现<strong>时序基础模型</strong>:Chronos(Amazon)、TimesFM(Google)、Moirai。用海量异质时序数据预训练,实现 zero-shot 预测——新序列直接拿来就用,不必针对性训练。</p>
+
+<p>效果和传统方法混合:简单序列 Prophet/ARIMA 够用;复杂多变量、长序列深度模型胜出;没有历史数据时基础模型是唯一选择。</p>
+
+<h3>何时选什么</h3>
+
+<table>
+<tr><th>场景</th><th>推荐方法</th></tr>
+<tr><td>数据少(< 1000 点),需快速解</td><td>Prophet / ARIMA</td></tr>
+<tr><td>数据中等,单变量</td><td>Prophet / N-BEATS</td></tr>
+<tr><td>多变量强相关</td><td>Temporal Fusion Transformer / PatchTST</td></tr>
+<tr><td>长序列(千点以上)</td><td>Informer / PatchTST</td></tr>
+<tr><td>冷启动、无历史</td><td>时序基础模型 zero-shot</td></tr>
+<tr><td>需要可解释</td><td>Prophet + SHAP</td></tr>
+<tr><td>边缘设备推理</td><td>ARIMA / 小型 LSTM</td></tr>
+</table>
+
+<h3>评估</h3>
+
+<p>常用指标:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>MAE</strong>:Mean Absolute Error。对异常值鲁棒。</li>
+<li><strong>RMSE</strong>:Root Mean Squared Error。对大偏差惩罚重。</li>
+<li><strong>MAPE</strong>:Mean Absolute Percentage Error。相对误差,量纲无关,但真值接近 0 时不稳。</li>
+<li><strong>sMAPE</strong>:对称 MAPE,改进上面问题。</li>
+<li><strong>Quantile Loss</strong>:评估区间预测。</li>
+</ul>
+
+<p>业务上经常更关心<strong>方向性</strong>——是否预对了"涨还是跌",比精确值更有用于决策。方向准确率是补充指标。</p>
+
+<hr style="margin-top:60px; border:none; border-top:1px dashed var(--rule);">
+
+<p style="color:var(--muted); font-size:14px; font-style:italic; text-align:center; margin-top:40px;">
+— 第 2 章 终 —<br>
+共 36 节 · 至此第 2–5 章完整
+</p>
+
+</main>
+
+<script>
+  hljs.highlightAll();
+  mermaid.initialize({ startOnLoad: true, theme: 'neutral', fontFamily: 'Inter, sans-serif' });
+</script>
+
+</body>
+</html>

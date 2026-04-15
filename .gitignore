@@ -1,0 +1,5 @@
+.DS_Store
+.ccb/
+.omc/
+.claude/
+*.py

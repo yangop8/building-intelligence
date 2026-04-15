@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>论文精读(补充篇) — HNSW 到 ReAct</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+:root{--bg:#fbfaf7;--fg:#1d1d1b;--muted:#6b6b68;--accent:#5a3a7a;--accent-soft:#ece6f2;--rule:#e3dfd6;--code-bg:#282c34;--sidebar-bg:#f4f1ea;--mono:"SFMono-Regular","JetBrains Mono",Consolas,Menlo,monospace;--serif:"Source Serif Pro","Songti SC","STSong",Georgia,serif;--sans:"Inter",-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;}
+*{box-sizing:border-box;}html,body{margin:0;padding:0;}
+body{font-family:var(--serif);font-size:16px;line-height:1.75;color:var(--fg);background:var(--bg);display:flex;}
+aside.toc{position:sticky;top:0;width:310px;height:100vh;overflow-y:auto;background:var(--sidebar-bg);border-right:1px solid var(--rule);padding:24px 20px;font-family:var(--sans);font-size:13px;flex-shrink:0;}
+aside.toc h1{font-family:var(--serif);font-size:18px;margin:0 0 4px 0;color:var(--accent);}
+aside.toc .sub{color:var(--muted);font-size:12px;margin-bottom:20px;font-style:italic;}
+aside.toc .group{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin-top:14px;margin-bottom:4px;padding-bottom:3px;border-bottom:1px solid var(--rule);}
+aside.toc ol{list-style:none;padding:0;margin:0;}aside.toc ol li{margin-bottom:2px;}
+aside.toc a{color:var(--fg);text-decoration:none;display:block;padding:3px 6px;border-radius:3px;}
+aside.toc a:hover{background:var(--accent-soft);color:var(--accent);}
+aside.toc .num{color:var(--muted);font-family:var(--mono);margin-right:6px;font-size:11px;}
+main{flex:1;max-width:880px;padding:60px 72px 120px 72px;min-width:0;}
+header.cover{border-bottom:2px solid var(--fg);padding-bottom:32px;margin-bottom:48px;}
+header.cover h1{font-size:42px;line-height:1.15;margin:0 0 12px 0;font-weight:700;}
+header.cover .subtitle{font-size:20px;color:var(--muted);font-style:italic;margin-bottom:20px;}
+header.cover .meta{font-family:var(--sans);font-size:13px;color:var(--muted);}
+h2{font-size:26px;margin-top:72px;margin-bottom:6px;padding-bottom:8px;border-bottom:1px solid var(--rule);scroll-margin-top:20px;}
+h2 .num{color:var(--accent);font-family:var(--mono);font-weight:400;margin-right:10px;font-size:20px;}
+.pos{font-family:var(--sans);font-size:13px;color:var(--muted);font-style:italic;margin-top:0;margin-bottom:16px;padding:6px 12px;background:var(--accent-soft);border-left:2px solid var(--accent);}
+h3{font-size:18px;margin-top:28px;margin-bottom:8px;font-weight:600;}
+h4{font-size:15px;margin-top:18px;margin-bottom:4px;font-weight:600;color:var(--accent);}
+p{margin:0 0 14px 0;text-align:justify;}
+code{font-family:var(--mono);font-size:14px;background:var(--accent-soft);color:var(--accent);padding:1px 5px;border-radius:3px;}
+pre{background:var(--code-bg);border-radius:6px;padding:14px 18px;overflow-x:auto;font-size:13px;line-height:1.55;margin:16px 0;}
+pre code{background:transparent;color:inherit;padding:0;font-size:inherit;}
+.formula{font-family:var(--serif);padding:10px 18px;background:#f6f0fa;border-left:2px solid var(--muted);margin:12px 0;font-size:16px;overflow-x:auto;}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;font-family:var(--sans);}
+th,td{border-bottom:1px solid var(--rule);padding:7px 10px;text-align:left;vertical-align:top;}
+th{background:var(--sidebar-bg);font-weight:600;}
+.paper-meta{font-family:var(--sans);font-size:13px;margin:12px 0 24px 0;padding:14px 18px;background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:4px;}
+.paper-meta .title-en{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--accent);margin-bottom:6px;}
+.paper-meta .row{margin:2px 0;}
+.paper-meta .label{font-weight:600;display:inline-block;min-width:70px;color:var(--muted);}
+.part-header{margin-top:100px;margin-bottom:24px;padding:24px 28px;background:linear-gradient(to right,var(--accent-soft),transparent);border-left:4px solid var(--accent);}
+.part-header .part-label{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:0.15em;color:var(--accent);}
+.part-header h2.part-title{font-size:32px;margin:4px 0 8px 0;padding:0;border:none;}
+.part-header .part-desc{font-size:15px;color:var(--muted);font-style:italic;margin:0;}
+.mermaid{margin:20px 0;text-align:center;}
+.refback{font-family:var(--sans);font-size:13px;color:var(--muted);margin-top:20px;padding-top:10px;border-top:1px dashed var(--rule);}
+.refback strong{color:var(--accent);}
+@media (max-width:1100px){aside.toc{display:none;}main{padding:40px 32px;}}
+</style>
+</head>
+<body>
+
+<aside class="toc">
+<h1>论文精读(补充)</h1>
+<div class="sub">Chapter 5 · 补充篇 P18-P26</div>
+
+<div class="group">第 2 章相关 · 系统软件</div>
+<ol>
+<li><a href="#p18"><span class="num">18</span>HNSW</a></li>
+<li><a href="#p19"><span class="num">19</span>Raft</a></li>
+</ol>
+
+<div class="group">第 3 章相关 · 经典模型补充</div>
+<ol>
+<li><a href="#p20"><span class="num">20</span>GAN</a></li>
+<li><a href="#p21"><span class="num">21</span>VAE</a></li>
+<li><a href="#p22"><span class="num">22</span>DDPM</a></li>
+<li><a href="#p23"><span class="num">23</span>Word2Vec</a></li>
+</ol>
+
+<div class="group">第 4 章相关 · LLM 补充</div>
+<ol>
+<li><a href="#p24"><span class="num">24</span>Mamba / SSM</a></li>
+<li><a href="#p25"><span class="num">25</span>RAG</a></li>
+<li><a href="#p26"><span class="num">26</span>ReAct</a></li>
+</ol>
+</aside>
+
+<main>
+
+<header class="cover">
+<h1>论文精读(补充篇)</h1>
+<div class="subtitle">从 HNSW 到 ReAct —— 9 篇补充论文</div>
+<div class="meta">Chapter 5 补充 · 内部学习材料 · 2026 年初版</div>
+</header>
+
+<p>这是论文精读的补充篇,覆盖主篇(P01-P17)未涉及但对理解全书技术栈同样重要的 9 篇论文。选篇横跨三章:第 2 章的系统软件基础(向量检索、分布式共识),第 3 章的经典生成模型(GAN、VAE、扩散模型、词向量),第 4 章的 LLM 新范式(状态空间模型、检索增强生成、推理-行动框架)。</p>
+
+<p>篇幅分配:对当下工程影响大且数学深度值得展开的(HNSW、GAN、VAE、DDPM、Mamba)给 2-3 页;概念清晰、一页足够讲清核心思想的(Raft、Word2Vec、RAG、ReAct)精简处理。</p>
+
+<!-- ============================ PART 5: 第2章 ============================ -->
+<div class="part-header">
+<div class="part-label">PART FIVE</div>
+<h2 class="part-title">第 2 章相关 · 系统软件</h2>
+<p class="part-desc">向量数据库的核心检索算法,以及分布式系统的共识基石。</p>
+</div>
+
+<!-- ============================ P18 HNSW ============================ -->
+<h2 id="p18"><span class="num">P18</span>HNSW:向量数据库的检索引擎</h2>
+<p class="pos">对应主书:第 2 章 3.5.4 向量数据库</p>
+
+<div class="paper-meta">
+<div class="title-en">Efficient and robust approximate nearest neighbor using Hierarchical Navigable Small World graphs</div>
+<div class="row"><span class="label">作者</span>Yu. A. Malkov, D. A. Yashunin</div>
+<div class="row"><span class="label">机构</span>Yandex (独立研究)</div>
+<div class="row"><span class="label">发表</span>IEEE TPAMI 2020(预印本 2016/2018)</div>
+<div class="row"><span class="label">被引</span>3,500+</div>
+<div class="row"><span class="label">链接</span>arXiv:1603.09320</div>
+</div>
+
+<h3>问题:高维最近邻搜索的困境</h3>
+<p>给定一个 768 维的向量(比如 BERT 的输出 embedding),在一百万个向量里找最相似的 top-10——这就是 Approximate Nearest Neighbor(ANN)问题。精确方法是线性扫描,O(N) 不可接受。传统方法如 KD-tree 在高维下退化到线性;LSH(局部敏感哈希)需要大量内存存多个哈希表,召回率和速度的 tradeoff 不够好。</p>
+
+<p>HNSW 的出发点:把向量组织成一个<strong>多层图</strong>,在图上做贪心搜索。这个图的构造保证了"小世界"性质——任意两点之间只需少量跳转。</p>
+
+<h3>核心方法:分层可导航小世界图</h3>
+
+<h4>NSW(单层)的直觉</h4>
+<p>先理解单层 Navigable Small World 图:每个向量是一个节点,每个节点连接若干"邻居"。搜索时从一个入口点出发,贪心地跳到离目标更近的邻居,直到无法更近——这就是 greedy search。NSW 的关键发现:如果图同时包含<strong>短程连接</strong>(局部精确)和<strong>长程连接</strong>(跨越远距离),贪心搜索的平均步数是 $O(\log N)$。</p>
+
+<h4>分层结构(H 的含义)</h4>
+<p>HNSW 在 NSW 上加了层级结构。类比跳表(skip list):最上层只有少量节点和长程边,快速定位大致区域;逐层向下,节点增多、边变短,精确逼近目标。</p>
+
+<div class="mermaid">
+flowchart TB
+    subgraph Layer2["Layer 2 (最稀疏)"]
+        A2((v_3)) ---|长程边| B2((v_89))
+    end
+    subgraph Layer1["Layer 1"]
+        A1((v_3)) --- C1((v_17))
+        C1 --- D1((v_45))
+        D1 --- B1((v_89))
+    end
+    subgraph Layer0["Layer 0 (全部节点)"]
+        A0((v_3)) --- E0((v_5))
+        E0 --- F0((v_12))
+        F0 --- C0((v_17))
+        C0 --- G0((v_23))
+        G0 --- D0((v_45))
+        D0 --- H0((v_67))
+        H0 --- B0((v_89))
+    end
+    A2 -.-> A1 -.-> A0
+    B2 -.-> B1 -.-> B0
+    C1 -.-> C0
+    D1 -.-> D0
+</div>
+
+<h4>插入算法</h4>
+<p>插入新向量 $q$ 时:</p>
+<ol>
+<li>随机抽取层级 $l = \lfloor -\ln(\text{uniform}(0,1)) \cdot m_L \rfloor$,其中 $m_L = 1/\ln(M)$。这保证了层级呈指数衰减分布</li>
+<li>从最高层的入口点开始贪心搜索到离 $q$ 最近的节点,逐层下降到第 $l$ 层</li>
+<li>在第 $l$ 层到第 0 层,对每层执行:找到 $q$ 的 $ef_{\text{Construction}}$ 个最近邻,选其中最优的 $M$ 个作为 $q$ 的邻居,双向连边</li>
+</ol>
+
+<h4>搜索算法伪代码</h4>
+<pre><code class="language-python">def hnsw_search(query, entry_point, top_k, ef):
+    """HNSW 近似最近邻搜索"""
+    current_nearest = entry_point
+
+    # Phase 1: 从最高层贪心下降到第 1 层
+    for layer in range(top_layer, 0, -1):
+        changed = True
+        while changed:
+            changed = False
+            for neighbor in get_neighbors(current_nearest, layer):
+                if dist(neighbor, query) < dist(current_nearest, query):
+                    current_nearest = neighbor
+                    changed = True
+
+    # Phase 2: 在第 0 层做 beam search (ef 控制 beam 宽度)
+    candidates = MinHeap([current_nearest])   # 候选集
+    visited = set([current_nearest])
+    result = MaxHeap([current_nearest])       # 结果集, 按距离倒序
+
+    while len(candidates) > 0:
+        c = candidates.pop_min()
+        f = result.peek_max()  # 当前结果中最远的
+        if dist(c, query) > dist(f, query):
+            break  # 候选比当前最差结果还远, 停止
+
+        for neighbor in get_neighbors(c, layer=0):
+            if neighbor not in visited:
+                visited.add(neighbor)
+                if dist(neighbor, query) < dist(f, query) or len(result) < ef:
+                    candidates.push(neighbor)
+                    result.push(neighbor)
+                    if len(result) > ef:
+                        result.pop_max()
+
+    return result.top(top_k)
+</code></pre>
+
+<h3>复杂度分析</h3>
+<table>
+<tr><th>操作</th><th>时间复杂度</th><th>说明</th></tr>
+<tr><td>搜索</td><td>$O(\log N)$</td><td>每层贪心搜索 $O(1)$ 步,共 $O(\log N)$ 层</td></tr>
+<tr><td>插入</td><td>$O(\log N)$</td><td>搜索 + 连边</td></tr>
+<tr><td>空间</td><td>$O(N \cdot M)$</td><td>每个节点 $M$ 条边</td></tr>
+</table>
+
+<h3>关键参数</h3>
+<table>
+<tr><th>参数</th><th>含义</th><th>典型值</th></tr>
+<tr><td>$M$</td><td>每个节点的最大邻居数</td><td>16-64</td></tr>
+<tr><td>$ef_{\text{Construction}}$</td><td>构建时 beam 宽度</td><td>100-200</td></tr>
+<tr><td>$ef_{\text{Search}}$</td><td>搜索时 beam 宽度(越大越准但越慢)</td><td>50-500</td></tr>
+</table>
+
+<p>$ef_{\text{Search}}$ 是运行时可调的——这让 HNSW 有"精度-速度旋钮",用户可以按场景实时切换。</p>
+
+<h3>实验结果</h3>
+<p>在 ANN-Benchmarks 上(128 维 SIFT 1M 数据集),HNSW 在 recall@10 = 0.99 时 QPS 超过同期所有方法(Annoy、FLANN、IVF-PQ)一个数量级。在更高维(768 维 GloVe)上优势更明显——因为基于量化的方法(PQ)在高维下精度严重下降,而 HNSW 的图搜索不直接受维度影响。</p>
+
+<h3>影响</h3>
+<p>HNSW 是今天<strong>所有主流向量数据库的默认索引</strong>:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Milvus</strong>:HNSW 是推荐的内存索引类型</li>
+<li><strong>Qdrant</strong>:底层全部基于 HNSW</li>
+<li><strong>FAISS</strong>:HNSW 作为 IVF 的 coarse quantizer 和独立索引</li>
+<li><strong>Pinecone、Weaviate、Chroma</strong>:均支持 HNSW</li>
+<li><strong>PostgreSQL pgvector</strong>:0.5+ 版本新增 HNSW 索引</li>
+</ul>
+
+<p>RAG 管线(主书 5.10)里"embedding + 向量检索"的"检索"部分,底层跑的就是 HNSW。没有这篇论文,2023-2025 年的向量数据库热潮不会发生。</p>
+
+<h3>批判视角</h3>
+<p>HNSW 的主要缺点:<strong>内存占用大</strong>——全图必须在内存中,10 亿向量 × 768 维 × float32 ≈ 3TB,这还没算图的边存储。因此大规模场景通常 HNSW + 量化(PQ/SQ)配合使用,或者分片。另外 HNSW 不支持动态删除(只能标记),长期运行需要重建。DiskANN(微软 2019)是专门针对"磁盘上的 ANN"设计的替代方案。</p>
+
+<div class="refback"><strong>为什么必读:</strong>如果你在做 RAG、语义搜索、推荐系统,你的向量查询底层大概率跑的是 HNSW。理解它的图构造和搜索逻辑,才能正确调参($M$, $ef$),才能判断什么时候该换 IVF-PQ 或 DiskANN。</div>
+
+<!-- ============================ P19 Raft ============================ -->
+<h2 id="p19"><span class="num">P19</span>Raft:可理解的共识算法</h2>
+<p class="pos">对应主书:第 2 章 分布式系统基础</p>
+
+<div class="paper-meta">
+<div class="title-en">In Search of an Understandable Consensus Algorithm</div>
+<div class="row"><span class="label">作者</span>Diego Ongaro, John Ousterhout</div>
+<div class="row"><span class="label">机构</span>Stanford University</div>
+<div class="row"><span class="label">发表</span>USENIX ATC 2014</div>
+<div class="row"><span class="label">被引</span>6,000+</div>
+<div class="row"><span class="label">链接</span>raft.github.io</div>
+</div>
+
+<h3>问题:Paxos 太难懂了</h3>
+<p>分布式共识——让多台机器就"同一份日志的顺序"达成一致——是分布式系统的基础问题。Lamport 的 Paxos(1989/1998)是理论最优解,但以"极难理解"闻名:论文用希腊议会做比喻,实际工程实现需要大量补丁(Multi-Paxos),几乎没有两个 Paxos 实现是一样的。</p>
+
+<p>Ongaro 的博士论文目标很明确:<strong>设计一个和 Paxos 等价但更容易理解和实现的共识算法</strong>。</p>
+
+<h3>核心方法:Leader Election + Log Replication + Safety</h3>
+<p>Raft 把共识分解为三个相对独立的子问题:</p>
+
+<p><strong>1. Leader 选举:</strong>集群中永远只有一个 Leader。每个节点处于 Follower、Candidate、Leader 三种状态之一。Follower 超时未收到心跳则变为 Candidate,发起选举;获得多数票成为 Leader。任期(term)单调递增,旧 Leader 看到更高 term 自动降级。</p>
+
+<p><strong>2. 日志复制:</strong>所有写请求发给 Leader,Leader 将日志条目 append 到本地后并行发送给 Follower。当多数节点确认,该条目"已提交",Leader 通知客户端。</p>
+
+<p><strong>3. 安全性:</strong>核心约束是"只有拥有所有已提交日志的节点才能当选 Leader"(Election Restriction)。这保证了新 Leader 不会覆盖已提交数据。</p>
+
+<div class="mermaid">
+stateDiagram-v2
+    [*] --> Follower
+    Follower --> Candidate: 选举超时
+    Candidate --> Leader: 获得多数票
+    Candidate --> Follower: 发现更高 term
+    Candidate --> Candidate: 选举超时(重试)
+    Leader --> Follower: 发现更高 term
+</div>
+
+<h3>影响</h3>
+<p>Raft 的工业影响远超学术——它是今天分布式基础设施的"共识层标配":</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>etcd</strong>:Kubernetes 的元数据存储,底层是 Raft</li>
+<li><strong>TiKV</strong>:TiDB 的存储引擎,Multi-Raft(每个 Region 一个 Raft Group)</li>
+<li><strong>CockroachDB</strong>:分布式 SQL 数据库,Raft 共识</li>
+<li><strong>Consul</strong>:HashiCorp 的服务发现,Raft 共识</li>
+<li><strong>RabbitMQ Quorum Queues</strong>:基于 Raft 的持久化队列</li>
+</ul>
+
+<p>Raft 论文的成功印证了系统研究中一个重要原则:<strong>可理解性本身就是价值</strong>。一个"差不多好"但容易正确实现的算法,比一个"理论最优"但实现容易出错的算法,在工程上更有价值。</p>
+
+<div class="refback"><strong>为什么必读:</strong>分布式系统是 AI 基础设施的底座——训练集群、推理服务、向量数据库、配置中心全部依赖共识。理解 Raft 的 Leader 选举和日志复制,是理解这些系统可靠性保证的入口。</div>
+
+<!-- ============================ PART 6: 第3章 ============================ -->
+<div class="part-header">
+<div class="part-label">PART SIX</div>
+<h2 class="part-title">第 3 章相关 · 经典模型补充</h2>
+<p class="part-desc">三大生成模型(GAN、VAE、扩散)与词向量——理解现代生成式 AI 的思想源头。</p>
+</div>
+
+<!-- ============================ P20 GAN ============================ -->
+<h2 id="p20"><span class="num">P20</span>GAN:对抗训练的开创</h2>
+<p class="pos">对应主书:第 3 章 4.4.4 生成模型</p>
+
+<div class="paper-meta">
+<div class="title-en">Generative Adversarial Nets</div>
+<div class="row"><span class="label">作者</span>Ian J. Goodfellow, Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley, Sherjil Ozair, Aaron Courville, Yoshua Bengio</div>
+<div class="row"><span class="label">机构</span>Universite de Montreal</div>
+<div class="row"><span class="label">发表</span>NeurIPS 2014</div>
+<div class="row"><span class="label">被引</span>70,000+</div>
+<div class="row"><span class="label">链接</span>arXiv:1406.2661</div>
+</div>
+
+<h3>问题:生成模型为什么这么难</h3>
+<p>2014 年之前,主流生成模型是:受限玻尔兹曼机(RBM)、变分自编码器(VAE,同年)、自回归模型(PixelRNN 还要等两年)。它们的共同限制:要么需要显式定义似然函数并做复杂推断,要么生成质量模糊。Goodfellow 在酒吧里和朋友讨论时想到了一个绕开似然函数的思路——让两个网络<strong>对抗博弈</strong>。</p>
+
+<h3>核心方法:二人零和博弈</h3>
+<p>两个网络同时训练:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>生成器 $G$</strong>:从噪声 $z \sim p_z(z)$ 生成假样本 $G(z)$,目标是"骗过判别器"</li>
+<li><strong>判别器 $D$</strong>:判断输入是真实样本还是生成样本,目标是"不被骗"</li>
+</ul>
+
+<h4>目标函数</h4>
+<div class="formula">$\min_G \max_D V(D, G) = \mathbb{E}_{x \sim p_{\text{data}}}[\log D(x)] + \mathbb{E}_{z \sim p_z}[\log(1 - D(G(z)))]$</div>
+
+<p>这个 minimax 的博弈论含义:$D$ 想最大化区分能力(把 $V$ 往大拉),$G$ 想最小化 $D$ 的区分能力(把 $V$ 往小压)。</p>
+
+<h4>理论结论</h4>
+<p>Goodfellow 证明了两个关键定理:</p>
+<ol>
+<li><strong>最优判别器</strong>:给定 $G$,最优 $D^*(x) = \frac{p_{\text{data}}(x)}{p_{\text{data}}(x) + p_g(x)}$</li>
+<li><strong>全局最优</strong>:当 $p_g = p_{\text{data}}$ 时,$D^* = 1/2$,此时 $V$ 达到全局最小值 $-\log 4$。也就是说,均衡点处生成分布完美匹配数据分布</li>
+</ol>
+
+<p>把 $D^*$ 代入 $V$,可以证明 $V$ 等价于数据分布和生成分布之间 Jensen-Shannon 散度的变换:</p>
+<div class="formula">$V(D^*, G) = -\log 4 + 2 \cdot \text{JSD}(p_{\text{data}} \| p_g)$</div>
+
+<h3>训练流程</h3>
+<div class="mermaid">
+flowchart LR
+    Z["噪声 z ~ N(0,I)"] --> G["生成器 G"]
+    G --> FakeImg["假样本 G(z)"]
+    RealImg["真实样本 x"] --> D["判别器 D"]
+    FakeImg --> D
+    D --> Loss["D: max log D(x) + log(1-D(G(z)))
+    G: min log(1-D(G(z)))"]
+</div>
+
+<pre><code class="language-python">import torch
+import torch.nn as nn
+
+class Generator(nn.Module):
+    def __init__(self, z_dim=100, img_dim=784):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(z_dim, 256), nn.LeakyReLU(0.2),
+            nn.Linear(256, 512), nn.LeakyReLU(0.2),
+            nn.Linear(512, img_dim), nn.Tanh(),
+        )
+
+    def forward(self, z):
+        return self.net(z)
+
+class Discriminator(nn.Module):
+    def __init__(self, img_dim=784):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(img_dim, 512), nn.LeakyReLU(0.2),
+            nn.Linear(512, 256), nn.LeakyReLU(0.2),
+            nn.Linear(256, 1), nn.Sigmoid(),
+        )
+
+    def forward(self, x):
+        return self.net(x)
+
+# 训练循环
+z_dim = 100
+G = Generator(z_dim)
+D = Discriminator()
+opt_G = torch.optim.Adam(G.parameters(), lr=2e-4, betas=(0.5, 0.999))
+opt_D = torch.optim.Adam(D.parameters(), lr=2e-4, betas=(0.5, 0.999))
+bce = nn.BCELoss()
+
+for epoch in range(num_epochs):
+    for real_batch, _ in dataloader:
+        batch_size = real_batch.size(0)
+        real_batch = real_batch.view(batch_size, -1)
+
+        # --- 训练判别器 ---
+        z = torch.randn(batch_size, z_dim)
+        fake = G(z).detach()
+        loss_D = bce(D(real_batch), torch.ones(batch_size, 1)) + \
+                 bce(D(fake), torch.zeros(batch_size, 1))
+        opt_D.zero_grad(); loss_D.backward(); opt_D.step()
+
+        # --- 训练生成器 ---
+        z = torch.randn(batch_size, z_dim)
+        fake = G(z)
+        # 技巧: 用 -log D(G(z)) 替代 log(1 - D(G(z))), 梯度更大
+        loss_G = bce(D(fake), torch.ones(batch_size, 1))
+        opt_G.zero_grad(); loss_G.backward(); opt_G.step()
+</code></pre>
+
+<h3>训练不稳定性:GAN 的"原罪"</h3>
+<p>GAN 的理论很漂亮,但实际训练极其困难:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>模式坍塌(mode collapse)</strong>:$G$ 只生成少数几种样本,足以骗过 $D$,但多样性丧失</li>
+<li><strong>训练震荡</strong>:$G$ 和 $D$ 的能力需要平衡,一方太强会让另一方完全无法学习</li>
+<li><strong>梯度消失</strong>:当 $D$ 太好时,$\log(1 - D(G(z))) \to 0$,$G$ 收不到梯度</li>
+</ul>
+
+<p>后续工作大量围绕解决这些问题:WGAN(Wasserstein 距离替代 JSD)、SNGAN(谱归一化)、Progressive GAN(逐步增大分辨率)、StyleGAN(分离风格与内容)。</p>
+
+<h3>影响与衰退</h3>
+<p>2014-2021 年 GAN 是图像生成的绝对主力。StyleGAN2(2019)生成的人脸至今仍是"假脸"的标志。但 2022 年扩散模型(DDPM/Stable Diffusion)在质量和多样性上全面超越 GAN,GAN 的主流地位迅速衰退。到 2025 年,GAN 主要用在:</p>
+<ol>
+<li>实时应用(推理只需一次前向传播,比扩散模型快 100 倍)</li>
+<li>超分辨率、风格迁移等特定任务</li>
+<li>扩散模型的加速(如 consistency distillation 用对抗训练)</li>
+</ol>
+
+<h3>批判视角</h3>
+<p>GAN 的"对抗训练"思想比 GAN 架构本身更持久。RLHF 里判别"好回答 vs 坏回答"的 reward model,某种意义上也是判别器;对抗样本攻防(adversarial robustness)直接源于 GAN 的博弈框架。Goodfellow 后来也转向了对抗安全方向。</p>
+
+<div class="refback"><strong>为什么必读:</strong>"对抗训练"是深度学习最重要的范式之一。即便 GAN 本身在图像生成上让位给了扩散模型,其博弈论视角影响了 RLHF、对抗鲁棒性、数据增强等多个方向。理解 GAN 才能理解"为什么 RLHF 里需要一个 reward model"。</div>
+
+<!-- ============================ P21 VAE ============================ -->
+<h2 id="p21"><span class="num">P21</span>VAE:变分推断遇上深度学习</h2>
+<p class="pos">对应主书:第 3 章 4.4.4 生成模型</p>
+
+<div class="paper-meta">
+<div class="title-en">Auto-Encoding Variational Bayes</div>
+<div class="row"><span class="label">作者</span>Diederik P. Kingma, Max Welling</div>
+<div class="row"><span class="label">机构</span>University of Amsterdam</div>
+<div class="row"><span class="label">发表</span>ICLR 2014</div>
+<div class="row"><span class="label">被引</span>45,000+</div>
+<div class="row"><span class="label">链接</span>arXiv:1312.6114</div>
+</div>
+
+<h3>问题:深度生成模型的概率框架缺失</h3>
+<p>GAN 绕开了似然,但代价是训练不稳定且无法算概率。传统贝叶斯方法可以做概率推断,但处理不了高维数据(图片、文本)。Kingma 和 Welling 的问题是:能不能<strong>用神经网络做变分推断,同时保持概率框架</strong>?</p>
+
+<h3>核心方法:变分下界(ELBO)</h3>
+
+<h4>生成模型假设</h4>
+<p>假设数据 $x$ 由潜在变量 $z$ 生成:先采 $z \sim p_\theta(z)$(先验,通常取标准正态),再用神经网络解码 $x \sim p_\theta(x|z)$。我们想最大化数据的边际似然:</p>
+
+<div class="formula">$\log p_\theta(x) = \log \int p_\theta(x|z) p_\theta(z) \, dz$</div>
+
+<p>这个积分对高维 $z$ 不可计算(intractable)。</p>
+
+<h4>变分推断</h4>
+<p>引入一个"编码器"$q_\phi(z|x)$ 近似真实后验 $p_\theta(z|x)$。通过 Jensen 不等式推导出 ELBO(Evidence Lower BOund):</p>
+
+<div class="formula">$\log p_\theta(x) \geq \underbrace{\mathbb{E}_{q_\phi(z|x)}[\log p_\theta(x|z)]}_{\text{重构项}} - \underbrace{D_{\text{KL}}(q_\phi(z|x) \| p_\theta(z))}_{\text{正则项}} = \text{ELBO}$</div>
+
+<p>两项的直觉:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>重构项</strong>:从 $z$ 能多好地还原 $x$(越大越好)</li>
+<li><strong>KL 散度项</strong>:编码器输出的分布不要偏离先验太多(越小越好,鼓励结构化潜空间)</li>
+</ul>
+
+<h4>重参数化技巧(Reparameterization Trick)</h4>
+<p>关键技术创新:从 $q_\phi(z|x) = \mathcal{N}(\mu_\phi(x), \sigma^2_\phi(x))$ 采样不能直接反传梯度(采样操作不可导)。Kingma 的解法:把随机性分离出来:</p>
+
+<div class="formula">$z = \mu_\phi(x) + \sigma_\phi(x) \odot \epsilon, \quad \epsilon \sim \mathcal{N}(0, I)$</div>
+
+<p>现在 $z$ 对 $\phi$ 是确定性函数(只是依赖外部噪声 $\epsilon$),梯度可以正常反传。</p>
+
+<div class="mermaid">
+flowchart LR
+    X["输入 x"] --> Enc["编码器 q_phi"]
+    Enc --> Mu["mu"]
+    Enc --> Sigma["sigma"]
+    Eps["epsilon ~ N(0,I)"] --> RP["z = mu + sigma * epsilon"]
+    Mu --> RP
+    Sigma --> RP
+    RP --> Dec["解码器 p_theta"]
+    Dec --> Xhat["重构 x'"]
+</div>
+
+<h3>PyTorch 实现</h3>
+<pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class VAE(nn.Module):
+    def __init__(self, input_dim=784, z_dim=20):
+        super().__init__()
+        # 编码器
+        self.fc1 = nn.Linear(input_dim, 400)
+        self.fc_mu = nn.Linear(400, z_dim)
+        self.fc_logvar = nn.Linear(400, z_dim)
+        # 解码器
+        self.fc3 = nn.Linear(z_dim, 400)
+        self.fc4 = nn.Linear(400, input_dim)
+
+    def encode(self, x):
+        h = F.relu(self.fc1(x))
+        return self.fc_mu(h), self.fc_logvar(h)
+
+    def reparameterize(self, mu, logvar):
+        std = torch.exp(0.5 * logvar)
+        eps = torch.randn_like(std)       # 外部噪声
+        return mu + std * eps             # 重参数化
+
+    def decode(self, z):
+        h = F.relu(self.fc3(z))
+        return torch.sigmoid(self.fc4(h))
+
+    def forward(self, x):
+        mu, logvar = self.encode(x.view(-1, 784))
+        z = self.reparameterize(mu, logvar)
+        return self.decode(z), mu, logvar
+
+def vae_loss(recon_x, x, mu, logvar):
+    # 重构损失 (binary cross-entropy)
+    BCE = F.binary_cross_entropy(recon_x, x.view(-1, 784), reduction='sum')
+    # KL 散度: -0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
+    KLD = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
+    return BCE + KLD
+</code></pre>
+
+<h3>VAE 的"模糊"问题与后续发展</h3>
+<p>VAE 的生成质量(尤其是图片)一直不如 GAN——输出偏模糊。原因:像素级重构损失(MSE/BCE)鼓励"平均"所有可能的输出。后续改进:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>VQ-VAE</strong>(van den Oord 2017):离散潜空间,替代连续高斯,生成更清晰</li>
+<li><strong>VQ-VAE-2</strong>(Razavi 2019):分层离散编码,质量接近 BigGAN</li>
+<li><strong>Stable Diffusion</strong>:在 VQ-VAE 的潜空间里做扩散——VAE 负责压缩,扩散负责生成。这是 2023-2025 图像生成的标准管线</li>
+</ul>
+
+<h3>影响</h3>
+<p>VAE 的影响远超"图像生成"这个应用:</p>
+<ol>
+<li><strong>重参数化技巧</strong>:成为所有"需要通过采样反传梯度"的标准方法(强化学习、Gumbel-Softmax 等)</li>
+<li><strong>潜空间学习</strong>:VAE 定义了"编码器-潜空间-解码器"范式,直接影响了 Stable Diffusion 的 Latent Diffusion 架构</li>
+<li><strong>变分推断 + 深度学习</strong>:打开了概率深度学习的大门,催生了变分序列模型、变分图神经网络等</li>
+</ol>
+
+<div class="refback"><strong>为什么必读:</strong>VAE 是理解 Stable Diffusion 架构的前置知识——Latent Diffusion 的"Latent"就是 VAE 的潜空间。重参数化技巧在 LLM 领域也被广泛使用(如 Gumbel-Softmax 做离散选择)。Kingma 同时是 Adam 和 VAE 的作者,两篇加起来可能是深度学习领域引用量最高的组合。</div>
+
+<!-- ============================ P22 DDPM ============================ -->
+<h2 id="p22"><span class="num">P22</span>DDPM:扩散模型,现代图像生成的基石</h2>
+<p class="pos">对应主书:第 3 章 4.4.4 生成模型</p>
+
+<div class="paper-meta">
+<div class="title-en">Denoising Diffusion Probabilistic Models</div>
+<div class="row"><span class="label">作者</span>Jonathan Ho, Ajay Jain, Pieter Abbeel</div>
+<div class="row"><span class="label">机构</span>UC Berkeley</div>
+<div class="row"><span class="label">发表</span>NeurIPS 2020</div>
+<div class="row"><span class="label">被引</span>15,000+</div>
+<div class="row"><span class="label">链接</span>arXiv:2006.11239</div>
+</div>
+
+<h3>问题:GAN 的替代品在哪里</h3>
+<p>2020 年时 GAN(尤其 StyleGAN2)是图像生成质量最高的方法,但训练不稳定、模式坍塌等问题始终困扰社区。扩散模型的理论框架早在 2015 年就被 Sohl-Dickstein 提出,但生成质量远不如 GAN。Ho 等人的贡献是<strong>让扩散模型在质量上第一次追平 GAN</strong>,并且训练简单得多。</p>
+
+<h3>核心方法:前向加噪 + 反向去噪</h3>
+
+<h4>前向过程(扩散)</h4>
+<p>从真实图像 $x_0$ 出发,逐步加高斯噪声,经过 $T$ 步变成纯噪声:</p>
+
+<div class="formula">$q(x_t | x_{t-1}) = \mathcal{N}(x_t; \sqrt{1 - \beta_t} \, x_{t-1}, \beta_t I)$</div>
+
+<p>其中 $\beta_t$ 是预定义的噪声调度(从小到大,如 $\beta_1 = 10^{-4}$ 到 $\beta_T = 0.02$)。一个关键性质:可以直接从 $x_0$ 跳到任意 $x_t$,无需逐步计算:</p>
+
+<div class="formula">$q(x_t | x_0) = \mathcal{N}(x_t; \sqrt{\bar{\alpha}_t} \, x_0, (1 - \bar{\alpha}_t) I)$</div>
+
+<p>其中 $\alpha_t = 1 - \beta_t$,$\bar{\alpha}_t = \prod_{s=1}^{t} \alpha_s$。当 $T$ 足够大,$x_T \approx \mathcal{N}(0, I)$。</p>
+
+<h4>反向过程(去噪)</h4>
+<p>如果我们能学会逆转每一步——从 $x_t$ 预测 $x_{t-1}$——就可以从纯噪声生成图像。反向过程也是高斯的:</p>
+
+<div class="formula">$p_\theta(x_{t-1} | x_t) = \mathcal{N}(x_{t-1}; \mu_\theta(x_t, t), \sigma_t^2 I)$</div>
+
+<p>Ho 等人的关键简化:不直接预测 $\mu$,而是<strong>预测噪声 $\epsilon$</strong>。网络 $\epsilon_\theta(x_t, t)$ 输入带噪图像和时间步,输出预测的噪声。</p>
+
+<div class="mermaid">
+flowchart LR
+    subgraph Forward["前向过程 (固定)"]
+        X0["x_0 (原图)"] -->|"加噪"| X1["x_1"]
+        X1 -->|"加噪"| X2["x_2"]
+        X2 -->|"..."| XT["x_T (纯噪声)"]
+    end
+    subgraph Reverse["反向过程 (学习)"]
+        XT2["x_T ~ N(0,I)"] -->|"去噪"| XTm1["x_{T-1}"]
+        XTm1 -->|"去噪"| XTm2["x_{T-2}"]
+        XTm2 -->|"..."| X02["x_0 (生成)"]
+    end
+</div>
+
+<h4>训练目标:极致简化</h4>
+<p>DDPM 的训练损失是所有深度生成模型中最简单的:</p>
+
+<div class="formula">$L_{\text{simple}} = \mathbb{E}_{t, x_0, \epsilon}\left[\|\epsilon - \epsilon_\theta(\sqrt{\bar{\alpha}_t} x_0 + \sqrt{1-\bar{\alpha}_t} \epsilon, \, t)\|^2\right]$</div>
+
+<p>翻译:随机采样时间步 $t$,随机采噪声 $\epsilon$,把噪声加到 $x_0$ 上得到 $x_t$,让网络预测加的噪声,用 MSE 训练。就这么简单。</p>
+
+<h3>训练与采样代码</h3>
+<pre><code class="language-python">import torch
+import torch.nn as nn
+
+# 噪声调度
+def linear_schedule(T, beta_start=1e-4, beta_end=0.02):
+    return torch.linspace(beta_start, beta_end, T)
+
+T = 1000
+betas = linear_schedule(T)
+alphas = 1.0 - betas
+alpha_bars = torch.cumprod(alphas, dim=0)
+
+# 前向加噪: 从 x_0 直接到 x_t
+def q_sample(x_0, t, noise=None):
+    if noise is None:
+        noise = torch.randn_like(x_0)
+    sqrt_alpha_bar = alpha_bars[t].sqrt().view(-1, 1, 1, 1)
+    sqrt_one_minus = (1 - alpha_bars[t]).sqrt().view(-1, 1, 1, 1)
+    return sqrt_alpha_bar * x_0 + sqrt_one_minus * noise, noise
+
+# 训练循环
+model = UNet(...)  # 预测噪声的 U-Net
+optimizer = torch.optim.Adam(model.parameters(), lr=2e-4)
+
+for batch in dataloader:
+    x_0 = batch['image']
+    t = torch.randint(0, T, (x_0.size(0),))       # 随机时间步
+    x_t, noise = q_sample(x_0, t)                   # 加噪
+    pred_noise = model(x_t, t)                       # 预测噪声
+    loss = nn.functional.mse_loss(pred_noise, noise) # 就是 MSE
+    optimizer.zero_grad(); loss.backward(); optimizer.step()
+
+# 采样: 从纯噪声逐步去噪
+@torch.no_grad()
+def sample(model, shape):
+    x = torch.randn(shape)  # x_T ~ N(0, I)
+    for t in reversed(range(T)):
+        t_batch = torch.full((shape[0],), t, dtype=torch.long)
+        pred_noise = model(x, t_batch)
+        # 计算 x_{t-1} 的均值
+        alpha = alphas[t]; alpha_bar = alpha_bars[t]
+        x = (1 / alpha.sqrt()) * (x - (1 - alpha) / (1 - alpha_bar).sqrt() * pred_noise)
+        if t > 0:
+            x = x + betas[t].sqrt() * torch.randn_like(x)  # 加回随机性
+    return x
+</code></pre>
+
+<h3>为什么扩散模型超越了 GAN</h3>
+<table>
+<tr><th>维度</th><th>GAN</th><th>DDPM</th></tr>
+<tr><td>训练稳定性</td><td>差(minimax 博弈)</td><td>好(简单 MSE)</td></tr>
+<tr><td>模式覆盖</td><td>易模式坍塌</td><td>天然全覆盖(逐步去噪)</td></tr>
+<tr><td>生成多样性</td><td>受限</td><td>极高</td></tr>
+<tr><td>推理速度</td><td>一次前向(快)</td><td>需 T 步(慢)</td></tr>
+<tr><td>条件生成</td><td>需专门架构</td><td>Classifier-free guidance 即可</td></tr>
+</table>
+
+<h3>后续发展链</h3>
+<ol>
+<li><strong>DDIM</strong>(Song 2020):确定性采样,50 步就够,不用 1000 步</li>
+<li><strong>Classifier-Free Guidance</strong>(Ho & Salimans 2022):无需额外分类器的条件生成,质量大幅提升</li>
+<li><strong>Latent Diffusion / Stable Diffusion</strong>(Rombach 2022):在 VAE 潜空间做扩散,64x 压缩后速度可接受</li>
+<li><strong>DALL-E 2/3、Midjourney、Imagen</strong>:文本到图像,全部基于扩散</li>
+<li><strong>Sora</strong>(OpenAI 2024):视频生成,扩散 + Transformer(DiT)</li>
+</ol>
+
+<h3>批判视角</h3>
+<p>扩散模型的推理速度问题本质上未完全解决——1000 步缩到 4-8 步(consistency distillation)会损失质量。另外,扩散模型的理论框架限制了它在离散数据(文本)上的应用——文本生成仍然是自回归模型(GPT)的天下。2024-2025 年有一些离散扩散模型的尝试(如 MDLM),但还没有实质性突破。</p>
+
+<div class="refback"><strong>为什么必读:</strong>Stable Diffusion、DALL-E、Midjourney、Sora——2022-2025 所有惊艳的图像/视频生成背后都是 DDPM 的思想。读懂前向加噪和反向去噪的数学,你才能理解为什么"文生图"需要那么多步推理,以及为什么 Latent Diffusion 要把扩散搬到潜空间。</div>
+
+<!-- ============================ P23 Word2Vec ============================ -->
+<h2 id="p23"><span class="num">P23</span>Word2Vec:词向量的起点</h2>
+<p class="pos">对应主书:第 3 章 4.5.2 嵌入</p>
+
+<div class="paper-meta">
+<div class="title-en">Efficient Estimation of Word Representations in Vector Space</div>
+<div class="row"><span class="label">作者</span>Tomas Mikolov, Kai Chen, Greg Corrado, Jeffrey Dean</div>
+<div class="row"><span class="label">机构</span>Google</div>
+<div class="row"><span class="label">发表</span>ICLR 2013 Workshop</div>
+<div class="row"><span class="label">被引</span>40,000+</div>
+<div class="row"><span class="label">链接</span>arXiv:1301.3781</div>
+</div>
+
+<h3>问题:词的数学表示</h3>
+<p>NLP 的第一个问题:怎么把词变成数字?2013 年之前主流是 one-hot 向量(词表大小 $V$ 维,只有一个 1),或者 TF-IDF。问题:one-hot 维度太高(词表几万到几十万)、任意两个词之间距离相同(语义信息为零)。</p>
+
+<p>Mikolov 的目标:训练低维(100-300 维)的稠密向量,使语义相近的词在向量空间中距离近。</p>
+
+<h3>核心方法:两种架构</h3>
+<p><strong>CBOW(Continuous Bag of Words)</strong>:用上下文窗口内的词预测中心词。比如"the cat sat on the ___",用 {the, cat, sat, on, the} 预测 "mat"。</p>
+
+<p><strong>Skip-gram</strong>:反过来,用中心词预测上下文。给定 "sat",预测 {cat, on} 等。实际效果 Skip-gram 更好(尤其对稀有词),成为主流。</p>
+
+<div class="formula">$P(w_o | w_c) = \frac{\exp(\mathbf{v}_{w_o}' \cdot \mathbf{v}_{w_c})}{\sum_{w \in V} \exp(\mathbf{v}_w' \cdot \mathbf{v}_{w_c})}$</div>
+
+<p>分母对整个词表求和——太慢。两个加速方案:Hierarchical Softmax(用哈夫曼树)和 <strong>Negative Sampling</strong>(从词表中随机采几个"负例",只更新它们)。Negative Sampling 极其简单高效,成为事实标准。</p>
+
+<h3>令人惊讶的性质:向量算术</h3>
+<p>Word2Vec 发现的最著名现象:</p>
+<div class="formula">$\text{king} - \text{man} + \text{woman} \approx \text{queen}$</div>
+<p>语义关系被编码为向量空间中的方向。这个发现直接影响了后续所有 embedding 方法的设计目标。</p>
+
+<h3>影响</h3>
+<p>Word2Vec 开启了"万物皆可 embed"的时代:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>GloVe</strong>(Stanford 2014):用全局共现矩阵替代局部窗口,数学框架更优雅</li>
+<li><strong>FastText</strong>(Facebook 2016):子词级 embedding,处理未登录词</li>
+<li><strong>ELMo</strong>(Peters 2018):上下文相关的词向量(同一个词在不同句子中向量不同)</li>
+<li><strong>BERT/GPT</strong>:本质上是把"静态 embedding"升级为"动态 contextual embedding"</li>
+</ul>
+
+<p>到了 2025 年,没有人再用 Word2Vec 做 NLP 任务——BERT/GPT 的 contextual embedding 全面替代。但 Word2Vec 的思想仍然活着:推荐系统中的 Item2Vec、图嵌入中的 Node2Vec、代码嵌入中的 Code2Vec——都是"把离散对象映射到连续空间"这个 Word2Vec 范式的延伸。</p>
+
+<div class="refback"><strong>为什么必读:</strong>Word2Vec 是理解"embedding"概念的最佳入口。主书中 BERT 的 token embedding、Transformer 的位置编码、RAG 的向量检索——所有这些的思想起点都是"用低维稠密向量表示离散符号"。Mikolov 的这篇论文让这个想法从学术概念变成了工程实践。</div>
+
+<!-- ============================ PART 7: 第4章 ============================ -->
+<div class="part-header">
+<div class="part-label">PART SEVEN</div>
+<h2 class="part-title">第 4 章相关 · LLM 补充</h2>
+<p class="part-desc">Transformer 的挑战者、检索增强生成、以及 Agent 的推理框架。</p>
+</div>
+
+<!-- ============================ P24 Mamba ============================ -->
+<h2 id="p24"><span class="num">P24</span>Mamba:线性时间的序列建模</h2>
+<p class="pos">对应主书:第 4 章 5.4.3 非 Transformer 架构</p>
+
+<div class="paper-meta">
+<div class="title-en">Mamba: Linear-Time Sequence Modeling with Selective State Spaces</div>
+<div class="row"><span class="label">作者</span>Albert Gu, Tri Dao</div>
+<div class="row"><span class="label">机构</span>Carnegie Mellon University, Princeton University</div>
+<div class="row"><span class="label">发表</span>COLM 2024(预印本 2023)</div>
+<div class="row"><span class="label">被引</span>3,000+</div>
+<div class="row"><span class="label">链接</span>arXiv:2312.00752</div>
+</div>
+
+<h3>问题:Transformer 的二次复杂度</h3>
+<p>Transformer 的 self-attention 对序列长度 $N$ 是 $O(N^2)$ 的时间和内存——这是一个根本性限制。FlashAttention(P10)通过硬件层优化缓解了常数因子,但平方级的渐近复杂度不变。对百万 token 级的超长序列(基因组、长视频、代码仓库),Transformer 仍然力不从心。</p>
+
+<p>2020-2023 年,Gu 一直在探索<strong>状态空间模型(SSM)</strong>——一种来自控制理论的序列建模框架,具有 $O(N)$ 复杂度。前序工作 S4(2021)和 H3(2022)证明了可行性,但在语言建模上始终追不上 Transformer。Mamba 是这条线的突破点。</p>
+
+<h3>背景:结构化状态空间模型(S4)</h3>
+<p>连续时间 SSM 的定义:</p>
+<div class="formula">$h'(t) = Ah(t) + Bx(t)$</div>
+<div class="formula">$y(t) = Ch(t) + Dx(t)$</div>
+
+<p>离散化(用零阶保持或双线性变换)后变成:</p>
+<div class="formula">$h_t = \bar{A} h_{t-1} + \bar{B} x_t$</div>
+<div class="formula">$y_t = C h_t + D x_t$</div>
+
+<p>这是一个线性递推——跟 RNN 类似,但参数 $\bar{A}, \bar{B}, C$ 是固定的(不依赖输入)。固定参数意味着:可以展开成卷积,用 FFT 加速训练($O(N \log N)$),也可以用递推做 $O(1)$ 推理。</p>
+
+<p>S4 的问题:$A, B, C$ 不依赖输入——模型<strong>无法根据内容选择性地记住或遗忘信息</strong>。这是 Transformer attention 的核心优势(attention 权重完全由输入决定)。</p>
+
+<h3>核心创新:Selective State Spaces</h3>
+<p>Mamba 的关键 insight:让 $B, C$ 和离散化步长 $\Delta$ <strong>依赖于输入</strong>:</p>
+
+<div class="formula">$B_t = \text{Linear}(x_t), \quad C_t = \text{Linear}(x_t), \quad \Delta_t = \text{softplus}(\text{Linear}(x_t))$</div>
+
+<p>这样模型可以根据当前 token 的内容决定"记住多少"和"输出什么"。$\Delta_t$ 控制离散化步长——$\Delta$ 大时 $\bar{A}$ 接近 0(忘掉历史),$\Delta$ 小时 $\bar{A}$ 接近 1(保留历史)。</p>
+
+<p>但输入依赖意味着不能再用 FFT(因为卷积核不再固定)。Gu 和 Dao(FlashAttention 的作者)设计了<strong>硬件感知的选择性扫描算法</strong>——本质上是用 GPU 并行前缀和(parallel scan)替代朴素递推,在 GPU 上高效执行。</p>
+
+<div class="mermaid">
+flowchart TB
+    X["输入 x_t"] --> Lin1["Linear -> B_t"]
+    X --> Lin2["Linear -> C_t"]
+    X --> Lin3["Linear -> Delta_t"]
+    Lin3 --> Disc["离散化 A, B"]
+    Lin1 --> Disc
+    Disc --> Scan["选择性扫描 (parallel scan)"]
+    H["h_{t-1}"] --> Scan
+    Scan --> H2["h_t"]
+    H2 --> Out["y_t = C_t * h_t"]
+    Lin2 --> Out
+</div>
+
+<h3>Mamba 块架构</h3>
+<p>完整的 Mamba 块不只是 SSM——还包裹了类似 Transformer FFN 的结构:</p>
+
+<pre><code class="language-python">class MambaBlock(nn.Module):
+    """简化版 Mamba 块"""
+    def __init__(self, d_model, d_state=16, d_conv=4, expand=2):
+        super().__init__()
+        d_inner = d_model * expand
+        self.in_proj = nn.Linear(d_model, d_inner * 2, bias=False)  # 分两路
+        self.conv1d = nn.Conv1d(d_inner, d_inner, d_conv, padding=d_conv-1,
+                                groups=d_inner)  # 局部卷积
+        self.act = nn.SiLU()
+
+        # SSM 参数 (输入依赖)
+        self.x_proj = nn.Linear(d_inner, d_state * 2 + 1, bias=False)  # B, C, delta
+        self.A_log = nn.Parameter(torch.log(torch.arange(1, d_state+1).float()))
+        self.D = nn.Parameter(torch.ones(d_inner))
+
+        self.out_proj = nn.Linear(d_inner, d_model, bias=False)
+
+    def forward(self, x):
+        # x: (batch, seq_len, d_model)
+        xz = self.in_proj(x)
+        x_branch, z = xz.chunk(2, dim=-1)
+
+        # 局部卷积 (捕获近邻信息)
+        x_branch = self.conv1d(x_branch.transpose(1, 2))[:, :, :x.size(1)]
+        x_branch = x_branch.transpose(1, 2)
+        x_branch = self.act(x_branch)
+
+        # 选择性 SSM
+        y = self.selective_ssm(x_branch)
+        y = y + self.D.unsqueeze(0).unsqueeze(0) * x_branch  # skip connection
+
+        # 门控输出
+        output = y * self.act(z)
+        return self.out_proj(output)
+
+    def selective_ssm(self, x):
+        # 从输入计算 B, C, delta
+        proj = self.x_proj(x)
+        # ... 离散化 + parallel scan (实际用 Triton kernel)
+        pass  # 完整实现需要 selective_scan_cuda
+</code></pre>
+
+<h3>复杂度对比</h3>
+<table>
+<tr><th>模型</th><th>训练复杂度</th><th>推理(每 token)</th><th>长序列支持</th></tr>
+<tr><td>Transformer</td><td>$O(N^2 d)$</td><td>$O(N d)$(KV cache)</td><td>受限于二次复杂度</td></tr>
+<tr><td>S4 (固定 SSM)</td><td>$O(N \log N \cdot d)$</td><td>$O(d)$</td><td>好,但缺乏选择性</td></tr>
+<tr><td>Mamba</td><td>$O(N d)$</td><td>$O(d)$(固定状态)</td><td>理论上无上限</td></tr>
+</table>
+
+<h3>实验结果</h3>
+<ul style="list-style:none;padding-left:0;">
+<li>- 语言建模:Mamba-3B 在 Pile 上的 perplexity 匹配同参数量的 Transformer++</li>
+<li>- 推理吞吐:序列长度 64K 时 Mamba 推理速度是 Transformer 的 5 倍</li>
+<li>- DNA 建模:在 HG38 人类基因组上大幅超越 Transformer(超长序列的天然优势)</li>
+<li>- 音频:在 SC09 语音分类上领先</li>
+</ul>
+
+<h3>影响与争议</h3>
+<p>Mamba 引发了"Transformer 替代品"的热潮:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Mamba-2</strong>(Gu & Dao 2024):把 SSM 统一到矩阵乘框架,进一步提速</li>
+<li><strong>Jamba</strong>(AI21 2024):Mamba + Transformer 混合架构</li>
+<li><strong>RWKV</strong>(Peng 2023):另一条 RNN 复兴路线,思路与 Mamba 互补</li>
+<li><strong>Zamba</strong>(Zyphra 2024):Mamba 主干 + 少量 attention 层的混合</li>
+</ul>
+
+<p>但争议也很大:截至 2025 年,<strong>没有任何 Mamba-only 模型在大规模(>10B)语言建模上真正超越同规模 Transformer</strong>。主流方向转向了混合架构(少量 attention + 大量 SSM)。Mamba 的价值更可能是成为 Transformer 的"补充组件"而非"替代品"。</p>
+
+<div class="refback"><strong>为什么必读:</strong>理解"为什么 Transformer 的二次复杂度是个问题"以及"线性替代品的 tradeoff 在哪里",是判断 LLM 架构演进方向的基础。Mamba 的选择性状态空间思想——让模型根据内容决定记忆策略——是 LSTM 门控思想在 2024 年的现代回归。</div>
+
+<!-- ============================ P25 RAG ============================ -->
+<h2 id="p25"><span class="num">P25</span>RAG:让 LLM 用上外部知识</h2>
+<p class="pos">对应主书:第 4 章 5.10 RAG</p>
+
+<div class="paper-meta">
+<div class="title-en">Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</div>
+<div class="row"><span class="label">作者</span>Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir Karpukhin, Naman Goyal, Heinrich Kuttler, Mike Lewis, Wen-tau Yih, Tim Rocktaschel, Sebastian Riedel, Douwe Kiela</div>
+<div class="row"><span class="label">机构</span>Facebook AI Research, University College London</div>
+<div class="row"><span class="label">发表</span>NeurIPS 2020</div>
+<div class="row"><span class="label">被引</span>4,000+</div>
+<div class="row"><span class="label">链接</span>arXiv:2005.11401</div>
+</div>
+
+<h3>问题:LLM 的知识封闭性</h3>
+<p>预训练语言模型把知识"烤"(bake)在参数里。问题:</p>
+<ol>
+<li><strong>幻觉</strong>:没学过的知识会编造</li>
+<li><strong>时效性</strong>:训练截止后的信息不知道</li>
+<li><strong>可追溯性</strong>:答案无法引用来源</li>
+</ol>
+
+<p>Lewis 等人提出一个简单但影响深远的范式:先检索相关文档,再把文档塞进生成模型的输入。</p>
+
+<h3>核心方法:Retrieve-then-Generate</h3>
+<p>RAG 模型由两部分组成:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Retriever</strong>:给定查询 $q$,用 DPR(Dense Passage Retrieval)从知识库检索 top-$k$ 文档 $\{d_1, \ldots, d_k\}$</li>
+<li><strong>Generator</strong>:把查询和检索到的文档拼接后,用 seq2seq 模型(论文用 BART)生成答案</li>
+</ul>
+
+<p>论文定义了两种边际化方式:</p>
+<div class="formula">$p_{\text{RAG-Sequence}}(y|x) = \sum_{z \in \text{top-}k} p_\eta(z|x) \, p_\theta(y|x, z)$</div>
+<div class="formula">$p_{\text{RAG-Token}}(y|x) = \prod_i \sum_{z \in \text{top-}k} p_\eta(z|x) \, p_\theta(y_i|x, z, y_{1:i-1})$</div>
+
+<p>RAG-Sequence:每个文档独立生成完整答案,再加权。RAG-Token:每个 token 都可以参考不同文档。实际工程中,大多数 RAG 系统采用的是更简化的版本——直接把检索文档拼接到 prompt 里,不做概率边际化。</p>
+
+<h3>影响:从论文到产业范式</h3>
+<p>RAG 在 2023-2025 年从学术论文变成了<strong>LLM 应用的标准架构</strong>:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>企业知识问答</strong>:把公司文档嵌入向量库,用 RAG 回答员工问题</li>
+<li><strong>代码助手</strong>:检索代码仓库相关文件,辅助代码生成(Cursor、GitHub Copilot)</li>
+<li><strong>搜索引擎</strong>:Perplexity、Bing Chat 都是"搜索 + 生成"的 RAG 变体</li>
+<li><strong>向量数据库热潮</strong>:Milvus、Pinecone、Qdrant 等的兴起直接由 RAG 需求驱动(与 P18 HNSW 关联)</li>
+</ul>
+
+<p>工程实践中,RAG 面临的主要挑战不是原论文讨论的概率框架,而是:切分粒度(chunk 多大)、检索质量(语义搜索 vs 关键词)、上下文窗口限制(检索太多塞不下)、以及"检索了但没用好"的 lost-in-the-middle 问题。</p>
+
+<div class="refback"><strong>为什么必读:</strong>RAG 是 2023-2025 年 LLM 落地最主流的范式——几乎所有企业 AI 应用的第一步都是"建 RAG"。理解原论文的检索-生成框架,以及它和当前工程实践的差距,是 AI 工程师的基本功。</div>
+
+<!-- ============================ P26 ReAct ============================ -->
+<h2 id="p26"><span class="num">P26</span>ReAct:让 LLM 推理与行动协同</h2>
+<p class="pos">对应主书:第 4 章 5.11 Agent</p>
+
+<div class="paper-meta">
+<div class="title-en">ReAct: Synergizing Reasoning and Acting in Language Models</div>
+<div class="row"><span class="label">作者</span>Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan, Yuan Cao</div>
+<div class="row"><span class="label">机构</span>Princeton University, Google Research</div>
+<div class="row"><span class="label">发表</span>ICLR 2023</div>
+<div class="row"><span class="label">被引</span>3,000+</div>
+<div class="row"><span class="label">链接</span>arXiv:2210.03629</div>
+</div>
+
+<h3>问题:推理和行动的割裂</h3>
+<p>Chain-of-Thought(P16)让 LLM 学会了"思考"——但只是内部推理,无法与外部世界交互。另一方面,"工具使用"(让 LLM 调 API)只有行动没有推理——模型不会解释为什么要调这个 API。Yao 等人的观察:人类解决问题时,推理和行动是<strong>交替进行</strong>的——"我觉得应该查一下这个(推理) → 去搜索(行动) → 搜索结果显示...(观察) → 所以答案是...(推理)"。</p>
+
+<h3>核心方法:Thought-Action-Observation 循环</h3>
+<p>ReAct 让 LLM 在 prompt 中交替生成三种内容:</p>
+
+<p><strong>Thought</strong>:推理当前状态,决定下一步("我需要查找 X 的出生年份")</p>
+<p><strong>Action</strong>:调用外部工具(搜索、计算器、数据库查询等)</p>
+<p><strong>Observation</strong>:工具返回的结果(搜索结果、计算值等)</p>
+
+<p>一个典型的 ReAct trace:</p>
+<pre><code class="language-text">Question: 奥巴马的母校和特朗普的母校,哪个建校更早?
+
+Thought 1: 我需要先找到奥巴马的母校。
+Action 1: Search[Barack Obama education]
+Observation 1: Barack Obama attended Columbia University and Harvard Law School.
+
+Thought 2: 奥巴马的母校是哥伦比亚大学和哈佛法学院。现在找特朗普的。
+Action 2: Search[Donald Trump education]
+Observation 2: Donald Trump attended the Wharton School at the University of Pennsylvania.
+
+Thought 3: 特朗普的母校是宾大。现在比较建校时间。哥伦比亚 1754 年,宾大 1740 年。
+Action 3: Lookup[University of Pennsylvania founding year]
+Observation 3: The University of Pennsylvania was founded in 1740.
+
+Thought 4: 宾大 1740 年比哥伦比亚 1754 年更早。
+Action 4: Finish[特朗普的母校宾夕法尼亚大学(1740年)比奥巴马的母校哥伦比亚大学(1754年)建校更早]
+</code></pre>
+
+<h3>与 CoT 的对比</h3>
+<table>
+<tr><th>方法</th><th>推理</th><th>行动</th><th>知识来源</th><th>可验证性</th></tr>
+<tr><td>Standard prompting</td><td>无</td><td>无</td><td>参数内</td><td>低</td></tr>
+<tr><td>CoT (P16)</td><td>有</td><td>无</td><td>参数内</td><td>中(可看推理过程)</td></tr>
+<tr><td>Act-only</td><td>无</td><td>有</td><td>外部工具</td><td>中(可看工具调用)</td></tr>
+<tr><td>ReAct</td><td>有</td><td>有</td><td>参数内 + 外部</td><td>高(推理 + 工具全可见)</td></tr>
+</table>
+
+<h3>影响:Agent 范式的起点</h3>
+<p>ReAct 直接定义了 2023-2025 年 LLM Agent 的基本模式:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>LangChain Agent</strong>:默认 Agent 类型就是 ReAct 模式</li>
+<li><strong>AutoGPT、BabyAGI</strong>:本质上是 ReAct 循环的自动化版本(加了任务分解和记忆)</li>
+<li><strong>OpenAI Function Calling</strong>:把 ReAct 的 Action 从文本格式化为结构化 JSON 调用</li>
+<li><strong>Claude Code、Cursor Agent</strong>:编程场景的 ReAct——"分析问题 → 读文件 → 修改代码 → 运行测试"</li>
+</ul>
+
+<p>ReAct 的精髓不是某个具体技术,而是一个<strong>思维范式的转变</strong>:LLM 不只是"回答问题的模型",而是"能推理和行动的 Agent"。这个范式转变催生了整个 AI Agent 生态。</p>
+
+<div class="refback"><strong>为什么必读:</strong>如果你在做 LLM Agent——无论是客服机器人、代码助手还是自动化工作流——你的架构底层大概率是 ReAct 模式的某种变体。理解"推理-行动交替"这个简单但强大的框架,是设计可靠 Agent 的第一步。</div>
+
+</main>
+<script>
+hljs.highlightAll();
+mermaid.initialize({startOnLoad:true,theme:'neutral',fontFamily:'Inter,sans-serif'});
+</script>
+</body>
+</html>

@@ -1,0 +1,2717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Model Technology — From Traditional ML to Performance Engineering</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+:root {
+  --bg: #fbfaf7;
+  --fg: #1d1d1b;
+  --muted: #6b6b68;
+  --accent: #7a4a2f;
+  --accent-soft: #f2e9e2;
+  --rule: #e3dfd6;
+  --code-bg: #282c34;
+  --sidebar-bg: #f4f1ea;
+  --mono: "SFMono-Regular", "JetBrains Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --serif: "Source Serif Pro", "Songti SC", "STSong", Georgia, "Times New Roman", serif;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--fg);
+  background: var(--bg);
+  display: flex;
+}
+aside.toc {
+  position: sticky;
+  top: 0;
+  width: 300px;
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--rule);
+  padding: 24px 20px;
+  font-family: var(--sans);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+aside.toc h1 {
+  font-family: var(--serif);
+  font-size: 18px;
+  margin: 0 0 4px 0;
+  color: var(--accent);
+}
+aside.toc .sub {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+aside.toc .group {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 14px;
+  margin-bottom: 4px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--rule);
+}
+aside.toc ol { list-style: none; padding: 0; margin: 0; }
+aside.toc ol li { margin-bottom: 2px; }
+aside.toc a {
+  color: var(--fg);
+  text-decoration: none;
+  display: block;
+  padding: 3px 6px;
+  border-radius: 3px;
+  transition: all 0.15s;
+}
+aside.toc a:hover { background: var(--accent-soft); color: var(--accent); }
+aside.toc .num { color: var(--muted); font-family: var(--mono); margin-right: 6px; font-size: 11px; }
+
+main {
+  flex: 1;
+  max-width: 880px;
+  padding: 60px 72px 120px 72px;
+  min-width: 0;
+}
+header.cover {
+  border-bottom: 2px solid var(--fg);
+  padding-bottom: 32px;
+  margin-bottom: 48px;
+}
+header.cover h1 {
+  font-size: 42px;
+  line-height: 1.15;
+  margin: 0 0 12px 0;
+  font-weight: 700;
+}
+header.cover .subtitle {
+  font-size: 20px;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 20px;
+}
+header.cover .meta {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+h2 {
+  font-size: 26px;
+  margin-top: 72px;
+  margin-bottom: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+  scroll-margin-top: 20px;
+}
+h2 .num {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-weight: 400;
+  margin-right: 10px;
+  font-size: 20px;
+}
+.pos {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: 0;
+  margin-bottom: 16px;
+  padding: 6px 12px;
+  background: var(--accent-soft);
+  border-left: 2px solid var(--accent);
+}
+h3 {
+  font-size: 18px;
+  margin-top: 28px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+h4 {
+  font-size: 15px;
+  margin-top: 18px;
+  margin-bottom: 4px;
+  font-weight: 600;
+  color: var(--accent);
+}
+p { margin: 0 0 14px 0; text-align: justify; }
+
+code {
+  font-family: var(--mono);
+  font-size: 14px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+pre {
+  background: var(--code-bg);
+  border-radius: 6px;
+  padding: 14px 18px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 16px 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+
+.callout {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  padding: 10px 16px;
+  margin: 16px 0;
+  font-size: 15px;
+}
+.callout .tag {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.formula {
+  font-family: var(--serif);
+  padding: 10px 18px;
+  background: #faf7f0;
+  border-left: 2px solid var(--muted);
+  margin: 12px 0;
+  font-size: 16px;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+  font-family: var(--sans);
+}
+th, td {
+  border-bottom: 1px solid var(--rule);
+  padding: 7px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+th { background: var(--sidebar-bg); font-weight: 600; }
+
+.part-header {
+  margin-top: 100px;
+  margin-bottom: 24px;
+  padding: 24px 28px;
+  background: linear-gradient(to right, var(--accent-soft), transparent);
+  border-left: 4px solid var(--accent);
+}
+.part-header .part-label {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+}
+.part-header h2.part-title {
+  font-size: 32px;
+  margin: 4px 0 8px 0;
+  padding: 0;
+  border: none;
+}
+.part-header .part-desc {
+  font-size: 15px;
+  color: var(--muted);
+  font-style: italic;
+  margin: 0;
+}
+
+.mermaid {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.footnote {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+@media (max-width: 1100px) {
+  aside.toc { display: none; }
+  main { padding: 40px 32px; }
+}
+</style>
+</head>
+<body>
+
+<aside class="toc">
+  <h1>AI Model Tech</h1>
+  <div class="sub">Ch 3 · ML to Performance Engineering</div>
+
+  <div class="group">3.1 Traditional ML</div>
+  <ol>
+    <li><a href="#s3-1-1"><span class="num">1</span>K-means &amp; KNN</a></li>
+    <li><a href="#s3-1-2"><span class="num">2</span>Tree Models</a></li>
+    <li><a href="#s3-1-3"><span class="num">3</span>SVM</a></li>
+    <li><a href="#s3-1-4"><span class="num">4</span>N-gram &amp; LPA</a></li>
+    <li><a href="#s3-1-5"><span class="num">5</span>Regression &amp; Prediction</a></li>
+    <li><a href="#s3-1-6"><span class="num">6</span>Time Series: DTW &amp; DBA</a></li>
+  </ol>
+
+  <div class="group">3.2 Fundamental Operators</div>
+  <ol>
+    <li><a href="#s3-2-1"><span class="num">1</span>Matrix Multiply &amp; Basic Ops</a></li>
+    <li><a href="#s3-2-2"><span class="num">2</span>Data Movement Operators</a></li>
+    <li><a href="#s3-2-3"><span class="num">3</span>Convolution &amp; Pooling</a></li>
+    <li><a href="#s3-2-4"><span class="num">4</span>Activation Functions</a></li>
+    <li><a href="#s3-2-5"><span class="num">5</span>Normalization</a></li>
+  </ol>
+
+  <div class="group">3.3 Classic DL Models</div>
+  <ol>
+    <li><a href="#s3-3-1"><span class="num">1</span>CNN</a></li>
+    <li><a href="#s3-3-2"><span class="num">2</span>RNN / LSTM / GRU</a></li>
+    <li><a href="#s3-3-3"><span class="num">3</span>GNN &amp; GAT</a></li>
+    <li><a href="#s3-3-4"><span class="num">4</span>GAN &amp; VAE</a></li>
+  </ol>
+
+  <div class="group">3.4 Data &amp; Feature Engineering</div>
+  <ol>
+    <li><a href="#s3-4-1"><span class="num">1</span>Sample Scoring, Generation &amp; Augmentation</a></li>
+    <li><a href="#s3-4-2"><span class="num">2</span>Preprocessing &amp; Feature Construction</a></li>
+    <li><a href="#s3-4-3"><span class="num">3</span>Dimensionality Reduction</a></li>
+    <li><a href="#s3-4-4"><span class="num">4</span>Feature Selection</a></li>
+  </ol>
+
+  <div class="group">3.5 Training Optimization</div>
+  <ol>
+    <li><a href="#s3-5-1"><span class="num">1</span>Supervised Learning</a></li>
+    <li><a href="#s3-5-2"><span class="num">2</span>Self-Supervised Pretraining</a></li>
+    <li><a href="#s3-5-3"><span class="num">3</span>Fine-Tuning &amp; Alignment</a></li>
+    <li><a href="#s3-5-4"><span class="num">4</span>Reinforcement Learning</a></li>
+    <li><a href="#s3-5-5"><span class="num">5</span>Distillation / Transfer / Multi-Task</a></li>
+    <li><a href="#s3-5-6"><span class="num">6</span>Federated Learning</a></li>
+    <li><a href="#s3-5-7"><span class="num">7</span>AutoML</a></li>
+  </ol>
+
+  <div class="group">3.6 AI Performance Engineering</div>
+  <ol>
+    <li><a href="#s3-6-1"><span class="num">1</span>NPU Performance Modeling</a></li>
+    <li><a href="#s3-6-2"><span class="num">2</span>Structural Optimization / Quantization / Pruning</a></li>
+    <li><a href="#s3-6-3"><span class="num">3</span>Operator Optimization</a></li>
+    <li><a href="#s3-6-4"><span class="num">4</span>Software Stack Optimization</a></li>
+  </ol>
+
+  <div class="group">3.7 AI in Networking</div>
+  <ol>
+    <li><a href="#s3-7-1"><span class="num">1</span>Traffic Classification: Requirements</a></li>
+    <li><a href="#s3-7-2"><span class="num">2</span>Traffic Classification: Features &amp; Models</a></li>
+    <li><a href="#s3-7-3"><span class="num">3</span>Log Anomaly Detection: Requirements</a></li>
+    <li><a href="#s3-7-4"><span class="num">4</span>Log Anomaly Detection: Methods</a></li>
+    <li><a href="#s3-7-5"><span class="num">5</span>KPI Forecasting: Requirements</a></li>
+    <li><a href="#s3-7-6"><span class="num">6</span>KPI Forecasting: Methods</a></li>
+  </ol>
+</aside>
+
+<main>
+
+<header class="cover">
+  <h1>AI Model Technology</h1>
+  <div class="subtitle">From Traditional Machine Learning to Performance Engineering — The Complete Path to Making AI Actually Run</div>
+  <div class="meta">Chapter 3 · Internal Learning Material · 36 sections</div>
+</header>
+
+<p>AI engineers in the LLM era still need traditional machine learning — not out of nostalgia, but because in scenarios with <strong>limited data, interpretable features, and tight latency constraints</strong> (traffic classification on network devices, KPI anomaly detection), a single XGBoost tree is often a better fit than an LLM. The structure of this chapter reflects that view: traditional ML first, then fundamental operators, then classic deep learning models, then training optimization, and finally performance engineering and domain applications. Each layer is the foundation for the next, yet each also holds an independent place in modern AI systems.</p>
+
+<p>All 36 sections go deep. The key anchors are: 3.1.2 Tree Models (full derivation from decision trees to XGBoost), 3.2.3 Convolution (including im2col and Winograd), 3.3.2 LSTM gate derivations, 3.5.3 Fine-Tuning &amp; Alignment (the full SFT/DPO/RLHF pipeline), 3.6.3 Operator Optimization (Roofline + tiling + FlashAttention), and 3.7.2 Traffic Classification feature engineering in practice. The other sections are equally substantive — every section is written at the level of a knowledgeable colleague explaining it for 30 minutes, not as a textbook survey.</p>
+
+<!-- ==================== 3.1 Traditional ML ==================== -->
+<div class="part-header">
+  <div class="part-label">PART ONE</div>
+  <h2 class="part-title">3.1 Traditional Machine Learning</h2>
+  <p class="part-desc">Decades of accumulated knowledge before deep learning — still the best answer in many scenarios.</p>
+</div>
+
+<!-- 3.1.1 -->
+<h2 id="s3-1-1"><span class="num">3.1.1</span>K-means and KNN</h2>
+<p class="pos">Overview: Two of the most fundamental distance-based algorithms — an introduction to clustering and classification.</p>
+
+<h3>KNN: Nearest Neighbor Classification</h3>
+
+<p>K-Nearest Neighbors requires no training — it simply memorizes all training samples. At prediction time, it finds the $k$ training samples closest to the query point and uses their labels to vote (classification) or average (regression). The only parameters are $k$ and the distance metric.</p>
+
+<p>It may seem simple, but in low-dimensional, data-dense settings it performs well. Its theoretical properties are also elegant — as $n \to \infty$, KNN's error rate is at most twice the Bayes optimal error rate. This is one of the rare "distribution-free" guarantees in machine learning.</p>
+
+<p>KNN's problems are all engineering ones:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>Prediction time</strong>: $O(nd)$ per query. For large datasets, use KD-Tree, Ball Tree, or approximate nearest neighbors (see Chapter 2, vector databases) to speed things up.</li>
+<li>- <strong>Curse of dimensionality</strong>: In high-dimensional space, all points are roughly equidistant, and KNN breaks down.</li>
+<li>- <strong>Feature scale sensitivity</strong>: A feature with range [0, 1] and a feature with range [0, 10000] computed directly using Euclidean distance will be completely dominated by the latter. Normalization is mandatory.</li>
+</ul>
+
+<h3>K-means: Nearest Centroid Clustering</h3>
+
+<p>Given data $\{\mathbf{x}_i\}$, partition them into $k$ clusters so that the <strong>sum of squared distances from each point to its cluster center is minimized</strong>:</p>
+
+<div class="formula">
+$\min_{\{\mathbf{c}_j\}, \{S_j\}} \sum_{j=1}^k \sum_{\mathbf{x} \in S_j} \|\mathbf{x} - \mathbf{c}_j\|^2$
+</div>
+
+<p>This is a combinatorial optimization problem (NP-hard); K-means finds an approximate solution via alternating optimization:</p>
+<ol>
+<li>Initialize $k$ cluster centers (random selection or K-means++)</li>
+<li><strong>Assignment</strong>: assign each point to the nearest cluster center</li>
+<li><strong>Update</strong>: recompute each cluster center as the mean of its assigned points</li>
+<li>Repeat steps 2–3 until centers no longer change</li>
+</ol>
+
+<pre><code class="language-python">import numpy as np
+
+def kmeans(X, k, max_iter=100, tol=1e-4):
+    # K-means++ initialization: spread initial centers far apart
+    n = len(X)
+    centers = [X[np.random.randint(n)]]
+    for _ in range(k - 1):
+        # For each point, compute the squared distance to the nearest existing center
+        d2 = np.min([np.sum((X - c)**2, axis=1) for c in centers], axis=0)
+        # Sample the next center proportional to squared distance
+        idx = np.random.choice(n, p=d2/d2.sum())
+        centers.append(X[idx])
+    centers = np.array(centers)
+
+    for it in range(max_iter):
+        # Assign
+        dists = ((X[:, None] - centers[None, :])**2).sum(axis=2)
+        labels = dists.argmin(axis=1)
+        # Update
+        new_centers = np.array([X[labels == j].mean(axis=0) for j in range(k)])
+        if np.linalg.norm(new_centers - centers) < tol:
+            break
+        centers = new_centers
+    return centers, labels
+</code></pre>
+
+<p>A few pitfalls with K-means. First, <strong>sensitivity to initialization</strong> — different seeds can produce completely different clusters. K-means++ initialization (as done in the code above) significantly improves this. Second, <strong>you must specify $k$</strong> — typically the elbow method (plot $k$ vs. SSE, find the kink) or the silhouette score helps with selection. Third, <strong>it assumes spherical clusters</strong> — elongated or ring-shaped distributions are beyond its reach; DBSCAN or spectral clustering are needed for those cases.</p>
+
+<h3>In the Networking Domain</h3>
+
+<p>KNN was widely used in early traffic classification work — extract features from a connection (packet size distribution, inter-arrival times) and do KNN matching against a labeled traffic database. The downside is that as the traffic database grows, prediction latency becomes unacceptable. Tree models or small NNs are now the common replacements.</p>
+
+<p>K-means is used for anomaly detection: normal traffic clusters into a few groups, and points that don't belong to any cluster (far from the nearest center) are potentially anomalous. But real anomalies are often too sparse and scattered for K-means to handle well; Isolation Forest is more commonly used instead.</p>
+
+<!-- 3.1.2 -->
+<h2 id="s3-1-2"><span class="num">3.1.2</span>Tree Models: Decision Trees, Random Forests, XGBoost</h2>
+<p class="pos">Overview: The king of tabular data. Deep dive: from decision trees to GBDT to XGBoost, with full derivations.</p>
+
+<h3>Decision Trees</h3>
+
+<p>Each internal node of the tree is a feature test (e.g., <code>age &lt; 30</code>), and leaf nodes produce predictions. The key to building a tree is choosing split points. For classification, the goal is to select splits that maximally improve the <strong>purity</strong> of child nodes. Common purity measures are the <strong>Gini impurity</strong> and <strong>entropy</strong>:</p>
+
+<div class="formula">
+$\text{Gini} = 1 - \sum_c p_c^2, \quad H = -\sum_c p_c \log p_c$
+</div>
+
+<p>Here $p_c$ is the fraction of class $c$ at a node. After a split, the weighted average impurity of child nodes is compared to the parent; the difference is called the information gain. The split with the highest information gain is chosen greedily.</p>
+
+<p>Decision trees are naturally interpretable ("age > 30 → high income → ..."), require no feature normalization, handle missing values, and support both numerical and categorical features. But a single tree overfits easily — grow it deep enough and each leaf holds one sample, giving perfect training-set fit and catastrophic test-set performance. Pruning (pre-pruning: limit depth/leaf count; post-pruning: grow fully then prune) is necessary.</p>
+
+<h3>From Single Trees to Ensembles</h3>
+
+<p>The intuition behind ensemble learning: many weak learners voting beats a single strong learner. Two main lines:</p>
+
+<p><strong>Bagging</strong> (Bootstrap AGGregating): each tree is trained on a bootstrap sample (sampling with replacement) of the original data, and at each split only a random subset of features is considered. Predictions from multiple trees are averaged or voted. <strong>Random Forest (RF)</strong> is bagging applied to decision trees. The primary benefit is variance reduction — a single tree has high variance and low bias; averaging many trees dramatically reduces variance.</p>
+
+<p><strong>Boosting</strong>: trees are trained <em>sequentially</em>, with each tree learning the residuals that the previous tree failed to capture. <strong>GBDT</strong> (Gradient Boosting Decision Tree), <strong>XGBoost</strong>, and <strong>LightGBM</strong> all follow this approach.</p>
+
+<h3>The Mathematics of GBDT</h3>
+
+<p>Take regression as an example. The model is $F(x) = \sum_{t=1}^T f_t(x)$, where $f_t$ is the $t$-th tree. At each round we fit the <em>negative gradient</em> — the direction of steepest descent for the current loss.</p>
+
+<p>For squared loss $L(y, F(x)) = \frac{1}{2}(y - F(x))^2$, the negative gradient is exactly the residual $r_i = y_i - F_{t-1}(x_i)$ — so GBDT under squared loss is just "fitting the residuals of the previous step." For other losses (log loss, Huber), the pseudo-residuals are the corresponding gradients.</p>
+
+<p>The key insight of GBDT is that "training the $t$-th tree" is reduced to an ordinary regression problem (fit the pseudo-residuals), which is then added to the cumulative prediction.</p>
+
+<h3><a href="ch5_partA_preview.html#p05">XGBoost</a>'s Innovations</h3>
+
+<p>XGBoost is an engineered refinement of GBDT, proposed by Tianqi Chen in 2014. It introduces several important ideas.</p>
+
+<p><strong>Second-order Taylor expansion.</strong> Traditional GBDT uses only first-order gradients; XGBoost uses both first and second order. Expanding the loss $L$ around $F_{t-1}$ to second order:</p>
+
+<div class="formula">
+$L(y, F_{t-1} + f_t) \approx L(y, F_{t-1}) + g_i f_t(x_i) + \frac{1}{2} h_i f_t(x_i)^2$
+</div>
+
+<p>$g_i = \partial L / \partial F$, $h_i = \partial^2 L / \partial F^2$. This yields a closed-form optimal solution for the split gain.</p>
+
+<p><strong>Closed-form leaf weights.</strong> Let the $t$-th tree map $x$ to leaf $j$ with value $w_j$. Adding L2 regularization $\Omega(f) = \gamma T + \frac{1}{2}\lambda \sum_j w_j^2$ (where $T$ is the number of leaves):</p>
+
+<div class="formula">
+$\text{Obj}^{(t)} = \sum_j \left[ (\sum_{i \in I_j} g_i) w_j + \frac{1}{2}(\sum_{i \in I_j} h_i + \lambda) w_j^2 \right] + \gamma T$
+</div>
+
+<p>Setting the derivative with respect to $w_j$ to zero gives the optimal leaf weight:</p>
+
+<div class="formula">
+$w_j^* = -\frac{G_j}{H_j + \lambda}, \quad G_j = \sum_{i \in I_j} g_i, \quad H_j = \sum_{i \in I_j} h_i
+$
+</div>
+
+<p>Substituting back gives the minimum loss for a fixed tree structure:</p>
+
+<div class="formula">
+$\text{Obj}^* = -\frac{1}{2} \sum_j \frac{G_j^2}{H_j + \lambda} + \gamma T$
+</div>
+
+<p>This yields a closed-form split gain: splitting a node into left and right children $L, R$, the gain equals the original loss minus the post-split loss:</p>
+
+<div class="formula">
+$\text{Gain} = \frac{1}{2}\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R + \lambda} - \frac{(G_L+G_R)^2}{H_L+H_R+\lambda}\right] - \gamma$
+</div>
+
+<p>All split candidates are ranked by this gain and the maximum is selected. $\gamma$ controls whether to split at all (no split if gain is below $\gamma$); $\lambda$ prevents overfitting.</p>
+
+<p><strong>Engineering optimizations</strong>: histogram approximation (LightGBM discretizes features into 256 bins, reducing $O(n \times d)$ to $O(n \times \text{bins})$); sparsity awareness (missing values automatically pick a default direction); column-block parallelism; GPU acceleration.</p>
+
+<pre><code class="language-python">import xgboost as xgb
+import numpy as np
+
+# A typical pipeline for binary classification of network traffic
+X_train, y_train = load_data()   # feature matrix and 0/1 labels
+
+model = xgb.XGBClassifier(
+    n_estimators=500,       # number of trees
+    max_depth=6,            # tree depth
+    learning_rate=0.05,     # per-tree contribution scaling
+    subsample=0.8,          # use 80% of samples per tree (randomization, prevents overfitting)
+    colsample_bytree=0.8,   # use 80% of features per tree
+    reg_lambda=1.0,         # L2 regularization
+    reg_alpha=0.1,          # L1 regularization
+    min_child_weight=1,     # minimum Hessian sum per leaf, controls overfitting
+    tree_method='hist',     # histogram algorithm, faster training
+    eval_metric='logloss',
+    early_stopping_rounds=50,
+)
+model.fit(X_train, y_train,
+          eval_set=[(X_val, y_val)],
+          verbose=50)
+
+# Feature importance
+importance = model.feature_importances_
+for feat, imp in sorted(zip(feature_names, importance), key=lambda x: -x[1])[:10]:
+    print(f"{feat}: {imp:.4f}")
+</code></pre>
+
+<h3>When to Choose Tree Models</h3>
+
+<p>XGBoost/LightGBM remain top-tier baselines on <strong>tabular data</strong> (rows are samples, columns are features). Over 90% of top Kaggle solutions on tabular competitions include GBDT. Advantages:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- No feature normalization required</li>
+<li>- Automatically handles feature interactions (deep trees can express complex nonlinearities)</li>
+<li>- Fast training (millions of samples in minutes)</li>
+<li>- Fast inference (bounded tree depth, hundreds of microseconds per sample)</li>
+<li>- Interpretable feature importance</li>
+</ul>
+
+<p>When does deep learning take over? For <em>unstructured data</em> like images, text, and audio — deep learning learns features end-to-end and nearly always outperforms hand-crafted features combined with trees. But as long as your data is in row-column tabular form, XGBoost is almost always the first choice.</p>
+
+<!-- 3.1.3 -->
+<h2 id="s3-1-3"><span class="num">3.1.3</span>SVM</h2>
+<p class="pos">Overview: Maximum-margin classification — once dominant, now a reference baseline.</p>
+
+<h3>Maximum-Margin Hyperplane</h3>
+
+<p>The objective of binary linear SVM: find a hyperplane $\mathbf{w}^\top \mathbf{x} + b = 0$ that separates two classes while maximizing the margin (distance to the nearest point). This is the <strong>maximum-margin classifier</strong>.</p>
+
+<p>Geometric intuition: many hyperplanes can separate two classes, but the "wide" one is more tolerant of noise. Maximizing the margin is equivalent to minimizing $\|\mathbf{w}\|$. Adding classification constraints $y_i(\mathbf{w}^\top \mathbf{x}_i + b) \ge 1$ yields a convex quadratic program:</p>
+
+<div class="formula">
+$\min_{\mathbf{w}, b} \frac{1}{2}\|\mathbf{w}\|^2 \quad \text{s.t. } y_i(\mathbf{w}^\top \mathbf{x}_i + b) \ge 1, \forall i$
+</div>
+
+<h3>Dual Form and Support Vectors</h3>
+
+<p>Applying Lagrangian duality, the dual problem is:</p>
+
+<div class="formula">
+$\max_\alpha \sum_i \alpha_i - \frac{1}{2}\sum_{i,j} \alpha_i \alpha_j y_i y_j \mathbf{x}_i^\top \mathbf{x}_j, \quad \alpha_i \ge 0, \sum_i \alpha_i y_i = 0$
+</div>
+
+<p>After solving for $\alpha^*$, $\mathbf{w} = \sum_i \alpha_i y_i \mathbf{x}_i$. A key observation: <strong>the vast majority of $\alpha_i = 0$</strong>; only the points on the margin boundary have $\alpha_i > 0$ — these are the <strong>support vectors</strong>, which is where the name SVM comes from. Prediction only requires the support vectors:</p>
+
+<div class="formula">
+$f(\mathbf{x}) = \text{sign}\left(\sum_{i \in \text{SV}} \alpha_i y_i \mathbf{x}_i^\top \mathbf{x} + b\right)$
+</div>
+
+<h3>The Kernel Trick</h3>
+
+<p>What about linearly inseparable data? Map the data to a higher-dimensional space $\phi(\mathbf{x})$ where linear separability holds. Notice that the dual only involves $\mathbf{x}_i^\top \mathbf{x}_j$ — replacing this with $\phi(\mathbf{x}_i)^\top \phi(\mathbf{x}_j)$ suffices. And this inner product can be defined as a <strong>kernel function</strong> $K(\mathbf{x}_i, \mathbf{x}_j)$ computed directly, without explicitly computing $\phi$ — this is the kernel trick.</p>
+
+<p>Common kernels:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>Linear kernel</strong>: $K = \mathbf{x}_i^\top \mathbf{x}_j$ (equivalent to no kernel)</li>
+<li>- <strong>Polynomial kernel</strong>: $K = (\mathbf{x}_i^\top \mathbf{x}_j + c)^d$</li>
+<li>- <strong>RBF kernel</strong> (Gaussian kernel): $K = \exp(-\gamma \|\mathbf{x}_i - \mathbf{x}_j\|^2)$ — corresponds to an infinite-dimensional space, most commonly used</li>
+</ul>
+
+<p>The hyperparameter $\gamma$ of the RBF kernel controls the "curvature" of the decision boundary — large $\gamma$ makes the boundary cling tightly to training points (overfitting); small $\gamma$ produces a smoother boundary. Grid search over $\gamma$ and regularization parameter $C$ is the standard approach.</p>
+
+<h3>Soft Margin</h3>
+
+<p>Real data often has noise and some inseparable samples. A hard margin (perfectly separate everything) is too strict. The soft margin introduces slack variables $\xi_i \ge 0$:</p>
+
+<div class="formula">
+$\min \frac{1}{2}\|\mathbf{w}\|^2 + C \sum_i \xi_i, \quad y_i(\mathbf{w}^\top \mathbf{x}_i + b) \ge 1 - \xi_i$
+</div>
+
+<p>$C$ controls how much misclassification to tolerate — large $C$ is strict, small $C$ is lenient.</p>
+
+<h3>Current Status</h3>
+
+<p>In the 2000s, SVMs were the state of the art for text and image classification. Their prominence declined in the deep learning era, but they retain value in <strong>small-sample, high-dimensional, interpretable</strong> settings — bioinformatics and certain text classification tasks still use them. The downside is training complexity of $O(n^2)$ to $O(n^3)$, making them impractical on large datasets.</p>
+
+<!-- 3.1.4 -->
+<h2 id="s3-1-4"><span class="num">3.1.4</span>N-gram and Label Propagation</h2>
+<p class="pos">Overview: Two old but useful tools — N-gram statistical language models and LPA for graph semi-supervised learning.</p>
+
+<h3>N-gram Language Models</h3>
+
+<p>N-gram is a probabilistic model that predicts the next word from the previous $N-1$ words, based on counts:</p>
+
+<div class="formula">
+$P(w_n | w_1, ..., w_{n-1}) \approx P(w_n | w_{n-k+1}, ..., w_{n-1}) = \frac{\text{count}(w_{n-k+1}...w_n)}{\text{count}(w_{n-k+1}...w_{n-1})}$
+</div>
+
+<p>Typical choices are $k = 2$ (bigram) or $k = 3$ (trigram). Before neural language models, this was the mainstream approach in NLP.</p>
+
+<p>The core problem is <strong>sparsity</strong> — unseen combinations in the training set have zero probability. Smoothing techniques address this:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Add-one smoothing (Laplace)</strong>: add 1 to all counts — the simplest approach</li>
+<li><strong>Good-Turing</strong>: uses the frequency of items appearing $r+1$ times to estimate the probability of items appearing $r$ times</li>
+<li><strong>Kneser-Ney</strong>: the most sophisticated, considers "how many distinct contexts a word appears as a continuation of"</li>
+</ul>
+
+<p>Today LLMs dominate NLP and N-grams are no longer the lead approach. But <strong>character-level N-grams</strong> remain in use: unknown language detection, spell correction, and fast approximate matching (MinHash shingles).</p>
+
+<h3>LPA: Label Propagation Algorithm</h3>
+
+<p>Semi-supervised learning on graphs: a small number of nodes have labels, most do not. LPA assumes "<strong>tightly connected nodes should have the same label</strong>" and iteratively propagates labels along edges:</p>
+
+<ol>
+<li>Set initial labels for labeled nodes; unlabeled nodes start empty or with a uniform distribution</li>
+<li>Each node sets its label distribution to the (weighted) average of all its neighbors' label distributions</li>
+<li>Fix (clamp) the labels of labeled nodes</li>
+<li>Repeat until convergence</li>
+</ol>
+
+<p>In matrix form: let $F \in \mathbb{R}^{n \times C}$ be the class distribution for each node, and $W$ the adjacency matrix (or a normalized version). Update $F \leftarrow D^{-1} W F$, where $D$ is the degree diagonal matrix. After clamping labeled nodes, repeat. This iteration has a closed-form solution (convergence can be proved).</p>
+
+<p>LPA's strengths: computationally cheap, requires no training, and especially well-suited for large-graph community detection and label diffusion. Its weakness: heavily dependent on graph structure — poor graph construction leads to poor results.</p>
+
+<h3>In the Networking Domain</h3>
+
+<p>N-gram remains active in DGA domain detection — malware-generated random domain names can be distinguished from legitimate ones by computing character-level N-gram perplexity (malicious domains have higher perplexity).</p>
+
+<p>LPA has direct applications in community detection over network topologies (finding tightly connected device subgroups) and malicious IP propagation detection (known malicious IPs influence suspicion scores of connected nodes via the graph).</p>
+
+<!-- 3.1.5 -->
+<h2 id="s3-1-5"><span class="num">3.1.5</span>Regression and Prediction</h2>
+<p class="pos">Overview: From linear regression to generalized regression — the oldest method in machine learning, still important today.</p>
+
+<h3>Linear Regression</h3>
+
+<p>$y = \mathbf{w}^\top \mathbf{x} + b + \epsilon$; solve for $\mathbf{w}, b$ via least squares. The closed-form solution was covered in Chapter 1. Three commonly overlooked points:</p>
+
+<p><strong>Assumptions</strong>: the error $\epsilon$ is i.i.d. normal (zero mean). When this assumption is violated, the estimator remains unbiased but is no longer minimum-variance; in more serious cases, conclusions may be misleading. Always inspect residual plots in regression analyses.</p>
+
+<p><strong>Multicollinearity</strong>: when features are highly correlated, $\mathbf{X}^\top \mathbf{X}$ becomes near-singular and the estimate of $\mathbf{w}$ has high variance and is unstable. Ridge (L2) or PCA dimensionality reduction are the remedies.</p>
+
+<p><strong>Outliers</strong>: squared loss is extremely sensitive to outliers (a single outlier contributes loss proportional to the square of its distance). Huber loss (squared for small residuals, linear for large ones) is more robust.</p>
+
+<h3>Logistic Regression</h3>
+
+<p>Despite the name "regression," it performs classification. The model is:</p>
+
+<div class="formula">
+$P(y=1|\mathbf{x}) = \sigma(\mathbf{w}^\top \mathbf{x} + b), \quad \sigma(z) = \frac{1}{1+e^{-z}}$
+</div>
+
+<p>Training uses maximum likelihood (equivalent to minimizing cross-entropy). There is no closed-form solution; gradient descent or IRLS (Iteratively Reweighted Least Squares) is used.</p>
+
+<p>The <strong>log-odds</strong> of logistic regression are linear: $\log\frac{P(y=1)}{P(y=0)} = \mathbf{w}^\top \mathbf{x} + b$. This gives the coefficients $w_i$ a direct interpretation — a unit increase in feature $x_i$ increases the log-odds by $w_i$, i.e., multiplies the odds by $e^{w_i}$.</p>
+
+<h3>Ridge and Lasso</h3>
+
+<p>The two canonical regularization methods.</p>
+
+<p><strong>Ridge</strong> (L2): minimize $\|\mathbf{X}\mathbf{w} - \mathbf{y}\|^2 + \lambda \|\mathbf{w}\|_2^2$. Analytical solution: $\mathbf{w} = (\mathbf{X}^\top \mathbf{X} + \lambda \mathbf{I})^{-1} \mathbf{X}^\top \mathbf{y}$. Larger $\lambda$ shrinks coefficients more.</p>
+
+<p><strong>Lasso</strong> (L1): minimize $\|\mathbf{X}\mathbf{w} - \mathbf{y}\|^2 + \lambda \|\mathbf{w}\|_1$. No analytical solution (L1 is non-differentiable); solved via coordinate descent or ISTA. Key property: <strong>Lasso drives irrelevant feature coefficients exactly to zero</strong> — automatic feature selection.</p>
+
+<p>Why does L1 produce sparse solutions? Geometric intuition: the L2 level set is a sphere, and its tangency with the loss function's level set is almost never on a coordinate axis; the L1 level set is a diamond (with corners), whose corners lie on the coordinate axes, making it more likely that the tangency point corresponds to some coefficients being exactly zero.</p>
+
+<p>ElasticNet = L1 + L2 combined, balancing Lasso's sparsity with Ridge's stability under multicollinearity.</p>
+
+<h3>Generalized Linear Models (GLM)</h3>
+
+<p>An extension of linear regression to settings where "the prediction target is not a real number." The core idea: use a "link function" $g$ to map the linear predictor $\eta = \mathbf{w}^\top \mathbf{x}$ to distribution parameters.</p>
+
+<table>
+<tr><th>Distribution</th><th>Link Function</th><th>Task</th></tr>
+<tr><td>Normal</td><td>Identity $\mu = \eta$</td><td>Real-valued regression</td></tr>
+<tr><td>Bernoulli</td><td>Logit $\log\frac{p}{1-p} = \eta$</td><td>Binary classification (logistic)</td></tr>
+<tr><td>Poisson</td><td>Log $\log\mu = \eta$</td><td>Count prediction</td></tr>
+<tr><td>Gamma</td><td>Log $\log\mu = \eta$</td><td>Positive reals (duration, cost)</td></tr>
+</table>
+
+<p>Poisson regression is useful for predicting counts like network connections per day or attacks per hour — ordinary linear regression can produce negative predictions, while Poisson regression guarantees positive outputs.</p>
+
+<h3>In the Networking Domain</h3>
+
+<p>Linear/logistic regression in the networking domain primarily serves as a <strong>baseline</strong> — any complex model should be compared against logistic regression; failing to outperform LR signals a problem with features, data, or the task itself. Ridge/Lasso are used for interpretable traffic-prediction models (coefficients indicate which features matter). Poisson regression is used for arrival-rate modeling.</p>
+
+<!-- 3.1.6 -->
+<h2 id="s3-1-6"><span class="num">3.1.6</span>Time Series: DTW and DBA</h2>
+<p class="pos">Overview: Classic algorithms for time series similarity and clustering — still occupying a unique niche in KPI monitoring and pattern mining.</p>
+
+<h3>Why Euclidean Distance Fails for Time Series</h3>
+
+<p>Two KPI curves may be similar in shape but shifted in time — Euclidean distance, which aligns them point-by-point, will conclude they are very different. DTW (Dynamic Time Warping) measures shape similarity through <em>nonlinear temporal alignment</em>, allowing one segment to correspond to multiple segments of the other.</p>
+
+<h3>The DTW Algorithm</h3>
+
+<p>Given sequences $X = (x_1, ..., x_n)$ and $Y = (y_1, ..., y_m)$, DTW finds an alignment path $\{(i_k, j_k)\}$ such that:</p>
+<ol>
+<li>It starts at $(1, 1)$ and ends at $(n, m)$</li>
+<li>Each step goes $(i, j) \to (i+1, j)$, $(i, j+1)$, or $(i+1, j+1)$</li>
+<li>The total point-to-point distance along the path is minimized</li>
+</ol>
+
+<p>Solved via dynamic programming. Define $D(i, j)$ as the optimal alignment cost from $X_{1:i}$ to $Y_{1:j}$:</p>
+
+<div class="formula">
+$D(i, j) = |x_i - y_j| + \min\{D(i-1, j), D(i, j-1), D(i-1, j-1)\}$
+</div>
+
+<p>Filling the table takes $O(nm)$ time and space. The DTW distance is $D(n, m)$.</p>
+
+<pre><code class="language-python">import numpy as np
+
+def dtw(x, y):
+    n, m = len(x), len(y)
+    D = np.full((n+1, m+1), np.inf)
+    D[0, 0] = 0
+    for i in range(1, n+1):
+        for j in range(1, m+1):
+            cost = abs(x[i-1] - y[j-1])
+            D[i, j] = cost + min(D[i-1, j], D[i, j-1], D[i-1, j-1])
+    return D[n, m]
+</code></pre>
+
+<p>Optimizations: the <strong>Sakoe-Chiba band</strong> restricts $|i - j| \le w$, reducing complexity from $O(nm)$ to $O(nw)$; <strong>FastDTW</strong> uses multiscale recursion to approximate in $O(n)$.</p>
+
+<h3>DBA: Dynamic Time Warping Barycenter Averaging</h3>
+
+<p>With a DTW distance defined, it is natural to want to cluster time series — for example, replacing Euclidean distance with DTW inside K-means. But K-means requires computing cluster centers (averages) at each step, and the DTW average of time series is not the pointwise average (which distorts shapes). DBA is the "time-series average under DTW semantics":</p>
+<ol>
+<li>Initialize a candidate average sequence (e.g., randomly select one member)</li>
+<li>Compute DTW alignment between each member and the candidate</li>
+<li>Take the pointwise average of the aligned positions to form a new candidate</li>
+<li>Repeat until convergence</li>
+</ol>
+
+<p>DBA + K-means is the classical time series clustering approach. It is widely used in KPI pattern discovery (what curve patterns recur frequently) and building libraries of anomalous patterns.</p>
+
+<h3>Modern Alternatives</h3>
+
+<p>Deep learning for time series now offers Transformer variants (Informer, Autoformer, PatchTST) and MLP-based models (N-BEATS), which generally outperform DTW on large datasets. But DTW's strengths are <strong>no training required, works with few samples, and is fully interpretable</strong> — the alignment path between two curves can be visualized intuitively. It remains worth using for initial analysis and small-sample scenarios.</p>
+<div class="part-header">
+  <div class="part-label">PART TWO</div>
+  <h2 class="part-title">3.2 Basic Neural Network Operators</h2>
+  <p class="part-desc">The atomic operations of deep learning — each with its own independent optimization space.</p>
+</div>
+
+<!-- 3.2.1 -->
+<h2 id="s3-2-1"><span class="num">3.2.1</span>Matrix Multiply and Fundamental Operations</h2>
+<p class="pos">Overview: GEMM is everything — 70%+ of deep learning computation is matrix multiplication. Also covered: reductions, casts, and elementwise operations.</p>
+
+<h3>GEMM</h3>
+
+<p>General Matrix Multiply: $\mathbf{C} = \alpha \mathbf{A} \mathbf{B} + \beta \mathbf{C}$, $\mathbf{A} \in \mathbb{R}^{M \times K}$, $\mathbf{B} \in \mathbb{R}^{K \times N}$, $\mathbf{C} \in \mathbb{R}^{M \times N}$. This is the core API of all linear algebra libraries (BLAS level 3).</p>
+
+<p>The naive triple-loop has complexity $O(MNK)$:</p>
+<pre><code class="language-c">for (i = 0; i < M; i++)
+    for (j = 0; j < N; j++)
+        for (k = 0; k < K; k++)
+            C[i][j] += A[i][k] * B[k][j];
+</code></pre>
+
+<p>The naive implementation performs extremely poorly — each access to <code>B[k][j]</code> jumps across rows causing cache misses. High-performance GEMM in practice (OpenBLAS, MKL, cuBLAS) uses multi-level blocking: the inner loops operate within L1/L2 cache, and small-tile results are accumulated into larger tiles.</p>
+
+<p>In AI, matrix multiplication also has <strong>batched GEMM</strong>: perform multiple independent GEMMs simultaneously (e.g., one per sample in a batch) — specifically optimized to reduce kernel launch overhead.</p>
+
+<h3>Reduction Operations (Reduce)</h3>
+
+<p>Sum, maximum, or average across a given dimension. Typical examples:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><code>sum(x, dim=-1)</code>: sum along the last dimension, common in the softmax denominator</li>
+<li><code>mean(x, dim=(2,3))</code>: spatial average pooling</li>
+<li><code>max(x, dim=-1)</code>: subtract the maximum for numerical stability in softmax</li>
+</ul>
+
+<p>GPU reductions have elegant implementations — tree-structured reduction (halving the number of active threads at each step), or warp-level primitives (<code>__shfl_down_sync</code>). A naive loop is $O(n)$ serial; an optimized version can achieve $O(\log n)$ parallelism.</p>
+
+<h3>Cast and Precision Conversion</h3>
+
+<p>Converting between FP32, FP16, BF16, INT8, and INT4. Seemingly simple, but full of subtleties:</p>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>FP32 → FP16</strong>: can underflow (small values become 0) or overflow (large values become inf). Loss scaling must be used during training.</li>
+<li><strong>BF16 ↔ FP32</strong>: BF16 is just FP32 with truncated mantissa — conversion is cheap and dynamic range is preserved.</li>
+<li><strong>FP ↔ INT</strong>: requires scale and zero-point; this is quantization (see section 3.6.2).</li>
+</ul>
+
+<h3>Elementwise Operations</h3>
+
+<p>Unary: <code>abs</code>, <code>neg</code>, <code>exp</code>, <code>log</code>, <code>sqrt</code>. Binary: <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>pow</code>, <code>max</code>.</p>
+
+<p>The <strong>performance bottleneck for these is memory bandwidth</strong>, not compute. Performing <code>x * 2</code> on a tensor of $N$ elements reads $N$ values and writes $N$ values, but only performs $N$ multiplications — arithmetic intensity is just 0.5 FLOP/byte. A GPU Tensor Core can deliver 1000 TFLOPS, but if the operation is fully memory-bound, the actual throughput is capped by memory bandwidth.</p>
+
+<p>This is why <strong>operator fusion</strong> has the greatest benefit for elementwise operators — fusing <code>relu(bn(conv(x)))</code> into a single kernel means the data is read once and written once, eliminating the intermediate tensor round-trips through HBM. This is the core idea behind FlashAttention and PyTorch inductor optimizations.</p>
+
+<h3>Comparison and Selection Operations</h3>
+
+<p><code>greater</code>, <code>equal</code>, <code>where(cond, a, b)</code>, <code>topk</code>. <code>where</code> is conditional selection, commonly used in mask implementations (the causal mask in attention is just <code>where(mask, score, -inf)</code>). <code>topk</code> is critical in inference sampling (top-k sampling) and MoE routing (selecting the top-k experts).</p>
+
+<h3>Broadcasting</h3>
+
+<p>When performing elementwise operations on two tensors with different shapes, numpy/PyTorch broadcasting rules align each dimension from the right: dimensions must either be equal or one of them must be 1 (expandable).</p>
+
+<p>Typical use case: adding bias to every row. If <code>x</code> has shape <code>[B, N, D]</code> and <code>bias</code> has shape <code>[D]</code>, <code>x + bias</code> automatically broadcasts bias to every batch position.</p>
+
+<p>Engineering note: <strong>broadcasting can produce unexpectedly large intermediate tensors</strong>. <code>[N, 1] + [1, N]</code> yields <code>[N, N]</code> — memory explosions often originate here.</p>
+
+<!-- 3.2.2 -->
+<h2 id="s3-2-2"><span class="num">3.2.2</span>Data Movement Operators</h2>
+<p class="pos">Overview: Transpose, Gather, Scatter, Concat — no computation, just data shuffling, but the cost can be surprisingly high.</p>
+
+<h3>Transpose</h3>
+
+<p>Reordering dimensions. Mathematically an identity transformation; in practice it means rearranging memory. Transposing <code>[B, N, H, D]</code> to <code>[B, H, N, D]</code> changes the physical memory address of every element.</p>
+
+<p>The key optimization for transpose on GPU is <strong>shared memory tiling</strong> — read a tile of the matrix into on-chip shared memory, then write it back to global memory in the new order, avoiding strided memory accesses.</p>
+
+<p>But the best transpose is <strong>no transpose at all</strong> — in many cases a "virtual transpose" suffices (changing only the shape/stride metadata without touching the data). PyTorch's <code>.transpose()</code> returns a view; a real copy is made only when contiguous memory is subsequently required (e.g., when passing to a CUDA kernel).</p>
+
+<h3>Reshape / View</h3>
+
+<p>Changes the shape without changing the total number of elements. If the original data is contiguous in memory, reshape is nearly free (only metadata changes). When it is not contiguous, a <code>contiguous()</code> call must first copy the data.</p>
+
+<h3>Gather / Scatter</h3>
+
+<p><strong>Gather</strong>: read values from a source tensor by index. <code>y[i] = x[idx[i]]</code>. Embedding lookup is a gather — given an input sequence of token IDs, fetch the corresponding rows from the embedding table.</p>
+
+<p><strong>Scatter</strong>: the reverse — write into a target tensor by index. <code>y[idx[i]] = x[i]</code>.</p>
+
+<p>Both present <strong>irregular memory access</strong> challenges on GPU: adjacent threads access non-adjacent memory locations, causing severe cache misses. For large embedding tables (vocabulary sizes of 100k+), gather is frequently a bottleneck during inference. Optimization approaches include bucket-sorting by index for batch access and using TLB-friendly layouts.</p>
+
+<h3>Concat / Split</h3>
+
+<p>Concatenate or split tensors. Concat requires allocating new memory and copying; Split can often be zero-copy (if the split dimension keeps each fragment contiguous).</p>
+
+<p>Typical use: in MHA, <code>concat(head_1, ..., head_H, dim=-1)</code> merges multi-head outputs. But modern implementations often merge Q/K/V into a single large Linear and reshape to expose the head dimension, avoiding an explicit concat and saving one operator.</p>
+
+<h3>Pad</h3>
+
+<p>Padding the edges of a tensor with zeros (or other values). Before convolution, padding preserves output shape = input shape; variable-length sequences are padded to the same length for batching.</p>
+
+<p>The cost of padding: <strong>waste</strong>. In a batch where the longest sequence is 2048 tokens and the shortest is 16, both are padded to 2048 — all computation on the short sequence is wasted. This is why continuous batching (see Chapter 4, section 5.13) is so valuable for LLM inference — it avoids padding waste.</p>
+
+<h3>The Hidden Cost of Data Movement</h3>
+
+<p>Rule of thumb: <strong>in a deep learning model, data movement accounting for 20–40% of total time is common</strong>. Unlike matrix multiplications, these costs are not conspicuous — they are scattered throughout the model but accumulate significantly. When profiling reveals that transpose, reshape, and cat operations account for a high fraction, it usually means the model architecture can be simplified.</p>
+
+<!-- 3.2.3 -->
+<h2 id="s3-2-3"><span class="num">3.2.3</span>Convolution and Pooling</h2>
+<p class="pos">Overview: The lifeblood operators of CNNs. Deep dive: im2col unfolding and Winograd acceleration.</p>
+
+<h3>Definition of 2D Convolution</h3>
+
+<p>Input $\mathbf{X}$ with shape <code>[C_in, H, W]</code>, convolution kernel $\mathbf{W}$ with shape <code>[C_out, C_in, kH, kW]</code>, output $\mathbf{Y}$ with shape <code>[C_out, H', W']</code>:</p>
+
+<div class="formula">
+$Y_{c, h, w} = \sum_{c'} \sum_{i, j} W_{c, c', i, j} \cdot X_{c', h+i, w+j}$
+</div>
+
+<p>(This is technically cross-correlation; in engineering it is universally called convolution.) Each output position is the inner product between the kernel and the corresponding input region.</p>
+
+<p>Parameters: stride (sliding step), padding (how much to add to edges), dilation (sampling interval within the kernel), and groups (grouped convolution, where each group only sees a subset of channels).</p>
+
+<h3>Naive Implementation and im2col</h3>
+
+<p>Direct implementation requires 7 nested loops: three output dimensions (C, H, W) × three kernel dimensions (C, H, W) × summing over input C. This performs poorly on GPU.</p>
+
+<p><strong>im2col</strong> is the classic technique: <em>convert convolution into a matrix multiplication</em>. The idea:</p>
+
+<ol>
+<li>Unfold each $kH \times kW \times C_{in}$ local patch from the input into a row; stack patches for all output positions into a large matrix $\mathbf{X}_{col}$ with shape <code>[C_in×kH×kW, H'×W']</code></li>
+<li>Reshape the convolution kernel to <code>[C_out, C_in×kH×kW]</code></li>
+<li>Perform the matrix multiply: $\mathbf{Y} = \mathbf{W} \cdot \mathbf{X}_{col}$, with shape <code>[C_out, H'×W']</code></li>
+<li>Reshape the result to <code>[C_out, H', W']</code></li>
+</ol>
+
+<p>This allows calling a GEMM kernel directly, achieving near-peak throughput. The cost is a memory expansion of $\mathbf{X}_{col}$ by a factor of <code>kH × kW</code> — each input pixel is duplicated to multiple locations.</p>
+
+<pre><code class="language-python">import numpy as np
+
+def im2col(X, kh, kw, stride=1):
+    # X: [C, H, W]
+    C, H, W = X.shape
+    oh, ow = (H - kh) // stride + 1, (W - kw) // stride + 1
+    cols = np.zeros((C * kh * kw, oh * ow))
+    for y in range(oh):
+        for x in range(ow):
+            patch = X[:, y*stride:y*stride+kh, x*stride:x*stride+kw]
+            cols[:, y*ow + x] = patch.flatten()
+    return cols, (oh, ow)
+
+def conv2d_im2col(X, W):
+    # X: [C, H, W], W: [C_out, C, kh, kw]
+    C_out, _, kh, kw = W.shape
+    cols, (oh, ow) = im2col(X, kh, kw)       # [C*kh*kw, oh*ow]
+    W_mat = W.reshape(C_out, -1)              # [C_out, C*kh*kw]
+    Y = W_mat @ cols                           # [C_out, oh*ow]
+    return Y.reshape(C_out, oh, ow)
+</code></pre>
+
+<h3>Winograd Algorithm</h3>
+
+<p>Offers a remarkable speedup for small kernels (3×3). The core idea: through a transformation, reduce the 9 multiplications needed by direct convolution to just 4 (per 2×2 output tile).</p>
+
+<p>For the F(2, 3) transform: computing 2 outputs $y_1, y_2$ directly requires 6 multiplications. Winograd achieves this via:</p>
+
+<div class="formula">
+$\mathbf{y} = \mathbf{A}^\top[(\mathbf{G}\mathbf{w}) \odot (\mathbf{B}^\top \mathbf{x})]$
+</div>
+
+<p>where $\mathbf{G}, \mathbf{B}, \mathbf{A}$ are fixed transformation matrices ($\odot$ is elementwise multiply). When expanded, only 4 multiplications are needed (a 33% reduction). Extending to F(2×2, 3×3): a 2×2 output tile requires 36 multiplications directly, but only 16 with Winograd (a 56% reduction).</p>
+
+<p>The cost: the transforms introduce extra additions and subtractions, and the benefit only applies to small kernels (with F(6×6, 3×3), the transform overhead begins to outweigh the multiplication savings). Libraries like cuDNN and ACL automatically choose between Winograd, im2col+GEMM, and FFT based on input and kernel size.</p>
+
+<h3>Depthwise Separable Convolution</h3>
+
+<p>Standard convolution: <code>[C_out, C_in, kH, kW]</code> has $C_{out} C_{in} kH kW$ parameters.</p>
+
+<p>MobileNet introduced <strong>depthwise separable convolution</strong>: factorize into a depthwise step (independent kH×kW convolution per channel) plus a pointwise step (1×1 convolution for cross-channel mixing). Parameters: $C_{in} kH kW + C_{in} C_{out}$. For $kH = kW = 3$ and $C = 64$, this reduces parameters by roughly 9×.</p>
+
+<p>The tradeoff is a slight reduction in representational capacity, but it is worthwhile in mobile/embedded settings — the foundation of MobileNet and EfficientNet.</p>
+
+<h3>Pooling</h3>
+
+<p>A downsampling operation. <strong>Max pooling</strong>: take the maximum over each 2×2 window, halving spatial dimensions. <strong>Average pooling</strong>: take the mean. <strong>Global pooling</strong>: compress an entire feature map into a single value (used for feature aggregation before classification).</p>
+
+<p>The roles of pooling:</p>
+<ol>
+<li>Reduce computation (H, W halved)</li>
+<li>Expand the receptive field (the next convolutional layer sees a wider range)</li>
+<li>Approximate translation invariance</li>
+</ol>
+
+<p>Modern architectures sometimes replace pooling with stride-2 convolutions, making the downsampling learnable.</p>
+
+<!-- 3.2.4 -->
+<h2 id="s3-2-4"><span class="num">3.2.4</span>Activation Functions</h2>
+<p class="pos">Overview: The source of "nonlinearity" in neural networks — without them, no matter how deep the network, it is equivalent to a single linear layer.</p>
+
+<h3>Why Nonlinearity Is Needed</h3>
+
+<p>Composing linear layers still yields a linear transformation: $W_2(W_1 x + b_1) + b_2 = (W_2 W_1) x + (W_2 b_1 + b_2)$. The entire network collapses to a single linear transform — insufficient expressive power. Activation functions introduce nonlinearity, allowing the network to approximate any continuous function (the universal approximation theorem).</p>
+
+<h3>Sigmoid</h3>
+
+<p>$\sigma(x) = 1/(1 + e^{-x})$. Output is in (0, 1). The oldest activation, still used in logistic regression and LSTM gates.</p>
+
+<p>Problem: <strong>vanishing gradients</strong>. $\sigma'(x) = \sigma(x)(1 - \sigma(x))$, with a maximum of 0.25. During backpropagation through a deep network, gradients are multiplied at each layer and quickly vanish. Sigmoid is not used in hidden layers of deep CNNs or Transformers.</p>
+
+<h3>Tanh</h3>
+
+<p>$\tanh(x) = (e^x - e^{-x})/(e^x + e^{-x})$. Output is in (-1, 1); a centered version of sigmoid with maximum gradient value of 1, slightly better. Historically common in RNNs.</p>
+
+<h3>ReLU</h3>
+
+<p>$\text{ReLU}(x) = \max(0, x)$. AlexNet in 2012 made ReLU mainstream. Advantages: extremely simple to compute; derivative is constant 1 on the positive half (solves vanishing gradients).</p>
+
+<p>Disadvantage: <strong>Dead ReLU</strong> — once a neuron's output stays at 0, its gradient is also 0 and it never updates again. Particularly prone to occurring with large learning rates.</p>
+
+<h3>ReLU Variants</h3>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>LeakyReLU</strong>: $\max(\alpha x, x)$, $\alpha = 0.01$. Small slope on the negative side prevents dead neurons.</li>
+<li><strong>PReLU</strong>: $\alpha$ becomes a learnable parameter.</li>
+<li><strong>ELU</strong>: uses $e^x - 1$ on the negative side, smooth.</li>
+</ul>
+
+<h3>GELU and SiLU/Swish</h3>
+
+<p>Two activations popular in the Transformer era:</p>
+
+<p><strong>GELU</strong>: $x \cdot \Phi(x)$, where $\Phi$ is the standard normal CDF. Equivalent to "dropout with probability proportional to input magnitude." Used in BERT, GPT, and related models. In practice, an approximation is used: $0.5 x (1 + \tanh(\sqrt{2/\pi}(x + 0.044715 x^3)))$.</p>
+
+<p><strong>SiLU / Swish</strong>: $x \cdot \sigma(x)$. Simpler. Used in the LLaMA family (specifically SwiGLU, discussed below).</p>
+
+<p>GELU and SiLU look similar in shape — both are smooth versions of ReLU with a slight dip on the negative side. Empirically they perform slightly better than ReLU on large models (around 1%).</p>
+
+<h3>SwiGLU / GeGLU</h3>
+
+<p>Used in the FFN of LLaMA and Qwen. Not a pure activation function but a "gated linear unit" combined with activation:</p>
+
+<div class="formula">
+$\text{SwiGLU}(x) = \text{SiLU}(W_1 x) \odot (W_2 x)$
+</div>
+
+<p>Two parallel linear transformations: one passed through an activation and one not, then elementwise multiplied. Equivalent to learning a multiplicative gate at each position. The cost is that parameters change from <code>[d, 4d] + [4d, d]</code> to <code>[d, 8d/3] + [d, 8d/3] + [8d/3, d]</code> (to keep total parameter count unchanged, the intermediate dimension is typically reduced from 4d to 8d/3).</p>
+
+<h3>Softmax</h3>
+
+<p>Strictly not an "activation function," but plays a similar role — converting a vector into a probability distribution:</p>
+
+<div class="formula">
+$\text{softmax}(\mathbf{x})_i = \frac{e^{x_i}}{\sum_j e^{x_j}}$
+</div>
+
+<p>Properties: outputs sum to 1, differentiable everywhere, monotone. Used at classification output layers and for attention weights.</p>
+
+<p>A numerically stable implementation must subtract the maximum value (see Chapter 1, section 2.8.1).</p>
+
+<!-- 3.2.5 -->
+<h2 id="s3-2-5"><span class="num">3.2.5</span>Normalization</h2>
+<p class="pos">Overview: BatchNorm, LayerNorm, RMSNorm — pillars of training stability.</p>
+
+<h3>Why Normalization Is Needed</h3>
+
+<p>Training deep networks suffers from <strong>internal covariate shift</strong>: small changes to earlier layer parameters cause the input distribution of later layers to shift dramatically, destabilizing training. Normalization forces each layer's input back toward a standard distribution, making training more stable and allowing larger learning rates.</p>
+
+<h3><a href="ch5_partA_preview.html#p03">BatchNorm</a></h3>
+
+<p>For each feature (along the channel dimension) across the batch, subtract the batch mean and divide by the batch standard deviation, then rescale and shift with learnable parameters $\gamma, \beta$:</p>
+
+<div class="formula">
+$\hat{x}_i = \frac{x_i - \mu_B}{\sqrt{\sigma_B^2 + \epsilon}}, \quad y_i = \gamma \hat{x}_i + \beta$
+</div>
+
+<p>During training, $\mu_B$ and $\sigma_B^2$ are computed from the current batch; during inference, running mean/var accumulated during training (or from the final batch) is used.</p>
+
+<p>BatchNorm was revolutionary for CNN training — introduced in 2015, it instantly became the standard, making it possible to train very deep networks like ResNet with 100+ layers.</p>
+
+<p>Drawbacks:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- Sensitive to batch size: statistics are unstable with small batches (recommended ≥ 16)</li>
+<li>- Different behavior during training vs. inference: a common source of subtle bugs</li>
+<li>- Not suitable for RNNs/Transformers (variable sequence lengths make batch-dimension statistics meaningless)</li>
+</ul>
+
+<h3>LayerNorm</h3>
+
+<p>Normalizes over the <em>feature dimension of each individual sample</em> (not the batch dimension):</p>
+
+<div class="formula">
+$\mu = \frac{1}{D}\sum_i x_i, \quad \sigma^2 = \frac{1}{D}\sum_i (x_i - \mu)^2$
+</div>
+
+<p>Each sample is normalized independently with no dependence on batch. Transformers use LayerNorm throughout.</p>
+
+<p>Behavior is identical during training and inference, and it is insensitive to batch size. Has become standard in NLP.</p>
+
+<h3>RMSNorm</h3>
+
+<p>A simplified version of LayerNorm: removes mean centering (deemed unimportant) and only normalizes magnitude:</p>
+
+<div class="formula">
+$\text{RMS}(x) = \sqrt{\frac{1}{D}\sum_i x_i^2}, \quad y_i = \frac{x_i}{\text{RMS}(x)} \cdot \gamma_i$
+</div>
+
+<p>Eliminates the mean computation and the $\beta$ bias parameter. LLaMA, Qwen, and DeepSeek all use RMSNorm — <em>slightly less computation, no difference in accuracy</em>: exactly the kind of trade-off worth making in LLMs.</p>
+
+<h3>GroupNorm / InstanceNorm</h3>
+
+<p>Variants of BatchNorm. GroupNorm partitions channels into groups and normalizes within each group (no batch dependence). InstanceNorm normalizes each sample and channel independently (commonly used in image style transfer). BatchNorm, GroupNorm, and InstanceNorm form a continuum along the axis of channel-dimension granularity.</p>
+
+<h3>Pre-Norm vs. Post-Norm</h3>
+
+<p>The placement of normalization in Transformers has been debated.</p>
+
+<p><strong>Post-Norm</strong> (original Transformer): <code>LN(x + Sublayer(x))</code>. Less stable; training large models requires warmup.</p>
+
+<p><strong>Pre-Norm</strong> (GPT series): <code>x + Sublayer(LN(x))</code>. The residual connection links input and output directly, improving gradient flow and making large model training more stable.</p>
+
+<p>All modern large models use Pre-Norm.</p>
+
+<!-- ==================== 3.3 Classic DL Models ==================== -->
+<div class="part-header">
+  <div class="part-label">PART THREE</div>
+  <h2 class="part-title">3.3 Classic Deep Learning Models</h2>
+  <p class="part-desc">The dominant architectures before Transformers — each still holds independent value in its own domain.</p>
+</div>
+
+<!-- 3.3.1 -->
+<h2 id="s3-3-1"><span class="num">3.3.1</span>CNN</h2>
+<p class="pos">Role: The cornerstone of computer vision. Understanding CNN means understanding the core concept of "inductive bias."</p>
+
+<h3>The Inductive Bias of CNNs</h3>
+
+<p>The secret behind CNN's success lies in two assumptions:</p>
+<ol>
+<li><strong>Locality</strong>: Relevant features are typically spatially close (the meaning of a pixel is related to its neighbors)</li>
+<li><strong>Translation equivariance</strong>: Features are recognized the same way regardless of where they appear in the image (a cat is a cat whether it's in the top-left or bottom-right)</li>
+</ol>
+
+<p>Convolution neatly encodes both points — the kernel is local and shared across the entire image. Parameter efficiency is orders of magnitude higher than a fully connected MLP, and the training data requirement is much lower.</p>
+
+<h3>Evolution of Classic Architectures</h3>
+
+<p><strong>LeNet</strong> (1998): The ancestor of CNNs, designed for handwriting recognition. A few convolutional layers + pooling + fully connected layers.</p>
+
+<p><strong>AlexNet</strong> (2012): The landmark that revived deep learning. 8 layers, using ReLU, Dropout, data augmentation, and GPU training. Reduced ImageNet top-5 error from 26% to 15%, shaking the entire CV community.</p>
+
+<p><strong>VGG</strong> (2014): Deepened the network by repeatedly stacking small 3×3 convolutional kernels. Proved that "depth matters." 16–19 layers.</p>
+
+<p><strong>Inception / GoogLeNet</strong> (2014): Parallel multi-scale convolutions (1×1, 3×3, 5×5). Introduced 1×1 convolutions for dimensionality reduction (fewer parameters).</p>
+
+<p><strong><a href="ch5_partA_preview.html#p01">ResNet</a></strong> (2015): Residual connections. This is the pivotal innovation in CNN history.</p>
+
+<h3>Residual Connections: The Secret to Training Deep Networks</h3>
+
+<p>After VGG, researchers found that continuing to add depth hurt rather than helped — not due to overfitting (training accuracy also dropped), but due to optimization difficulty. ResNet proposed: instead of learning $F(x)$, learn $F(x) - x$, and output $x + F(x)$.</p>
+
+<div class="mermaid">
+flowchart LR
+    X[x] --> F[Conv-BN-ReLU-Conv-BN]
+    X --> ADD((+))
+    F --> ADD
+    ADD --> RELU[ReLU]
+    RELU --> Y[y]
+</div>
+
+<p>Why does it work? Two perspectives:</p>
+
+<p><strong>Gradient perspective</strong>: Gradients along the residual path are passed directly to the input, bypassing the nonlinearities and multiplications of intermediate layers — alleviating vanishing gradients.</p>
+
+<p><strong>Identity mapping perspective</strong>: If the optimal behavior for a layer is the identity mapping (no transformation), the residual version only needs $F = 0$, which is far easier than learning a full identity $F(x) = x$.</p>
+
+<p>ResNet enabled training 152-layer and even 1000-layer networks, completely unlocking depth.</p>
+
+<h3>More Recent Architectures</h3>
+
+<p><strong>DenseNet</strong> (2016): Each layer is densely connected to all previous layers.</p>
+
+<p><strong>EfficientNet</strong> (2019): Finds the optimal scaling ratio across depth, width, and resolution.</p>
+
+<p><strong>ConvNeXt</strong> (2022): Redesigns CNNs using Transformer design philosophy (large kernels, GELU, LayerNorm), demonstrating that CNNs and Transformers each have their own strengths.</p>
+
+<h3>Where CNNs Stand Today</h3>
+
+<p>In CV, Transformers (ViT) already dominate large models, but CNNs still lead for small models and edge deployment — their inductive bias wins on small data, and their regular computation graphs are more amenable to hardware optimization. In embedded systems, industrial control, and medical imaging, CNNs remain the first choice.</p>
+
+<!-- 3.3.2 -->
+<h2 id="s3-3-2"><span class="num">3.3.2</span>RNN / <a href="ch5_partA_preview.html#p02">LSTM</a> / GRU</h2>
+<p class="pos">Role: The dominant sequence modeling architectures before Transformers. Deep dive into LSTM gating mechanisms.</p>
+
+<h3>Vanilla RNN</h3>
+
+<p>At each time step, the current input $\mathbf{x}_t$ and the previous hidden state $\mathbf{h}_{t-1}$ are combined into a new hidden state:</p>
+
+<div class="formula">
+$\mathbf{h}_t = \tanh(W_{xh} \mathbf{x}_t + W_{hh} \mathbf{h}_{t-1} + \mathbf{b})$
+</div>
+
+<p>Unrolled over a time sequence:</p>
+
+<div class="mermaid">
+flowchart LR
+    X1[x_1] --> H1[h_1]
+    X2[x_2] --> H2[h_2]
+    X3[x_3] --> H3[h_3]
+    H1 --> H2
+    H2 --> H3
+    H1 --> Y1[y_1]
+    H2 --> Y2[y_2]
+    H3 --> Y3[y_3]
+</div>
+
+<p>The same weight $W_{hh}$ is reused at every time step. This allows RNNs to handle sequences of arbitrary length, with parameter count that does not grow with sequence length.</p>
+
+<p>The problem: <strong>vanishing/exploding gradients</strong>. During backpropagation, gradients pass through $T$ matrix multiplications by $W_{hh}$ (where $T$ is the sequence length). If the eigenvalues of $W_{hh}$ are less than 1, gradients decay exponentially; greater than 1, they grow exponentially. This causes vanilla RNNs to remember only very short histories.</p>
+
+<h3>LSTM Gating</h3>
+
+<p>Long Short-Term Memory (1997) solves this problem through <strong>explicit memory cells and gating mechanisms</strong>. The core innovation is introducing a <strong>cell state</strong> $\mathbf{c}_t$, which provides a "highway" for gradients to travel long distances.</p>
+
+<p>Three gates govern how information flows:</p>
+
+<div class="formula">
+$\mathbf{f}_t = \sigma(W_f [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_f) \quad (\text{forget gate})$
+</div>
+<div class="formula">
+$\mathbf{i}_t = \sigma(W_i [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_i) \quad (\text{input gate})$
+</div>
+<div class="formula">
+$\mathbf{o}_t = \sigma(W_o [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_o) \quad (\text{output gate})$
+</div>
+<div class="formula">
+$\tilde{\mathbf{c}}_t = \tanh(W_c [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_c) \quad (\text{candidate cell})$
+</div>
+<div class="formula">
+$\mathbf{c}_t = \mathbf{f}_t \odot \mathbf{c}_{t-1} + \mathbf{i}_t \odot \tilde{\mathbf{c}}_t$
+</div>
+<div class="formula">
+$\mathbf{h}_t = \mathbf{o}_t \odot \tanh(\mathbf{c}_t)$
+</div>
+
+<p>Intuition:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Forget gate</strong> decides how much information to retain from the old cell state (near 1: retain; near 0: forget)</li>
+<li><strong>Input gate</strong> decides how much new information to accept</li>
+<li><strong>Output gate</strong> decides how much to expose from the cell state to the outside</li>
+</ul>
+
+<p>The key gradient channel is <code>c_t = f_t * c_{t-1} + ...</code> — when the forget gate stays close to 1 for a long time, <code>c_t</code> retains long history through addition, and gradients during backpropagation decay almost not at all. This is the meaning of "long short-term memory."</p>
+
+<h3>GRU</h3>
+
+<p>Gated Recurrent Unit (2014) simplifies LSTM: it merges the cell state and hidden state, and combines the forget and input gates into an "update gate." 25% fewer parameters, with empirical performance comparable to LSTM.</p>
+
+<div class="formula">
+$\mathbf{z}_t = \sigma(W_z [\mathbf{h}_{t-1}, \mathbf{x}_t]) \quad (\text{update gate})$
+</div>
+<div class="formula">
+$\mathbf{r}_t = \sigma(W_r [\mathbf{h}_{t-1}, \mathbf{x}_t]) \quad (\text{reset gate})$
+</div>
+<div class="formula">
+$\tilde{\mathbf{h}}_t = \tanh(W [\mathbf{r}_t \odot \mathbf{h}_{t-1}, \mathbf{x}_t])$
+</div>
+<div class="formula">
+$\mathbf{h}_t = (1 - \mathbf{z}_t) \odot \mathbf{h}_{t-1} + \mathbf{z}_t \odot \tilde{\mathbf{h}}_t$
+</div>
+
+<h3>Bi-RNN and Deep RNN</h3>
+
+<p><strong>Bidirectional RNN</strong>: Runs one pass forward and one pass backward; the representation at each position is a concatenation from both directions. Well-suited for understanding tasks (each word's representation takes context from both sides into account).</p>
+
+<p><strong>Multi-layer RNN</strong>: The output of one layer serves as the input to the next, stacked several layers deep. Greater expressive power.</p>
+
+<h3>Why RNNs Gave Way to Transformers</h3>
+
+<p>The fundamental limitation of RNNs is that they <strong>cannot be parallelized</strong> — time steps must be computed sequentially. GPU throughput cannot be fully utilized. In 2017, Transformers replaced the recurrence with self-attention entirely, enabling full parallelism during training with even better results. Today LSTM/GRU in industry mainly survives in: small-model scenarios (embedded time-series forecasting), classic baselines, and research.</p>
+
+<h3>The Revival of <a href="ch5_partC_supplement.html#p24">Mamba</a></h3>
+
+<p>In 2023, Mamba (selective SSM) brought "RNN-like architectures" back into the spotlight — training can use parallel scanning, while inference is $O(1)$ per step. It challenges Transformers in long-context scenarios. The spirit of RNNs is not dead; it just needs cleverer design (see Chapter 4, section 5.6).</p>
+
+<!-- 3.3.3 -->
+<h2 id="s3-3-3"><span class="num">3.3.3</span>GNN and GAT</h2>
+<p class="pos">Role: Graph Neural Networks — the mainstream paradigm for processing non-Euclidean data.</p>
+
+<h3>Why Graph Data Needs Specialized Models</h3>
+
+<p>Characteristics of graphs: variable number of nodes, variable number of neighbors, no fixed ordering. The "locality + translation equivariance" assumption of CNNs does not hold (there is no regular grid on a graph). RNNs don't work either (graphs have no natural sequential order). GNNs are designed specifically for graph data.</p>
+
+<h3>The Message-Passing Paradigm</h3>
+
+<p>Almost all mainstream GNNs operate within the "message passing" framework. Each layer performs two steps:</p>
+<ol>
+<li><strong>Aggregation</strong>: Each node collects messages from its neighbors</li>
+<li><strong>Update</strong>: Updates its representation based on the aggregated result and its current representation</li>
+</ol>
+
+<div class="formula">
+$\mathbf{h}_v^{(l+1)} = \text{UPDATE}\left(\mathbf{h}_v^{(l)}, \text{AGG}\left(\{\mathbf{h}_u^{(l)}: u \in \mathcal{N}(v)\}\right)\right)$
+</div>
+
+<p>$\mathcal{N}(v)$ is the set of neighbors of $v$. Different GNNs differ in how AGG and UPDATE are implemented.</p>
+
+<h3>GCN</h3>
+
+<p>Graph Convolutional Network (2017). The aggregation is a normalized weighted average:</p>
+
+<div class="formula">
+$\mathbf{h}_v^{(l+1)} = \sigma\left(\sum_{u \in \mathcal{N}(v) \cup \{v\}} \frac{1}{\sqrt{\deg(u) \deg(v)}} W^{(l)} \mathbf{h}_u^{(l)}\right)$
+</div>
+
+<p>The normalization factor $1/\sqrt{d_u d_v}$ prevents high-degree nodes from dominating the aggregation. The derivation comes from a spectral-domain approximation of the graph Laplacian — the details are complex, but the idea is simple: take a weighted average of neighbors, then apply a linear transformation.</p>
+
+<h3>GraphSAGE</h3>
+
+<p>GCN requires computing the Laplacian over the entire graph, which does not scale to large graphs. GraphSAGE instead uses <strong>neighbor sampling</strong>: each node randomly samples $k$ neighbors to aggregate from. This enables mini-batch training and supports very large graphs (billions of nodes).</p>
+
+<h3>GAT: Graph Attention</h3>
+
+<p>In GCN, neighbor weights are determined by graph structure (degree normalization), and cannot express "this neighbor is more important." GAT introduces attention:</p>
+
+<div class="formula">
+$\alpha_{vu} = \frac{\exp(\text{LeakyReLU}(\mathbf{a}^\top [W \mathbf{h}_v \| W \mathbf{h}_u]))}{\sum_{k \in \mathcal{N}(v)} \exp(\text{LeakyReLU}(\mathbf{a}^\top [W \mathbf{h}_v \| W \mathbf{h}_k]))}$
+</div>
+
+<div class="formula">
+$\mathbf{h}_v^{(l+1)} = \sigma\left(\sum_{u \in \mathcal{N}(v)} \alpha_{vu} W \mathbf{h}_u\right)$
+</div>
+
+<p>Each node computes attention weights over its neighbors and aggregates with those weights. $\|$ denotes concatenation and $\mathbf{a}$ is a learnable vector. Multi-head attention is supported (just like Transformers).</p>
+
+<p>GAT's advantages lie in heterogeneous graphs (where neighbor importance varies) and interpretability (weight visualization).</p>
+
+<h3>Applications</h3>
+
+<p>Node classification (predicting a category for each node), link prediction (predicting whether an edge should exist between two nodes), graph classification (properties of an entire graph), graph generation. Used in: social network recommendations, molecular property prediction, knowledge graph completion, network topology analysis.</p>
+
+<h3>Over-Smoothing</h3>
+
+<p>GNNs cannot be stacked as deep as CNNs — after a few layers, all node representations converge (because each layer averages over neighbors). In practice, 2–3 layers is common; going deeper requires specialized designs (residual connections, PairNorm, etc.).</p>
+
+<!-- 3.3.4 -->
+<h2 id="s3-3-4"><span class="num">3.3.4</span><a href="ch5_partC_supplement.html#p20">GAN</a> and <a href="ch5_partC_supplement.html#p21">VAE</a></h2>
+<p class="pos">Role: The two major generative model paradigms — adversarial vs. variational. Now superseded by diffusion models, but their ideas live on.</p>
+
+<h3>What Generative Models Do</h3>
+
+<p>Given data samples $\{x_i\} \sim p_{\text{data}}$, learn a model $p_\theta$ such that samples drawn from $p_\theta$ "look like" real data. Two major challenges:</p>
+<ol>
+<li>The distribution of high-dimensional data (images, audio) is extremely complex</li>
+<li>Directly maximizing likelihood $\max \prod p_\theta(x_i)$ requires a normalizing constant that is intractable in high dimensions</li>
+</ol>
+
+<p>GAN and VAE each sidestep these problems from completely different directions.</p>
+
+<h3>VAE: Variational Inference</h3>
+
+<p>Assume the data is generated by a latent variable $z$: $z \sim p(z) = \mathcal{N}(0, I)$, $x \sim p_\theta(x|z)$. We want to maximize the likelihood $\log p_\theta(x) = \log \int p_\theta(x|z) p(z) dz$, but the integral is intractable.</p>
+
+<p>VAE approximates it using a <strong>variational lower bound</strong> (ELBO):</p>
+
+<div class="formula">
+$\log p_\theta(x) \ge \mathbb{E}_{q_\phi(z|x)}[\log p_\theta(x|z)] - D_{\text{KL}}(q_\phi(z|x) \| p(z))$
+</div>
+
+<p>Here $q_\phi(z|x)$ is the encoder (maps $x$ to a distribution over $z$), and $p_\theta(x|z)$ is the decoder (reconstructs $x$ from $z$). Both are neural networks.</p>
+
+<p>Training jointly optimizes two terms: the reconstruction term (the decoder can recover $x$ from $z$) and the KL term ($q$ stays close to the prior $p(z)$). Training uses the <strong>reparameterization trick</strong>: $z = \mu_\phi(x) + \sigma_\phi(x) \odot \epsilon, \epsilon \sim \mathcal{N}(0, I)$ — making sampling differentiable.</p>
+
+<p>VAE advantages: explicit latent space (supports interpolation and controllable generation), stable training. Disadvantage: generated samples tend to be blurry (reconstruction loss is pixel-level MSE, which averages across outcomes).</p>
+
+<h3>GAN: Adversarial Game</h3>
+
+<p>An entirely different approach. Two networks compete:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Generator $G$</strong>: takes noise $z$ as input, outputs fake sample $G(z)$</li>
+<li><strong>Discriminator $D$</strong>: takes a sample as input, judges whether it is real or fake (outputs a 0–1 probability)</li>
+</ul>
+
+<p>Objective function:</p>
+
+<div class="formula">
+$\min_G \max_D \mathbb{E}_{x \sim p_{\text{data}}}[\log D(x)] + \mathbb{E}_{z \sim p_z}[\log(1 - D(G(z)))]$
+</div>
+
+<p>$D$ wants to classify real samples as real and fake samples as fake; $G$ wants to fool $D$. The two compete until $G$ generates samples that $D$ cannot distinguish from real ones — at that point $G$ has learned $p_{\text{data}}$.</p>
+
+<p>GAN advantages: sharp samples with high visual quality. Disadvantages: <strong>extremely unstable training</strong> (achieving game equilibrium is hard), mode collapse (the generator produces only a few types of samples), no explicit likelihood.</p>
+
+<p>Notable improvements: <strong>WGAN</strong> replaces JS divergence with Wasserstein distance, resulting in much more stable training; <strong>StyleGAN</strong> (NVIDIA) achieves fine-grained style control and was the primary technology behind early deepfakes.</p>
+
+<h3>The Rise of Diffusion Models</h3>
+
+<p>From 2020 onward, <strong><a href="ch5_partC_supplement.html#p22">diffusion models</a></strong> rapidly replaced GAN/VAE as the mainstream approach to image generation.</p>
+
+<p>Core idea: progressively add noise to data until it becomes pure noise (forward process, fixed), then train a neural network to denoise (reverse process, learned). During generation, start from pure noise and iteratively denoise over $T$ steps to obtain a sample.</p>
+
+<p>Advantages: extremely stable training (a pure denoising objective, no adversarial component), high sample quality, controllable (guidance, conditioning). DALL-E 2, Stable Diffusion, Imagen, and Sora all use diffusion.</p>
+
+<p>Trade-off: slow sampling (requires 20–50 steps, each a full forward pass). Acceleration directions: DDIM, DPM-Solver, Consistency Models (1-step generation).</p>
+
+<!-- ==================== 3.4 Data & Feature Engineering ==================== -->
+<div class="part-header">
+  <div class="part-label">PART FOUR</div>
+  <h2 class="part-title">3.4 Data &amp; Feature Engineering</h2>
+  <p class="part-desc">"Garbage in, garbage out" — data quality sets the ceiling on model performance.</p>
+</div>
+
+<!-- 3.3.0 -->
+<h2 id="s3-4-1"><span class="num">3.4.1</span>Sample Scoring, Generation, and Augmentation</h2>
+<p class="pos">Role: What to do when data is scarce — synthetic samples, augmentation, and active learning.</p>
+
+<h3>Data Augmentation</h3>
+
+<p>Multiple "new" samples are generated from a single real sample through transformations, expanding the training set. Domain-specific approaches:</p>
+
+<table>
+<tr><th>Domain</th><th>Common Augmentations</th></tr>
+<tr><td>Image</td><td>Flip, rotation, crop, color jitter, Cutout, Mixup, CutMix, AutoAugment</td></tr>
+<tr><td>Text</td><td>Synonym replacement, back-translation, random insertion/deletion, EDA, Back-translation</td></tr>
+<tr><td>Audio</td><td>Time stretching, pitch shifting, background noise injection, SpecAugment (spectral masking)</td></tr>
+<tr><td>Time Series</td><td>Time warping, noise injection, window slicing, DBA synthesis</td></tr>
+</table>
+
+<p><strong>Mixup</strong> is a particularly interesting augmentation: both samples and labels are interpolated as convex combinations, $x' = \lambda x_1 + (1-\lambda) x_2, y' = \lambda y_1 + (1-\lambda) y_2$. The model learns that "a linearly interpolated sample should have a linearly interpolated label" — the regularization effect is significant and broadly benefits classification tasks.</p>
+
+<h3>Sample Scoring</h3>
+
+<p>Not all samples are equally important. Scoring methods:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Difficulty</strong>: How large is the current model's loss on this sample (loss-based)</li>
+<li><strong>Uncertainty</strong>: The model's prediction confidence (entropy, variance)</li>
+<li><strong>Representativeness</strong>: How different this sample is from other samples</li>
+<li><strong>Influence</strong>: The effect on test-set performance when this sample is removed from training (influence function)</li>
+</ul>
+
+<p><strong>Curriculum learning</strong>: Train on easy samples first, then gradually introduce harder ones — similar to how humans learn. For certain tasks this can significantly accelerate convergence.</p>
+
+<p><strong>Active learning</strong>: When labeling budget is limited, use the model to select the most worthwhile samples to label (typically those with the highest uncertainty) for human annotation. Reduces labeling cost.</p>
+
+<h3>Synthetic Data</h3>
+
+<p>Two main approaches:</p>
+
+<p><strong>Rule-based generation</strong>: Generate samples using domain rules (e.g., synthesize adversarial network traffic from known malicious attack rules, or synthesize autonomous driving scenarios using a physics engine). Controllable, but may be too "clean" to match the real distribution.</p>
+
+<p><strong>Model-based generation</strong>: Use generative models (GAN, diffusion, LLM) to produce synthetic samples. Particularly popular in the LLM era:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Self-Instruct</strong>: Have a strong model generate instructions + responses, which serve as training data for a weaker model</li>
+<li><strong>Distillation</strong>: A small model learns from a large model; the large model's outputs serve as "synthetic labels"</li>
+<li><strong>Rejection Sampling</strong>: The large model generates multiple answers; a scoring function selects the good ones for the training set</li>
+</ul>
+
+<p>Risk of synthetic data: <strong>model collapse</strong> — if successive generations of models are trained on data synthesized by the previous generation, the distribution drifts over generations and ultimately loses diversity. Mixing in real data is essential for safety.</p>
+
+<h3>Handling Class Imbalance</h3>
+
+<p>In extreme cases (1% positive, 99% negative), a model that simply predicts all negatives achieves 99% accuracy — but is completely useless. Remedies:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Resampling</strong>: Oversample the minority class, undersample the majority class</li>
+<li><strong>SMOTE</strong>: Generate new samples by interpolating between minority-class examples</li>
+<li><strong>Class weights</strong>: Assign higher loss weight to the minority class</li>
+<li><strong>Focal Loss</strong>: $-\alpha(1-p)^\gamma \log(p)$ — down-weights easy samples (high $p$) so the model focuses on hard ones</li>
+</ul>
+
+<!-- 3.3.1 -->
+<h2 id="s3-4-2"><span class="num">3.4.2</span>Preprocessing and Feature Construction</h2>
+<p class="pos">Role: Cleaning, normalization, encoding — in traditional ML, feature engineering often matters more than model selection.</p>
+
+<h3>Data Cleaning</h3>
+
+<p>Real-world data is messy: missing values, outliers, type inconsistencies, duplicates. Cleaning is unglamorous work but must be done:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Missing values</strong>: Drop rows, fill with mean/median, predict with a model, or add a "is missing" flag feature</li>
+<li><strong>Outliers</strong>: Detect using IQR ($Q_1 - 1.5 \cdot \text{IQR}, Q_3 + 1.5 \cdot \text{IQR}$) or Z-score, then drop, clip, or flag</li>
+<li><strong>Duplicates</strong>: Exact or approximate deduplication</li>
+</ul>
+
+<h3>Numerical Feature Processing</h3>
+
+<p><strong>Normalization</strong>: Scale to [0, 1] — $x' = (x - \min)/(\max - \min)$. Sensitive to outliers.</p>
+
+<p><strong>Standardization</strong>: Subtract mean and divide by standard deviation — $x' = (x - \mu)/\sigma$. More robust; preferred for normally distributed data.</p>
+
+<p><strong>Log transformation</strong>: For heavy-tailed or skewed data, apply $\log(1+x)$ before further processing. Network traffic packet sizes, file sizes, and costs are typical heavy-tailed distributions.</p>
+
+<p><strong>Binning</strong>: Discretize a continuous variable into intervals. Can be equal-width, equal-frequency, or decision-tree-based. Benefits include handling nonlinear relationships, robustness to outliers, and strong interpretability.</p>
+
+<h3>Categorical Feature Encoding</h3>
+
+<p><strong>One-Hot</strong>: One binary column per category. Simple, but causes dimensionality explosion when there are many categories.</p>
+
+<p><strong>Label Encoding</strong>: One integer per category. Suitable for tree models (trees can handle categorical features), but not for linear models (which would incorrectly assume a numeric ordering).</p>
+
+<p><strong>Target Encoding</strong>: Map each category to the mean of the target variable for samples in that category. Information-rich but carries leakage risk — must be computed on the training set before being applied to validation/test sets.</p>
+
+<p><strong>Embedding</strong>: Map categories to low-dimensional continuous vectors (learned through a network). The standard approach for handling categorical features in deep learning.</p>
+
+<h3>Temporal Features</h3>
+
+<p>Using raw timestamps directly tends to perform poorly. Common expansions: hour of day, day of week, day of month, month, quarter, is_weekend, holiday flag, days since a specific event, etc.</p>
+
+<p><strong>Cyclic encoding</strong>: Hour is not a linear quantity (11 PM and midnight are close but numerically far apart). Use $\sin(2\pi h/24), \cos(2\pi h/24)$ to encode and preserve periodicity.</p>
+
+<h3>Text Features</h3>
+
+<p>Traditional: TF-IDF, N-grams, bag of words. Modern: use pretrained models (BERT, Sentence-BERT) to extract embeddings directly as features.</p>
+
+<h3>Feature Crosses</h3>
+
+<p>Multiply or combine two features. Tree models handle this automatically (deep trees naturally express feature interactions), but linear models require explicit feature engineering. Factorization Machines (FM) and FFM in recommender systems are automated feature crossing methods.</p>
+
+<!-- 3.3.2 -->
+<h2 id="s3-4-3"><span class="num">3.4.3</span>Dimensionality Reduction Algorithms</h2>
+<p class="pos">Role: The curse of dimensionality, and the remedies — PCA, t-SNE, UMAP.</p>
+
+<h3>PCA</h3>
+
+<p>The math was covered in Section 2.3.4 of Chapter 1. Engineering notes:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>Must standardize first</strong> — PCA is variance-sensitive; without standardization, features with larger ranges dominate</li>
+<li>- Choosing how many components: look at cumulative explained variance ratio (typically retain 95% of variance)</li>
+<li>- PCA is <strong>linear</strong> dimensionality reduction — it cannot handle nonlinear structure (e.g., a Swiss roll)</li>
+</ul>
+
+<p>Variants: Kernel PCA uses the kernel trick for nonlinear structure; Incremental PCA supports streaming data; Sparse PCA produces sparse principal components for better interpretability.</p>
+
+<h3>t-SNE</h3>
+
+<p>t-distributed Stochastic Neighbor Embedding (2008). Dimensionality reduction designed specifically for <strong>visualization</strong> to 2D/3D.</p>
+
+<p>Idea: compute pairwise "similarity" in high-dimensional space (Gaussian kernel), compute similarities in low-dimensional space using a t-distribution (heavy-tailed), and minimize the KL divergence between the two. High-dimensional neighbors remain neighbors in low dimensions.</p>
+
+<p>t-SNE produces stunning results — the 10 digit classes of MNIST separate cleanly in 2D. But there are pitfalls:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- The <code>perplexity</code> hyperparameter has a large effect (typical range 5–50); different values yield different results</li>
+<li>- Global structure is not preserved (distances between clusters are meaningless)</li>
+<li>- Results differ across runs (random initialization)</li>
+<li>- Only for visualization; cannot be used as features for downstream models</li>
+</ul>
+
+<h3>UMAP</h3>
+
+<p>Uniform Manifold Approximation and Projection (2018). Faster than t-SNE with comparable or better quality, and better global structure preservation. Based on Riemannian geometry and algebraic topology (sounds intimidating, but in practice it's just a library call).</p>
+
+<p>The modern first choice for visualization. Also supports <strong>transform</strong> (projecting new data into an already-trained space), which t-SNE strictly does not.</p>
+
+<h3>Autoencoder Dimensionality Reduction</h3>
+
+<p>The "encoder" part of a neural network: input $x$ → low-dimensional latent vector $z$ → decode back to $\hat{x}$. Minimize reconstruction loss $\|x - \hat{x}\|^2$. $z$ is the reduced representation.</p>
+
+<p>Stronger than PCA for nonlinear structure. VAE is the probabilistic version of an autoencoder. But training is time-consuming; for small to medium scale, PCA is often sufficient.</p>
+
+<h3>When to Use Which</h3>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>PCA</strong>: As features for downstream models, large datasets, speed required, interpretability needed</li>
+<li><strong>t-SNE / UMAP</strong>: Data exploration, visualizing clusters</li>
+<li><strong>Autoencoder</strong>: Nonlinear structure, end-to-end scenarios</li>
+</ul>
+
+<!-- 3.3.3 -->
+<h2 id="s3-4-4"><span class="num">3.4.4</span>Feature Selection</h2>
+<p class="pos">Role: Picking the truly useful features from many — reduce overfitting, improve interpretability, lower inference cost.</p>
+
+<h3>Three Categories of Methods</h3>
+
+<p><strong>Filter methods</strong>: Evaluate each feature independently, without involving the model. Fast.</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- Variance threshold: Drop features with very low variance (nearly constant)</li>
+<li>- Correlation coefficient: Drop features with low correlation to the target (linear relationship)</li>
+<li>- Mutual information: Captures "correlation" for nonlinear relationships</li>
+<li>- Chi-squared: Categorical features vs. categorical targets</li>
+</ul>
+
+<p><strong>Wrapper methods</strong>: Use a model to evaluate the performance of different feature subsets, searching greedily.</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>Forward selection</strong>: Start from empty; each round add the feature that gives the largest performance gain</li>
+<li>- <strong>Backward elimination</strong>: Start from all features; each round remove the feature with the smallest impact on performance</li>
+<li>- <strong>RFE</strong> (Recursive Feature Elimination): Train a model, inspect coefficients/importance, remove the least important feature, retrain, and repeat</li>
+</ul>
+
+<p><strong>Embedded methods</strong>: Models with built-in feature selection capability.</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- Lasso regression: L1 regularization drives irrelevant feature coefficients to zero</li>
+<li>- Tree model feature importance</li>
+</ul>
+
+<h3>Pitfalls of Feature Importance</h3>
+
+<p>Tree model feature importance has multiple definitions:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Gain</strong>: Total information gain from all splits using this feature</li>
+<li><strong>Split count</strong>: Number of times this feature is used to split</li>
+<li><strong>Permutation importance</strong>: How much model performance drops after shuffling this feature</li>
+</ul>
+
+<p>Different definitions give different rankings. More importantly: <strong>feature importance ≠ causality</strong>. Highly correlated features may share importance (they are predictive jointly); removing one causes its importance to be redistributed to others. A feature may also be purely a leakage signal (e.g., "hospital ID" predicting disease — not because it has a causal relationship, but because different hospitals see different disease distributions).</p>
+
+<h3>SHAP</h3>
+
+<p>SHapley Additive exPlanations (2017). Uses Shapley values from game theory to give a fair attribution of each feature's contribution to a <em>single prediction</em>. More fine-grained than global feature importance — you can see "for this sample, how much did each feature contribute."</p>
+
+<pre><code class="language-python">import shap, xgboost
+
+model = xgboost.XGBClassifier().fit(X_train, y_train)
+explainer = shap.TreeExplainer(model)
+shap_values = explainer.shap_values(X_test)
+
+# Single-sample explanation
+shap.force_plot(explainer.expected_value, shap_values[0], X_test.iloc[0])
+
+# Global feature importance (by SHAP values)
+shap.summary_plot(shap_values, X_test)
+</code></pre>
+
+<p>Explainable AI in industry is largely built on SHAP. It is standard in scenarios with legal explainability requirements, such as financial risk control and medical diagnosis.</p>
+
+<!-- ==================== 3.5 Training Optimization ==================== -->
+<div class="part-header">
+  <div class="part-label">PART FIVE</div>
+  <h2 class="part-title">3.5 Training Optimization Algorithms</h2>
+  <p class="part-desc">From supervised to self-supervised to alignment — the core techniques driving the evolution of model capabilities.</p>
+</div>
+
+<!-- 3.5.1 -->
+<h2 id="s3-5-1"><span class="num">3.5.1</span>Supervised Learning</h2>
+<p class="pos">Overview: The most classical paradigm — given labeled data, train a model to fit it. The details hold a wealth of knowledge.</p>
+
+<h3>The Basic Loop</h3>
+
+<p>Supervised learning is the foundational paradigm of deep learning. Given data $(x_i, y_i)$, a model $f_\theta$, a loss $\ell$, and an optimizer update:</p>
+
+<div class="formula">
+$\theta_{t+1} = \theta_t - \eta \nabla_\theta \sum_i \ell(f_\theta(x_i), y_i)$
+</div>
+
+<h3>Choosing a Loss Function</h3>
+
+<table>
+<tr><th>Task</th><th>Loss</th></tr>
+<tr><td>Regression</td><td>MSE, MAE, Huber</td></tr>
+<tr><td>Binary classification</td><td>Binary cross-entropy</td></tr>
+<tr><td>Multi-class classification</td><td>Categorical cross-entropy</td></tr>
+<tr><td>Multi-label classification</td><td>Binary CE per label</td></tr>
+<tr><td>Sequence generation</td><td>Token-level cross-entropy</td></tr>
+<tr><td>Object detection</td><td>Classification loss + bbox regression + IoU</td></tr>
+<tr><td>Segmentation</td><td>Pixel-wise CE + Dice loss</td></tr>
+</table>
+
+<h3>Overfitting and Regularization</h3>
+
+<p>The primary enemy of supervised learning is overfitting — perfect on the training set, poor on the test set. Countermeasures stack up in layers:</p>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>L2 regularization (weight decay)</strong>: $\ell + \lambda \|\theta\|^2$. Keeps parameters small and decision boundaries smooth.</li>
+<li><strong>Dropout</strong>: Randomly drops a fraction of neurons (e.g., 50%) during training, forcing the model not to rely on any single neuron. At inference time all neurons are kept but scaled by the dropout probability.</li>
+<li><strong>Data augmentation</strong>: Increases data diversity.</li>
+<li><strong>Early stopping</strong>: Stop training when validation performance stops improving.</li>
+<li><strong>Label smoothing</strong>: Replace hard labels [0, 1, 0] with [0.05, 0.9, 0.05] to prevent the model from becoming overconfident.</li>
+</ul>
+
+<h3>Train / Validation / Test Split</h3>
+
+<p>The classic 70/15/15 or 80/10/10 split. Key points:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>Look at the test set only once at the very end</strong> — repeatedly tuning on the test set constitutes data leakage</li>
+<li>- <strong>Stratified sampling</strong>: preserve class proportions</li>
+<li>- <strong>Time-series splitting</strong>: split by time, not randomly (using future data for training is cheating)</li>
+<li>- <strong>Group-based splitting</strong>: data from the same user or device must not appear in both train and test sets (information leakage)</li>
+</ul>
+
+<h3>Cross-Validation</h3>
+
+<p>When data is scarce, use K-fold cross-validation: divide the data into K folds, train on K-1 folds and validate on the remaining one, rotate K times and average the results. This eliminates the randomness of a single split.</p>
+
+<p>For time series, use <strong>time series split</strong>: progressively expand the training window.</p>
+
+<h3>Training Diagnostics</h3>
+
+<p>The loss curve reveals a great deal:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- Training loss not decreasing: learning rate too small, vanishing gradients, insufficient model capacity, or data issues</li>
+<li>- Training loss oscillating or exploding: learning rate too large or numerical instability</li>
+<li>- Training loss decreasing but validation loss not: overfitting</li>
+<li>- Both decreasing but with a large gap: overfitting, but manageable</li>
+<li>- Neither decreasing: fundamental problem with the model or data</li>
+</ul>
+
+<!-- 3.5.2 -->
+<h2 id="s3-5-2"><span class="num">3.5.2</span>Self-Supervised Pre-Training</h2>
+<p class="pos">Overview: The foundational paradigm for LLMs and large foundation models — "creating" labels from unlabeled data.</p>
+
+<h3>Core Idea</h3>
+
+<p>Labeled data is expensive — but unlabeled data (web pages, code, video) is virtually unlimited. Self-supervised learning designs an "auxiliary task" whose labels can be <em>automatically generated from the data itself</em>. The representations learned on this auxiliary task are often highly useful for downstream tasks.</p>
+
+<h3>Pre-Training Objectives for NLP</h3>
+
+<p><strong>MLM</strong> (Masked Language Modeling, BERT): Randomly mask 15% of tokens and have the model predict the masked ones. The label is the original word. Encoder-only architecture.</p>
+
+<p><strong>CLM</strong> (Causal Language Modeling, GPT): Given the first $t$ tokens, predict the $(t+1)$-th. The label is the next word. Decoder-only architecture.</p>
+
+<p><strong>Span Corruption</strong> (T5): Mask a contiguous span of tokens and have the model generate the masked span.</p>
+
+<p>The success of the GPT family demonstrates that CLM scales best — more data and larger models yield stronger capabilities, with zero-shot/few-shot transfer to a wide range of tasks.</p>
+
+<h3>Pre-Training for CV</h3>
+
+<p><strong>Contrastive learning</strong> (SimCLR, MoCo): Apply two different augmentations (random crop, color jitter, etc.) to the same image, and train the representations of these two views to be similar while being distant from representations of other images.</p>
+
+<p><strong>MAE</strong> (Masked Autoencoders): Inspired by MLM, mask 75% of image patches and have the model reconstruct them. Simple yet remarkably effective.</p>
+
+<p><strong>DINO</strong> (self-distillation): A student network mimics the output of a teacher network without requiring explicit negative samples.</p>
+
+<h3>Why It Works</h3>
+
+<p>A central finding of self-supervised pre-training: <strong>representation learning can emerge from "prediction" tasks</strong>. In order to predict masked words or reconstruct images, the model must learn grammar, semantics, and object concepts — this knowledge is a byproduct of "solving the task," but it also happens to be exactly what downstream tasks need.</p>
+
+<h3><a href="ch5_partA_preview.html#p08">Scaling Laws</a></h3>
+
+<p>OpenAI and DeepMind observed that model capability improves as a power law of <strong>data volume × model size × compute</strong>, without saturating for a very long time. This is the scaling law:</p>
+
+<div class="formula">
+$L(N, D) \approx \left(\frac{N_c}{N}\right)^{\alpha_N} + \left(\frac{D_c}{D}\right)^{\alpha_D}$
+</div>
+
+<p>Loss as a function of parameter count $N$ and data volume $D$ follows power-law decay. This turns large model training into an "engineering problem" (just add compute to improve) rather than a "research problem" (requiring algorithmic breakthroughs).</p>
+
+<p>Chinchilla (2022) refined this: for a given compute budget, the optimal allocation is to scale data and parameter counts in roughly equal proportion (rather than simply stacking more parameters as was previously done).</p>
+
+<!-- 3.5.3 -->
+<h2 id="s3-5-3"><span class="num">3.5.3</span>Fine-Tuning and Alignment</h2>
+<p class="pos">Overview: From pre-trained model to usable product — the complete pipeline of SFT, DPO, and RLHF.</p>
+
+<p>This section goes deep; these are the most critical training techniques of the LLM era.</p>
+
+<h3>Three-Stage Training Pipeline</h3>
+
+<p>Modern LLMs go through three steps from pre-training to release:</p>
+
+<div class="mermaid">
+flowchart LR
+    PT[Pretrain<br/>Massive text CLM] --> SFT[SFT<br/>Instruction-response pairs]
+    SFT --> RM[Reward Model<br/>Preference data]
+    RM --> RLHF[RLHF / DPO<br/>Align to human preferences]
+    RLHF --> REL[Released Model]
+</div>
+
+<p>Pre-training falls under Section 3.5.2 and produces the <strong>base model</strong> — it holds vast world knowledge and can complete text, but does not know how to "converse." The subsequent three steps transform it into a conversational assistant.</p>
+
+<h3>SFT: Supervised Fine-Tuning</h3>
+
+<p>Train on human-annotated "instruction → ideal response" pairs. The loss is CLM — the model learns to "generate the response following the instruction" from this data.</p>
+
+<pre><code class="language-python"># SFT data format (simplified)
+{
+    "instruction": "Explain what gradient descent is",
+    "response": "Gradient descent is an optimization algorithm that computes the gradient of the loss function..."
+}
+
+# Construct training sequence (with system prompt and role markers)
+prompt = f"&lt;|system|&gt;You are a helpful assistant&lt;|user|&gt;{instruction}&lt;|assistant|&gt;"
+full   = prompt + response + "&lt;|end|&gt;"
+
+# Loss is computed only on the response portion (prompt portion is loss-masked)
+labels = [-100] * len(tokenize(prompt)) + tokenize(response + "&lt;|end|&gt;")
+</code></pre>
+
+<p>The amount of SFT data is crucial but does not need to be enormous — tens of thousands of high-quality instruction samples are enough to turn a base model into a usable conversational model. OpenAI's <a href="ch5_partB_preview.html#p14">InstructGPT</a> paper revealed the approximate scale.</p>
+
+<p>The limitation of SFT: it only teaches the model "this kind of answer is correct," not "this kind of answer is wrong." What the model learns is imitation, not preference ranking. This is where RLHF or DPO comes in.</p>
+
+<h3><a href="ch5_partB_preview.html#p14">RLHF</a>: The Classic Approach</h3>
+
+<p>Reinforcement Learning from Human Feedback. Three steps:</p>
+
+<p><strong>Step 1: Collect preference data.</strong> For the same prompt, have the SFT model generate multiple responses and have humans annotate which is better — producing $(x, y_{\text{win}}, y_{\text{lose}})$ triples.</p>
+
+<p><strong>Step 2: Train a Reward Model.</strong> A neural network $r_\phi$ (typically initialized from the SFT model) learns to "score good responses high and bad responses low." The loss uses the Bradley-Terry preference model:</p>
+
+<div class="formula">
+$\mathcal{L}_{\text{RM}} = -\log \sigma(r_\phi(x, y_{\text{win}}) - r_\phi(x, y_{\text{lose}}))$
+</div>
+
+<p><strong>Step 3: Optimize the policy with PPO.</strong> Use the reward model's scores as reinforcement signals. The policy $\pi_\theta$ generates responses, receives rewards, and updates $\theta$ to increase the probability of high-reward responses.</p>
+
+<p>To prevent the policy from drifting too far from the original SFT model (maintaining fluency and avoiding reward-hacking tricks), a KL penalty is added:</p>
+
+<div class="formula">
+$\mathcal{L}_{\text{PPO}} = -\mathbb{E}[r_\phi(x, y) - \beta \cdot D_{\text{KL}}(\pi_\theta \| \pi_{\text{SFT}})]$
+</div>
+
+<p>In practice, the clipping variant of the PPO algorithm is used.</p>
+
+<h3>Engineering Complexity of RLHF</h3>
+
+<p>A single RLHF training run requires four models to be loaded simultaneously:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- Policy (the model being trained)</li>
+<li>- Reference (frozen SFT model, for computing KL)</li>
+<li>- Reward Model (frozen, for scoring)</li>
+<li>- Critic (value function estimate for PPO)</li>
+</ul>
+
+<p>GPU memory is tight, training is unstable, hyperparameter tuning is difficult, and reward hacking risk is high. This motivated the development of DPO.</p>
+
+<h3><a href="ch5_partB_preview.html#p15">DPO</a>: Bypassing RL</h3>
+
+<p>Direct Preference Optimization (2023). The key insight: the combination of PPO + KL penalty + RM is mathematically equivalent to a closed-form classification loss. Specifically, under the Bradley-Terry preference model, the optimal policy and the reference policy have an explicit relationship:</p>
+
+<div class="formula">
+$\pi^*(y|x) \propto \pi_{\text{ref}}(y|x) \exp\left(\frac{1}{\beta} r(x, y)\right)$
+</div>
+
+<p>Solving for $r$:</p>
+
+<div class="formula">
+$r(x, y) = \beta \log \frac{\pi^*(y|x)}{\pi_{\text{ref}}(y|x)}$
+</div>
+
+<p>Substituting back into the RM preference loss:</p>
+
+<div class="formula">
+$\mathcal{L}_{\text{DPO}} = -\log \sigma\left(\beta \log \frac{\pi_\theta(y_w|x)}{\pi_{\text{ref}}(y_w|x)} - \beta \log \frac{\pi_\theta(y_l|x)}{\pi_{\text{ref}}(y_l|x)}\right)$
+</div>
+
+<p><em>No reward model, no RL, no critic</em> — only the policy and reference models are needed, with a standard supervised loss. Training is stable, simple, and achieves results comparable to or better than PPO.</p>
+
+<p>This has been the most important simplification in alignment training over the past two years. Today a large number of open-source models (Zephyr, Tulu, Nous-Hermes) use DPO rather than PPO.</p>
+
+<h3>Newer Variants</h3>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>IPO</strong>: Fixes a problem with DPO under noisy preference data</li>
+<li><strong>KTO</strong>: Replaces pairwise comparisons with single-point binary feedback (good/not good), making data easier to collect</li>
+<li><strong>ORPO</strong>: Combines SFT and preference alignment into a single training pass</li>
+<li><strong>RLAIF</strong>: Uses AI instead of humans to label preference data, enabling scale</li>
+</ul>
+
+<h3>The Goal of Alignment</h3>
+
+<p>At the technical level: make model outputs conform to "the distribution of human preferences." But preferences themselves are pluralistic — the three goals of helpful, harmless, and honest sometimes conflict (being too helpful might assist bad actors; being too harmless might refuse legitimate requests). In practice, this is balanced through diverse RLHF data.</p>
+
+<p>Constitutional AI (Anthropic) and rule-based preferences represent directions for improving on "pure human annotation" — using explicit rules to generate preference comparisons, reducing annotation inconsistency.</p>
+
+<h3>Parameter-Efficient Fine-Tuning (PEFT)</h3>
+<p>Full fine-tuning requires updating all model parameters, which is extremely costly in the LLM era. <strong>Parameter-Efficient Fine-Tuning</strong> trains only a tiny fraction of parameters while achieving performance close to full fine-tuning:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong><a href="ch5_partB_preview.html#p11">LoRA</a></strong> (Low-Rank Adaptation): Freeze the original weights $W_0$ and inject a low-rank bypass matrix $BA$ ($r \ll d$). The number of trainable parameters can be reduced 100–1000×. At inference time, $BA$ can be merged back into $W_0$ with zero additional latency.</li>
+<li>- <strong>QLoRA</strong>: Builds on LoRA by quantizing the frozen weights to NF4 (4-bit), combined with double quantization and a paged optimizer, enabling fine-tuning of a 65B model on a single consumer-grade GPU.</li>
+<li>- <strong>Adapter</strong>: Insert small bottleneck modules into each Transformer layer and train only the Adapter parameters.</li>
+<li>- <strong>Prefix Tuning / P-Tuning</strong>: Prepend trainable virtual tokens to the input.</li>
+</ul>
+<p>Detailed mathematical derivations and code implementations are available in <a href="ch5_partB_preview.html#p11">Chapter 5, Paper Deep-Dive P11 (LoRA / QLoRA)</a>.</p>
+
+<!-- 3.5.4 -->
+<h2 id="s3-5-4"><span class="num">3.5.4</span>Reinforcement Learning</h2>
+<p class="pos">Overview: From games to alignment — core RL concepts and several key algorithms.</p>
+
+<h3>The MDP Framework</h3>
+
+<p>The mathematical backbone of RL is the Markov Decision Process (MDP): state $s$, action $a$, transition $P(s'|s,a)$, reward $R(s,a)$, discount factor $\gamma$. The objective is to learn a <strong>policy</strong> $\pi(a|s)$ that maximizes the expected cumulative return:</p>
+
+<div class="formula">
+$J(\pi) = \mathbb{E}_\pi\left[\sum_{t=0}^\infty \gamma^t R(s_t, a_t)\right]$
+</div>
+
+<h3>Two Main Lines</h3>
+
+<p><strong>Value-based</strong>: Learn the state value function $V(s)$ or the state-action value $Q(s, a)$. Representatives: Q-learning, DQN.</p>
+
+<p><strong>Policy-based</strong>: Directly learn the policy $\pi_\theta$. Representatives: REINFORCE, PPO.</p>
+
+<p><strong>Actor-Critic</strong>: A combination of both — the policy (actor) generates actions while the value function (critic) evaluates their quality. All modern mainstream methods (A3C, PPO, SAC) use the AC architecture.</p>
+
+<h3>Q-learning and DQN</h3>
+
+<p>The Bellman optimality equation for Q-learning:</p>
+
+<div class="formula">
+$Q^*(s, a) = R(s, a) + \gamma \mathbb{E}_{s'}[\max_{a'} Q^*(s', a')]$
+</div>
+
+<p>$Q^*$ can be approximated via iterative updates. When the state space is large, the Q-table becomes intractable, so DQN (2015) uses a neural network to approximate $Q$. Key techniques:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Experience replay</strong>: Store $(s, a, r, s')$ tuples in a buffer and sample randomly during training — breaks temporal correlations</li>
+<li><strong>Target network</strong>: Use lagged weights to compute the target $y = r + \gamma \max_{a'} Q_{\text{target}}(s', a')$, stabilizing training</li>
+</ul>
+
+<p>DQN was the first to achieve superhuman performance on Atari games, marking RL's emergence from the ivory tower.</p>
+
+<h3>Policy Gradient and PPO</h3>
+
+<p>The policy gradient theorem:</p>
+
+<div class="formula">
+$\nabla_\theta J(\pi_\theta) = \mathbb{E}_\pi[\nabla_\theta \log \pi_\theta(a|s) \cdot A(s, a)]$
+</div>
+
+<p>$A(s, a) = Q(s, a) - V(s)$ is the advantage function (how much better this action is compared to average).</p>
+
+<p>Naive policy gradient has enormous variance and unstable updates. TRPO (2015) and PPO (2017) stabilize training by limiting the magnitude of each update. PPO uses <strong>clipping</strong> instead of TRPO's hard constraint — simple, efficient, and has become the default RL algorithm:</p>
+
+<div class="formula">
+$\mathcal{L}^{\text{CLIP}} = \mathbb{E}\left[\min(r_t A_t, \text{clip}(r_t, 1-\epsilon, 1+\epsilon) A_t)\right]$
+</div>
+
+<p>$r_t = \pi_\theta / \pi_{\theta_{\text{old}}}$ is the probability ratio of new to old policy. This prevents $r$ from deviating too far from 1 (typical $\epsilon = 0.2$).</p>
+
+<h3>Applications</h3>
+
+<p>RL has achieved success in games (AlphaGo, AlphaStar, OpenAI Five), robotics, autonomous driving, and LLM alignment (RLHF). However, RL training is notoriously difficult — sample efficiency is low, reward engineering is tricky, and hyperparameter tuning is an art.</p>
+
+<p>In the networking domain, RL is used for congestion control (variants of PCC and BBR), routing optimization, resource scheduling, and ad bidding, but industrial deployment remains relatively rare — supervised learning and rule-based systems are the default in industry, with RL as a supplement.</p>
+
+<!-- 3.5.5 -->
+<h2 id="s3-5-5"><span class="num">3.5.5</span>Distillation, Transfer, and Multi-Task Learning</h2>
+<p class="pos">Overview: Using one model to accelerate another, using one task to help another — three parameter-efficient and data-efficient techniques.</p>
+
+<h3>Knowledge Distillation</h3>
+
+<p>A large model (teacher) "teaches" its knowledge to a small model (student). Proposed by Hinton in 2015: the small model learns not only from hard labels but also from the teacher's soft labels (the full probability distribution).</p>
+
+<div class="formula">
+$\mathcal{L} = \alpha \cdot \text{CE}(y_{\text{true}}, p_s) + (1-\alpha) \cdot T^2 \cdot \text{KL}(p_t^T \| p_s^T)$
+</div>
+
+<p>$T$ is the temperature, used to "soften" the distribution ($T > 1$ flattens it). At high temperature, the teacher's "runner-up class" information is preserved — for example, "this image looks most like a cat but also somewhat like a dog."</p>
+
+<p>DistilBERT, TinyBERT, and TinyLLaMA are all distillation products. Compression ratios are typically 2–5×, with only a few percentage points of performance loss.</p>
+
+<h3>Transfer Learning</h3>
+
+<p>Transfer a model trained on a source domain to a target domain. Typical workflow:</p>
+<ol>
+<li>Load a pre-trained backbone</li>
+<li>Replace the final layer with an output head for the target task</li>
+<li>Freeze the backbone and train only the head (linear probing); or train all parameters together but with a smaller learning rate (fine-tuning)</li>
+</ol>
+
+<p>The key decision is <strong>what to freeze and what to train</strong>. With little data: freeze most layers. With more data: train everything, but use a smaller learning rate for the early layers (which capture general features).</p>
+
+<p>Domain Adaptation goes a step further — the target domain may be unlabeled, and feature distribution alignment methods are used for transfer.</p>
+
+<h3>Multi-Task Learning</h3>
+
+<p>A single model learns multiple tasks simultaneously. Shares a backbone with one head per task.</p>
+
+<p>Advantages:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- Shared parameters, less memory</li>
+<li>- Implicit regularization; one task may help another generalize</li>
+<li>- Low-resource tasks benefit from high-resource tasks</li>
+</ul>
+
+<p>Challenge: <strong>task conflict</strong> — gradients from different tasks may point in opposite directions, pulling against each other. Mitigations:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Loss weighting</strong>: Assign higher weight to more important tasks</li>
+<li><strong>Gradient projection</strong> (PCGrad): Project conflicting gradients to remove the conflicting component</li>
+<li><strong>MoE</strong>: Different tasks activate different experts</li>
+</ul>
+
+<p>T5 and FLAN are canonical examples of multi-task training — hundreds of NLP tasks trained together, producing general-purpose models.</p>
+
+<h3>Continual Learning</h3>
+
+<p>A model has already learned task A and now needs to learn task B. Naive fine-tuning causes <strong>catastrophic forgetting</strong> — learning B overwrites knowledge of A. Mitigations include: EWC (add larger regularization on parameters important for A), Replay (mix in a portion of task A data), and Adapter (add small modules for each task, freezing the main trunk).</p>
+
+<!-- 3.5.6 -->
+<h2 id="s3-5-6"><span class="num">3.5.6</span>Federated Learning</h2>
+<p class="pos">Overview: Distributed training where data never leaves the local device — the solution for privacy-compliant scenarios.</p>
+
+<h3>Motivation</h3>
+
+<p>Hospitals have patient data but cannot share it, phones have user inputs but cannot upload them, banks have transaction data subject to compliance restrictions. Centralized training is not an option — federated learning keeps data on-device and uploads only model updates.</p>
+
+<h3>FedAvg</h3>
+
+<p>The most basic federated algorithm (Google, 2017):</p>
+<ol>
+<li>The server distributes the current global model $\theta_t$ to participating clients</li>
+<li>Each client trains locally for a few rounds, obtaining a local update $\theta_t^k$</li>
+<li>Clients upload $\theta_t^k - \theta_t$ (or directly $\theta_t^k$) to the server</li>
+<li>The server computes a weighted average: $\theta_{t+1} = \sum_k \frac{n_k}{n} \theta_t^k$</li>
+</ol>
+
+<h3>Challenges</h3>
+
+<p><strong>Non-IID data</strong>: Different clients have different data distributions (one client's photos are all cats, another's are all dogs), causing FedAvg to converge slowly or not at all. Improvements: FedProx adds a proximal term; SCAFFOLD uses control variates to correct bias.</p>
+
+<p><strong>Communication cost</strong>: Uploading and downloading large models is expensive. Compression (gradient quantization, Top-K sparsification) is the main optimization direction.</p>
+
+<p><strong>Heterogeneity</strong>: Wide variation in client device performance. Asynchronous FedAsync and hierarchical FL address this.</p>
+
+<p><strong>Privacy</strong>: Even uploading only updates can leak information (model inversion attacks can recover inputs from gradients). <strong>Differential privacy</strong> (adding noise) and <strong>secure aggregation</strong> (aggregating over encrypted values so the server sees only the sum, not individual contributions) are the mainstream defenses.</p>
+
+<h3>Applications</h3>
+
+<p>Google's Gboard (mobile keyboard) uses federated learning to train language models on-device. In the medical domain, multi-institution collaborative training (FeTS challenge) trains tumor segmentation models across multiple hospitals. In networking: collaborative training of multi-site attack detection models.</p>
+
+<p>Industrial deployment remains limited — engineering complexity is high and performance lags behind centralized training. This may become more important as privacy regulations tighten (GDPR, CCPA).</p>
+
+<!-- 3.5.7 -->
+<h2 id="s3-5-7"><span class="num">3.5.7</span>AutoML</h2>
+<p class="pos">Overview: Automating the machine learning pipeline — hyperparameter search, architecture search, and feature engineering.</p>
+
+<h3>Hyperparameter Search</h3>
+
+<p>Traditional methods:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Grid search</strong>: Enumerate all combinations. Explodes in high dimensions.</li>
+<li><strong>Random search</strong>: Sample each hyperparameter independently at random. Bergstra (2012) demonstrated this outperforms grid search in most scenarios — most hyperparameters are actually insensitive and don't need a fine grid.</li>
+<li><strong>Bayesian optimization</strong>: Use a Gaussian process or TPE to model the "hyperparameter → validation loss" function, and select the next point to try using an acquisition function (EI, UCB). Optuna, Hyperopt, and Ax are the mainstream libraries.</li>
+<li><strong>Hyperband / BOHB</strong>: Early-stop poor configurations and allocate more budget to promising ones.</li>
+</ul>
+
+<h3>NAS: Neural Architecture Search</h3>
+
+<p>Automatically find the best network structure. Google's NASNet (2017) used RL to search and achieved state-of-the-art on ImageNet, but at enormous compute cost (thousands of GPU-days).</p>
+
+<p>Subsequent improvements:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>DARTS</strong>: Relax discrete architecture choices into continuous weights and optimize with gradient descent — runs in a few GPU-days</li>
+<li><strong>EfficientNet</strong>: A representative architecture family found by NAS</li>
+<li><strong>One-shot NAS</strong>: Train a single supernet; all candidate architectures are subgraphs of it</li>
+</ul>
+
+<p>NAS was prominent in CV's early days. In the era of large models, Transformers dominate and NAS is less relevant for mainstream architecture selection. It remains useful for small models and hardware-targeted scenarios.</p>
+
+<h3>Automated Feature Engineering</h3>
+
+<p>Libraries like Featuretools and TSFresh automatically generate large numbers of features from tabular or time-series data (aggregations, cross-features, time windows), followed by feature selection to keep the useful ones. This can significantly reduce manual effort in traditional ML pipelines.</p>
+
+<h3>End-to-End AutoML Systems</h3>
+
+<p>H2O AutoML, AutoGluon, Auto-sklearn, Google Vertex AI AutoML — upload your data and the system automatically handles preprocessing, feature engineering, model selection, hyperparameter tuning, and ensembling. Suitable for teams without ML experts who need to get started quickly.</p>
+
+<p>That said, experienced ML engineers typically outperform AutoML — domain knowledge provides priors that AutoML cannot know (e.g., knowing that certain feature combinations are meaningless). AutoML is an accelerator, not a replacement.</p>
+
+<!-- ==================== 3.6 AI Performance Engineering ==================== -->
+<div class="part-header">
+  <div class="part-label">PART SIX</div>
+  <h2 class="part-title">3.6 AI Performance Engineering</h2>
+  <p class="part-desc">Taking models from demo to production — comprehensive optimization of inference latency, throughput, and power consumption.</p>
+</div>
+
+<!-- 3.6.1 -->
+<h2 id="s3-6-1"><span class="num">3.6.1</span>NPU Performance Modeling</h2>
+<p class="pos">Focus: Estimating theoretical peak performance and identifying real bottlenecks — the Roofline model.</p>
+
+<h3>The Roofline Model</h3>
+
+<p>Given a hardware platform (compute $P$ FLOPS, bandwidth $B$ bytes/s) and a kernel (arithmetic intensity $I$ = FLOPs / bytes accessed), the performance upper bound is:</p>
+
+<div class="formula">
+$\text{Perf} \le \min(P, I \cdot B)$
+</div>
+
+<p>Plotted on a log-log graph: the x-axis shows arithmetic intensity, the y-axis shows performance. $I \cdot B$ forms the sloped "bandwidth roof" and $P$ forms the horizontal "compute roof." The ridge point $I^* = P / B$ is the <strong>hardware balance point</strong>.</p>
+
+<ul style="list-style:none; padding-left:0;">
+<li>- $I < I^*$: memory-bound. Spending effort to increase compute is pointless; the goal is to reduce memory accesses.</li>
+<li>- $I > I^*$: compute-bound. The hardware's compute is saturated; the only options are upgrading hardware or reducing FLOPs through algorithmic improvements.</li>
+</ul>
+
+<h3>Computing Arithmetic Intensity for Typical Operators</h3>
+
+<p><strong>GEMM</strong>: $M \times K \times N$ multiplication reads $MK + KN + MN$ elements. Arithmetic intensity is approximately $O(\min(M, N, K))$. High for large matrices — compute-bound.</p>
+
+<p><strong>Elementwise</strong>: 1 FLOP per element, reading and writing 2 elements. Arithmetic intensity of 0.5 FLOP/byte. Severely memory-bound.</p>
+
+<p><strong>Attention</strong> (standard implementation): Arithmetic intensity varies with sequence length $n$. Short sequences are memory-bound; long sequences gradually become compute-bound. FlashAttention completely rewrites attention into a compute-bound form.</p>
+
+<h3>The Balance Point on H100</h3>
+
+<p>NVIDIA H100 SXM5: FP16 Tensor Core compute is approximately 989 TFLOPS (dense) / 1979 TFLOPS (2:4 sparse), with HBM3 bandwidth of 3.35 TB/s. Using dense compute, the balance point is $I^* = 989000 / 3350 \approx 295$ FLOP/byte; using 2:4 structured sparsity gives $I^* \approx 591$ FLOP/byte.</p>
+
+<p>This means 295 floating-point operations must be performed for every byte read from HBM to fully saturate compute. Most kernels fall short — which is exactly why tiling, operator fusion, and on-chip SRAM utilization are central to optimization.</p>
+
+<h3>The Unique Characteristics of NPUs</h3>
+
+<p>NPUs typically feature:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- Tensor core compute >> general-purpose compute (most compute capacity is inaccessible without GEMM workloads)</li>
+<li>- On-chip SRAM significantly larger than GPU shared memory (on the order of several MB)</li>
+<li>- Slightly lower HBM bandwidth but better energy efficiency</li>
+</ul>
+
+<p>This means the Roofline ridge point on NPUs may sit at a higher arithmetic intensity — making efficient use of on-chip SRAM even more critical.</p>
+
+<!-- 3.6.2 -->
+<h2 id="s3-6-2"><span class="num">3.6.2</span>Model Architecture Optimization, Quantization, Pruning, and Lookup Tables</h2>
+<p class="pos">Focus: Reducing computation at the algorithm level — the three pillars of model compression.</p>
+
+<h3>Architecture Optimization</h3>
+
+<p>Designing for efficiency from the start:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Depthwise separable convolutions</strong> (MobileNet): 1/9 the parameters and computation</li>
+<li><strong>Grouped convolutions</strong> (ShuffleNet, ResNeXt): reduced computation</li>
+<li><strong>GQA</strong> (Grouped Query Attention): multiple Q heads share a single set of K and V. The mainstream approach since LLaMA2, significantly reducing KV Cache size</li>
+<li><strong>MLA</strong> (Multi-head Latent Attention, DeepSeek): compresses KV into a latent space, saving even more</li>
+<li><strong>MoE</strong>: sparse activation — large total parameter count but only a small fraction is activated per forward pass</li>
+</ul>
+
+<h3>Quantization</h3>
+
+<p>This topic has come up several times before; here it is treated systematically.</p>
+
+<p><strong>PTQ</strong> (Post-Training Quantization): quantize after training, without retraining. Calibrate on a few hundred samples to estimate activation ranges, then compute scale/zero-point.</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- Weight-only INT8: the most conservative option, nearly lossless</li>
+<li>- Weight-only INT4: GPTQ / AWQ / AutoGPTQ, the mainstream approach for LLM inference</li>
+<li>- W8A8 (both weights and activations in INT8): accelerates inference but with accuracy loss</li>
+</ul>
+
+<p><strong>QAT</strong> (Quantization-Aware Training): simulates quantization during training (using fake-quantization nodes), allowing the model to learn to function under quantized conditions. Higher accuracy than PTQ, at the cost of requiring retraining.</p>
+
+<p><strong>The key idea behind AWQ</strong>: observations show that "important weights" correspond to "channels with large activation magnitudes." Direct quantization causes the quantization error on these important weights to dominate the output. AWQ first scales up the weights of important channels (reducing their relative quantization error), then inversely scales the activations — mathematically equivalent, but with quantization error redistributed.</p>
+
+<p><strong>The key idea behind GPTQ</strong>: treats quantization as column-wise optimization, using Hessian information to absorb the error from already-quantized columns into the remaining columns. Algorithmically complex but achieves the best results at INT4.</p>
+
+<h3>Pruning</h3>
+
+<p><strong>Unstructured pruning</strong>: sets individual weights with small absolute values to zero. High compression ratio, but sparse matrix acceleration requires special hardware support.</p>
+
+<p><strong>Structured pruning</strong>: removes entire channels, entire heads, or entire layers. Directly accelerates inference without special hardware support.</p>
+
+<p><strong>2:4 sparsity</strong>: forces exactly 2 out of every 4 consecutive weights to be zero. Natively supported by NVIDIA Ampere and later Tensor Core hardware, delivering a direct 2× speedup. Slightly inferior to unstructured pruning in terms of accuracy, but an engineering win overall.</p>
+
+<p>Pruning typically requires <strong>fine-tuning to recover accuracy</strong> — accuracy always drops after pruning, but fine-tuning for a few epochs recovers most of it. Iterative pruning (alternating rounds of pruning and fine-tuning) yields the best results.</p>
+
+<h3>Lookup Tables Instead of Computation</h3>
+
+<p>In some cases, results can be precomputed offline and stored in a lookup table, replacing runtime computation with a table lookup for significant speedups. Typical examples:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Softmax LUT</strong>: precomputed $\exp(x)$ table for discrete value domains</li>
+<li><strong>Embedding Cache</strong>: prefetched embeddings for high-frequency tokens</li>
+<li><strong>Activation LUT</strong>: nonlinear activations approximated with piecewise linear functions plus table lookups</li>
+<li><strong>PQ in retrieval</strong>: precomputed codebook distance tables for product-quantized vectors replacing real-time distance computation</li>
+</ul>
+
+<p>Well-suited for embedded scenarios — table lookups are faster than computation and consume less power.</p>
+
+<h3>Distillation</h3>
+
+<p>Covered in section 3.5.5 above. A small model learns from a large one, achieving the highest compression ratios (10× or more), but requiring training from scratch. Typically combined with quantization and pruning — distill to a small model, then quantize to INT4, for a final speedup of 20–50×.</p>
+
+<!-- 3.6.3 -->
+<h2 id="s3-6-3"><span class="num">3.6.3</span>Operator Optimization</h2>
+<p class="pos">Focus: Squeezing hardware performance at the operator level — tiling, fusion, and FlashAttention in practice.</p>
+
+<p>This section is a technically dense deep dive.</p>
+
+<h3>Tiling: Moving the Problem into On-Chip SRAM</h3>
+
+<p>The standard optimization for GEMM. In a naive implementation, $\mathbf{A}, \mathbf{B}, \mathbf{C}$ all reside in HBM and every element is read repeatedly. Tiling divides the matrices into small blocks, loading each block entirely into SRAM to be computed there.</p>
+
+<pre><code class="language-c">// Three-level tiling: block (HBM→SRAM) / warp / thread
+#define BM 128
+#define BN 128
+#define BK 16
+
+for (int bi = 0; bi < M; bi += BM) {
+    for (int bj = 0; bj < N; bj += BN) {
+        // Result tile: BM × BN, held in SRAM
+        float C_tile[BM][BN] = {0};
+
+        for (int bk = 0; bk < K; bk += BK) {
+            // Load A[bi:bi+BM, bk:bk+BK] and B[bk:bk+BK, bj:bj+BN] from HBM to SRAM
+            load_to_sram(A_tile, A + bi*K + bk, BM, BK);
+            load_to_sram(B_tile, B + bk*N + bj, BK, BN);
+
+            // Perform small matrix multiply within SRAM
+            for (int i = 0; i < BM; i++)
+                for (int j = 0; j < BN; j++)
+                    for (int k = 0; k < BK; k++)
+                        C_tile[i][j] += A_tile[i][k] * B_tile[k][j];
+        }
+        // Write C_tile back to HBM
+        store_from_sram(C + bi*N + bj, C_tile, BM, BN);
+    }
+}
+</code></pre>
+
+<p>The number of times each element is read from HBM drops from $O(N)$ in the naive implementation to $O(N/BN)$ — reducing memory bandwidth pressure by a factor of $BN$. In practice, cuBLAS and CUTLASS add further levels (block / warp / thread fragment) but the principle is the same.</p>
+
+<h3>The Engineering Elegance of <a href="ch5_partB_preview.html#p10">FlashAttention</a></h3>
+
+<p>Standard attention: $Q, K, V \in \mathbb{R}^{n \times d}$, computing $S = QK^\top$ (shape $n \times n$), $P = \text{softmax}(S)$, $O = PV$. The memory bottleneck lies in $S$ and $P$ — with $n = 4096, d = 64$, $S$ alone occupies 64MB, and a single round trip through HBM costs 128MB.</p>
+
+<p>The core idea of FlashAttention: <strong>fuse attention into a single kernel, never materializing $S$ or $P$</strong>. The procedure:</p>
+<ol>
+<li>Partition $Q$ into blocks $Q_1, Q_2, \ldots$, each fitting in one SRAM tile</li>
+<li>Partition $K, V$ into blocks $K_j, V_j$</li>
+<li>Outer loop over $Q_i$, inner loop over $K_j, V_j$</li>
+<li>For each pair $(Q_i, K_j)$, compute partial $S_{ij}$, partial softmax, and partial output $O_i += P_{ij} V_j$</li>
+<li>Use an <strong>online softmax</strong> algorithm to merge partial results across different $j$</li>
+</ol>
+
+<p>The online softmax uses a running max and running sum:</p>
+
+<div class="formula">
+$m_i^{\text{new}} = \max(m_i, \max(S_{ij}))$
+</div>
+
+<div class="formula">
+$l_i^{\text{new}} = e^{m_i - m_i^{\text{new}}} \cdot l_i + \sum_k e^{S_{ij,k} - m_i^{\text{new}}}$
+</div>
+
+<div class="formula">
+$O_i^{\text{new}} = \frac{l_i}{l_i^{\text{new}}} e^{m_i - m_i^{\text{new}}} O_i + \frac{1}{l_i^{\text{new}}} \sum_k e^{S_{ij,k} - m_i^{\text{new}}} V_{j,k}$
+</div>
+
+<p>Each new block $K_j, V_j$ updates the running max, running sum, and running output. The final result is equivalent to a full softmax, but the $n \times n$ matrices $S$ and $P$ are never materialized.</p>
+
+<p>Benefits:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- HBM accesses reduced from $O(n^2)$ to $O(n^2 / \text{tile\_size})$</li>
+<li>- Memory footprint reduced from $O(n^2)$ to $O(n)$ (only intermediate m, l, O are stored)</li>
+<li>- 2–4× speedup, with greater gains for longer sequences</li>
+</ul>
+
+<p>FlashAttention-2 further optimizes warp scheduling; FlashAttention-3 is designed specifically for the Hopper architecture, using TMA (Tensor Memory Accelerator) and WGMMA to overlap asynchronous computation with data movement, achieving 840 TFLOPS/s (85% utilization) in BF16 and 1.3 PFLOPS/s in FP8; FlashAttention-4 is written with CuTeDSL and optimizes both Hopper and Blackwell. Today it is a mandatory component of every major inference engine.</p>
+
+<h3>Operator Fusion</h3>
+
+<p>What <code>torch.compile</code> in PyTorch 2.0 does under the hood is automatic operator fusion. Classic fusion patterns:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><code>Conv + BN + ReLU</code>: BN parameters can be folded into Conv — three-in-one</li>
+<li><code>GEMM + Bias + Activation</code>: handled in a single CUTLASS epilogue</li>
+<li><code>LayerNorm</code>: inherently a three-step fusion of "subtract mean, divide by std, then scale"</li>
+<li><code>RMSNorm + SwiGLU</code>: a common fusion pattern in LLMs</li>
+</ul>
+
+<p>Evaluate performance gains for manual fusion. The general rule: <em>adjacent elementwise, broadcast, and reduction operators should always be fused.</em></p>
+
+<h3>Operator Autotuning</h3>
+
+<p>For the same operator, the optimal tile size and thread layout differ across shapes and hardware. Triton AutoTuner, TVM Ansor, and cuDNN's algorithm selection all follow this approach — for each target shape, they try multiple configurations and record the best one. This is done once at compile time or on first run, with results cached for subsequent use.</p>
+
+<!-- 3.6.4 -->
+<h2 id="s3-6-4"><span class="num">3.6.4</span>Software Stack Optimization</h2>
+<p class="pos">Focus: Frameworks, runtimes, and scheduling — system-level optimization above the operator layer.</p>
+
+<h3>Graph-Level Optimization</h3>
+
+<p>The computation graph passes through a series of optimization passes:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>Constant folding, dead code elimination</li>
+<li>Operator fusion</li>
+<li>Memory planning (reusing tensor buffers)</li>
+<li>Layout optimization (NCHW ↔ NHWC)</li>
+<li>Operator selection (choosing the fastest among multiple operator implementations)</li>
+</ul>
+
+<p>ONNX Runtime, TensorRT, OpenVINO, and CoreML are all graph compilers of this kind. They typically deliver 2–5× speedups for inference deployment.</p>
+
+<h3>Scheduling Optimization</h3>
+
+<p>Concurrent kernel execution, CPU-GPU pipelining, and asynchronous data copies are all important for both training and inference. CUDA Streams allow multiple kernels to run simultaneously on the GPU, as long as they are independent.</p>
+
+<p>A classic optimization: <strong>overlapping communication and computation</strong>. In distributed training, gradients produced by each layer's backward pass immediately begin AllReduce while the previous layer continues its backward pass. With proper configuration, communication is entirely hidden behind computation, and scaling efficiency approaches linear.</p>
+
+<h3>Memory Optimization</h3>
+
+<p><strong>Gradient Checkpointing</strong>: the forward pass stores only a subset of intermediate activations; the rest are recomputed during the backward pass. Trades roughly 30% extra computation for 2–5× memory savings. Essential for training large models.</p>
+
+<p><strong>ZeRO</strong> (see Chapter 4, section 5.10): shards optimizer states, gradients, and parameters across devices so each device holds only a fraction.</p>
+
+<p><strong>CPU Offload</strong>: moves infrequently accessed state (e.g., optimizer states) to CPU memory, transferring back when needed. Saves GPU memory but introduces latency.</p>
+
+<p><strong>PagedAttention</strong> (Chapter 4, section 5.13): virtual memory paging for KV Cache during inference.</p>
+
+<h3>I/O Optimization</h3>
+
+<p>Training bottlenecks often lie in data loading:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- Multi-process DataLoader + pinned memory</li>
+<li>- Prefetching</li>
+<li>- Compressed formats (WebDataset, TFRecord)</li>
+<li>- Distributed file systems (Lustre, GlusterFS) or object storage (S3)</li>
+</ul>
+
+<p>Inference bottlenecks:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- Model loading: use <code>mmap</code> + safetensors instead of pickle</li>
+<li>- First-request cold start: warm up the model, enable keep-alive</li>
+</ul>
+
+<h3>Kernel Runtimes</h3>
+
+<p>Triton, CUDA Graphs, and CUTLASS each have their place:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Triton</strong>: the preferred tool for writing new kernels, with Python-like syntax</li>
+<li><strong>CUDA Graphs</strong>: records a series of kernels as a graph and launches the entire graph in a single call. Reduces launch overhead (critical for small-batch inference)</li>
+<li><strong>CUTLASS</strong>: a high-performance GEMM and related template library</li>
+</ul>
+
+<!-- ==================== 3.7 AI in Networking ==================== -->
+<div class="part-header">
+  <div class="part-label">PART SEVEN</div>
+  <h2 class="part-title">3.7 AI in Networking</h2>
+  <p class="part-desc">AI is more than ChatGPT — it has mature applications in network operations, security, and performance optimization.</p>
+</div>
+
+<!-- 3.7.1 -->
+<h2 id="s3-7-1"><span class="num">3.7.1</span>Traffic Classification: Requirements and Challenges</h2>
+<p class="pos">Focus: Traffic identification in the age of encryption — traditional methods have failed, making AI the only viable option.</p>
+
+<h3>Why Traffic Classification Is Needed</h3>
+
+<p>Network devices need to know "what kind of traffic this is" in order to apply QoS policies, security rules, billing, and compliance auditing. Traditional methods:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Port-based</strong>: 80 for HTTP, 443 for HTTPS, 53 for DNS...</li>
+<li><strong>Deep Packet Inspection (DPI)</strong>: matching characteristic strings in the payload (User-Agent, SNI, protocol signatures)</li>
+</ul>
+
+<p>Both approaches worked in the early 2010s but are no longer viable today —</p>
+<ol>
+<li><strong>Port obfuscation</strong>: applications no longer use fixed ports; P2P and VPN traffic uses random port assignments</li>
+<li><strong>TLS ubiquity</strong>: HTTPS accounts for the vast majority of traffic; payloads are encrypted, making DPI blind</li>
+<li><strong>QUIC</strong>: even the handshake is encrypted (once TLS 1.3 Encrypted ClientHello becomes widespread, SNI is no longer visible)</li>
+<li><strong>CDN/cloud</strong>: a single IP address can carry hundreds or thousands of applications</li>
+</ol>
+
+<p>As a result, industry today relies almost exclusively on AI methods — identifying traffic from <strong>statistical features and behavioral patterns</strong>, without depending on payload content.</p>
+
+<h3>Classification Granularity</h3>
+
+<p>Traffic classification is a multi-level problem:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Traffic type</strong>: Web / Video / VoIP / Gaming / File Transfer</li>
+<li><strong>Application identification</strong>: Netflix / YouTube / TikTok / Zoom</li>
+<li><strong>Behavioral identification</strong>: casual browsing / video conferencing / file download / malicious scanning</li>
+<li><strong>User/device type</strong>: IoT device / mobile / desktop</li>
+</ul>
+
+<p>Finer granularity demands more complex features and models.</p>
+
+<h3>Challenges in Data Acquisition</h3>
+
+<p>Where does training data come from? Several approaches:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Controlled packet capture</strong>: capturing pcap traces from known applications; labels are precise but volume is limited</li>
+<li><strong>Public datasets</strong>: ISCX, USTC, CICIDS, MAWI — labels are not always accurate</li>
+<li><strong>Weak supervision</strong>: using traditional methods to produce coarse-grained labels, with AI refining them</li>
+<li><strong>Self-supervised</strong>: exploiting the natural structure of traffic (forward/backward flows, connection establishment sequences)</li>
+</ul>
+
+<h3>Deployment Location and Constraints</h3>
+
+<p>Where the classifier is deployed determines the available resources:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Edge devices</strong> (routers, CPE): compute &lt; 10 GFLOPS; must be extremely lightweight</li>
+<li><strong>Core devices</strong> (datacenter firewalls): GPU/NPU available; can run larger models</li>
+<li><strong>Cloud-side analysis</strong>: offline deep analysis; model size is unconstrained</li>
+</ul>
+
+<p>Edge deployment is the most demanding — XGBoost with a few dozen hand-crafted features is the typical solution; in recent years, compact CNN/Transformer models have also become viable in this context.</p>
+
+<!-- 3.7.2 -->
+<h2 id="s3-7-2"><span class="num">3.7.2</span>Traffic Classification: Features and Models</h2>
+<p class="pos">Focus: Feature engineering in practice — which features actually matter and which models to use.</p>
+
+<h3>Three Categories of Features</h3>
+
+<p><strong>Statistical features</strong> (per-flow): statistics computed over a single flow (a sequence of packets sharing the same 5-tuple).</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- Total packet count, total byte count, duration</li>
+<li>- Packet size statistics: min / max / mean / std / median / percentiles</li>
+<li>- Inter-packet interval statistics: same as above</li>
+<li>- Directionality: forward/backward packet count ratio, byte ratio</li>
+<li>- TCP flag occurrence counts (SYN, ACK, PSH, RST...)</li>
+<li>- Window size mean and variance</li>
+</ul>
+
+<p><strong>Temporal features</strong>: the temporal patterns of packets, without aggregation.</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- Size sequence of the first N packets (N = 20–100)</li>
+<li>- Arrival time sequence of the first N packets</li>
+<li>- Direction sequence of the first N packets (binary: forward = 0, backward = 1)</li>
+</ul>
+
+<p><strong>Header features</strong> (when available): TLS ClientHello cipher suite list, SNI (when unencrypted), TCP options, QUIC version, TLS ALPN, etc.</p>
+
+<h3>Hand-Crafted Features + Tree Models</h3>
+
+<p>The most common industrial approach. A few dozen features combined with XGBoost / LightGBM. Fast to train, fast to infer, interpretable, and accurate enough (90%+) for common tasks.</p>
+
+<pre><code class="language-python">import numpy as np
+import xgboost as xgb
+
+def extract_flow_features(packets):
+    """Extract features from a sequence of packets in a single flow"""
+    sizes    = np.array([p.size for p in packets])
+    times    = np.array([p.timestamp for p in packets])
+    fwd      = np.array([p.direction == 'fwd' for p in packets])
+
+    feat = {}
+    # Basic statistics
+    feat['n_packets']      = len(packets)
+    feat['total_bytes']    = sizes.sum()
+    feat['duration']       = times[-1] - times[0] if len(packets) > 1 else 0
+    feat['bytes_per_sec']  = feat['total_bytes'] / max(feat['duration'], 1e-6)
+
+    # Packet size distribution
+    for stat, fn in [('mean', np.mean), ('std', np.std),
+                     ('min', np.min), ('max', np.max),
+                     ('p25', lambda x: np.percentile(x, 25)),
+                     ('p50', lambda x: np.percentile(x, 50)),
+                     ('p75', lambda x: np.percentile(x, 75))]:
+        feat[f'size_{stat}'] = fn(sizes)
+
+    # Directional distribution
+    feat['fwd_ratio']      = fwd.mean()
+    feat['fwd_bytes']      = sizes[fwd].sum()
+    feat['bwd_bytes']      = sizes[~fwd].sum()
+    feat['fwd_bwd_ratio']  = feat['fwd_bytes'] / max(feat['bwd_bytes'], 1)
+
+    # Inter-arrival time (iat)
+    if len(times) > 1:
+        iat = np.diff(times)
+        feat['iat_mean'] = iat.mean()
+        feat['iat_std']  = iat.std()
+        feat['iat_max']  = iat.max()
+
+    # Size sequence of the first 20 packets (as individual features)
+    for i in range(20):
+        feat[f'pkt_size_{i}'] = sizes[i] if i < len(sizes) else 0
+
+    return feat
+
+# Training
+X = np.array([extract_flow_features(f).values() for f in flows])
+y = np.array(labels)
+
+model = xgb.XGBClassifier(
+    n_estimators=300, max_depth=8, learning_rate=0.1,
+    tree_method='hist', eval_metric='mlogloss'
+)
+model.fit(X_train, y_train, eval_set=[(X_val, y_val)])
+
+# Inspect important features
+importance = sorted(zip(feature_names, model.feature_importances_),
+                    key=lambda x: -x[1])
+print("Top 10 features:", importance[:10])
+</code></pre>
+
+<h3>Deep Learning Approaches</h3>
+
+<p>Treating a flow as a "sequence" and processing it directly with 1D-CNN or LSTM:</p>
+
+<pre><code class="language-python">import torch.nn as nn
+
+class FlowCNN(nn.Module):
+    """Input: sequence of (size, iat, direction) tuples for the first N packets"""
+    def __init__(self, num_classes, seq_len=50):
+        super().__init__()
+        # 3 channels: size (normalized), iat (normalized), direction (0/1)
+        self.conv = nn.Sequential(
+            nn.Conv1d(3, 32, kernel_size=5, padding=2), nn.ReLU(),
+            nn.Conv1d(32, 64, kernel_size=5, padding=2), nn.ReLU(),
+            nn.MaxPool1d(2),
+            nn.Conv1d(64, 128, kernel_size=3, padding=1), nn.ReLU(),
+            nn.AdaptiveAvgPool1d(1),
+        )
+        self.fc = nn.Linear(128, num_classes)
+
+    def forward(self, x):
+        # x: [B, 3, seq_len]
+        h = self.conv(x).squeeze(-1)
+        return self.fc(h)
+</code></pre>
+
+<p>Advantages: end-to-end learning without hand-crafted features. Disadvantages: large data requirements, high computational cost, black-box nature. Difficult to deploy at the edge.</p>
+
+<p>A recent trend is <strong>FlowTransformer</strong>-style work — treating packet sequences as token sequences and processing them with small Transformers (3–6 layers). Strong performance but heavier.</p>
+
+<h3>Practical Deployment Considerations</h3>
+
+<p><strong>Early classification</strong>: waiting until a flow ends before classifying is not an option — by then it has already passed through. Classification must be completed within the first N packets (N = 5–20). Feature extraction must be done incrementally, updating as each packet arrives.</p>
+
+<p><strong>Concept drift</strong>: applications update frequently (Netflix changes video encoding, Zoom changes transport protocols), causing traffic patterns to shift and model accuracy to degrade. Periodic retraining or online learning is required.</p>
+
+<p><strong>Class imbalance</strong>: dominant applications (YouTube, Netflix) account for 90% of traffic while niche applications are extremely rare. Use focal loss or oversampling.</p>
+
+<p><strong>Out-of-distribution samples in production</strong>: how to handle new applications not seen during training? Introduce an "Other" class combined with a confidence threshold.</p>
+
+<!-- 3.7.3 -->
+<h2 id="s3-7-3"><span class="num">3.7.3</span>Log Anomaly Detection: Requirements and Challenges</h2>
+<p class="pos">Focus: Finding "something's wrong" in massive log streams — one of the foundational problems in automated operations.</p>
+
+<h3>The Scenario</h3>
+
+<p>Network devices, servers, and applications generate logs: system logs, protocol logs (BGP state changes), security logs (failed logins), application logs (error / warn). Hundreds of devices produce hundreds of millions of entries per day — manual inspection is infeasible.</p>
+
+<p>The goal is to detect "anomalous patterns" in real time and alert operators. Anomaly definitions are often fuzzy — there are known patterns that directly indicate failures (supervised learning), but more often the challenge is "something never seen before" (anomaly detection, unsupervised).</p>
+
+<h3>Two Approaches</h3>
+
+<p><strong>Rule-based</strong>: regex matching against specific patterns triggers alerts. Simple, interpretable, effective with zero examples. But rule maintenance becomes a nightmare — novel failure types always slip through. Mainstream SIEM (Security Information and Event Management) systems still rely heavily on rules.</p>
+
+<p><strong>Machine learning-based</strong>: learns "what is normal" from historical logs and flags deviations as anomalies. Not a replacement for rules but a complement — rules catch known issues, ML catches unknown ones.</p>
+
+<h3>Challenges with Log Data</h3>
+
+<p>Log data presents several unique challenges:</p>
+
+<p><strong>Templated structure</strong>: the same event type appears with different parameters. <code>"Connection from 1.2.3.4 failed"</code> and <code>"Connection from 5.6.7.8 failed"</code> represent the same event type with different parameters. Analysis requires <strong>log parsing</strong> — extracting logs into "template + parameters" (algorithms such as Drain and Spell).</p>
+
+<p><strong>Mixture of unstructured and semi-structured data</strong>: syslog is unstructured; JSON logs are structured. Modern systems are gradually moving toward structured logging, but legacy systems remain chaotic.</p>
+
+<p><strong>Temporal context dependency</strong>: individual log entries may appear normal, but "1000 consecutive login failures followed by a success" is anomalous — context must be considered.</p>
+
+<p><strong>Extreme class imbalance</strong>: anomalies account for less than 0.1% of logs.</p>
+
+<p><strong>Scarce ground truth</strong>: who is going to label millions of log entries?</p>
+
+<!-- 3.7.4 -->
+<h2 id="s3-7-4"><span class="num">3.7.4</span>Log Anomaly Detection: Methods</h2>
+<p class="pos">Focus: From template extraction to sequence modeling, to LLM-based anomaly explanation.</p>
+
+<h3>The Pipeline</h3>
+
+<div class="mermaid">
+flowchart LR
+    LOG[Raw Logs] --> PARSE[Log Parsing<br/>Drain / Spell]
+    PARSE --> TEMP[Template ID Sequence]
+    TEMP --> FEAT[Feature Extraction]
+    FEAT --> DETECT[Detection Model]
+    DETECT --> ALERT[Anomaly Alert]
+    DETECT --> EXPLAIN[LLM Explanation]
+</div>
+
+<h3>Log Parsing: The Drain Algorithm</h3>
+
+<p>Drain (2017) is the most widely used log parsing algorithm. The core idea: log templates have fixed prefixes while variable parts are primarily parameters. It uses a fixed-depth parse tree — classifying logs by length, branching level by level on the first few tokens, and performing fine-grained matching at the leaves.</p>
+
+<p>The result is a "template library": each log entry is mapped to a template ID along with its parameter values. Subsequent analysis operates on template ID sequences rather than raw text.</p>
+
+<h3>Classical Methods: PCA / Isolation Forest</h3>
+
+<p>Represent each time window as a vector of template occurrence counts, then apply anomaly detection algorithms:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>PCA</strong>: normal samples cluster tightly in the low-dimensional principal component space; anomalies lie far away. High reconstruction error indicates an anomaly.</li>
+<li><strong>Isolation Forest</strong>: randomly partitions the data; anomalous points are isolated with fewer splits on average. No distributional assumptions required.</li>
+<li><strong>One-Class SVM</strong>: finds the tightest boundary enclosing normal samples.</li>
+</ul>
+
+<p>Simple, fast, and unsupervised. At baseline levels, capable of detecting coarse-grained anomalies such as traffic spikes and unusual error template patterns.</p>
+
+<h3>Deep Learning: DeepLog / LogAnomaly</h3>
+
+<p>DeepLog (2017) was the first deep learning log anomaly detection system with significant industrial impact. The idea: treat log template IDs as "words" and a complete log segment as a "sequence." Use an LSTM to learn "given the previous k templates, predict the next one" — a wrong prediction signals an anomaly.</p>
+
+<pre><code class="language-python">import torch.nn as nn
+
+class DeepLog(nn.Module):
+    def __init__(self, num_templates, hidden_size=128, num_layers=2):
+        super().__init__()
+        self.emb  = nn.Embedding(num_templates, 64)
+        self.lstm = nn.LSTM(64, hidden_size, num_layers, batch_first=True)
+        self.fc   = nn.Linear(hidden_size, num_templates)
+
+    def forward(self, x):
+        # x: [B, seq_len] template IDs
+        e = self.emb(x)
+        h, _ = self.lstm(e)
+        return self.fc(h[:, -1])   # predict distribution over next template
+
+# At inference time: if the actual next template is not in the top-k predictions, flag as anomaly
+def detect(model, seq, k=9):
+    logits = model(seq)
+    topk = logits.topk(k).indices.squeeze()
+    return seq[-1] not in topk
+</code></pre>
+
+<p>LogAnomaly further accounts for anomalies in parameter values. More recent work (LogBERT, NeuralLog) replaces the LSTM with a Transformer.</p>
+
+<h3>Log Analysis in the LLM Era</h3>
+
+<p>LLMs have changed the game — feeding log snippets directly to an LLM and asking "what anomalies are here, and what might be causing them?" Advantages:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- No log parsing required; natural language is processed directly</li>
+<li>- Joint reasoning across log patterns</li>
+<li>- Output is a human-readable explanation, not merely an "anomalous/normal" verdict</li>
+</ul>
+
+<p>Disadvantages:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- Context window limitations restrict how many logs can be examined at once</li>
+<li>- High inference cost makes real-time processing difficult</li>
+<li>- Hallucinations</li>
+</ul>
+
+<p>Industrial practice: a two-stage approach. Classical models perform coarse-grained filtering, then an LLM provides explanation and root-cause analysis for suspicious segments — combining the strengths of both.</p>
+
+<h3>The Evaluation Challenge for Anomaly Detection</h3>
+
+<p>How do you evaluate without ground truth? Several compromise approaches:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- Manual review over a period of time, annotating recall</li>
+<li>- Injecting known failures (chaos engineering) and checking whether they are detected</li>
+<li>- Comparing against the alerting system — checking whether the model also flags events at alert timestamps</li>
+</ul>
+
+<p>An important post-deployment metric: <strong>alert suppression rate</strong> — how much the total alert count is reduced without missing critical failures. The greatest pain point for operations teams is not missed alerts but "alert fatigue."</p>
+
+<!-- 3.7.5 -->
+<h2 id="s3-7-5"><span class="num">3.7.5</span>KPI Time-Series Forecasting: Requirements and Challenges</h2>
+<p class="pos">Focus: Predicting QPS, CPU, and bandwidth — the foundation of capacity planning and proactive operations.</p>
+
+<h3>The Scenario</h3>
+
+<p>Core KPI time series in network operations: bandwidth utilization, CPU/memory, connection count, packet loss rate, latency, and error rate. Typical forecasting needs:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Capacity planning</strong>: predicting traffic trends over the next three months to inform expansion decisions</li>
+<li><strong>Auto-scaling</strong>: predicting load for the next hour to scale up proactively and avoid instability</li>
+<li><strong>Anomaly alerting</strong>: predicting the "normal" trajectory and alerting when actual values deviate</li>
+<li><strong>SLA management</strong>: predicting potential SLA violations in advance to enable early intervention</li>
+</ul>
+
+<h3>Properties of KPI Time Series</h3>
+
+<p>KPI time series data exhibits characteristic patterns:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Trend</strong>: long-term upward or downward movement</li>
+<li><strong>Seasonality</strong>: daily cycles (daytime/nighttime), weekly cycles (weekends), annual cycles</li>
+<li><strong>Residual</strong>: noise and anomalies</li>
+</ul>
+
+<p>A typical QPS curve is a superposition of all three components.</p>
+
+<p><strong>Change points</strong> are particularly tricky — deployments, promotions, and failure recoveries can cause abrupt shifts in statistical properties. Forecasting models must either be able to detect change points or adapt quickly after one occurs.</p>
+
+<h3>Challenges</h3>
+
+<p><strong>Multivariate</strong>: CPU, memory, and QPS are correlated with one another; joint forecasting outperforms independent forecasting.</p>
+
+<p><strong>Multi-scale</strong>: forecasts are needed at the second, minute, hour, and day level; different scales require different models.</p>
+
+<p><strong>Cold start</strong>: insufficient historical data when a new service launches.</p>
+
+<p><strong>Anomaly contamination</strong>: training data that includes past failure periods can cause the model to treat those anomalies as "normal." Anomalous periods must be removed in advance.</p>
+
+<p><strong>Uncertainty quantification</strong>: point forecasts are insufficient; prediction intervals are needed — "QPS over the next hour will likely be 5000–7000" is more useful for decision-making than "approximately 6000."</p>
+
+<!-- 3.7.6 -->
+<h2 id="s3-7-6"><span class="num">3.7.6</span>KPI Time-Series Forecasting: Methods</h2>
+<p class="pos">Focus: From ARIMA to Prophet to Transformer — the evolution and when to use each.</p>
+
+<h3>Classical Statistical Methods</h3>
+
+<p><strong>ARIMA</strong> (AutoRegressive Integrated Moving Average):</p>
+
+<div class="formula">
+$\phi(L)(1-L)^d y_t = \theta(L) \epsilon_t$
+</div>
+
+<p>Three parameters $(p, d, q)$: $p$ is the autoregressive order, $d$ is the number of differencing steps (to achieve stationarity), and $q$ is the moving average order. Parameters are selected using ACF/PACF plots or information criteria (AIC, BIC).</p>
+
+<p>ARIMA performs well on stationary linear series, is computationally inexpensive, and is interpretable. For strong seasonality, SARIMA (seasonal ARIMA) is used. It remains the preferred baseline in many settings today.</p>
+
+<p><strong>Exponential smoothing</strong>: Holt-Winters triple exponential smoothing separates trend and seasonality. The kind built into Excel — simple, adequate, and old-fashioned.</p>
+
+<h3>Prophet</h3>
+
+<p>Open-sourced by Facebook in 2017. Decomposes the time series into <strong>trend + seasonality + holidays + noise</strong>, modeling each component independently:</p>
+
+<div class="formula">
+$y(t) = g(t) + s(t) + h(t) + \epsilon$
+</div>
+
+<ul style="list-style:none; padding-left:0;">
+<li>- Trend $g$: piecewise linear or logistic</li>
+<li>- Seasonality $s$: Fourier series</li>
+<li>- Holidays $h$: user-specified list of dates</li>
+</ul>
+
+<p>Prophet's strength is being <strong>analyst-friendly</strong> — business knowledge can be incorporated manually (next week's major sale event, a new feature launch, annual subscription renewals). Parameters are interpretable, and the model can be tuned when things go wrong.</p>
+
+<pre><code class="language-python">from prophet import Prophet
+import pandas as pd
+
+# Data must have two columns: (ds, y)
+df = pd.DataFrame({'ds': timestamps, 'y': qps_values})
+
+m = Prophet(
+    yearly_seasonality=False,
+    weekly_seasonality=True,
+    daily_seasonality=True,
+    changepoint_prior_scale=0.05,  # higher values allow more trend changes
+)
+m.add_country_holidays(country_name='CN')
+m.fit(df)
+
+# Forecast the next 24 hours with a 5-minute granularity
+future = m.make_future_dataframe(periods=24*12, freq='5min')
+forecast = m.predict(future)
+# forecast contains yhat (point forecast), yhat_lower, yhat_upper (80% confidence interval)
+</code></pre>
+
+<h3>Deep Learning Methods</h3>
+
+<p><strong>LSTM / GRU</strong>: the most straightforward deep learning approach for time series. Takes a historical window as input and outputs the next step (or multiple steps). Multi-step forecasting commonly uses seq2seq or iterative prediction.</p>
+
+<p><strong>N-BEATS</strong> (2019): fully MLP-based, using a "backcast/forecast" architecture. Outperformed all RNN and Transformer methods in the M4 time series competition. Demonstrates that MLPs remain competitive for time series.</p>
+
+<p><strong>Temporal Fusion Transformer</strong> (2020): a Transformer variant designed specifically for time series. Supports multivariate inputs, static covariates, and future-known covariates (such as pre-scheduled promotion dates).</p>
+
+<p><strong>PatchTST</strong> (2023): divides the time series into patches (analogous to ViT's treatment of images), then encodes them with a Transformer. Simple yet powerful.</p>
+
+<p><strong>Informer / Autoformer</strong>: Transformer variants optimized for long-sequence forecasting.</p>
+
+<h3>Foundation Models</h3>
+
+<p>Since 2024, <strong>time series foundation models</strong> have emerged: Chronos (Amazon), TimesFM (Google), Moirai. Pretrained on large and heterogeneous time series corpora, they enable zero-shot forecasting — new series can be used directly without task-specific training.</p>
+
+<p>The practical picture is mixed: Prophet/ARIMA is sufficient for simple series; deep models outperform on complex multivariate and long-horizon tasks; foundation models are the only option when no historical data is available.</p>
+
+<h3>Choosing a Method</h3>
+
+<table>
+<tr><th>Scenario</th><th>Recommended Method</th></tr>
+<tr><td>Small data (&lt; 1000 points), need a quick solution</td><td>Prophet / ARIMA</td></tr>
+<tr><td>Moderate data, univariate</td><td>Prophet / N-BEATS</td></tr>
+<tr><td>Strongly correlated multivariate</td><td>Temporal Fusion Transformer / PatchTST</td></tr>
+<tr><td>Long sequences (1000+ points)</td><td>Informer / PatchTST</td></tr>
+<tr><td>Cold start, no history</td><td>Time series foundation model zero-shot</td></tr>
+<tr><td>Interpretability required</td><td>Prophet + SHAP</td></tr>
+<tr><td>Edge device inference</td><td>ARIMA / compact LSTM</td></tr>
+</table>
+
+<h3>Evaluation</h3>
+
+<p>Common metrics:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>MAE</strong>: Mean Absolute Error. Robust to outliers.</li>
+<li><strong>RMSE</strong>: Root Mean Squared Error. Penalizes large deviations heavily.</li>
+<li><strong>MAPE</strong>: Mean Absolute Percentage Error. Relative error, scale-independent, but unstable when true values are near zero.</li>
+<li><strong>sMAPE</strong>: Symmetric MAPE, addressing the issue above.</li>
+<li><strong>Quantile Loss</strong>: evaluates interval forecasts.</li>
+</ul>
+
+<p>In practice, <strong>directional accuracy</strong> often matters more — whether the model correctly predicted "up or down" is more actionable than the precise value. Directional accuracy is a useful supplementary metric.</p>
+
+<hr style="margin-top:60px; border:none; border-top:1px dashed var(--rule);">
+
+<p style="color:var(--muted); font-size:14px; font-style:italic; text-align:center; margin-top:40px;">
+— End of Chapter 3 —<br>
+36 sections · Chapters 2–5 complete
+</p>
+
+</main>
+
+<script>
+  hljs.highlightAll();
+  mermaid.initialize({ startOnLoad: true, theme: 'neutral', fontFamily: 'Inter, sans-serif' });
+</script>
+
+</body>
+</html>

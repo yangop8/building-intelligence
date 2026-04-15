@@ -1,0 +1,1983 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>系统软件 — 从 CPU 到 DPDK/VPP</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/rust.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+<style>
+:root {
+  --bg: #fbfaf7;
+  --fg: #1d1d1b;
+  --muted: #6b6b68;
+  --accent: #2f5d3a;
+  --accent-soft: #e6ede7;
+  --rule: #e3dfd6;
+  --code-bg: #282c34;
+  --sidebar-bg: #f4f1ea;
+  --mono: "SFMono-Regular", "JetBrains Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --serif: "Source Serif Pro", "Songti SC", "STSong", Georgia, "Times New Roman", serif;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--fg);
+  background: var(--bg);
+  display: flex;
+}
+aside.toc {
+  position: sticky;
+  top: 0;
+  width: 300px;
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--rule);
+  padding: 24px 20px;
+  font-family: var(--sans);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+aside.toc h1 {
+  font-family: var(--serif);
+  font-size: 18px;
+  margin: 0 0 4px 0;
+  color: var(--accent);
+}
+aside.toc .sub {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+aside.toc .group {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 14px;
+  margin-bottom: 4px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--rule);
+}
+aside.toc ol { list-style: none; padding: 0; margin: 0; }
+aside.toc ol li { margin-bottom: 2px; }
+aside.toc a {
+  color: var(--fg);
+  text-decoration: none;
+  display: block;
+  padding: 3px 6px;
+  border-radius: 3px;
+  transition: all 0.15s;
+}
+aside.toc a:hover { background: var(--accent-soft); color: var(--accent); }
+aside.toc .num { color: var(--muted); font-family: var(--mono); margin-right: 6px; font-size: 11px; }
+
+main {
+  flex: 1;
+  max-width: 880px;
+  padding: 60px 72px 120px 72px;
+  min-width: 0;
+}
+header.cover {
+  border-bottom: 2px solid var(--fg);
+  padding-bottom: 32px;
+  margin-bottom: 48px;
+}
+header.cover h1 {
+  font-size: 42px;
+  line-height: 1.15;
+  margin: 0 0 12px 0;
+  font-weight: 700;
+}
+header.cover .subtitle {
+  font-size: 20px;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 20px;
+}
+header.cover .meta {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+h2 {
+  font-size: 26px;
+  margin-top: 72px;
+  margin-bottom: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+  scroll-margin-top: 20px;
+}
+h2 .num {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-weight: 400;
+  margin-right: 10px;
+  font-size: 20px;
+}
+.pos {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: 0;
+  margin-bottom: 16px;
+  padding: 6px 12px;
+  background: var(--accent-soft);
+  border-left: 2px solid var(--accent);
+}
+h3 {
+  font-size: 18px;
+  margin-top: 28px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+h4 {
+  font-size: 15px;
+  margin-top: 18px;
+  margin-bottom: 4px;
+  font-weight: 600;
+  color: var(--accent);
+}
+p { margin: 0 0 14px 0; text-align: justify; }
+
+code {
+  font-family: var(--mono);
+  font-size: 14px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+pre {
+  background: var(--code-bg);
+  border-radius: 6px;
+  padding: 14px 18px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 16px 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+
+.callout {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  padding: 10px 16px;
+  margin: 16px 0;
+  font-size: 15px;
+}
+.callout .tag {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 4px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+  font-family: var(--sans);
+}
+th, td {
+  border-bottom: 1px solid var(--rule);
+  padding: 7px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+th { background: var(--sidebar-bg); font-weight: 600; }
+
+.part-header {
+  margin-top: 100px;
+  margin-bottom: 24px;
+  padding: 24px 28px;
+  background: linear-gradient(to right, var(--accent-soft), transparent);
+  border-left: 4px solid var(--accent);
+}
+.part-header .part-label {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+}
+.part-header h2.part-title {
+  font-size: 32px;
+  margin: 4px 0 8px 0;
+  padding: 0;
+  border: none;
+}
+.part-header .part-desc {
+  font-size: 15px;
+  color: var(--muted);
+  font-style: italic;
+  margin: 0;
+}
+
+.mermaid {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.footnote {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+@media (max-width: 1100px) {
+  aside.toc { display: none; }
+  main { padding: 40px 32px; }
+}
+</style>
+</head>
+<body>
+
+<aside class="toc">
+  <h1>系统软件</h1>
+  <div class="sub">Chapter 2 · 面向 AI 工程师</div>
+
+  <div class="group">2.1 CPU 与核心架构</div>
+  <ol>
+    <li><a href="#s2-1-1"><span class="num">1</span>CPU 总体架构</a></li>
+    <li><a href="#s2-1-2"><span class="num">2</span>网络处理单元</a></li>
+    <li><a href="#s2-1-3"><span class="num">3</span>GPU / NPU 加速</a></li>
+    <li><a href="#s2-1-4"><span class="num">4</span>SoC 异构计算</a></li>
+  </ol>
+
+  <div class="group">2.2 操作系统</div>
+  <ol>
+    <li><a href="#s2-2-1"><span class="num">1</span>OS 概述</a></li>
+    <li><a href="#s2-2-2"><span class="num">2</span>进程与调度</a></li>
+    <li><a href="#s2-2-3"><span class="num">3</span>内存管理</a></li>
+    <li><a href="#s2-2-4"><span class="num">4</span>存储与文件系统</a></li>
+    <li><a href="#s2-2-5"><span class="num">5</span>异常与中断</a></li>
+    <li><a href="#s2-2-6"><span class="num">6</span>并发、互斥与同步</a></li>
+    <li><a href="#s2-2-7"><span class="num">7</span>设备与系统调用</a></li>
+  </ol>
+
+  <div class="group">2.3 编程语言与编译器</div>
+  <ol>
+    <li><a href="#s2-3-1"><span class="num">1</span>Rust 语言</a></li>
+    <li><a href="#s2-3-2"><span class="num">2</span>C 语言的现代演进</a></li>
+    <li><a href="#s2-3-3"><span class="num">3</span>编译基础原理</a></li>
+    <li><a href="#s2-3-4"><span class="num">4</span>编译优化</a></li>
+  </ol>
+
+  <div class="group">2.4 数据库</div>
+  <ol>
+    <li><a href="#s2-4-1"><span class="num">1</span>DB 基本原理</a></li>
+    <li><a href="#s2-4-2"><span class="num">2</span>图数据库</a></li>
+    <li><a href="#s2-4-3"><span class="num">3</span>时序数据库</a></li>
+    <li><a href="#s2-4-4"><span class="num">4</span>向量数据库</a></li>
+  </ol>
+
+  <div class="group">2.5 消息中间件</div>
+  <ol>
+    <li><a href="#s2-5-1"><span class="num">1</span>高性能消息总线</a></li>
+  </ol>
+
+  <div class="group">2.6 网络栈 (DPDK/VPP)</div>
+  <ol>
+    <li><a href="#s2-6-1"><span class="num">1</span>内核协议栈的瓶颈</a></li>
+    <li><a href="#s2-6-2"><span class="num">2</span>DPDK 架构</a></li>
+    <li><a href="#s2-6-3"><span class="num">3</span>DPDK 关键机制</a></li>
+    <li><a href="#s2-6-4"><span class="num">4</span>VPP 向量化转发</a></li>
+    <li><a href="#s2-6-5"><span class="num">5</span>TCP / UDP / Raw IP</a></li>
+    <li><a href="#s2-6-6"><span class="num">6</span>TLS 与 QUIC</a></li>
+    <li><a href="#s2-6-7"><span class="num">7</span>转发管理与控制面</a></li>
+    <li><a href="#s2-6-8"><span class="num">8</span>日志与可观测性</a></li>
+  </ol>
+</aside>
+
+<main>
+
+<header class="cover">
+  <h1>系统软件</h1>
+  <div class="subtitle">从 CPU 到 DPDK/VPP —— AI 工程师需要的系统视角</div>
+  <div class="meta">Chapter 2 · 内部学习材料 · 共 28 节</div>
+</header>
+
+<p>系统软件对 AI 工程师意味着什么？三件事。第一，<strong>训练和推理都跑在系统之上</strong>——GPU 再快，数据从磁盘到显存要过 PCIe、经内核、走文件系统缓存，每一层都可能成为瓶颈。第二，<strong>AI 基础设施本身就是系统软件</strong>——CUDA/CANN 是驱动层，vLLM 调度器借鉴了 OS 进程调度，PagedAttention 照搬虚拟内存分页。第三，<strong>在 AI 辅助编程时代，对底层系统的"判断力"比"动手力"更值钱</strong>——代码可以让 AI 写，但架构决策、性能分析、故障定位仍然靠人。</p>
+
+<p>这章按"芯片 → OS → 语言/编译 → 数据存储 → 通信"的栈式顺序铺开 28 节。和第 1 章一样，深度不对称：内存管理、并发同步、Rust 所有权、编译优化、DPDK/VPP 几节会挖得深；设备驱动、传统关系数据库、某些偏传输协议会点到为止。内部专有技术栈（如某些内部中间件、私有协议）全部改用开源通用等价物讲解——讲清楚 DPDK，理解任何内部等价框架都只是再学一层包装。</p>
+
+<!-- ==================== 2.1 CPU ==================== -->
+<div class="part-header">
+  <div class="part-label">PART ONE</div>
+  <h2 class="part-title">2.1 CPU 与核心架构</h2>
+  <p class="part-desc">AI 训练离不开 GPU/NPU,但理解 CPU 才是理解一切的前提。</p>
+</div>
+
+<!-- 2.1.1 -->
+<h2 id="s2-1-1"><span class="num">2.1.1</span>CPU 总体架构</h2>
+<p class="pos">定位:ISA、流水线、缓存、多核——现代处理器的骨架。</p>
+
+<h3>ISA:CPU 的对外契约</h3>
+
+<p>指令集架构(ISA)是 CPU 对软件暴露的编程模型,定义了有哪些指令、有多少寄存器、内存如何寻址。三大主流 ISA:</p>
+
+<table>
+<tr><th>ISA</th><th>风格</th><th>代表</th><th>场景</th></tr>
+<tr><td>x86 / x86-64</td><td>CISC</td><td>Intel / AMD</td><td>PC、服务器</td></tr>
+<tr><td>ARM</td><td>RISC</td><td>Apple M 系列、Ampere</td><td>移动、云、嵌入式</td></tr>
+<tr><td>RISC-V</td><td>RISC (开放)</td><td>SiFive、阿里平头哥</td><td>新兴,IoT 到 HPC</td></tr>
+</table>
+
+<p>CISC(复杂指令集)vs RISC(精简指令集)的对立已经没当年那么尖锐——现代 x86 在前端把复杂指令拆成微操作(μops),后端执行单元和 RISC 无异。但从软件视角,ISA 还是决定了你能用什么汇编指令、向量扩展是 AVX-512 还是 SVE、有没有 TSO 内存模型。</p>
+
+<p>RISC-V 的特殊地位是<strong>开放</strong>——任何人可以免费实现,加自己的扩展。它正以罕见的速度改写嵌入式和加速器芯片的版图。</p>
+
+<h3>微架构:ISA 之下的现实</h3>
+
+<p>同样的 ISA,不同微架构性能差几倍。现代高性能 CPU 核心有这些关键部件:</p>
+
+<p><strong>流水线</strong>:把"取指 → 译码 → 执行 → 访存 → 写回"五个阶段重叠起来,每周期完成一条指令。但分支会打断流水,所以有<strong>分支预测器</strong>——用历史统计猜下一条指令在哪。预测准确率动辄 95%+。预测错了罚 15–20 周期冲刷流水。</p>
+
+<p><strong>乱序执行</strong>:硬件发现指令间没有依赖就并行发射。程序员写的顺序代码,硬件按数据流重排执行。Spectre/Meltdown 漏洞就是利用了乱序执行的副作用。</p>
+
+<p><strong>SIMD</strong>:单指令多数据。AVX-512 能一条指令算 8 个 double。深度学习没有 GPU 的年代,CPU 推理主力就靠它。</p>
+
+<h3>缓存层次</h3>
+
+<p>内存比 CPU 慢两个数量级(100+ ns vs <1 ns)。解决办法是三级缓存:</p>
+
+<table>
+<tr><th>层级</th><th>大小</th><th>延迟</th><th>范围</th></tr>
+<tr><td>L1 (data + instr)</td><td>32KB + 32KB</td><td>~4 cycles</td><td>per-core</td></tr>
+<tr><td>L2</td><td>256KB–1MB</td><td>~12 cycles</td><td>per-core</td></tr>
+<tr><td>L3 (LLC)</td><td>数 MB–数十 MB</td><td>~40 cycles</td><td>共享</td></tr>
+<tr><td>DRAM</td><td>GB</td><td>~200 cycles</td><td>全局</td></tr>
+</table>
+
+<p>理解缓存是理解性能的钥匙。<strong>顺序访问数组</strong>缓存预取器能准确猜下一行,近乎零成本;<strong>随机访问链表</strong>几乎每次都 cache miss,慢几十倍。这就是为什么 AI 里张量基本都用连续内存布局。</p>
+
+<pre><code class="language-c">// 缓存对性能的戏剧性影响
+#define N 16384
+int a[N][N];
+
+// 版本1: 行序访问, cache 友好
+for (int i = 0; i < N; i++)
+    for (int j = 0; j < N; j++) sum += a[i][j];
+
+// 版本2: 列序访问, 每次跨 N*sizeof(int) 字节
+for (int j = 0; j < N; j++)
+    for (int i = 0; i < N; i++) sum += a[i][j];
+
+// 版本2 通常比版本1 慢 5–10 倍——纯粹因为 cache miss
+</code></pre>
+
+<h3>多核与一致性</h3>
+
+<p>多核共享内存时必须保证"我写的你能看到"。硬件通过 <strong>MESI 协议</strong>(Modified/Exclusive/Shared/Invalid)维护缓存行状态。一行数据在一个核修改,其他核的副本会被标记 Invalid,下次访问要重新加载。</p>
+
+<p>这带来一个隐蔽陷阱——<strong>False Sharing</strong>(伪共享)。两个不相关的变量恰好在同一缓存行(64 字节),两个核各自频繁写各自的变量,都会互相触发 cache invalidation。解决办法是<strong>缓存行对齐</strong>——给关键变量加 <code>alignas(64)</code>,或 padding 到 64 字节。</p>
+
+<h3>在 AI 里</h3>
+
+<p>AI 训练的数据预处理、tokenization、采样逻辑都跑在 CPU 上。一个常被忽略的细节:<strong>DataLoader 的 CPU 性能经常是训练瓶颈</strong>。GPU 算得飞快,CPU 喂不上数据。解决办法是多进程 DataLoader、绑定 NUMA 节点、用 pinned memory 减少拷贝。所有这些优化都建立在对 CPU 架构的基本理解上。</p>
+
+<!-- 2.1.2 -->
+<h2 id="s2-1-2"><span class="num">2.1.2</span>网络处理单元</h2>
+<p class="pos">定位:专用硬件加速网络包处理——从 NP 芯片到智能网卡。</p>
+
+<h3>为什么需要专用单元</h3>
+
+<p>线速处理 100Gbps 网络流量,按 64 字节小包算是 <strong>148.8 Mpps</strong>(million packets per second)。每包预算 <strong>6.7 ns</strong>——一次 DRAM 访问都做不完。通用 CPU 靠软件硬刚做不到,必须靠硬件。</p>
+
+<h3>几种硬件加速路线</h3>
+
+<p><strong>NP (Network Processor)</strong>:专为包处理设计的多核处理器,指令集包含报头解析、查表、校验等操作。每个核跑一段微码,流水线处理报文。代表:Broadcom XLP、Intel IXP。</p>
+
+<p><strong>ASIC (交换芯片)</strong>:针对固定协议完全硬化。以太网交换机里的 Broadcom Tomahawk、Marvell Teralynx 都是 ASIC,查表、转发、VLAN 处理全在硬件。延迟可做到百纳秒级,但功能写死。</p>
+
+<p><strong>智能网卡/DPU</strong>:NVIDIA BlueField、Intel IPU、AWS Nitro。本质是网卡上加了一颗 ARM SoC,可以跑完整 OS,把网络/存储/安全功能从主机 CPU 卸载到网卡。数据中心级加速趋势。</p>
+
+<p><strong>P4 可编程管线</strong>:介于 ASIC 和 NP 之间。硬件是固定流水线,但流水线各阶段的行为用 P4 语言定义,上电加载。代表:Barefoot Tofino。</p>
+
+<h3>常见硬件加速功能</h3>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>RSS (Receive Side Scaling)</strong>:网卡对报文按 5-tuple(源 IP、目的 IP、协议、源端口、目的端口)哈希,分发到不同 CPU 核的接收队列。让多核并行处理互不冲突。</li>
+<li><strong>硬件 LRO/GRO</strong>:把同一流的多个小包合并成大包再交给协议栈。省 syscall 次数。</li>
+<li><strong>TSO/GSO</strong>:反方向——协议栈把大段数据交给网卡,网卡自己分片成 MTU 大小。</li>
+<li><strong>Checksum/Crypto 卸载</strong>:TCP 校验、TLS 加解密直接由网卡完成。</li>
+<li><strong>ECMP 硬件实现</strong>:等价多路径路由,硬件按 hash 分发。</li>
+</ul>
+
+<h3>在 AI 里</h3>
+
+<p>大模型训练集群(GPU 通过 RDMA over InfiniBand/RoCE 通信)依赖网卡硬件能力。GPUDirect RDMA 让网卡直接读写显存,绕过 CPU 内存。一次 AllReduce 的延迟主要取决于网卡的 RDMA 性能而不是 GPU 算力。</p>
+
+<!-- 2.1.3 -->
+<h2 id="s2-1-3"><span class="num">2.1.3</span>GPU 与 NPU 加速</h2>
+<p class="pos">定位:AI 算力的载体——并行计算与张量加速的硬件。简短,详细在第 4 章。</p>
+
+<p>这节和第 4 章 5.2 有重叠,这里只建立基本坐标。</p>
+
+<h3>GPU 的并行模型</h3>
+
+<p>GPU 的 DNA 是图形渲染——海量独立像素的着色天然可并行。现代 GPU 把这个能力转用于通用计算(GPGPU)。一张 NVIDIA H100 有约 <strong>16896 个 CUDA 核心 + 528 个 Tensor Core</strong>,FP16 Tensor Core 算力约 989 TFLOPS（密集）/ 1979 TFLOPS（2:4 稀疏）。</p>
+
+<p>GPU 编程模型叫 SIMT(单指令多线程)——32 个线程组成一个 warp,一条指令同时作用于 32 个数据。这和 SIMD 精神一致,区别是 warp 内如果有分支(if),不同线程走不同路径,GPU 会串行执行两边——即 warp divergence,性能崩。</p>
+
+<h3>NPU 的张量优先设计</h3>
+
+<p>NPU(神经网络处理单元)从一开始就为张量计算设计。核心架构是<strong>脉动阵列</strong>(systolic array):一个二维网格的 MAC(乘加)单元,数据像脉搏一样流过,每个单元在固定时序做乘加。Google TPU 是最著名的脉动阵列。</p>
+
+<p>华为昇腾走的是<strong>达芬奇架构</strong>:Cube 单元做矩阵乘、Vector 单元做逐元素、Scalar 单元做控制流。算子开发者必须显式把计算分派到合适单元。</p>
+
+<h3>存储结构</h3>
+
+<p>GPU/NPU 的内存层次更极端:</p>
+
+<table>
+<tr><th>层级</th><th>容量</th><th>带宽</th></tr>
+<tr><td>寄存器</td><td>每线程 64KB</td><td>极快</td></tr>
+<tr><td>共享内存 / SRAM</td><td>~100KB per block</td><td>~几 TB/s</td></tr>
+<tr><td>HBM</td><td>80GB (H100)</td><td>~3 TB/s</td></tr>
+</table>
+
+<p>HBM 带宽虽大,但比片上 SRAM 还是慢 10×。<strong><a href="ch5_partB_preview.html#p10">FlashAttention</a></strong> 这类算子优化的本质就是尽量让计算留在 SRAM,减少 HBM 往返。</p>
+
+<!-- 2.1.4 -->
+<h2 id="s2-1-4"><span class="num">2.1.4</span>SoC 异构计算</h2>
+<p class="pos">定位:一颗芯片整合 CPU/GPU/NPU/加速器——现代嵌入式和边缘 AI 的范式。简短。</p>
+
+<p>SoC(System on Chip)不是新概念。手机处理器从 iPhone 时代起就是 SoC——一颗芯片里集成 CPU 大小核、GPU、ISP(图像处理)、神经网络加速、调制解调器。数据中心 SoC 趋势更明显:AWS Graviton、Ampere Altra 都把 CPU、内存控制器、PCIe、网络子系统一起 die 上集成。</p>
+
+<h3>异构计算的挑战</h3>
+
+<p>多种算力单元同一颗芯片共享内存/总线,挑战是:</p>
+<ol>
+<li><strong>数据搬运</strong>:CPU 内存和 GPU/NPU 内存之间的拷贝是主要开销。统一内存(CUDA Unified Memory、Apple Silicon 的 Unified Memory Architecture)试图解决,但真正零拷贝需要硬件一致性支持。</li>
+<li><strong>调度</strong>:哪段代码跑在 CPU、哪段跑在加速器?框架层(PyTorch、TensorFlow)自动决定,但边界情况多。</li>
+<li><strong>功耗墙</strong>:所有单元共享芯片功率预算。AI 推理跑满 NPU 时 CPU 必须降频。</li>
+</ol>
+
+<h3>常见卸载引擎</h3>
+
+<p>网络设备 SoC 里除了 CPU 和 NP,常见还有:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>压缩引擎</strong>(DEFLATE/LZ4 硬件加速)</li>
+<li>- <strong>加解密引擎</strong>(AES、SHA、国密 SM4)</li>
+<li>- <strong>正则匹配引擎</strong>(DFA 执行,用于 IPS 入侵检测)</li>
+<li>- <strong>查表引擎</strong>(TCAM,用于路由查找)</li>
+</ul>
+
+<p>这些在 AI 场景里不直接相关,但理解"可卸载计算"的思路对理解 DPU、智能网卡大有帮助——它们本质都是 SoC 思想在网络领域的延伸。</p>
+
+<!-- ==================== 2.2 OS ==================== -->
+<div class="part-header">
+  <div class="part-label">PART TWO</div>
+  <h2 class="part-title">2.2 操作系统</h2>
+  <p class="part-desc">OS 是所有上层软件的隐形基础设施——AI 框架调度、容器、网络,无一不经过它。</p>
+</div>
+
+<!-- 2.2.1 -->
+<h2 id="s2-2-1"><span class="num">2.2.1</span>OS 概述</h2>
+<p class="pos">定位:OS 是什么、做什么、几种主流 OS 的差异。</p>
+
+<p>操作系统做两件事:<strong>管理硬件资源</strong>(CPU、内存、磁盘、网络),<strong>给应用提供抽象</strong>(进程、文件、socket)。Dijkstra 的老话:"抽象不是隐藏细节,而是创造一个新的精确的层次"。OS 正是这样的层次。</p>
+
+<h3>主流 OS 谱系</h3>
+
+<table>
+<tr><th>系列</th><th>内核</th><th>代表</th><th>场景</th></tr>
+<tr><td>Unix-like</td><td>宏内核</td><td>Linux、FreeBSD</td><td>服务器、容器、超算</td></tr>
+<tr><td>macOS / iOS</td><td>XNU (混合)</td><td>Darwin</td><td>桌面、移动</td></tr>
+<tr><td>Windows</td><td>NT (混合)</td><td>Windows 10/11</td><td>桌面、企业服务器</td></tr>
+<tr><td>Android</td><td>Linux 定制</td><td>AOSP</td><td>移动</td></tr>
+<tr><td>RTOS</td><td>实时微内核</td><td>FreeRTOS、VxWorks、Zephyr</td><td>嵌入式、工控</td></tr>
+</table>
+
+<p>AI 基础设施几乎 100% 跑在 Linux 上。Linux 内核源码 3000 万行,但你日常打交道的核心子系统只有五六个:进程调度、内存管理、VFS、网络栈、块设备、字符设备。</p>
+
+<h3>宏内核 vs 微内核</h3>
+
+<p>宏内核(Linux):文件系统、网络栈、驱动全部在内核态,函数调用直接互通。快但任何子系统 bug 都能 crash 整机。</p>
+
+<p>微内核(seL4、Mach):内核只保留最核心的 IPC、调度、内存保护,其它服务在用户态跑,通过消息传递通信。稳健但 IPC 开销大。</p>
+
+<p>现实是大多数现代 OS 都是混合——Linux 也发展出了可加载内核模块(LKM)、eBPF 这些动态机制,往微内核方向靠拢。</p>
+
+<h3>实时 OS</h3>
+
+<p>RTOS 的核心指标不是吞吐而是<strong>最坏情况响应时延</strong>。调度必须可预测——高优先级任务就绪必须在固定时间内得到 CPU。Linux 默认不是 RTOS,但 PREEMPT_RT 补丁能让它接近实时能力。工业控制、汽车电子、机器人必须用 RTOS。</p>
+
+<!-- 2.2.2 -->
+<h2 id="s2-2-2"><span class="num">2.2.2</span>进程与调度</h2>
+<p class="pos">定位:进程是 CPU 资源分配的基本单位,调度器决定谁跑谁等。重点讲 CFS 和现代调度挑战。</p>
+
+<h3>进程与线程</h3>
+
+<p>Linux 里进程和线程在内核看来是同一个东西——都是 <code>task_struct</code>。创建方式决定它是进程(<code>fork</code>)还是线程(<code>clone</code> 带 CLONE_VM 等标志)。核心区别:进程有独立地址空间、线程共享地址空间。</p>
+
+<p>一个 <code>task_struct</code> 包含:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- PID、父进程、用户/组信息</li>
+<li>- 运行状态(RUNNING、INTERRUPTIBLE、UNINTERRUPTIBLE、ZOMBIE...)</li>
+<li>- 调度策略和优先级</li>
+<li>- 打开的文件表、信号处理表</li>
+<li>- 内存映射(mm_struct)</li>
+<li>- 上下文(寄存器、栈)</li>
+</ul>
+
+<h3>fork 与 copy-on-write</h3>
+
+<p><code>fork()</code> 创建子进程,传统语义是复制整个地址空间。朴素实现会巨慢——因为绝大多数子进程立刻 <code>exec</code> 新程序,复制的内存用不上就扔了。</p>
+
+<p>Copy-on-write (COW) 是优雅的解决:fork 时不复制,只标记所有页为只读、引用计数 +1。任一方写某页时触发缺页,内核这时才真复制那一页。结果:fork 几乎和启动新线程一样快。</p>
+
+<h3>孤儿与僵尸</h3>
+
+<p>父进程先死、子进程还活着——子进程成为<strong>孤儿进程</strong>,被 init (PID 1)接管。</p>
+
+<p>子进程先死、父进程没 wait——子进程成为<strong>僵尸进程</strong>,内核保留 PID 和退出状态等父进程读取。僵尸不占内存但占 PID 表项。孤儿 vs 僵尸是 Unix 面试经典题。</p>
+
+<h3>CFS:Linux 的默认调度器</h3>
+
+<p>CFS(Completely Fair Scheduler)的核心思想是"理想多任务 CPU"——如果 CPU 无限快,$N$ 个任务应该每个同时得到 $1/N$ 的算力。现实 CPU 是时分的,CFS 近似这个理想。</p>
+
+<p>实现方式:每个任务维护一个<strong>虚拟运行时</strong>(vruntime),每次被调度运行后 vruntime += 实际运行时间 × 权重。调度时选 vruntime 最小的任务。用红黑树组织,$O(\log n)$ 选出下一个。</p>
+
+<p>nice 值([-20, 19])通过权重影响 vruntime 推进速度:nice 值小权重大、vruntime 涨得慢、被选中的机会多。这是对"优先级"的平滑实现。</p>
+
+<p><strong>注意：</strong>自 Linux 6.6（2023 年末）起,默认公平调度器已由 CFS 切换为 <strong>EEVDF</strong>（Earliest Eligible Virtual Deadline First）。EEVDF 在保留虚拟时间公平性的同时引入了虚拟截止期限,改善了延迟尾部表现,减少了交互任务的调度抖动。核心数据结构仍是红黑树,$O(\log n)$ 复杂度不变。</p>
+
+<h3>实时调度</h3>
+
+<p>CFS 之外 Linux 还有实时调度类(SCHED_FIFO、SCHED_RR)。FIFO 没有时间片,高优先级任务会一直跑到主动让出或阻塞——适合硬实时场景。RR 是 FIFO + 时间片轮转。</p>
+
+<p>另外还有 <strong>DEADLINE 调度</strong>(EDF 算法):每个任务声明 (runtime, deadline, period),内核保证每周期内完成 runtime 且不超 deadline。是目前 Linux 上最接近硬实时的调度类。</p>
+
+<h3>优先级反转</h3>
+
+<p>经典故障模式:低优先级任务 L 持有锁,中优先级任务 M 抢占 L(L 没让 M),高优先级任务 H 等锁——H 间接被 M 阻塞,优先级倒置。1997 火星探路者号就栽在这上面。</p>
+
+<p>解决:<strong>优先级继承</strong>——L 持锁期间临时提升到 H 的优先级,不怕被 M 抢。<strong>优先级天花板</strong>——静态分配更高。这些机制在 RT-mutex 里实现。</p>
+
+<h3>上下文切换的成本</h3>
+
+<p>一次上下文切换大约 1–5 μs,包含:保存寄存器、切换页表(重装 CR3,TLB 部分失效)、切换内核栈、调度决策。看起来快,但 1000 Hz 定时中断 + 频繁抢占下累积开销可观。</p>
+
+<p>AI 训练里通常用<strong>CPU 亲和</strong>(taskset 或 sched_setaffinity)把 DataLoader worker 绑到固定核,减少切换和 cache miss。</p>
+
+<!-- 2.2.3 -->
+<h2 id="s2-2-3"><span class="num">2.2.3</span>内存管理</h2>
+<p class="pos">定位:虚拟内存、页表、分配器、HugePages、OOM——全章最值得挖深的一节。</p>
+
+<h3>虚拟内存的契约</h3>
+
+<p>每个进程看到一个独立的、连续的、仿佛全是自己的地址空间(x86-64 上 128TB 用户空间)。这是虚拟内存给的幻觉。硬件(MMU)和 OS(内核页表管理)合作维持这个幻觉。</p>
+
+<p><strong>4 级页表</strong>(x86-64):把 48 位虚拟地址拆成 9+9+9+9+12 位,前四组 9 位分别索引四级页表,最后 12 位是页内偏移。为啥这么设计?单级页表全覆盖要 $2^{36} \times 8$ B = 512GB,每进程一份不现实。多级页表按需分配——只有被用到的虚存范围才真的有页表项。</p>
+
+<h3>TLB</h3>
+
+<p>每次内存访问都查 4 级页表意味着 4 次额外内存访问,太慢。硬件用 <strong>TLB</strong>(Translation Lookaside Buffer)缓存最近用过的虚拟 → 物理映射。TLB 命中时翻译 ~0 开销,miss 时走完 4 级叫 page walk,成本 ~100 cycles。</p>
+
+<p>TLB 只有几十到几百个条目——随机访问大数组会让 TLB miss 率飙升。</p>
+
+<h3>HugePages</h3>
+
+<p>一般页 4KB,TLB 覆盖 4KB × 512 entries = 2MB 数据。<strong>HugePages</strong> 2MB(THP)或 1GB(<code>hugetlbfs</code>),一个 TLB 条目覆盖 2MB 或 1GB。对大内存应用(数据库、AI 训练)效果明显。</p>
+
+<p>DPDK、数据库、JVM 都会强烈推荐 HugePages——不是为了省内存,是为了减少 TLB miss。</p>
+
+<h3>物理内存分配</h3>
+
+<p>内核的物理页分配器是<strong>Buddy System</strong>:把物理内存按 2 的幂次划分(4KB、8KB、16KB...4MB),每个尺寸维护一个空闲链表。分配时找大于等于请求的最小块,如果过大就<em>对半分</em>(buddy),其中一半给请求者、另一半入小一级链表。释放时检查 buddy 是否也空闲,空闲就合并。</p>
+
+<p>这套算法在避免外部碎片和快速分配之间找到了平衡。但 4KB 粒度对小对象(几十字节)太粗,再加一层:</p>
+
+<p><strong>Slab/Slub</strong>:内核对象专用分配器。预分配一些页作为"slab",切分成固定大小的对象(比如 <code>task_struct</code> 2KB),维护对象粒度的空闲链表。分配/释放 O(1),cache 友好。</p>
+
+<h3>用户态 malloc</h3>
+
+<p>用户程序的 malloc 不直接走内核。glibc 的 ptmalloc、jemalloc、tcmalloc 都在 <code>brk()</code> 或 <code>mmap()</code> 拿大块内存后自己管理小对象分配。jemalloc(Redis、Rust 默认)和 tcmalloc(Google)的核心思想是<strong>per-thread cache</strong>——线程本地有一份小对象缓存,分配无锁,只在耗尽时才访问全局池。多线程下比 ptmalloc 快得多。</p>
+
+<h3>页面回收</h3>
+
+<p>物理内存不够时要回收。Linux 维护两条 LRU 链表:<strong>active</strong> 和 <strong>inactive</strong>。页访问会提升到 active 头,长期不访问降到 inactive 尾。回收从 inactive 尾开始。</p>
+
+<p><strong>kswapd</strong> 内核线程在后台做回收,保持一定量空闲页。回收路径:</p>
+<ol>
+<li>干净 page cache 页:直接丢掉(下次再从文件读)</li>
+<li>脏 page cache 页:先写回磁盘再释放</li>
+<li>匿名内存(堆、栈):换出到 swap 分区(如果开了)</li>
+</ol>
+
+<p>swap 在服务器场景常被禁用——宁可 OOM 也别让程序悄悄变慢。AI 训练机器必关 swap。</p>
+
+<h3>OOM Killer</h3>
+
+<p>当连 swap 都没救时,内核启动 OOM Killer 选一个进程杀掉。评分算法综合考虑内存占用、运行时间、<code>oom_score_adj</code>(可调)。实践中:关键服务应设负的 <code>oom_score_adj</code> 降低被杀概率。</p>
+
+<h3>在 AI 里</h3>
+
+<p>AI 训练的内存问题大多在 GPU 显存,CPU 内存相对宽裕。但以下场景踩坑频繁:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>多 DataLoader worker 的 fork</strong>:由于 COW,主进程大对象(如数据集索引)被子进程"访问"时逐页复制,实际复制所有页后内存翻倍。Python 多进程训练 OOM 常因此。</li>
+<li>- <strong>page cache 压垮小内存机器</strong>:读大数据集时 page cache 把内存占满,某些内核版本下释放不及时。</li>
+<li>- <strong>zero-copy 诉求</strong>:训练数据从磁盘到 GPU,希望避免"磁盘 → 内核 → 用户态 → GPU"的四次拷贝。<code>mmap</code> + <code>O_DIRECT</code> + GPU pinned memory 组合能减少拷贝。</li>
+</ul>
+
+<pre><code class="language-python"># PyTorch pinned memory 示例: 让 host→device 拷贝用 DMA
+train_loader = DataLoader(
+    dataset,
+    batch_size=32,
+    num_workers=8,
+    pin_memory=True,   # 分配页锁定内存, GPU 可直接 DMA
+)
+# 训练循环里配合 non_blocking=True 做异步拷贝
+for x, y in train_loader:
+    x = x.cuda(non_blocking=True)
+    y = y.cuda(non_blocking=True)
+</code></pre>
+
+<!-- 2.2.4 -->
+<h2 id="s2-2-4"><span class="num">2.2.4</span>存储与文件系统</h2>
+<p class="pos">定位:VFS 抽象、i-node、page cache、I/O 调度——大数据集加载的底座。</p>
+
+<h3>VFS:一切皆文件</h3>
+
+<p>Unix 的核心哲学之一。文件、目录、管道、socket、设备、proc 信息——所有都通过 <code>open/read/write/close</code> 操作。VFS(Virtual File System)是内核提供的统一接口层,下面挂不同具体文件系统:ext4、xfs、btrfs、overlayfs(容器)、nfs(网络)。</p>
+
+<h3>i-node</h3>
+
+<p>i-node 是文件的元数据对象,包含:大小、owner、权限、时间戳、指向数据块的指针。<strong>文件名不在 i-node 里</strong>——文件名存在目录里(目录也是文件,内容是 name→inode 映射)。</p>
+
+<p>硬链接:两个目录项指向同一 i-node,i-node 里的引用计数 +1。删除文件实际是删目录项 + 引用计数 -1,计数到 0 才真释放。</p>
+
+<p>软链接(symlink):特殊类型的文件,内容是目标路径。解析时递归。</p>
+
+<h3>Page Cache</h3>
+
+<p>读文件时内核把数据缓存在 page cache(物理内存中)。第二次读同一块数据直接命中,无磁盘 I/O。写文件默认也是先写 page cache(write-back),内核后台刷盘。</p>
+
+<p><code>free</code> 命令看到的 "buff/cache" 就是 page cache。它不是"浪费",是内存的高效使用——随时可回收。</p>
+
+<h3>I/O 调度</h3>
+
+<p>机械盘时代,I/O 调度器(CFQ、deadline)关注合并邻近请求、减少寻道。SSD 时代寻道成本没了,Linux 默认改用 <code>mq-deadline</code> 或 <code>none</code>(NVMe 多队列直接下发)。</p>
+
+<h3>同步 vs 异步 I/O</h3>
+
+<p>标准 <code>read/write</code> 是同步阻塞的。高性能场景用:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>O_DIRECT</strong>:绕过 page cache,直接 DMA 到用户缓冲区。数据库常用。</li>
+<li>- <strong>aio</strong>(Linux AIO):传统异步 I/O,只在 O_DIRECT 下真正异步,功能弱。</li>
+<li>- <strong>io_uring</strong>(2019+):现代异步 I/O,共享环形队列的 submission/completion queue,零 syscall 路径下能做到 syscall-less I/O。AI 训练的数据加载、数据库、高性能 web 服务都在转向它。</li>
+</ul>
+
+<pre><code class="language-c">// io_uring 的核心环形队列结构 (简化)
+struct io_uring_sqe {  // Submission Queue Entry
+    __u8  opcode;      // IORING_OP_READ, _WRITE, ...
+    __s32 fd;
+    __u64 off;
+    __u64 addr;
+    __u32 len;
+    // ...
+};
+struct io_uring_cqe {  // Completion Queue Entry
+    __u64 user_data;
+    __s32 res;
+    __u32 flags;
+};
+// 用户态直接填 SQE、读 CQE, 无需 syscall (轮询模式下)
+</code></pre>
+
+<h3>在 AI 里</h3>
+
+<p>训练数据集动辄 TB,加载性能关键。几个实践:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>WebDataset、TFRecord 这类打包格式</strong>:把千万小文件打包成少量大文件,避免 i-node/目录遍历开销。</li>
+<li>- <strong>预读 + 多 worker</strong>:DataLoader 的 <code>prefetch_factor</code> 控制每个 worker 预读多少 batch。</li>
+<li>- <strong>POSIX 语义之外</strong>:分布式训练里 NFS、Lustre、S3 等后端,性能模型和本地盘迥异,要测才知道瓶颈在哪。</li>
+</ul>
+
+<!-- 2.2.5 -->
+<h2 id="s2-2-5"><span class="num">2.2.5</span>异常与中断</h2>
+<p class="pos">定位:CPU 与外部世界通信的机制——中断、软中断、tasklet、workqueue。</p>
+
+<h3>中断分类</h3>
+
+<p><strong>硬中断</strong>(IRQ):硬件触发,CPU 立即停下当前工作跳到中断处理程序。中断向量表给每个中断号对应一个处理函数。</p>
+
+<p><strong>软中断/异常</strong>:CPU 自己触发——除零、缺页、系统调用(syscall 本质是陷入)。</p>
+
+<h3>中断处理的两段式</h3>
+
+<p>中断处理有一条铁律:<strong>必须快</strong>——中断上下文里不能睡眠、不能获取可能阻塞的锁。但网络包到达这种事有时候要做复杂处理(解析协议、查路由、复制数据)。</p>
+
+<p>Linux 的解决是"上半部 + 下半部":</p>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>上半部(top half)</strong>:中断处理程序本身。只做最必要的——应答硬件、把数据搬到内存缓冲、调度下半部。禁中断状态,越短越好。</li>
+<li><strong>下半部(bottom half)</strong>:允许中断、可调度。三种机制:</li>
+</ul>
+
+<table>
+<tr><th>机制</th><th>特点</th><th>适用</th></tr>
+<tr><td>softirq</td><td>静态类型、per-CPU、不能睡眠</td><td>网络收发、定时器、块 I/O</td></tr>
+<tr><td>tasklet</td><td>softirq 之上,动态创建,同一 tasklet 同时只在一核运行</td><td>中等开销驱动</td></tr>
+<tr><td>workqueue</td><td>内核线程上下文、可睡眠</td><td>需要睡眠的延迟工作</td></tr>
+</table>
+
+<p>网络收包路径是 softirq 的典型用户——硬中断来了之后把 skb 入队,NET_RX_SOFTIRQ 在下半部把 skb 交给协议栈。这也是为什么高速网络下 <code>ksoftirqd</code> 经常吃满一核。</p>
+
+<h3>中断亲和与负载均衡</h3>
+
+<p>默认所有中断可能都被一个核处理(尤其廉价网卡)。<code>/proc/irq/&lt;n&gt;/smp_affinity</code> 可以绑定中断到指定核。多队列网卡配合 RSS,把不同队列的中断分到不同核,实现真并行。</p>
+
+<h3>在 AI 里</h3>
+
+<p>AI 相关不多。但 GPU 驱动就是中断密集——CUDA kernel 完成时 GPU 发中断,驱动在下半部通知用户态。中断处理开销在高 QPS 推理服务(每秒几千请求)下不可忽略。</p>
+
+<!-- 2.2.6 -->
+<h2 id="s2-2-6"><span class="num">2.2.6</span>并发、互斥与同步</h2>
+<p class="pos">定位:多核并发的基本工具——原子、锁、RCU、内存模型。重点挖深。</p>
+
+<h3>竞争的本质</h3>
+
+<p>多线程读写共享数据,如果没同步,会出问题。最简单的反例:</p>
+<pre><code class="language-c">int counter = 0;
+// 两个线程各自:
+for (int i = 0; i < 1000000; i++) counter++;
+// 最终 counter 远小于 2000000
+</code></pre>
+<p><code>counter++</code> 不是原子的——实际是 load/add/store 三步,两个线程交错执行时会丢更新。</p>
+
+<h3>原子操作</h3>
+
+<p>硬件提供原子指令:x86 的 <code>LOCK</code> 前缀、ARM 的 LDREX/STREX。C11 的 <code>_Atomic</code>、C++11 的 <code>std::atomic</code>、Rust 的 <code>AtomicUsize</code> 都是对这些指令的语言封装。</p>
+
+<p>最关键的原子原语是 <strong>CAS</strong>(Compare-And-Swap):</p>
+<pre><code class="language-c">// 原子地: 如果 *ptr == expected 则写 new, 返回 true; 否则读到 *ptr 更新 expected, 返回 false
+bool cas(int *ptr, int *expected, int new);
+</code></pre>
+<p>CAS 是所有无锁数据结构的基础。典型用法是"循环 CAS 直到成功":</p>
+<pre><code class="language-c">int old, new;
+do {
+    old = *counter;
+    new = old + 1;
+} while (!cas(counter, &old, new));
+</code></pre>
+
+<h3>锁的种类</h3>
+
+<p><strong>自旋锁(Spinlock)</strong>:获取失败就忙等。适合持锁时间极短、多核场景。内核中断处理里必须用自旋锁(不能睡)。</p>
+
+<p><strong>互斥量(Mutex)</strong>:获取失败就睡眠,被唤醒时再试。适合持锁时间长。开销大于自旋锁(上下文切换),但不浪费 CPU。</p>
+
+<p><strong>读写锁</strong>:多读共享,写独占。读多写少场景有优势。缺点:写饥饿问题(持续读流会让写永远等不到)。</p>
+
+<p><strong>信号量(Semaphore)</strong>:带计数的锁,允许 N 个并发持有。资源池常用。</p>
+
+<p><strong>条件变量</strong>:不是锁,是"等待某个条件成立"的原语。典型配合 mutex 使用。</p>
+
+<h3>RCU</h3>
+
+<p>Read-Copy-Update 是 Linux 内核里最精妙的并发原语。适合读极多写极少的场景。核心思路:</p>
+<ol>
+<li>读者<strong>完全不加锁</strong>——直接读旧版本指针</li>
+<li>写者复制一份数据,改完后<strong>原子地替换指针</strong></li>
+<li>旧版本数据延迟释放——等所有已开始的读者都结束(grace period)后再 free</li>
+</ol>
+
+<p>RCU 的读路径开销近乎零,几乎和单线程一样。代价是写复杂、内存短期翻倍、释放延迟。Linux 的路由表、namespace、模块列表都用 RCU。</p>
+
+<pre><code class="language-c">// RCU 读者: 完全无锁
+rcu_read_lock();
+struct foo *p = rcu_dereference(global_ptr);
+// 使用 p...
+rcu_read_unlock();
+
+// RCU 写者
+struct foo *new = kmalloc(...);
+*new = (struct foo){ .x = 42, ... };
+struct foo *old = rcu_dereference(global_ptr);
+rcu_assign_pointer(global_ptr, new);   // 原子指针替换
+synchronize_rcu();                      // 等所有读者离开
+kfree(old);                             // 安全释放
+</code></pre>
+
+<h3>内存模型</h3>
+
+<p>程序员以为自己写的代码按顺序执行,但 CPU 和编译器都会重排指令。单线程下感知不到(满足"数据依赖"即可),多线程下重排可能让另一个核看到"不可能"的状态。</p>
+
+<p>例子:</p>
+<pre><code class="language-c">// Thread A:                Thread B:
+x = 1;                       if (flag) {
+flag = 1;                        assert(x == 1);  // 可能失败!
+                             }
+</code></pre>
+<p>CPU 或编译器可能把 <code>flag = 1</code> 提前到 <code>x = 1</code> 之前——Thread B 看到 flag=1 但 x 还是 0。</p>
+
+<p>解决:<strong>内存屏障</strong>(memory barrier)。x86 是 TSO(Total Store Order)内存模型,相对宽松——写操作保序、读可能提前。ARM 是 weakly-ordered,啥都可能重排,必须显式用屏障。</p>
+
+<p>高层语言抽象:C++11 的 <code>std::memory_order</code>、Rust 的 <code>Ordering</code>,有 Relaxed、Acquire、Release、AcqRel、SeqCst 五档。SeqCst 最强(顺序一致),开销最大;Relaxed 最弱(只保证原子性),最快。真正懂着用是高水平系统工程师的分界线。</p>
+
+<h3>MESI 与缓存一致性</h3>
+
+<p>多核缓存一致性由硬件 MESI 协议保证。Modified/Exclusive/Shared/Invalid 四态,缓存行在核间迁移。</p>
+
+<p>一个常被忽略的观察:<strong>锁的开销不是"锁原语本身",而是 cache line 迁移</strong>。A 核持锁后又被 B 核抢,锁变量的 cache line 从 A 迁到 B,每次迁移 ~100 cycles。这解释了为什么锁竞争一多性能就崩。</p>
+
+<h3>无锁数据结构</h3>
+
+<p>无锁(lock-free)队列、栈、hash 表存在,但难写——稍不注意就 ABA 问题、内存回收问题。工业级实现(Folly、Crossbeam)经过多年调优,但自己写无锁结构不值得冒险。</p>
+
+<h3>在 AI 里</h3>
+
+<p>PyTorch 内部大量无锁原子(引用计数 Tensor、参数服务器更新)。C10 库的 <code>c10::intrusive_ptr</code> 比 <code>std::shared_ptr</code> 快,因为内嵌引用计数省了额外分配。</p>
+
+<p>训练集群的参数服务器、异步 SGD 全是并发问题。单机多卡的 NCCL 同步也隐含内存屏障——保证 AllReduce 结果被所有 rank 看到。</p>
+
+<!-- 2.2.7 -->
+<h2 id="s2-2-7"><span class="num">2.2.7</span>设备管理与系统调用</h2>
+<p class="pos">定位:syscall 是用户态与内核的唯一接口——io_uring、eBPF 在重新塑造它。</p>
+
+<h3>设备驱动模型</h3>
+
+<p>Linux 设备分三类:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>字符设备</strong>:流式读写(串口、键盘、<code>/dev/random</code>)</li>
+<li><strong>块设备</strong>:块随机访问(磁盘、SSD)</li>
+<li><strong>网络设备</strong>:不走 <code>read/write</code>,走 socket API</li>
+</ul>
+
+<p>驱动向内核注册操作表(<code>file_operations</code>)——open、read、write、ioctl、mmap 等函数指针。应用通过文件系统(<code>/dev/xxx</code>)找到设备,调用走到驱动。</p>
+
+<h3>DMA 与零拷贝</h3>
+
+<p>DMA(Direct Memory Access)让设备直接读写内存,不占用 CPU。传统网络收包流程:网卡 DMA 到内核缓冲区 → 内核复制到 socket 缓冲 → 用户态 <code>read</code> 再复制到用户 buffer。三次拷贝。</p>
+
+<p><strong>零拷贝</strong>技术:<code>sendfile</code>(文件→socket 直接走内核)、<code>splice</code>(管道+pipe 实现零拷贝)、<code>mmap</code>+<code>write</code>(映射文件到用户空间)。Nginx、Kafka 大量用 sendfile。</p>
+
+<h3>系统调用</h3>
+
+<p>syscall 是用户态唯一进内核的方式。x86-64 用 <code>syscall</code> 指令(旧的 <code>int 0x80</code> 已淘汰),传参用特定寄存器。一次 syscall 开销 ~100 ns——不慢,但千万次循环里累积显著。</p>
+
+<p><strong>vDSO</strong>(virtual Dynamic Shared Object):把几个高频轻量 syscall(如 <code>gettimeofday</code>)实现成用户态函数,避免陷入内核。透明地通过动态链接提供。</p>
+
+<h3>eBPF</h3>
+
+<p>eBPF(extended Berkeley Packet Filter)是近年 Linux 最重要的新机制。允许用户把经过验证的小程序注入内核热路径(网络、跟踪、安全),不改内核、不加模块。</p>
+
+<p>应用:<strong>tcpdump</strong> 用 BPF 做 packet filter;<strong>bpftrace</strong> 做动态追踪;<strong>Cilium</strong> 做容器网络(替代 iptables);<strong>Katran</strong> 做四层负载均衡(Facebook)。AI 可观测性平台(训练任务的细粒度监控)也越来越多用 eBPF。</p>
+
+<p>eBPF 程序通过验证器(verifier)保证:无循环、无越界访问、有限执行时间。这让它可以安全在内核态跑。</p>
+
+<h3>容器</h3>
+
+<p>容器不是虚拟机——它就是 Linux 进程,只是利用了 namespace(隔离视图)和 cgroup(资源限制)。</p>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>namespace</strong>:PID、net、mount、IPC、UTS、user、cgroup（4.6+）、time（5.6+）共八种,每种隔离一种资源视图。容器看到自己是 PID 1 就是 PID namespace 的效果。</li>
+<li><strong>cgroup</strong>:限制 CPU、内存、块 I/O、网络带宽的配额。Kubernetes 的资源限额就是下发到 cgroup。</li>
+</ul>
+
+<p>Docker、containerd、Podman 都是这两个原语的上层封装。AI 训练基本跑在容器里(便于环境复现、调度),理解 namespace/cgroup 在排查性能和权限问题时必不可少。</p>
+
+<!-- ==================== 2.3 编程语言与编译器 ==================== -->
+<div class="part-header">
+  <div class="part-label">PART THREE</div>
+  <h2 class="part-title">2.3 编程语言与编译器</h2>
+  <p class="part-desc">语言决定你能思考什么,编译器决定你能跑多快。</p>
+</div>
+
+<!-- 2.2.0 -->
+<h2 id="s2-3-1"><span class="num">2.3.1</span>Rust 语言</h2>
+<p class="pos">定位:所有权模型 + 无 GC + 零成本抽象——系统编程的新基线。</p>
+
+<h3>所有权:Rust 的核心</h3>
+
+<p>Rust 最独特的是<strong>所有权(ownership)</strong>系统。三条规则:</p>
+<ol>
+<li>每个值有且仅有一个所有者</li>
+<li>所有者离开作用域时,值被自动 drop(释放资源)</li>
+<li>赋值/传参默认是"移动"所有权(除非类型实现 Copy)</li>
+</ol>
+
+<p>这条规则从根上消除了 C/C++ 的三大经典 bug:use-after-free、double-free、内存泄漏。编译器在编译期静态检查,无运行时开销。</p>
+
+<pre><code class="language-rust">fn main() {
+    let s1 = String::from("hello");
+    let s2 = s1;           // 所有权移动, s1 不再有效
+    // println!("{}", s1); // 编译错误!
+    println!("{}", s2);    // OK
+} // s2 离开作用域, 字符串自动释放
+</code></pre>
+
+<h3>借用:不移动的临时访问</h3>
+
+<p>但凡事都移动所有权太麻烦——借用(borrowing)就是"临时拿去用不拥有":</p>
+<pre><code class="language-rust">fn len(s: &String) -> usize { s.len() }
+
+fn main() {
+    let s = String::from("hello");
+    let n = len(&s);       // 传不可变借用
+    println!("{}, len {}", s, n);  // s 仍有效
+}
+</code></pre>
+
+<p>借用分两种:不可变借用 <code>&T</code>(多个并存)和可变借用 <code>&mut T</code>(独占)。核心规则:<strong>可变借用与任何其它借用互斥</strong>。这条规则编译期检查,直接消除数据竞争——并发代码编译通过就(在所有权+借用层面)没有竞争。</p>
+
+<h3>生命周期</h3>
+
+<p>借用必须不超过被借对象的寿命。大多数时候编译器自动推断,复杂场景要显式标注:</p>
+<pre><code class="language-rust">// 'a 是生命周期参数: 返回的借用不能超过两个输入中较短的那个
+fn longer<'a>(s1: &'a str, s2: &'a str) -> &'a str {
+    if s1.len() > s2.len() { s1 } else { s2 }
+}
+</code></pre>
+
+<p>生命周期是 Rust 新手的第一个心智障碍。通过了这一关,你就会意识到 C/C++ 里"这个指针还有效吗"这种问题是多么靠直觉和约定——Rust 把它变成了编译器的工作。</p>
+
+<h3>零成本抽象</h3>
+
+<p>Rust 的 trait、迭代器、泛型都是<strong>零成本抽象</strong>:编译后和手写 C 一样快。迭代器链 <code>v.iter().filter(...).map(...).sum()</code> 经过 LLVM 优化后和手写 for 循环生成的汇编基本一致——没有虚函数开销、没有装箱。这和 Java/Python 的抽象有本质区别。</p>
+
+<h3>无 GC 但也不手动 malloc/free</h3>
+
+<p>Rust 没有垃圾回收——所有权模型让内存管理编译期决定。每个值的 drop 点编译器知道,<code>Drop</code> trait 里实现资源释放(类似 C++ RAII)。<code>Box&lt;T&gt;</code>、<code>Rc&lt;T&gt;</code>、<code>Arc&lt;T&gt;</code> 分别对应独占堆分配、单线程引用计数、多线程引用计数。</p>
+
+<h3>异步</h3>
+
+<p>Rust 的 <code>async/await</code> 是<strong>零成本 Future</strong>——每个 async 函数编译成状态机。运行时(tokio、async-std)负责调度状态机推进。这让 Rust 异步可以压榨出接近 C 的性能,但生态目前还在成熟。</p>
+
+<h3>在 AI 里</h3>
+
+<p>PyTorch 是 Python + C++,没 Rust。但 AI 周边基础设施大量用 Rust:<strong>tokenizers</strong>(HuggingFace)、<strong>burn</strong>(纯 Rust 深度学习框架)、<strong>candle</strong>(Rust 推理框架)、<strong>vLLM 的某些组件</strong>、各种向量数据库(Qdrant、LanceDB)。</p>
+
+<p>Rust 和 Python 的互操作通过 <strong>PyO3</strong> 桥接,写 Python 扩展的新首选——比写 C 扩展安全得多。</p>
+
+<!-- 2.2.1 -->
+<h2 id="s2-3-2"><span class="num">2.3.2</span>C 语言的现代演进</h2>
+<p class="pos">定位:C 仍是底层通用语言——看看它在演化什么,以及 C++ 的系统编程替代路径。简短。</p>
+
+<p>这节讲广义的"C 系演进"。C 还没死——内核、驱动、DPDK、Redis 都还是 C。但 C 的工具链和周边在持续改进:</p>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Sanitizer 系列</strong>:AddressSanitizer(ASan)检测越界、UAF;ThreadSanitizer(TSan)检测数据竞争;UBSan 检测未定义行为。编译时加 <code>-fsanitize=address</code> 就开,运行时开销 2–5x,能找出绝大多数内存 bug。</li>
+<li><strong>静态分析</strong>:Clang Static Analyzer、Coverity、PVS-Studio。找出编译通过但运行时出错的代码。</li>
+<li><strong>Fuzz 测试</strong>:libFuzzer、AFL++。自动生成输入探测崩溃。OpenSSL、SQLite 都通过 fuzz 发现了大量 bug。</li>
+</ul>
+
+<h3>C++ 在系统编程的位置</h3>
+
+<p>C++ 表达力远超 C,但复杂度也爆炸。现代 C++(C++17/20/23)通过 <code>std::unique_ptr</code>、<code>std::optional</code>、range 等让写现代代码舒服很多。主要问题是<strong>没法禁用危险特性</strong>——C++ 的子集是安全的但必须靠纪律。</p>
+
+<p>性能上 C++ 和 Rust 接近(都零成本抽象、都无 GC)。但所有权检查 Rust 在编译期做、C++ 靠程序员——这是根本差异。数据库、浏览器、游戏引擎仍重度用 C++(LLVM、Chromium、Unreal)。</p>
+
+<h3>语言选择的考量</h3>
+
+<p>如果今天要从零写一个网络设备固件、操作系统、数据库,语言选型的一般建议是:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>内核/驱动</strong>:C(Linux 主流)或 Rust（Rust for Linux 已合入主线,多个子系统驱动已用 Rust 重写,2025 年后生态趋于成熟）。</li>
+<li>- <strong>中间件/服务</strong>:Rust 优先,Go 其次(gc 可接受)、C++ 在团队有经验时考虑。</li>
+<li>- <strong>上层应用</strong>:Go、Python、Java。</li>
+</ul>
+
+<!-- 2.2.2 -->
+<h2 id="s2-3-3"><span class="num">2.3.3</span>编译基础原理</h2>
+<p class="pos">定位:词法/语法/语义分析 → IR → 代码生成。以 LLVM 为主线。</p>
+
+<h3>传统编译器的三段式</h3>
+
+<p><strong>前端</strong>:源码 → AST → 中间表示(IR)</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>词法分析</strong>(lexing):字符流 → token 流。工具:flex、自己手写。</li>
+<li>- <strong>语法分析</strong>(parsing):token 流 → AST。工具:bison、ANTLR、递归下降手写。</li>
+<li>- <strong>语义分析</strong>:类型检查、作用域解析、生成类型标注的 AST。</li>
+<li>- <strong>IR 生成</strong>:AST → IR(如 LLVM IR)。</li>
+</ul>
+
+<p><strong>中端</strong>:IR 上的优化(下一节)。</p>
+
+<p><strong>后端</strong>:IR → 目标汇编。包含指令选择、寄存器分配、指令调度。</p>
+
+<h3>LLVM 与 SSA</h3>
+
+<p>LLVM 的统治地位建立在两件事上:模块化设计(前端后端解耦)和 <strong>SSA</strong>(Static Single Assignment)IR。</p>
+
+<p>SSA 要求每个变量只赋值一次。传统代码:</p>
+<pre><code class="language-c">x = 1;
+x = x + 2;
+y = x * 3;
+</code></pre>
+<p>SSA 形式:</p>
+<pre><code>x1 = 1
+x2 = x1 + 2
+y1 = x2 * 3
+</code></pre>
+
+<p>每个变量一个定义,分析 def-use 关系变得简单——"这个用的是哪个定义"一眼看穿。控制流合并处用 <strong>φ 函数</strong>(phi)选择来自不同路径的值:</p>
+<pre><code>if (cond) x1 = 1;
+else      x2 = 2;
+x3 = φ(x1, x2);
+y  = x3 + 1;
+</code></pre>
+
+<p>SSA 让所有数据流优化(常量传播、死代码消除、公共子表达式消除)都用简单算法就能做——这就是 LLVM 牛的地方。</p>
+
+<h3>LLVM IR 示例</h3>
+
+<pre><code class="language-rust">// C 源码: int add(int a, int b) { return a + b; }
+
+// LLVM IR (SSA 形式)
+define i32 @add(i32 %a, i32 %b) {
+entry:
+  %sum = add i32 %a, %b
+  ret i32 %sum
+}
+</code></pre>
+
+<p>LLVM IR 是平台无关的——这段 IR 可以被不同后端(x86、ARM、RISC-V、GPU)分别编译。这就是跨平台编译器的架构基础。</p>
+
+<h3>后端</h3>
+
+<p>后端三件大事:</p>
+<ol>
+<li><strong>指令选择</strong>:IR 指令 → 目标架构指令。一条 IR 指令可能对应多条汇编(或反之)。常用算法:tree pattern matching、BURS。</li>
+<li><strong>寄存器分配</strong>:大多数 IR 是无限寄存器假设,后端要把它们映射到有限物理寄存器。经典算法是<strong>图染色</strong>——寄存器冲突图染色,不同色的变量可共用一个寄存器。LLVM 用更复杂的 linear scan 变种。</li>
+<li><strong>指令调度</strong>:乱序 CPU 下,编译期调度指令顺序减少流水线停顿。</li>
+</ol>
+
+<h3>在 AI 里</h3>
+
+<p>AI 编译器(TVM、MLIR、XLA)是通用编译器思想在张量计算上的延伸。<strong>MLIR</strong>(Multi-Level IR)是 LLVM 项目的扩展,提供多级中间表示——从 PyTorch 的 ATen 算子级、到 HLO 张量级、到 affine 循环级、到 LLVM 级,统一在一个框架。PyTorch 2.0 的 TorchDynamo + Inductor、Triton 的 MLIR 路径都是这个趋势的产物。</p>
+
+<!-- 2.2.3 -->
+<h2 id="s2-3-4"><span class="num">2.3.4</span>编译优化</h2>
+<p class="pos">定位:几十种优化组合起来,能让代码快几倍——对 AI 算子优化有直接启发。</p>
+
+<h3>局部优化</h3>
+
+<p><strong>常量传播</strong>:<code>x = 5; y = x + 3;</code> → <code>y = 8;</code></p>
+
+<p><strong>常量折叠</strong>:编译期能算的结果就算出来。<code>86400 * 30</code> 不会等到运行时乘。</p>
+
+<p><strong>公共子表达式消除</strong>(CSE):</p>
+<pre><code class="language-c">a = x * y + 1;
+b = x * y + 2;
+// → 
+tmp = x * y;
+a = tmp + 1;
+b = tmp + 2;
+</code></pre>
+
+<p><strong>死代码消除</strong>:结果没被使用的计算删掉。</p>
+
+<p><strong>强度削弱</strong>:把昂贵操作换成便宜的。<code>x * 8</code> → <code>x << 3</code>;循环里的 <code>i*c</code> 替换成累加变量。</p>
+
+<h3>过程内优化</h3>
+
+<p><strong>内联</strong>(inlining):把函数调用替换成函数体。省掉调用/返回开销,更重要的是让被内联代码和调用点上下文暴露给其它优化——"内联打开优化窗口"。</p>
+
+<p>成本:代码膨胀。编译器启发式决定是否内联:小函数总内联、热点函数内联、不被多次调用的函数内联。<code>inline</code> 关键字只是建议,最终决定权在编译器。</p>
+
+<p><strong>循环优化</strong>(重点):</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>循环展开</strong>(unrolling):<code>for (i=0;i<4;i++) a[i]=0;</code> → 4 条 store。减少分支开销、暴露并行。</li>
+<li>- <strong>循环合并</strong>(fusion):两个相邻独立循环合并成一个。提高 cache 局部性。</li>
+<li>- <strong>循环分裂</strong>(fission):一个大循环拆成几个小循环。方便向量化、暴露并行。</li>
+<li>- <strong>循环交换</strong>(interchange):调整嵌套循环顺序,让内层循环访存连续。</li>
+<li>- <strong>循环不变代码外提</strong>(LICM):循环里不变的计算搬到循环外。</li>
+<li>- <strong>向量化</strong>:把标量循环改成 SIMD 指令。<code>for (i=0;i<n;i++) c[i]=a[i]+b[i];</code> 在 AVX2 下变成每次处理 8 个 float 的向量指令。</li>
+</ul>
+
+<h3>过程间优化</h3>
+
+<p>跨函数边界的优化:内联、过程间常量传播、死函数消除。需要全程序可见——<strong>LTO</strong>(Link Time Optimization)让链接器阶段看到所有 IR 再做优化,比传统"每个 .o 独立编译"更强。</p>
+
+<h3>PGO</h3>
+
+<p>Profile-Guided Optimization:先编译一个带 profiling 的版本,用真实负载跑一遍收集 profile,再重新编译让编译器基于 profile 决定优化(哪些分支更可能走、哪些函数热)。Chromium、MySQL 都用 PGO,通常能获 5–15% 性能提升。</p>
+
+<h3>自动向量化的限制</h3>
+
+<p>编译器的自动向量化很强但不是万能的。以下情况会放弃:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- 数据依赖(循环体内有 <code>a[i] = a[i-1] + 1</code>)</li>
+<li>- 指针别名不确定(<code>restrict</code> 关键字可以帮编译器)</li>
+<li>- 函数调用阻挡(<code>pure</code> 属性可以帮助)</li>
+<li>- 复杂分支</li>
+</ul>
+
+<p>所以对性能关键路径,查看编译器生成的汇编(<code>gcc -S</code> 或 Compiler Explorer)是专家必备技能。</p>
+
+<h3>在 AI 里</h3>
+
+<p>AI 算子的手工优化就是把这些编译优化思想用到张量计算:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>算子融合</strong> = 循环合并 + 内联,减少中间张量的内存往返。</li>
+<li>- <strong>tiling</strong> = 循环分块,让数据停留在 cache/SRAM。</li>
+<li>- <strong>向量化到 SIMD/Tensor Core</strong> = 自动向量化的张量版本。</li>
+<li>- <strong>auto-tuning</strong>(TVM、Triton AutoTune)= PGO 思路——实测不同参数找最佳。</li>
+</ul>
+
+<p>理解了通用编译器优化,AI 编译器就是同一套思想的领域特化。</p>
+
+<!-- ==================== 2.4 数据库 ==================== -->
+<div class="part-header">
+  <div class="part-label">PART FOUR</div>
+  <h2 class="part-title">2.4 数据库</h2>
+  <p class="part-desc">AI 基础设施里越来越重要的一环——从关系库到向量库。</p>
+</div>
+
+<!-- 2.4.1 -->
+<h2 id="s2-4-1"><span class="num">2.4.1</span>DB 基本原理</h2>
+<p class="pos">定位:存储引擎、事务、查询优化、日志——关系数据库的四个支柱。</p>
+
+<h3>存储引擎:B+Tree vs LSM-Tree</h3>
+
+<p>两种主流索引架构。</p>
+
+<p><strong>B+Tree</strong>(MySQL InnoDB、PostgreSQL):多路平衡树,叶子节点是数据页并用链表串联(方便范围扫描)。读快(一次 $\log_B n$),更新就地修改。缺点:频繁随机写对 SSD 不友好。</p>
+
+<p><strong>LSM-Tree</strong>(RocksDB、Cassandra、LevelDB):Log-Structured Merge Tree。写入先进内存(memtable),满了 flush 成不可变的 SSTable 到磁盘。后台合并(compaction)旧 SSTable。读可能需要查多层、查 bloom filter。写极快(纯顺序 I/O),读稍慢,写放大是主要问题。</p>
+
+<p>选择:OLTP 读多 → B+Tree;写密集(日志、时序)→ LSM。</p>
+
+<h3>行存 vs 列存</h3>
+
+<p><strong>行存</strong>(OLTP):一行数据物理连续。查整行/写整行快。MySQL、PostgreSQL。</p>
+
+<p><strong>列存</strong>(OLAP):同一列数据物理连续。OLAP 查询常只读几列(<code>SELECT avg(salary) FROM emp</code>)、过滤选择率高,列存能大幅减少 I/O。可以高压缩比(同列数据相似性高)。ClickHouse、Parquet、DuckDB。</p>
+
+<h3>ACID 事务</h3>
+
+<p><strong>A</strong>(Atomicity):事务要么全做要么全不做。<strong>C</strong>(Consistency):事务保持数据约束。<strong>I</strong>(Isolation):并发事务互不干扰。<strong>D</strong>(Durability):提交后不丢。</p>
+
+<p>实现靠两个机制:<strong>锁</strong>(保证 I)和<strong>日志</strong>(保证 A 和 D)。</p>
+
+<h3>锁与隔离级别</h3>
+
+<p>SQL 标准定义四个隔离级别,对应越来越严的异常避免:</p>
+
+<table>
+<tr><th>级别</th><th>脏读</th><th>不可重复读</th><th>幻读</th></tr>
+<tr><td>Read Uncommitted</td><td>可能</td><td>可能</td><td>可能</td></tr>
+<tr><td>Read Committed</td><td>不会</td><td>可能</td><td>可能</td></tr>
+<tr><td>Repeatable Read</td><td>不会</td><td>不会</td><td>可能</td></tr>
+<tr><td>Serializable</td><td>不会</td><td>不会</td><td>不会</td></tr>
+</table>
+
+<p>实际实现用 <strong>2PL</strong>(Two-Phase Locking)或 <strong>MVCC</strong>(Multi-Version Concurrency Control)。MVCC 是现代主流:每次写产生新版本、读者看事务开始时的快照,读写不互相阻塞。PostgreSQL、MySQL InnoDB、Oracle 都用 MVCC。</p>
+
+<h3>WAL 与恢复</h3>
+
+<p><strong>WAL</strong>(Write-Ahead Log):改数据页前先写日志(log 顺序 I/O 比随机 I/O 页快)。崩溃后通过日志 redo 已提交事务、undo 未提交事务。<strong>ARIES</strong> 算法是工业标准恢复协议:Analysis → Redo → Undo。</p>
+
+<h3>查询优化器</h3>
+
+<p>SQL 是声明式——"要什么"而非"怎么做"。优化器把 SQL 翻译成执行计划。</p>
+
+<p>过程:SQL 解析 → 逻辑计划(关系代数)→ 逻辑优化(谓词下推、子查询改写)→ 物理计划(选具体算子:hash join vs nested loop join、索引扫描 vs 全表扫描)→ 代价估计(基于统计信息:表大小、列分布)→ 选最小代价计划。</p>
+
+<p>优化器是数据库的"大脑",好坏差一个数量级。</p>
+
+<h3>向量化执行</h3>
+
+<p>传统执行引擎是<strong>逐行火山模型</strong>(Volcano):每个算子 <code>next()</code> 返回一行。简单但每行开销大(虚函数调用、cache miss)。</p>
+
+<p><strong>向量化执行</strong>:每次 <code>next()</code> 返回一批行(如 1024)。开销摊薄到批,SIMD 指令一条处理多行,cache 利用率提升。ClickHouse、DuckDB、Apache Arrow 都是向量化的。比火山模型快 10× 级别。</p>
+
+<h3>在 AI 里</h3>
+
+<p>AI 基础设施里关系数据库仍是管理元数据的主力——用户、模型版本、训练任务记录、实验跟踪。PostgreSQL + MLflow 是常见组合。但 AI 最相关的 DB 是后三节要讲的:图、时序、向量。</p>
+
+<!-- 2.4.2 -->
+<h2 id="s2-4-2"><span class="num">2.4.2</span>图数据库</h2>
+<p class="pos">定位:节点 + 边的原生存储——知识图谱、社交网络、推理链路的底层。</p>
+
+<h3>图的存储</h3>
+
+<p>关系库也能存图(两张表:节点表、边表),但查询多跳关系时要反复 join,性能差。图数据库<strong>原生存储</strong>邻接信息——每个节点直接持有"出边列表"指针,跳 k 步就是 k 次指针跟随。</p>
+
+<h3>属性图模型</h3>
+
+<p>主流图模型是<strong>属性图</strong>:节点有标签(类型)和属性(key-value);边有方向、类型、属性。例如社交图:<code>(Alice :Person {age: 30})-[:FRIEND {since: 2020}]-&gt;(Bob :Person)</code>。</p>
+
+<p>查询语言:<strong>Cypher</strong>(Neo4j,最流行)、<strong>Gremlin</strong>(TinkerPop,跨库)、<strong>SPARQL</strong>(RDF 图,语义网)。</p>
+
+<h3>Cypher 示例</h3>
+
+<pre><code class="language-sql">// 找 Alice 的朋友的朋友, 且不是 Alice 自己的朋友
+MATCH (alice:Person {name: 'Alice'})-[:FRIEND]->(friend)-[:FRIEND]->(fof)
+WHERE NOT (alice)-[:FRIEND]->(fof) AND fof <> alice
+RETURN DISTINCT fof.name
+</code></pre>
+
+<p>同样查询用 SQL 需要自连接 + NOT EXISTS 子查询,可读性和性能都差。</p>
+
+<h3>常见图算法</h3>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>BFS/DFS</strong>:最基础的遍历</li>
+<li><strong>最短路径</strong>:Dijkstra(无负权)、Bellman-Ford(可负权)、A*(带启发)</li>
+<li><strong>PageRank</strong>:网页/节点重要性</li>
+<li><strong>社区发现</strong>:Louvain、Label Propagation</li>
+<li><strong>连通分量</strong>:Union-Find</li>
+<li><strong>中心性</strong>:度、介数、接近度中心性</li>
+</ul>
+
+<h3>代表产品</h3>
+
+<table>
+<tr><th>产品</th><th>类型</th><th>特点</th></tr>
+<tr><td>Neo4j</td><td>原生图</td><td>Cypher 发源地,社区广</td></tr>
+<tr><td>JanusGraph</td><td>分布式图</td><td>基于 HBase/Cassandra</td></tr>
+<tr><td>TigerGraph</td><td>分布式原生图</td><td>大规模分析</td></tr>
+<tr><td>NebulaGraph</td><td>分布式图</td><td>国产,中文社区</td></tr>
+<tr><td>DGraph</td><td>分布式图</td><td>Go 实现,GraphQL 接口</td></tr>
+</table>
+
+<h3>在 AI 里</h3>
+
+<p><strong>知识图谱 RAG</strong>:传统向量 RAG 对"多跳推理"(需要多步关联)效果差。GraphRAG(微软)先把文档抽成实体关系图,检索时结合向量和图遍历,提升复杂问答。</p>
+
+<p><strong>图神经网络</strong>(GNN):节点分类、链接预测、推荐。训练时通常把图加载进内存,但大图需要图数据库做采样(按邻居采样子图做 mini-batch 训练)。</p>
+
+<p><strong>推理链路追踪</strong>:Agent 执行的每一步(LLM 调用 → 工具调用 → 结果)可以存为图,方便回溯分析。</p>
+
+<!-- 2.4.3 -->
+<h2 id="s2-4-3"><span class="num">2.4.3</span>时序数据库</h2>
+<p class="pos">定位:按时间戳排序的数据流——监控、IoT、金融行情的专属。</p>
+
+<h3>时序数据的特征</h3>
+
+<p>时序数据和普通关系数据几个不同:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>按时间有序</strong>:天然有时间维度索引</li>
+<li>- <strong>近乎只写</strong>:老数据很少修改</li>
+<li>- <strong>高速率写入</strong>:监控可能每秒百万点</li>
+<li>- <strong>查询模式固定</strong>:范围聚合、降采样、时间窗口</li>
+<li>- <strong>数据有生命周期</strong>:老数据降精度或删除</li>
+</ul>
+
+<h3>关键技术:压缩</h3>
+
+<p>时序数据相邻值差异小,压缩比超高。两个经典技术:</p>
+
+<p><strong>Delta-of-Delta</strong>(时间戳压缩):记录 <code>Δ(Δt)</code>。定时采样的数据,Δ 基本恒定,ΔΔ 大多为 0,可变长编码到几比特。</p>
+
+<p><strong>XOR 编码</strong>(值压缩):相邻浮点数异或,高位多为 0。Gorilla(Facebook)论文的压缩算法,实测 1.37 字节/点——比原始 16 字节(time+value 各 8)压缩 10×+。</p>
+
+<h3>存储结构</h3>
+
+<p>时序库多数基于 LSM 变种。写入路径:</p>
+<ol>
+<li>按 (metric, tags) 组成 series</li>
+<li>每个 series 独立时间有序追加</li>
+<li>按时间窗口分片(如 2 小时一个 chunk)</li>
+<li>chunk 老化后压缩存盘</li>
+</ol>
+
+<h3>降采样</h3>
+
+<p>原始 1 秒粒度数据保留 7 天,之后降到 1 分钟粒度保留 30 天,再降到 1 小时保留 1 年。自动物化聚合(continuous aggregate)省查询时聚合代价。</p>
+
+<h3>代表产品</h3>
+
+<table>
+<tr><th>产品</th><th>核心特点</th></tr>
+<tr><td>InfluxDB</td><td>最流行;InfluxDB 2.-1（2024）迁移至 Apache Arrow / DataFusion 引擎,查询语言转向 SQL/InfluxQL,Flux 已废弃</td></tr>
+<tr><td>Prometheus</td><td>监控标配,PromQL,pull 模式</td></tr>
+<tr><td>TimescaleDB</td><td>PostgreSQL 扩展,兼容 SQL</td></tr>
+<tr><td>VictoriaMetrics</td><td>Prometheus 兼容,性能更强</td></tr>
+<tr><td>IoTDB</td><td>国产,面向工业 IoT</td></tr>
+<tr><td>TDengine</td><td>国产,SQL 接口</td></tr>
+</table>
+
+<h3>PromQL 示例</h3>
+
+<pre><code class="language-sql">-- 过去 5 分钟 http 请求总 QPS, 按服务聚合
+sum by (service) (rate(http_requests_total[5m]))
+
+-- 99 分位响应延迟
+histogram_quantile(0.99, sum by (le) (rate(http_duration_seconds_bucket[5m])))
+</code></pre>
+
+<h3>在 AI 里</h3>
+
+<p>AI 训练和推理的可观测性指标大量存时序库:GPU 利用率、显存占用、训练 loss 曲线、推理 QPS/TTFT/P99 延迟。Grafana + Prometheus + 模型服务自暴露指标是标配。</p>
+
+<p><strong>时序预测模型</strong>(ARIMA、Prophet、Transformer 变种如 Informer)的训练数据就直接从时序库拉。</p>
+
+<!-- 2.4.4 -->
+<h2 id="s2-4-4"><span class="num">2.4.4</span>向量数据库</h2>
+<p class="pos">定位:高维向量的最近邻搜索——RAG、语义检索、推荐的底座。</p>
+
+<h3>问题定义</h3>
+
+<p>给定 $N$ 个 $d$ 维向量和一个查询向量 $\mathbf{q}$,找出距离 $\mathbf{q}$ 最近的 $k$ 个。距离度量通常是 L2 或余弦相似度。</p>
+
+<p>朴素暴搜 $O(Nd)$。$N = 10^8$、$d = 768$ 时每次查询几秒——不可接受。所以向量数据库的核心是<strong>近似最近邻</strong>(ANN):允许小概率返回非真最近邻,换来亚毫秒级查询。</p>
+
+<h3>ANN 算法家族</h3>
+
+<p><strong>LSH</strong>(Locality-Sensitive Hashing):用随机超平面把空间分桶,相似向量以高概率落同桶。简单但召回率低。</p>
+
+<p><strong>IVF</strong>(Inverted File):先 k-means 聚类所有向量,查询时只搜最近的几个簇。典型用法 IVF_PQ(簇内用 PQ 量化存储向量)。</p>
+
+<p><strong>PQ</strong>(Product Quantization):把 $d$ 维向量切成 $m$ 段每段 $d/m$ 维,每段独立做 k-means 量化成 8 位 codebook 索引。$d=128$ 切 8 段每段 256 类,原本 512 字节压缩到 8 字节,64×。距离计算用查表近似。</p>
+
+<p><strong><a href="ch5_partC_supplement.html#p18">HNSW</a></strong>（Hierarchical Navigable Small World）:多层图索引,最上层稀疏、最下层稠密。查询从最上层开始贪心"跳"向目标。召回率和速度在大多数场景最好,是目前主流选择。</p>
+
+<h3>HNSW 的直觉</h3>
+
+<p>把所有向量看作图的节点,每个节点连接若干近邻。查询过程从一个入口出发,每步跳到离查询向量更近的邻居,直到没有邻居比当前更近——就是局部最优点。</p>
+
+<p>HNSW 加了<strong>层次</strong>:多层图,每层是下层的稀疏子集,高层边长、低层边短。查询先在高层大步跳接近目标区域,再逐层下降精化。类比跳表(skiplist)的二维推广。</p>
+
+<h3>代表产品</h3>
+
+<table>
+<tr><th>产品</th><th>特点</th></tr>
+<tr><td>FAISS</td><td>Facebook 库,最成熟,非分布式</td></tr>
+<tr><td>Milvus</td><td>国产,分布式、支持多种索引</td></tr>
+<tr><td>Qdrant</td><td>Rust 实现,性能强,过滤友好</td></tr>
+<tr><td>Weaviate</td><td>Go 实现,内置多模态</td></tr>
+<tr><td>pgvector</td><td>PostgreSQL 扩展,适合已用 PG 的场景</td></tr>
+<tr><td>Chroma</td><td>轻量嵌入式,适合原型</td></tr>
+<tr><td>LanceDB</td><td>Rust 实现,零拷贝、多模态</td></tr>
+</table>
+
+<h3>混合检索</h3>
+
+<p>纯向量检索在专业术语、精确匹配上不如关键词。<strong>混合检索</strong>:向量(语义相似)+ BM25(关键词)结果融合,用 RRF(Reciprocal Rank Fusion)或其它 rerank。工业 RAG 系统几乎都是混合检索。</p>
+
+<h3>过滤与元数据</h3>
+
+<p>真实场景除了"相似",还要"只在这个用户的文档里搜"、"只要 2024 年之后的"。这要求向量数据库支持带过滤的 ANN。两种做法:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>pre-filter</strong>:先按元数据过滤再 ANN。如果过滤后剩很少,直接暴搜。</li>
+<li><strong>post-filter</strong>:先 ANN 再过滤。但可能返回不足 k 个结果。</li>
+</ul>
+
+<p>Qdrant、Milvus 做了<strong>filterable HNSW</strong>——在 HNSW 图上走时同时检查过滤条件,兼顾速度和正确性。</p>
+
+<h3>在 AI 里</h3>
+
+<p><strong><a href="ch5_partC_supplement.html#p25">RAG</a>（Retrieval-Augmented Generation）</strong>:文档 → chunk → embedding → 存向量库;查询 → embedding → ANN 取 top-k → 拼进 prompt → LLM 回答。当下最主流的 LLM 应用模式。</p>
+
+<p><strong>语义搜索、推荐系统、图文检索、去重</strong>都是向量数据库的直接应用。<strong>长期记忆</strong>:Agent 的历史对话存成向量,按需检索——这是 LLM 应用中越来越重要的模式。</p>
+
+<!-- ==================== 2.5 消息中间件 ==================== -->
+<div class="part-header">
+  <div class="part-label">PART FIVE</div>
+  <h2 class="part-title">2.5 消息中间件</h2>
+  <p class="part-desc">进程间/节点间通信的抽象层——消息队列、RPC、发布订阅的统一视角。</p>
+</div>
+
+<!-- 2.5.1 -->
+<h2 id="s2-5-1"><span class="num">2.5.1</span>高性能消息总线</h2>
+<p class="pos">定位:各种进程/服务间通信模式的基本盘——RPC、Pub/Sub、消息队列。</p>
+
+<h3>通信模式的分类</h3>
+
+<p>中间件的底层抽象都围绕几种基本通信语义:</p>
+
+<table>
+<tr><th>模式</th><th>语义</th><th>代表</th></tr>
+<tr><td>单播/组播</td><td>点到点 / 点到多</td><td>UDP、共享内存</td></tr>
+<tr><td>RPC</td><td>请求-响应</td><td>gRPC、Thrift</td></tr>
+<tr><td>Pub/Sub</td><td>发布-订阅,松耦合</td><td>Kafka、NATS、ROS</td></tr>
+<tr><td>消息队列</td><td>持久、有序、消费</td><td>RabbitMQ、Kafka</td></tr>
+<tr><td>流处理</td><td>事件流持续计算</td><td>Flink、Kafka Streams</td></tr>
+</table>
+
+<h3>RPC 的核心技术点</h3>
+
+<p>gRPC 是现代 RPC 的事实标准。关键要素:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>IDL</strong>(接口定义语言):Protobuf 描述消息和服务,自动生成各语言 stub</li>
+<li><strong>序列化</strong>:Protobuf 二进制、紧凑、跨语言。对比 JSON 体积小 3–10x,解析快</li>
+<li><strong>传输</strong>:HTTP/2 基础,多路复用、流式、头部压缩</li>
+<li><strong>流模式</strong>:单向/双向流</li>
+<li><strong>拦截器</strong>:鉴权、限流、追踪</li>
+</ul>
+
+<h3>Pub/Sub 的松耦合</h3>
+
+<p>Pub/Sub 的设计哲学:生产者和消费者互不知道。发布者把消息投递到 topic,订阅者注册感兴趣的 topic 收消息。系统伸缩:加消费者、加分区。</p>
+
+<p>Kafka 是"持久日志 Pub/Sub"的典范。每个 topic 是个分区的追加日志,消费者按 offset 读,可回放历史。日志保留期控制存储。</p>
+
+<h3>零拷贝与高性能</h3>
+
+<p>高性能消息中间件都有零拷贝优化:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- 用户态环形缓冲区,多生产者多消费者无锁</li>
+<li>- <code>sendfile</code>/<code>splice</code>(内核级 zero-copy)</li>
+<li>- mmap 共享内存(单机 IPC)</li>
+<li>- RDMA(跨机)</li>
+</ul>
+
+<p>单机场景共享内存 + 原子指针环形队列能做到 20M+ msg/s。跨机场景 RDMA 能打到线速。</p>
+
+<h3>服务发现</h3>
+
+<p>分布式服务通信必答问题:"我要调用的服务在哪个 IP 端口?"——服务发现。几种方案:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>DNS</strong>:最朴素,TTL 决定更新速度</li>
+<li><strong>客户端注册中心</strong>:Consul、Zookeeper、etcd——服务启动时注册,客户端查询</li>
+<li><strong>Service Mesh</strong>:Istio、Linkerd——代理劫持流量,透明注入发现和治理</li>
+<li><strong>Kubernetes Service</strong>:内置 DNS + kube-proxy</li>
+</ul>
+
+<h3>可靠性保障</h3>
+
+<p>消息投递语义三级:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>at-most-once</strong>:最多一次,可能丢——简单性能高</li>
+<li><strong>at-least-once</strong>:至少一次,可能重——需消费者幂等</li>
+<li><strong>exactly-once</strong>:恰好一次——昂贵,需要事务或去重</li>
+</ul>
+
+<p>Kafka 的 exactly-once 是<em>在 Kafka 内部</em>(通过事务消息)成立的,端到端 exactly-once(外部系统)仍难。</p>
+
+<h3>在 AI 里</h3>
+
+<p>AI 系统里消息中间件用得不少:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>训练任务调度</strong>:生产者(用户)投递任务,消费者(训练 worker)消费</li>
+<li>- <strong>推理前置排队</strong>:高并发 LLM 服务前放队列,削峰填谷</li>
+<li>- <strong>数据采集 → 特征工程 pipeline</strong>:Kafka 作为中转</li>
+<li>- <strong>分布式 RL</strong>:actor 生成经验,learner 从队列消费</li>
+<li>- <strong>Agent 的工具调用总线</strong>:LLM → 工具路由器 → 各工具进程</li>
+</ul>
+
+<!-- ==================== 2.6 网络栈 ==================== -->
+<div class="part-header">
+  <div class="part-label">PART SIX</div>
+  <h2 class="part-title">2.6 网络栈:DPDK 与 VPP</h2>
+  <p class="part-desc">高性能网络转发的两条主线——绕过内核的 DPDK,向量化处理的 VPP。</p>
+</div>
+
+<!-- 2.6.1 -->
+<h2 id="s2-6-1"><span class="num">2.6.1</span>内核协议栈的瓶颈</h2>
+<p class="pos">定位:为什么要绕过内核——理解 DPDK/VPP 存在的理由。</p>
+
+<h3>Linux 网络栈的路径</h3>
+
+<p>一个 TCP 包从网卡到应用要经过:</p>
+
+<div class="mermaid">
+flowchart TB
+    NIC[Network Card] --> IRQ[Hardware IRQ]
+    IRQ --> SI[Softirq NET_RX]
+    SI --> NP[netif_receive_skb]
+    NP --> IP[IP layer]
+    IP --> TCP[TCP layer]
+    TCP --> SKB[socket buffer]
+    SKB --> SYS[syscall read]
+    SYS --> APP[Application]
+</div>
+
+<p>每一层都有成本:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- 硬中断开销</li>
+<li>- sk_buff 结构分配/释放(每包一次,内存分配器压力大)</li>
+<li>- 多层协议栈(以太、IP、TCP)逐层解析</li>
+<li>- 用户/内核态拷贝</li>
+<li>- 系统调用开销</li>
+<li>- 每包触发调度</li>
+</ul>
+
+<p>这套架构为通用性设计得极好,但性能极限大约是<strong>单核 1–2 Mpps</strong>。要处理 10G 小包线速(14.88 Mpps)或 100G 线速(148.8 Mpps),内核栈做不到。</p>
+
+<h3>瓶颈的根源</h3>
+
+<p><strong>中断风暴</strong>:高速率下每秒百万硬中断,CPU 大量时间在中断处理。NAPI 机制用"中断触发 → 禁中断 → 轮询"部分缓解,但还是受限。</p>
+
+<p><strong>内存分配</strong>:每收一个包要 kmalloc 一个 sk_buff,处理完 kfree。分配器本身是瓶颈。</p>
+
+<p><strong>锁</strong>:协议栈多处全局锁(路由表、连接表)。多核扩展性差。</p>
+
+<p><strong>缓存污染</strong>:sk_buff 跨核迁移、协议栈代码大量不命中 I-cache。</p>
+
+<h3>两条突破路线</h3>
+
+<p><strong>绕过内核</strong>:用户态直接操作网卡。DPDK、Netmap、Snabb。</p>
+
+<p><strong>优化内核</strong>:XDP(eBPF 在驱动层过滤转发)、io_uring、AF_XDP。</p>
+
+<p>后者越来越成熟(XDP 可做到单核 15 Mpps+),但 DPDK 仍是最大化性能的首选,下一节详讲。</p>
+
+<!-- 2.6.2 -->
+<h2 id="s2-6-2"><span class="num">2.6.2</span>DPDK 架构</h2>
+<p class="pos">定位:绕过内核做用户态网络的工业标准框架。</p>
+
+<h3>DPDK 的设计哲学</h3>
+
+<p>DPDK(Data Plane Development Kit)是 Intel 于 2013 年开源的用户态网络框架（内部开发始于 2010 年前后）。四个核心决定:</p>
+
+<ol>
+<li><strong>用户态驱动</strong>:用 UIO/VFIO 把网卡从内核 unbind,用户态进程直接 mmap 设备寄存器。</li>
+<li><strong>轮询替代中断</strong>:应用主循环不停 poll 接收环,无中断开销。</li>
+<li><strong>预分配大页内存</strong>:启动时一次分配所有需要的内存,运行时无 malloc。</li>
+<li><strong>每核独立</strong>:每核一个线程,绑定固定网卡队列,共享数据极少。</li>
+</ol>
+
+<p>结果:单核轻松 10 Mpps+,单服务器 100G 线速转发可达。</p>
+
+<h3>架构图</h3>
+
+<div class="mermaid">
+flowchart LR
+    subgraph UserSpace["User Space DPDK App"]
+        APP[Application Logic]
+        MBUF[mbuf pool]
+        RING[rte_ring]
+        PMD[Poll Mode Driver]
+    end
+    subgraph Kernel["Kernel (minimal)"]
+        UIO[UIO / VFIO]
+    end
+    subgraph HW["Hardware"]
+        NIC[NIC]
+    end
+    APP --> RING
+    RING --> PMD
+    PMD -->|mmap regs| UIO
+    UIO --> NIC
+    PMD --> MBUF
+</div>
+
+<h3>关键组件</h3>
+
+<p><strong>EAL</strong>(Environment Abstraction Layer):抽象 OS 和硬件,统一接口(内存、CPU、设备)。<code>rte_eal_init()</code> 是每个 DPDK 程序的入口。</p>
+
+<p><strong>PMD</strong>(Poll Mode Driver):用户态网卡驱动。每种网卡一个 PMD(Intel ixgbe、Mellanox mlx5、virtio 等)。</p>
+
+<p><strong>mbuf</strong>:DPDK 的 sk_buff 等价物,但简化得多——固定大小头部 + 数据,无链表。预分配在 mempool 里。</p>
+
+<p><strong>rte_ring</strong>:无锁 MPMC(多生产多消费)环形队列,用户空间 IPC 的主要原语。</p>
+
+<p><strong>mempool</strong>:对象池。分配/释放 O(1),每核有 cache 减少竞争。</p>
+
+<h3>最简 DPDK 应用</h3>
+
+<pre><code class="language-c">#include <rte_eal.h>
+#include <rte_ethdev.h>
+#include <rte_mbuf.h>
+
+#define RX_RING_SIZE 1024
+#define NUM_MBUFS    8191
+#define BURST_SIZE   32
+
+int main(int argc, char *argv[]) {
+    rte_eal_init(argc, argv);
+
+    // 创建 mempool
+    struct rte_mempool *mbuf_pool = rte_pktmbuf_pool_create(
+        "MBUF_POOL", NUM_MBUFS, 250, 0,
+        RTE_MBUF_DEFAULT_BUF_SIZE, rte_socket_id());
+
+    // 配置端口 0
+    uint16_t port = 0;
+    struct rte_eth_conf cfg = {0};
+    rte_eth_dev_configure(port, 1, 1, &cfg);
+    rte_eth_rx_queue_setup(port, 0, RX_RING_SIZE, rte_socket_id(), NULL, mbuf_pool);
+    rte_eth_tx_queue_setup(port, 0, RX_RING_SIZE, rte_socket_id(), NULL);
+    rte_eth_dev_start(port);
+
+    // 主循环: 轮询收包, 简单回发
+    struct rte_mbuf *bufs[BURST_SIZE];
+    while (1) {
+        uint16_t nb_rx = rte_eth_rx_burst(port, 0, bufs, BURST_SIZE);
+        if (unlikely(nb_rx == 0)) continue;
+
+        // 处理包...(这里略)
+
+        uint16_t nb_tx = rte_eth_tx_burst(port, 0, bufs, nb_rx);
+        // 未发送成功的释放
+        for (uint16_t i = nb_tx; i < nb_rx; i++)
+            rte_pktmbuf_free(bufs[i]);
+    }
+}
+</code></pre>
+
+<p>这段代码在绑定了网卡的专用 CPU 核上跑,吞吐能轻松打到几 Mpps——比内核栈的 Socket 程序快 10–50 倍。</p>
+
+<h3>代价</h3>
+
+<p>DPDK 不是免费午餐:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>CPU 独占</strong>:轮询核 100% 占用,即使没包也在烧</li>
+<li>- <strong>无内核协议栈</strong>:TCP/UDP/ARP 都要自己实现或集成 mTCP、F-Stack 等用户态栈</li>
+<li>- <strong>开发复杂</strong>:标准 socket 库不能用</li>
+<li>- <strong>硬件绑定</strong>:网卡必须 DPDK 支持</li>
+</ul>
+
+<p>所以 DPDK 适合<strong>专用转发设备</strong>(防火墙、负载均衡、NFV),不适合普通应用。</p>
+
+<!-- 2.6.3 -->
+<h2 id="s2-6-3"><span class="num">2.6.3</span>DPDK 关键机制</h2>
+<p class="pos">定位:DPDK 性能的秘密——HugePages、无锁环、NUMA、RSS。</p>
+
+<h3>HugePages</h3>
+
+<p>DPDK 强制使用 HugePages(2MB 或 1GB)。原因 2.2.3 节提过:TLB 覆盖大幅扩大,避免 TLB miss。DPDK 典型启动参数指定每个 NUMA 节点预留多少 2MB 大页。</p>
+
+<h3>无锁环形队列</h3>
+
+<p>rte_ring 是 DPDK 最精巧的组件之一。它是 MPMC 环形队列,基于两对生产者/消费者 head/tail 指针:</p>
+<pre><code class="language-c">// 简化版 rte_ring 核心变量
+struct rte_ring {
+    uint32_t size;           // 环容量 (2 的幂次,便于 & 取模)
+    struct {
+        uint32_t head;       // 下一个将写入的位置
+        uint32_t tail;       // 已提交的位置
+    } prod, cons;
+    void *ring[size];
+};
+</code></pre>
+
+<p>入队流程:原子 CAS 把 prod.head 加 n(预留槽位) → 拷贝数据 → 等 prod.tail 追上自己的原 head → 推进 prod.tail。这套两阶段让多生产者可以<em>并发预留、顺序提交</em>,保证环内数据被消费者看到时已完整。</p>
+
+<h3>NUMA 感知</h3>
+
+<p>现代服务器多 socket,跨 socket 访问内存延迟翻倍(DRAM vs 本地 DRAM)。DPDK 通过 <code>rte_socket_id()</code> 让你指定 mempool、队列都分配在特定 NUMA 节点。生产代码必须所有资源 NUMA 对齐——网卡、CPU 核、内存池在同一 socket。</p>
+
+<h3>RSS 与多队列</h3>
+
+<p>单队列单核处理有上限。DPDK 配合网卡的 RSS,把不同流的包分到多个接收队列,每个队列绑一个核,真并行。</p>
+
+<p>RSS 的 hash 基于 5-tuple——<em>同一流的包永远走同一队列</em>(保证流内有序),不同流均匀分布到各核。这个设计是所有现代高速转发的基础。</p>
+
+<h3>CPU 亲和性</h3>
+
+<p>DPDK 线程必须绑核(<code>--lcores</code> 参数)。避免调度迁移导致 cache miss。结合 <code>isolcpus</code> 内核参数把这些核从 Linux 调度器移除,完全独占。</p>
+
+<h3>Batch 处理</h3>
+
+<p>所有 DPDK API 都是批处理——<code>rte_eth_rx_burst</code> 一次收 32 个包,<code>rte_eth_tx_burst</code> 一次发 32 个。摊薄每包开销到接近零。应用逻辑也应该 batch 处理——解析 32 个包的以太头、查 32 个流表项等,对 cache 和流水线都友好。</p>
+
+<h3>零拷贝</h3>
+
+<p>mbuf 数据区直接就是 DMA 区域——网卡把包 DMA 到 mbuf,应用直接读,发送时网卡直接从 mbuf DMA 发出。整条数据路径零拷贝。</p>
+
+<!-- 2.6.4 -->
+<h2 id="s2-6-4"><span class="num">2.6.4</span>VPP 向量化转发</h2>
+<p class="pos">定位:构建在 DPDK 之上的高性能可编程转发框架,思路是"对一批包连续做同一处理"。</p>
+
+<h3>VPP 的核心创新:图节点 + 向量化</h3>
+
+<p>VPP(Vector Packet Processing)是 FD.io 项目(基于 Cisco 开源)。它的两个核心概念:</p>
+
+<p><strong>转发图</strong>:处理流程是一张有向图,节点是"处理阶段"(如 ethernet-input、ip4-lookup、ip4-rewrite)。包从图的源节点流入,经过一系列节点,到达汇点(发送或丢弃)。每个节点只做一件事,可插拔扩展。</p>
+
+<p><strong>向量化</strong>:<em>不是一次处理一个包,而是一次处理一批</em>。传统"每包过完整转发流程"改成"每个节点把整批包处理完再传给下一节点"。</p>
+
+<h3>为什么向量化这么快</h3>
+
+<p>假设一批 256 个包,处理有 10 个阶段。传统方式:</p>
+<pre><code>for packet in 256:
+    for stage in 10:
+        do_stage(packet)
+</code></pre>
+<p>每个 stage 的代码被取指 256 次,每次可能 I-cache miss。</p>
+
+<p>向量化方式:</p>
+<pre><code>for stage in 10:
+    for packet in 256:
+        do_stage(packet)
+</code></pre>
+<p>stage 代码只取 1 次,warm 在 I-cache 里。256 次循环迭代,数据可能在 D-cache 里(预取器友好)。<strong>I-cache 命中率</strong>的改善是 VPP 快的主因,而不是 SIMD 向量化。</p>
+
+<p>这是编译器优化里 <em>loop interchange</em> 的网络转发版本——循环交换带来 cache 局部性改善。</p>
+
+<h3>VPP 节点示例</h3>
+
+<pre><code class="language-c">// ip4-lookup 节点的简化示意
+static uword
+ip4_lookup_node_fn(vlib_main_t *vm, vlib_node_runtime_t *node,
+                    vlib_frame_t *frame) {
+    u32 *from = vlib_frame_vector_args(frame);
+    u32 n_left = frame->n_vectors;   // 这一批包数
+
+    // 先处理 4-at-a-time (用 prefetch 掩盖 cache miss)
+    while (n_left >= 4) {
+        vlib_buffer_t *b0, *b1, *b2, *b3;
+        b0 = vlib_get_buffer(vm, from[0]);
+        b1 = vlib_get_buffer(vm, from[1]);
+        b2 = vlib_get_buffer(vm, from[2]);
+        b3 = vlib_get_buffer(vm, from[3]);
+
+        // 预取下一批的 cache line
+        CLIB_PREFETCH(vlib_get_buffer(vm, from[4]), CLIB_CACHE_LINE_BYTES, LOAD);
+        // ...
+
+        // 对 4 个包并行查路由
+        ip4_fib_mtrie_lookup(...);   // 对 b0
+        ip4_fib_mtrie_lookup(...);   // 对 b1
+        ip4_fib_mtrie_lookup(...);   // 对 b2
+        ip4_fib_mtrie_lookup(...);   // 对 b3
+
+        from += 4; n_left -= 4;
+    }
+
+    // 剩余 0–3 个包单独处理
+    while (n_left > 0) { /* ... */ }
+
+    return frame->n_vectors;
+}
+</code></pre>
+
+<p>这种 "4-at-a-time + prefetch" 是 VPP 的标志性代码模式。用指令级并行和显式 prefetch 把内存延迟隐藏在计算后面。</p>
+
+<h3>VPP 能做什么</h3>
+
+<ul style="list-style:none; padding-left:0;">
+<li>- IPv4/IPv6 路由转发(FIB)</li>
+<li>- MPLS</li>
+<li>- VXLAN、GRE 等隧道</li>
+<li>- NAT</li>
+<li>- 基础防火墙 ACL</li>
+<li>- 负载均衡</li>
+<li>- IPSec</li>
+</ul>
+
+<p>性能:单核十 Mpps+,双路服务器可做 100Gbps+ 线速。</p>
+
+<h3>与 DPDK 的关系</h3>
+
+<p>VPP 默认使用 DPDK 作为输入/输出驱动层,也支持 AF_XDP、Netmap 等。VPP 负责"包处理框架",DPDK 负责"和硬件对话"。两者不冲突、常结合使用。</p>
+
+<!-- 2.6.5 -->
+<h2 id="s2-6-5"><span class="num">2.6.5</span>TCP / UDP / Raw IP</h2>
+<p class="pos">定位:传输层协议——日常用 socket 但要知道内部发生了什么。</p>
+
+<h3>IP 层</h3>
+
+<p>IP 是不可靠的包投递。每个 IP 包独立路由——<em>没有"连接"的概念</em>,中间路由器对每个包独立查表转发。IPv4 头 20 字节(含可选字段),IPv6 头 40 字节(但简化了字段)。</p>
+
+<p>IP 层关键机制:<strong>分片</strong>(当下一跳 MTU 小于包大小)、<strong>TTL</strong>(每经一跳减 1,归零丢弃防环路)、<strong>校验和</strong>(只校头部)。</p>
+
+<h3>UDP</h3>
+
+<p>最薄的传输层——8 字节头(源端口、目的端口、长度、校验)。无连接、无重传、无拥塞控制、无顺序保证。</p>
+
+<p>适合场景:DNS 查询、实时音视频、游戏状态同步、自定义可靠层(QUIC 就是 UDP 之上)。</p>
+
+<h3>TCP:核心三大机制</h3>
+
+<p><strong>连接</strong>:三次握手建立,四次挥手关闭。维护序列号、确认号、窗口等状态。</p>
+
+<p><strong>可靠传输</strong>:基于序列号和 ACK 的重传。超时重传 + 快速重传(3 个重复 ACK 即重传,不等超时)。</p>
+
+<p><strong>拥塞控制</strong>:AIMD(Additive Increase Multiplicative Decrease)。拥塞窗口慢启动指数增、到阈值后线性增、遇丢包减半。算法有 Reno、Cubic(Linux 默认)、BBR(Google,按带宽/延迟建模,不靠丢包反馈)。</p>
+
+<h3>TCP 的性能调优</h3>
+
+<p>实际部署要关注的参数:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>缓冲区大小</strong>:<code>net.core.rmem_max/wmem_max</code>。长肥网络(高带宽高延迟)需大缓冲。</li>
+<li>- <strong>TCP_NODELAY</strong>:禁用 Nagle 算法,小包立即发送——低延迟交互必开。</li>
+<li>- <strong>TCP_QUICKACK</strong>:不延迟 ACK。</li>
+<li>- <strong>拥塞算法</strong>:<code>net.ipv4.tcp_congestion_control</code>。数据中心、跨洲链路选 BBR 通常比 Cubic 好。</li>
+<li>- <strong>TCP Fast Open</strong>:SYN 包携带数据,省 RTT。</li>
+</ul>
+
+<h3>Raw IP / Raw Socket</h3>
+
+<p>应用直接构造 IP 包(可以自定义任何协议)。需要 root 权限。用于:ping 工具(ICMP)、路由协议(OSPF、BGP)、自定义协议。<code>socket(AF_INET, SOCK_RAW, IPPROTO_XXX)</code>。</p>
+
+<h3>在 AI 里</h3>
+
+<p>AI 训练/推理通信主要用:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>TCP</strong>:gRPC/REST API、分布式训练的控制面</li>
+<li>- <strong>RDMA</strong>（将在第 4 章 5.7 节介绍）:训练数据面,完全绕过 TCP/IP</li>
+<li>- <strong>UDP</strong>:偶尔用于自定义 AllReduce 实现</li>
+</ul>
+
+<!-- 2.6.6 -->
+<h2 id="s2-6-6"><span class="num">2.6.6</span>TLS 与 QUIC</h2>
+<p class="pos">定位:加密传输的两种范式——TLS over TCP vs QUIC(UDP + 加密)。</p>
+
+<h3>TLS 握手</h3>
+
+<p>TLS 1.3(2018)简化了握手,1 RTT 可用(TLS 1.2 要 2 RTT):</p>
+<ol>
+<li>Client Hello:携带支持的算法、ECDHE 公钥分量</li>
+<li>Server Hello + Certificate + Finished:服务器返回选定算法、证书、自己的 ECDHE、签名</li>
+<li>Client Finished:客户端验证证书,双方算出会话密钥</li>
+</ol>
+
+<p>TLS 1.3 的 <strong>0-RTT</strong> 模式:已建立过会话的客户端可以在第一个包里直接发请求数据(用之前缓存的 PSK)。延迟为 0,但有重放攻击风险。</p>
+
+<h3>QUIC 的设计动机</h3>
+
+<p>TCP + TLS 有几个天生限制:</p>
+<ol>
+<li>TCP 握手 1 RTT + TLS 握手 1 RTT = 至少 2 RTT 才开始传数据</li>
+<li>TCP 是操作系统实现,升级慢(拥塞算法部署周期以年计)</li>
+<li>TCP 的 head-of-line blocking:单个包丢失阻塞整个流</li>
+<li>TCP 连接标识是 4-tuple,手机切 WiFi/4G 时 IP 变连接断</li>
+</ol>
+
+<p>QUIC(Quick UDP Internet Connections)重新发明传输层,跑在 UDP 之上,解决这四个问题:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>1 RTT 握手</strong>(首连),<strong>0 RTT</strong>(重连),加密和可靠传输合并</li>
+<li>- <strong>用户态实现</strong>:应用层库,升级只需换库</li>
+<li>- <strong>多流</strong>:一个连接内多个独立流,一流丢包不阻其它流</li>
+<li>- <strong>Connection ID</strong>:不依赖 IP,网络切换连接保持</li>
+</ul>
+
+<h3>HTTP/3</h3>
+
+<p>HTTP/3 = HTTP/2 语义 + QUIC 传输。相比 HTTP/2 over TCP+TLS:握手快、多路复用无队头阻塞、网络切换顺滑。2022 年 IETF 标准化,主流浏览器和 CDN 已支持。</p>
+
+<h3>实现</h3>
+
+<p>QUIC 库:Google 的 QUICHE、Facebook 的 mvfst、Cloudflare 的 quiche、微软的 msquic。都是用户态。</p>
+
+<h3>在 AI 里</h3>
+
+<p>LLM 推理 API(OpenAI、Anthropic 等)多数已支持 HTTP/3,减少首 token 延迟。移动端 AI 应用(切换网络频繁)从 QUIC 受益更明显。</p>
+
+<!-- 2.6.7 -->
+<h2 id="s2-6-7"><span class="num">2.6.7</span>转发管理与控制面</h2>
+<p class="pos">定位:数据面转发靠 DPDK/VPP 跑快,控制面负责下发策略、同步路由表。简短。</p>
+
+<h3>控制面 vs 数据面</h3>
+
+<p>现代网络设备是 CP/DP 分离:</p>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>控制面</strong>:路由协议(BGP、OSPF)、策略计算、配置管理。跑在通用 CPU,Python/Go 实现都行。慢一点没关系。</li>
+<li><strong>数据面</strong>:逐包处理。DPDK/VPP/NP/ASIC。必须快。</li>
+</ul>
+
+<p>CP 算出路由,下发到 DP 的转发表(FIB)。DP 只做查表转发,不参与路由计算。</p>
+
+<h3>SDN</h3>
+
+<p>Software-Defined Networking 把这个分离推到极致:<strong>把控制面从每个设备里拿出来,集中到一个控制器</strong>。控制器通过 OpenFlow、gNMI、P4Runtime 等协议下发转发规则。</p>
+
+<p>优点:全局视图优化、策略统一、设备简化(只要实现数据面)。缺点:控制器成为单点。</p>
+
+<h3>控制面配置协议</h3>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>CLI</strong>:传统,ssh 登设备敲命令</li>
+<li><strong>SNMP</strong>:老牌监控,读多写少</li>
+<li><strong>NETCONF + YANG</strong>:结构化配置,事务支持</li>
+<li><strong>gNMI</strong>:基于 gRPC,流式遥测</li>
+<li><strong>OpenConfig</strong>:厂商无关的 YANG 模型</li>
+</ul>
+
+<h3>路由协议简述</h3>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>BGP</strong>:互联网骨干协议,基于路径矢量,AS 间路由。TCP 179 端口,策略丰富。</li>
+<li><strong>OSPF</strong>:IGP(内部网关协议),链路状态算法(Dijkstra 最短路径)。收敛快,用于 AS 内。</li>
+<li><strong>IS-IS</strong>:类似 OSPF,ISP 常用。</li>
+</ul>
+
+<h3>在 AI 里</h3>
+
+<p>AI 训练集群的网络拓扑(fat-tree、dragonfly)对性能有巨大影响。但控制面本身和 AI 关系不大,这里只做整体感知。</p>
+
+<!-- 2.6.8 -->
+<h2 id="s2-6-8"><span class="num">2.6.8</span>日志与可观测性</h2>
+<p class="pos">定位:Metrics + Logs + Traces 三位一体——没有可观测性就没有生产运维。</p>
+
+<h3>三大观测支柱</h3>
+
+<p><strong>Metrics</strong>(指标):数值,按时间序列存。QPS、CPU、延迟。低频采样、小体积、易聚合。Prometheus 标配。</p>
+
+<p><strong>Logs</strong>(日志):离散事件的文本记录。高基数、大体积。ELK(Elasticsearch + Logstash + Kibana)、Loki 常用。</p>
+
+<p><strong>Traces</strong>(分布式追踪):一次请求在多个服务间的调用链。每个 span 记录开始时间、持续时间、标签。Jaeger、Zipkin、Tempo。</p>
+
+<h3>结构化日志</h3>
+
+<p>传统 <code>printf</code> 日志不利于机器处理。现代做法是结构化日志——JSON 或 logfmt 格式:</p>
+
+<pre><code class="language-json">{"time":"2024-05-01T10:30:15Z","level":"INFO","service":"inference",
+ "request_id":"abc123","model":"gpt-4","ttft_ms":234,"tokens":156}
+</code></pre>
+
+<p>带结构才能高效检索/聚合。Go 的 slog、Python 的 structlog、Rust 的 tracing 都推动这个方向。</p>
+
+<h3>OpenTelemetry</h3>
+
+<p>OpenTelemetry(OTel)是 CNCF 毕业项目,目标是<strong>统一观测数据采集规范</strong>——语言 SDK、数据模型、传输协议(OTLP)。一套 SDK 同时产出 metrics、logs、traces,可以对接不同后端(Prometheus、Jaeger、commercial APM)。</p>
+
+<p>今天写新服务,选 OTel 基本不会错。</p>
+
+<h3>采样</h3>
+
+<p>全量 traces 太贵——每秒 100K 请求存下来磁盘都扛不住。采样策略:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>头采样</strong>:入口决定是否采,基于概率或规则</li>
+<li><strong>尾采样</strong>:trace 完成后决定(可以针对错误、慢请求采)</li>
+<li><strong>自适应采样</strong>:动态调整采样率</li>
+</ul>
+
+<h3>eBPF 可观测性</h3>
+
+<p>传统可观测性要应用侵入式埋点。eBPF 让你在内核抓任何函数调用、任何 syscall、任何 socket 事件,无需改应用。<strong>Pixie</strong>、<strong>Cilium Hubble</strong>、<strong>Parca</strong> 都是 eBPF 驱动的观测工具。</p>
+
+<h3>在 AI 里</h3>
+
+<p>LLM 推理的可观测性特殊指标:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>TTFT</strong>(首 token 时间):前端体验关键</li>
+<li>- <strong>TPOT</strong>(每 token 生成时间):稳定生成速度</li>
+<li>- <strong>tokens/sec throughput</strong>:系统吞吐</li>
+<li>- <strong>KV Cache 命中率</strong>:prefix cache 效果</li>
+<li>- <strong>batch size 分布</strong>:调度健康度</li>
+<li>- <strong>GPU 利用率</strong>:硬件效率</li>
+</ul>
+
+<p>训练可观测性:loss 曲线、梯度范数、学习率、各 rank 同步耗时、数据加载延迟。TensorBoard、Weights &amp; Biases、MLflow 是专用平台。</p>
+
+<hr style="margin-top:60px; border:none; border-top:1px dashed var(--rule);">
+
+<p style="color:var(--muted); font-size:14px; font-style:italic; text-align:center; margin-top:40px;">
+— 第 1 章 终 —<br>
+共 28 节 · 下一章:AI 模型技术(传统 ML + 深度学习 + 训练优化 + AI 性能工程)
+</p>
+
+</main>
+
+<script>
+  hljs.highlightAll();
+  mermaid.initialize({ startOnLoad: true, theme: 'neutral', fontFamily: 'Inter, sans-serif' });
+</script>
+
+</body>
+</html>

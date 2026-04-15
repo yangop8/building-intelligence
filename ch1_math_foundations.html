@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数学基础 — 面向 AI 工程师的复习手册</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+:root {
+  --bg: #fbfaf7;
+  --fg: #1d1d1b;
+  --muted: #6b6b68;
+  --accent: #2d5a7a;
+  --accent-soft: #e6edf2;
+  --rule: #e3dfd6;
+  --code-bg: #282c34;
+  --sidebar-bg: #f4f1ea;
+  --mono: "SFMono-Regular", "JetBrains Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --serif: "Source Serif Pro", "Songti SC", "STSong", Georgia, "Times New Roman", serif;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--fg);
+  background: var(--bg);
+  display: flex;
+}
+aside.toc {
+  position: sticky;
+  top: 0;
+  width: 300px;
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--rule);
+  padding: 24px 20px;
+  font-family: var(--sans);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+aside.toc h1 {
+  font-family: var(--serif);
+  font-size: 18px;
+  margin: 0 0 4px 0;
+  color: var(--accent);
+}
+aside.toc .sub {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+aside.toc .group {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 14px;
+  margin-bottom: 4px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--rule);
+}
+aside.toc ol { list-style: none; padding: 0; margin: 0; }
+aside.toc ol li { margin-bottom: 2px; }
+aside.toc a {
+  color: var(--fg);
+  text-decoration: none;
+  display: block;
+  padding: 3px 6px;
+  border-radius: 3px;
+  transition: all 0.15s;
+}
+aside.toc a:hover { background: var(--accent-soft); color: var(--accent); }
+aside.toc .num { color: var(--muted); font-family: var(--mono); margin-right: 6px; font-size: 11px; }
+
+main {
+  flex: 1;
+  max-width: 880px;
+  padding: 60px 72px 120px 72px;
+  min-width: 0;
+}
+header.cover {
+  border-bottom: 2px solid var(--fg);
+  padding-bottom: 32px;
+  margin-bottom: 48px;
+}
+header.cover h1 {
+  font-size: 42px;
+  line-height: 1.15;
+  margin: 0 0 12px 0;
+  font-weight: 700;
+}
+header.cover .subtitle {
+  font-size: 20px;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 20px;
+}
+header.cover .meta {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+h2 {
+  font-size: 26px;
+  margin-top: 72px;
+  margin-bottom: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+  scroll-margin-top: 20px;
+}
+h2 .num {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-weight: 400;
+  margin-right: 10px;
+  font-size: 20px;
+}
+.pos {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: 0;
+  margin-bottom: 16px;
+  padding: 6px 12px;
+  background: var(--accent-soft);
+  border-left: 2px solid var(--accent);
+}
+h3 {
+  font-size: 18px;
+  margin-top: 28px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+h4 {
+  font-size: 15px;
+  margin-top: 18px;
+  margin-bottom: 4px;
+  font-weight: 600;
+  color: var(--accent);
+}
+p { margin: 0 0 14px 0; text-align: justify; }
+
+code {
+  font-family: var(--mono);
+  font-size: 14px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+pre {
+  background: var(--code-bg);
+  border-radius: 6px;
+  padding: 14px 18px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 16px 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+
+.callout {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  padding: 10px 16px;
+  margin: 16px 0;
+  font-size: 15px;
+}
+.callout .tag {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.formula {
+  font-family: var(--serif);
+  padding: 10px 18px;
+  background: #faf7f0;
+  border-left: 2px solid var(--muted);
+  margin: 12px 0;
+  font-size: 16px;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+  font-family: var(--sans);
+}
+th, td {
+  border-bottom: 1px solid var(--rule);
+  padding: 7px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+th { background: var(--sidebar-bg); font-weight: 600; }
+
+.part-header {
+  margin-top: 100px;
+  margin-bottom: 24px;
+  padding: 24px 28px;
+  background: linear-gradient(to right, var(--accent-soft), transparent);
+  border-left: 4px solid var(--accent);
+}
+.part-header .part-label {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+}
+.part-header h2.part-title {
+  font-size: 32px;
+  margin: 4px 0 8px 0;
+  padding: 0;
+  border: none;
+}
+.part-header .part-desc {
+  font-size: 15px;
+  color: var(--muted);
+  font-style: italic;
+  margin: 0;
+}
+
+.mermaid {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.footnote {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+@media (max-width: 1100px) {
+  aside.toc { display: none; }
+  main { padding: 40px 32px; }
+}
+</style>
+</head>
+<body>
+
+<aside class="toc">
+  <h1>数学基础</h1>
+  <div class="sub">Chapter 1 · 面向 AI 工程师</div>
+
+  <div class="group">1.1 微积分</div>
+  <ol>
+    <li><a href="#s1-1-1"><span class="num">1</span>多元微积分梗概</a></li>
+    <li><a href="#s1-1-2"><span class="num">2</span>函数分析技术</a></li>
+    <li><a href="#s1-1-3"><span class="num">3</span>函数逼近技术</a></li>
+    <li><a href="#s1-1-4"><span class="num">4</span>函数极值计算</a></li>
+    <li><a href="#s1-1-5"><span class="num">5</span>实推广: 可逆性</a></li>
+    <li><a href="#s1-1-6"><span class="num">6</span>黎曼推广: 流形优化</a></li>
+  </ol>
+
+  <div class="group">1.2 线性代数</div>
+  <ol>
+    <li><a href="#s1-2-1"><span class="num">1</span>线性空间与矩阵</a></li>
+    <li><a href="#s1-2-2"><span class="num">2</span>线性变换与矩阵运算</a></li>
+    <li><a href="#s1-2-3"><span class="num">3</span>解空间、逆与广义逆</a></li>
+    <li><a href="#s1-2-4"><span class="num">4</span>特征分解与对角化</a></li>
+    <li><a href="#s1-2-5"><span class="num">5</span>奇异值分解</a></li>
+    <li><a href="#s1-2-6"><span class="num">6</span>内积空间与距离</a></li>
+  </ol>
+
+  <div class="group">1.3 概率</div>
+  <ol>
+    <li><a href="#s1-3-1"><span class="num">1</span>基础概率 (POTC)</a></li>
+    <li><a href="#s1-3-2"><span class="num">2</span>常见分布与基本定理</a></li>
+  </ol>
+
+  <div class="group">1.4 统计</div>
+  <ol>
+    <li><a href="#s1-4-1"><span class="num">1</span>参数估计</a></li>
+    <li><a href="#s1-4-2"><span class="num">2</span>假设检验</a></li>
+  </ol>
+
+  <div class="group">1.5 随机过程</div>
+  <ol>
+    <li><a href="#s1-5-1"><span class="num">1</span>基础随机过程</a></li>
+    <li><a href="#s1-5-2"><span class="num">2</span>Tree of Thoughts 建模</a></li>
+  </ol>
+
+  <div class="group">1.6 信息论</div>
+  <ol>
+    <li><a href="#s1-6-1"><span class="num">1</span>核心问题</a></li>
+    <li><a href="#s1-6-2"><span class="num">2</span>信息的度量</a></li>
+    <li><a href="#s1-6-3"><span class="num">3</span>信息的压缩</a></li>
+    <li><a href="#s1-6-4"><span class="num">4</span>信息的传输</a></li>
+    <li><a href="#s1-6-5"><span class="num">5</span>边界与安全</a></li>
+    <li><a href="#s1-6-6"><span class="num">6</span>未来展望</a></li>
+  </ol>
+
+  <div class="group">1.7 数值计算</div>
+  <ol>
+    <li><a href="#s1-7-1"><span class="num">1</span>误差分析</a></li>
+    <li><a href="#s1-7-2"><span class="num">2</span>经典数值分析</a></li>
+    <li><a href="#s1-7-3"><span class="num">3</span>插值与拟合</a></li>
+    <li><a href="#s1-7-4"><span class="num">4</span>ML 优化算法</a></li>
+    <li><a href="#s1-7-5"><span class="num">5</span>积分微分与求根</a></li>
+  </ol>
+</aside>
+
+<main>
+
+<header class="cover">
+  <h1>数学基础</h1>
+  <div class="subtitle">面向 AI 工程师的复习手册 —— 概念直觉、最小推导、工程落地</div>
+  <div class="meta">Chapter 1 · 内部学习材料 · 共 29 节</div>
+</header>
+
+<p>这章的目标不是培养数学家。读者假设已经学过一遍本科数学但大多忘了，日常工作会读到 AI 论文或调用某个库的 API，希望看到公式不打怵、遇到报错能判断数值原因、设计算法时能从理论里找到线索。</p>
+
+<p>这套要求决定了写作的三条原则。第一，<strong>每个公式都先讲它要解决什么问题</strong>，再给形式，最后连到 AI 里的一个具体应用场景——不做纯符号推演。第二，<strong>篇幅不对称</strong>。梯度下降、特征分解、大数定律、信息熵、浮点误差这些和 AI 几乎每天打交道的概念会挖得深；流形优化、排队论、通信编码理论这些远一点的点到为止。第三，<strong>代码作为第二种语言</strong>。公式不易懂时，一段能跑的 Python 往往胜过一页证明。</p>
+
+<p>另外提一句：这章涉及的数学分支在 AI 里不是并列的。重要性粗略排序是 <em>数值计算 ≈ 线代 &gt; 微积分 &gt; 概率统计 &gt; 信息论 &gt; 随机过程</em>。不是说低的不重要，而是说你想先花时间的话，先去啃数值稳定性和矩阵分解，收益最高。</p>
+
+<!-- ==================== 1.1 微积分 ==================== -->
+<div class="part-header">
+  <div class="part-label">PART ONE</div>
+  <h2 class="part-title">1.1 微积分</h2>
+  <p class="part-desc">函数、微分、积分——AI 里所有"优化"的数学根基都在这里。</p>
+</div>
+
+<!-- 1.1.1 -->
+<h2 id="s1-1-1"><span class="num">1.1.1</span>多元微积分梗概</h2>
+<p class="pos">定位：从一元复习到多元，把梯度、雅可比、海森这三个核心对象讲清楚。</p>
+
+<h3>一元的快速复习</h3>
+
+<p>函数 $f: \mathbb{R} \to \mathbb{R}$ 在点 $x_0$ 的导数，定义上是斜率极限：</p>
+<div class="formula">$f'(x_0) = \lim_{h \to 0} \frac{f(x_0 + h) - f(x_0)}{h}$</div>
+<p>直觉：把 $f$ 放大到足够小的邻域，它看起来就是条直线，这条直线的斜率就是导数。这个"局部看是直线"的观念在多元情形会推广成"局部看是超平面"。积分是导数的逆——给定斜率分布，反求原函数的值差。微积分基本定理把两者拧在一起：$\int_a^b f'(x)\,dx = f(b) - f(a)$。</p>
+
+<h3>多元：从标量场到向量场</h3>
+
+<p>换成 $f: \mathbb{R}^n \to \mathbb{R}$，输入是 $n$ 维向量，输出还是一个数。每个维度上可以分别求导，得到 <strong>偏导数</strong> $\frac{\partial f}{\partial x_i}$。把所有偏导数拼成一个向量就是<strong>梯度</strong>：</p>
+<div class="formula">$\nabla f(\mathbf{x}) = \left(\frac{\partial f}{\partial x_1}, \frac{\partial f}{\partial x_2}, \ldots, \frac{\partial f}{\partial x_n}\right)^\top$</div>
+<p>梯度有一个最关键的几何意义：<strong>它指向 $f$ 增长最快的方向，模长等于那个方向上的增长率</strong>。负梯度是下降最快的方向——这就是梯度下降的全部理由。</p>
+
+<p>再进一步，$f: \mathbb{R}^n \to \mathbb{R}^m$（输入 $n$ 维，输出 $m$ 维）的导数是一个 $m \times n$ 的矩阵，叫<strong>雅可比矩阵</strong> $\mathbf{J}$，第 $(i,j)$ 位置是 $\frac{\partial f_i}{\partial x_j}$。神经网络的反向传播本质上就是在做雅可比矩阵的链式乘积。</p>
+
+<p>$f$ 的二阶偏导拼成的 $n \times n$ 矩阵叫<strong>海森矩阵</strong> $\mathbf{H}$，第 $(i,j)$ 位置是 $\frac{\partial^2 f}{\partial x_i \partial x_j}$。海森描述函数的局部曲率：正定表示这是个碗底（局部极小），负定表示这是个山顶（局部极大），不定表示鞍点。</p>
+
+<h3>在 AI 里</h3>
+<p>神经网络训练的损失函数 $L(\boldsymbol{\theta})$ 是从百万维参数空间到一个标量的函数。我们要的是 $\nabla_\boldsymbol{\theta} L$，也就是一个百万维向量，指向 loss 增大最快的方向。每走一步 $\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \eta \nabla L$ 就是梯度下降。海森矩阵太大（$10^6 \times 10^6$ 存不下），所以 Adam 之类优化器<em>近似</em>用梯度的二阶矩来模拟海森信息——这是二阶优化与一阶优化的分界线。</p>
+
+<!-- 1.1.2 -->
+<h2 id="s1-1-2"><span class="num">1.1.2</span>函数分析技术</h2>
+<p class="pos">定位：一组反复出现的算子——凹凸、梯度、散度、旋度、矩、卷积。重点讲凹凸和卷积。</p>
+
+<h3>凹凸性</h3>
+
+<p>函数 $f$ 在区间上是<strong>凸函数</strong>，如果对任意 $x_1, x_2$ 和 $t \in [0,1]$：</p>
+<div class="formula">$f(t x_1 + (1-t) x_2) \le t f(x_1) + (1-t) f(x_2)$</div>
+<p>几何含义：两点连线不会落到函数图像下方。凸函数最大的好处是<strong>局部极小就是全局极小</strong>——这对优化算法来说是天堂。线性回归的平方损失、Logistic 回归的交叉熵损失都是凸的，所以这些经典算法能保证收敛到全局最优。</p>
+
+<p>神经网络不是。几百万参数堆起来的 loss surface 高度非凸，充满局部极小和鞍点。现代优化理论的一个重要发现：<em>高维非凸问题里，真正让算法卡住的不是局部极小，而是鞍点</em>，因为随机初始化逃出鞍点是大概率事件。这改变了人们对"非凸难优化"的刻板印象。</p>
+
+<h3>梯度、散度、旋度</h3>
+
+<p>梯度前面讲了。散度 $\nabla \cdot \mathbf{F}$ 作用在向量场上，输出标量，衡量"向外流出的净量"；旋度 $\nabla \times \mathbf{F}$ 也作用在向量场上，输出向量，衡量"局部旋转量"。这两个在 AI 日常中用得很少，一般只在涉及连续归一化流（CNF）、扩散模型的 Fokker-Planck 方程等场合出现，感受一下即可。</p>
+
+<h3>矩</h3>
+
+<p>概率密度 $p(x)$ 的 $k$ 阶矩是 $\mathbb{E}[X^k] = \int x^k p(x)\,dx$。一阶矩是均值，二阶中心矩是方差。<a href="ch5_partA_preview.html#p04">Adam 优化器</a>的 "m" 和 "v" 就分别是梯度的一阶矩估计和二阶矩估计——名字直接来自统计学。</p>
+
+<h3>卷积</h3>
+
+<p>这个要重点讲，CNN、信号处理、概率分布卷积公式都要用。连续情形：</p>
+<div class="formula">$(f * g)(t) = \int_{-\infty}^{+\infty} f(\tau) g(t - \tau)\,d\tau$</div>
+<p>离散情形：$(f * g)[n] = \sum_m f[m] g[n-m]$。</p>
+
+<p>直觉是"把 $g$ 翻转再平移，在每个位置上和 $f$ 做加权求和"。CNN 里的"卷积"严格说是<em>互相关</em>（不翻转），但工程上沿用了 convolution 这个词。卷积有两个神奇性质撑起了它在 AI 中的地位：</p>
+
+<p><strong>性质一：卷积定理</strong>。傅里叶变换下 $\mathcal{F}(f * g) = \mathcal{F}(f) \cdot \mathcal{F}(g)$——空域卷积等于频域点乘。这是 FFT 加速卷积的理论基础，也是为什么用频域分析信号这么自然。</p>
+
+<p><strong>性质二：平移等变性</strong>。把输入平移一段，输出也平移同样的量。CNN 能识别图像里各个位置的猫，就是靠这个性质。</p>
+
+<pre><code class="language-python">import numpy as np
+
+def conv1d(x, k):
+    """最朴素的 1D 卷积(互相关), 不做 padding"""
+    n, m = len(x), len(k)
+    y = np.zeros(n - m + 1)
+    for i in range(n - m + 1):
+        y[i] = np.sum(x[i:i+m] * k)
+    return y
+
+x = np.array([1, 2, 3, 4, 5], dtype=float)
+k = np.array([1, 0, -1], dtype=float)   # 边缘检测核
+print(conv1d(x, k))   # [-2, -2, -2]
+</code></pre>
+
+<p>这个核 <code>[1, 0, -1]</code> 是一阶差分，输出的每个值就是输入"左边减右边"——它检测信号的跳变。把这个观察从 1D 推广到 2D，就是 Sobel 边缘检测；再把"核的权重"从人工设计改成学出来，就是 CNN。</p>
+
+<!-- 1.1.3 -->
+<h2 id="s1-1-3"><span class="num">1.1.3</span>函数逼近技术</h2>
+<p class="pos">定位：泰勒展开、三角级数、样条——用简单函数近似复杂函数的三种基本武器。</p>
+
+<h3>泰勒展开</h3>
+
+<p>任何足够光滑的函数 $f$ 在 $x_0$ 附近可以展开为：</p>
+<div class="formula">$f(x) = f(x_0) + f'(x_0)(x - x_0) + \frac{f''(x_0)}{2!}(x-x_0)^2 + \ldots + \frac{f^{(n)}(x_0)}{n!}(x-x_0)^n + R_n$</div>
+<p>直觉：用一个 $n$ 次多项式在局部模仿 $f$。阶数越高越像，但只在 $x_0$ 附近有效，远了会发散。</p>
+
+<p>AI 里的两个典型用法。第一，<strong>推导优化算法的收敛性</strong>。把 loss 在当前点二阶展开：$L(\boldsymbol{\theta} + \Delta) \approx L(\boldsymbol{\theta}) + \nabla L^\top \Delta + \frac{1}{2}\Delta^\top \mathbf{H} \Delta$，然后对 $\Delta$ 求极小，得到 $\Delta = -\mathbf{H}^{-1} \nabla L$——这就是牛顿法。一阶展开对应梯度下降，二阶展开对应牛顿法，所有主流优化器都是这个公式的变形。</p>
+
+<p>第二，<strong>解释神经网络近似定理</strong>。"任何连续函数都能被足够宽的单隐层网络任意逼近"和泰勒展开同源——都是"用简单基函数线性组合拼出复杂函数"的不同实现。</p>
+
+<h3>三角级数（傅里叶级数）</h3>
+
+<p>周期函数可以展开成正弦余弦的无穷和：</p>
+<div class="formula">$f(x) = \frac{a_0}{2} + \sum_{n=1}^\infty \left[a_n \cos(nx) + b_n \sin(nx)\right]$</div>
+<p>这和泰勒是两套截然不同的基——泰勒用多项式 $1, x, x^2, \ldots$，傅里叶用三角函数。两者的正交性都允许用"投影"求系数。</p>
+
+<p>在 AI 里，傅里叶变换是信号处理的基础，也出现在<strong>位置编码</strong>里——Transformer 原始论文的 sinusoidal positional encoding 就是用不同频率的正弦余弦给每个位置编码。RoPE 也在复数意义下用了三角函数的旋转表示。</p>
+
+<h3>样条逼近</h3>
+
+<p>样条是分段多项式，段与段之间要求光滑拼接（各阶导数连续）。三次样条 (cubic spline) 在每段是三次多项式、两阶导连续，是工程上最常用的插值工具。和泰勒/傅里叶的区别：泰勒在单点附近精确、远处发散；样条用分段保证全局光滑，每段都简单。</p>
+
+<p>在深度学习里样条不算主流，但近两年<strong>Kolmogorov-Arnold Networks (KAN)</strong> 把神经网络里的激活函数换成可学习的 B-spline，提供了一种替代 MLP 的思路。虽然目前规模化还有挑战，但这是一个样条和神经网络结合的信号。</p>
+
+<!-- 1.1.4 -->
+<h2 id="s1-1-4"><span class="num">1.1.4</span>函数极值计算：从梯度下降到反向传播</h2>
+<p class="pos">定位：全章最关键的一节——神经网络训练的数学骨架。</p>
+
+<h3>从一维梯度下降开始</h3>
+
+<p>要找 $f(x)$ 的极小值，算法是：</p>
+<div class="formula">$x_{k+1} = x_k - \eta f'(x_k)$</div>
+<p>$\eta$ 是学习率。直觉非常直接：导数告诉我们哪边上坡，减去它就是往下坡走。推广到多维：</p>
+<div class="formula">$\boldsymbol{\theta}_{k+1} = \boldsymbol{\theta}_k - \eta \nabla L(\boldsymbol{\theta}_k)$</div>
+<p>到此还看不出 AI 的特别之处——真正的挑战是：$\boldsymbol{\theta}$ 有上亿维，$\nabla L$ 怎么算？</p>
+
+<h3>链式法则是反向传播的全部</h3>
+
+<p>链式法则：$\frac{d}{dx} f(g(x)) = f'(g(x)) \cdot g'(x)$。这是高中数学。但神经网络的输出是一串嵌套函数 $y = f_L(f_{L-1}(\ldots f_1(x)))$，对某个中间参数 $w_i$ 求偏导，就是一串链式法则连乘。关键的工程观察是：<strong>这串连乘里，很多中间量是共享的</strong>，如果每个参数都独立算一遍完整链式，总工作量是 $O(L \cdot N)$（$N$ 是参数数）；如果按"从输出反向往输入方向算"的顺序一口气算完，总工作量是 $O(L + N)$。这个数量级差距就是反向传播存在的理由。</p>
+
+<h3>一个两层网络的反向传播</h3>
+
+<p>考虑最简单的网络：</p>
+<div class="formula">$\mathbf{z} = \mathbf{W}_1 \mathbf{x}, \quad \mathbf{a} = \sigma(\mathbf{z}), \quad \hat{y} = \mathbf{w}_2^\top \mathbf{a}, \quad L = \frac{1}{2}(\hat{y} - y)^2$</div>
+<p>求 $L$ 对 $\mathbf{W}_1$ 的梯度。按链式法则从外往里剥：</p>
+<div class="formula">$\frac{\partial L}{\partial \hat{y}} = \hat{y} - y$</div>
+<div class="formula">$\frac{\partial L}{\partial \mathbf{a}} = (\hat{y} - y) \cdot \mathbf{w}_2$</div>
+<div class="formula">$\frac{\partial L}{\partial \mathbf{z}} = \frac{\partial L}{\partial \mathbf{a}} \odot \sigma'(\mathbf{z})$</div>
+<div class="formula">$\frac{\partial L}{\partial \mathbf{W}_1} = \frac{\partial L}{\partial \mathbf{z}} \mathbf{x}^\top$</div>
+
+<p>关键看最后几步：每层的"输入端梯度"等于"输出端梯度 × 本层雅可比"。所以算法是：<em>先前向跑一遍存所有中间量；再从最后一层的损失开始，一层一层往前传梯度，每层只做一次矩阵乘</em>。</p>
+
+<pre><code class="language-python">import numpy as np
+
+def sigmoid(z): return 1 / (1 + np.exp(-z))
+def sigmoid_prime(z):
+    s = sigmoid(z); return s * (1 - s)
+
+# 一个两层网络的 forward + backward
+np.random.seed(0)
+x = np.array([[0.5], [0.2]])        # 输入
+y = np.array([[1.0]])               # 目标
+W1 = np.random.randn(3, 2) * 0.1    # 隐层
+w2 = np.random.randn(1, 3) * 0.1    # 输出层
+
+# Forward
+z  = W1 @ x
+a  = sigmoid(z)
+y_hat = w2 @ a
+L  = 0.5 * (y_hat - y) ** 2
+
+# Backward
+dL_dyhat = y_hat - y                   # 标量梯度
+dL_dw2   = dL_dyhat @ a.T              # [1,3]
+dL_da    = w2.T @ dL_dyhat             # [3,1]
+dL_dz    = dL_da * sigmoid_prime(z)    # 逐元素
+dL_dW1   = dL_dz @ x.T                 # [3,2]
+
+print("loss =", L.item())
+print("dL/dW1 =\n", dL_dW1)
+</code></pre>
+
+<p>这段 20 行代码就是现代深度学习框架（PyTorch、TF）自动微分引擎的概念核心。框架做的事情是把这些手写的链式步骤自动生成：每个算子注册一个前向函数和对应的反向函数（jacobian-vector product），运行时构建计算图、反向遍历。</p>
+
+<h3>为什么深层网络难训</h3>
+
+<p>看 $\sigma'(z)$ 这项。Sigmoid 的导数最大值是 $0.25$，乘 $L$ 次就是 $0.25^L$——层数一多梯度指数衰减，前几层学不动，这就是经典的<strong>梯度消失</strong>。ReLU 在正半轴导数是 1，才解决了这个问题。理解梯度消失的方法，就是盯着这串链式乘积看每一项到底是啥。</p>
+
+<!-- 1.1.5 -->
+<h2 id="s1-1-5"><span class="num">1.1.5</span>实推广：LLM 的可逆性问题</h2>
+<p class="pos">定位：一个开放性的理论问题——给定 LLM 的输出分布，能否反推输入？点到为止。</p>
+
+<p>实分析的核心对象之一是"测度"——比长度/面积/体积更抽象的"量"。对 AI 而言，一个具体的应用场景是<strong>生成模型的可逆性</strong>：normalizing flow 要求每一层变换都是双射且雅可比行列式可计算，这样才能精确算 likelihood。扩散模型的 score matching 则放弃了严格可逆，换成学习分数函数 $\nabla_\mathbf{x} \log p(\mathbf{x})$。</p>
+
+<p>LLM 作为自回归生成模型，"可逆"在另一个层面被提出：<em>给定一段输出，能否唯一还原出 prompt？</em>答案是否定的——采样过程注入了随机性，且许多 prompt 都能产生同一段输出。但理论上研究"近似可逆"有现实意义，比如判断某段文本是否由特定模型生成（水印检测）、反推训练数据泄露等。这是一个活跃但未成熟的研究方向，工程上还没成熟工具可用。了解到"这个问题存在"即可。</p>
+
+<!-- 1.1.6 -->
+<h2 id="s1-1-6"><span class="num">1.1.6</span>黎曼推广：流形优化</h2>
+<p class="pos">定位：当参数空间不是平直欧氏空间、而是一个曲面（流形）时怎么优化。简短介绍。</p>
+
+<p>标准梯度下降假设参数活在平直的 $\mathbb{R}^n$ 里。但有些问题里参数天生有几何约束：正交矩阵（$\mathbf{Q}^\top \mathbf{Q} = \mathbf{I}$）、正定矩阵、单位范数向量、低秩矩阵。这些对象构成的集合不是平直的 $\mathbb{R}^n$，而是<strong>流形</strong>——局部像欧氏空间、全局弯曲的结构。</p>
+
+<p>在流形上做梯度下降要两步改造。第一步，梯度要投影到当前点的<strong>切空间</strong>（走直线会跑出流形），这叫 Riemannian gradient。第二步，沿切向量走一步后要 <strong>retraction</strong> 把结果拉回流形上（比如把矩阵重新正交化）。整个框架在 PyTorch 里有 <code>geoopt</code> 这样的库实现。</p>
+
+<p>AI 里的具体应用：Transformer 的正交权重初始化、某些 LoRA 变种在单位球面上优化、训练扩散模型时对协方差矩阵的约束。这块不是主流工程师日常会碰的内容，留个印象——"遇到带硬约束的参数，可能需要流形优化"——就够了。</p>
+
+<!-- ==================== 1.2 线性代数 ==================== -->
+<div class="part-header">
+  <div class="part-label">PART TWO</div>
+  <h2 class="part-title">1.2 线性代数</h2>
+  <p class="part-desc">深度学习就是矩阵乘法的无数次嵌套——不过关的是整个领域。</p>
+</div>
+
+<!-- 1.1.0 -->
+<h2 id="s1-2-1"><span class="num">1.2.1</span>线性空间与矩阵</h2>
+<p class="pos">定位：向量、矩阵、张量的定义和公理，把"维度"这个词讲清楚。</p>
+
+<h3>向量、矩阵、张量</h3>
+
+<p>向量 $\mathbf{v} \in \mathbb{R}^n$ 就是 $n$ 个实数的有序排列。关键是它能做两件事：相加 $\mathbf{u} + \mathbf{v}$ 和数乘 $\alpha \mathbf{v}$，并且这两种运算满足 8 条公理（结合律、分配律等）。满足这些公理的集合就叫<strong>线性空间</strong>（向量空间）。$\mathbb{R}^n$ 是最基础的线性空间，但抽象起来可以是连续函数空间、概率分布空间等——这就是"线性"思想的威力。</p>
+
+<p>矩阵 $\mathbf{A} \in \mathbb{R}^{m \times n}$ 是 $m \times n$ 个实数按二维排列。张量是更高维的推广：三维张量可以理解成一摞矩阵、四维张量是一摞三维张量。深度学习里"张量"的用法比数学里的严格定义要松——PyTorch 里任何多维数组都叫 tensor。</p>
+
+<h3>维度与秩</h3>
+
+<p>一组向量 $\{\mathbf{v}_1, \ldots, \mathbf{v}_k\}$ 叫<strong>线性无关</strong>，如果 $\sum \alpha_i \mathbf{v}_i = \mathbf{0}$ 只有 $\alpha_i = 0$ 这一解。一个线性空间的<strong>维度</strong>是能找到的最大线性无关组的大小。</p>
+
+<p>矩阵 $\mathbf{A}$ 的<strong>秩</strong> $\text{rank}(\mathbf{A})$ 是它的列（或行）向量组的最大线性无关数。$\text{rank}(\mathbf{A}) \le \min(m, n)$。秩充分反映了"信息冗余度"：秩低的矩阵能被低维表示压缩。这是后面 SVD 和 LoRA 的起点。</p>
+
+<h3>在 AI 里</h3>
+
+<p>神经网络的每一层权重是一个矩阵 $\mathbf{W} \in \mathbb{R}^{d_{\text{out}} \times d_{\text{in}}}$，输入向量 $\mathbf{x}$ 经过 $\mathbf{W}\mathbf{x}$ 变成输出向量。整个网络的语义可以理解为"在一系列线性空间之间做变换、中间夹着非线性激活"。LLM 的 embedding 把离散 token 映射到连续线性空间，之后所有操作都是线性空间内的几何变换——"语义相似的词在 embedding 空间里距离近"这个直觉，数学基础就在这里。</p>
+
+<!-- 1.1.1 -->
+<h2 id="s1-2-2"><span class="num">1.2.2</span>线性变换与矩阵运算</h2>
+<p class="pos">定位：矩阵不是一堆数——它是一种"线性变换"。把几何和代数连起来。</p>
+
+<h3>矩阵即变换</h3>
+
+<p>$\mathbf{A} \in \mathbb{R}^{m \times n}$ 可以看作一个函数：把 $\mathbb{R}^n$ 里的向量 $\mathbf{x}$ 送到 $\mathbb{R}^m$ 里的 $\mathbf{y} = \mathbf{A}\mathbf{x}$。这个函数有两条性质：$\mathbf{A}(\mathbf{x}+\mathbf{y}) = \mathbf{A}\mathbf{x} + \mathbf{A}\mathbf{y}$（可加）和 $\mathbf{A}(\alpha \mathbf{x}) = \alpha \mathbf{A}\mathbf{x}$（齐次），合起来叫<strong>线性变换</strong>。</p>
+
+<p>2D 的几个常见例子能帮助建立几何直觉：</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>旋转</strong>（$\theta$ 角）：$\begin{pmatrix}\cos\theta & -\sin\theta \\ \sin\theta & \cos\theta\end{pmatrix}$</li>
+<li><strong>缩放</strong>（$s_x, s_y$）：$\begin{pmatrix}s_x & 0 \\ 0 & s_y\end{pmatrix}$</li>
+<li><strong>剪切</strong>（水平 shear）：$\begin{pmatrix}1 & k \\ 0 & 1\end{pmatrix}$</li>
+<li><strong>投影到 x 轴</strong>：$\begin{pmatrix}1 & 0 \\ 0 & 0\end{pmatrix}$</li>
+</ul>
+
+<p>关键观察：复杂变换 = 简单变换的复合 = 矩阵乘法。旋转再缩放 = 两个矩阵相乘。这就是矩阵乘法为什么重要——它是变换的"组合运算"。</p>
+
+<h3>矩阵乘法的三种理解</h3>
+
+<p>$\mathbf{C} = \mathbf{A}\mathbf{B}$ 有三种互补视角，工程里经常换着用。</p>
+
+<p><strong>视角一：内积</strong>。$C_{ij} = \sum_k A_{ik} B_{kj}$——第 $i$ 行点第 $j$ 列。课本定义。</p>
+
+<p><strong>视角二：列组合</strong>。把 $\mathbf{B}$ 的列看作向量，$\mathbf{A}\mathbf{B}$ 的每一列是 $\mathbf{A}$ 作用在 $\mathbf{B}$ 对应列上的结果。这让你理解"$\mathbf{A}$ 对 batch 数据 $\mathbf{B}$ 做变换"这类场景。</p>
+
+<p><strong>视角三：外积求和</strong>。$\mathbf{A}\mathbf{B} = \sum_k \mathbf{a}_k \mathbf{b}_k^\top$——$\mathbf{A}$ 的第 $k$ 列和 $\mathbf{B}$ 的第 $k$ 行外积再求和。这个视角在理解 SVD、LoRA 分解时非常关键。</p>
+
+<h3>在 AI 里</h3>
+
+<p>矩阵乘法是深度学习最昂贵的操作。Transformer 的 Q/K/V 投影、前馈层、attention 里的 $QK^\top$、$(QK^\top) V$——全是矩阵乘。这也是为什么 GPU 的 Tensor Core、NPU 的 Cube 单元都专门为矩阵乘优化——只要矩阵乘快，整个深度学习就快。BF16/FP8 低精度格式首先被用在矩阵乘上，就是因为它占整体算力的 90%+。</p>
+
+<!-- 1.1.2 -->
+<h2 id="s1-2-3"><span class="num">1.2.3</span>解的空间、逆与广义逆</h2>
+<p class="pos">定位：解 $\mathbf{A}\mathbf{x} = \mathbf{b}$ 的全部情况——有解、无解、无穷多解。最小二乘法的数学根据就在这里。</p>
+
+<h3>三种情况</h3>
+
+<p>线性方程组 $\mathbf{A}\mathbf{x} = \mathbf{b}$，$\mathbf{A} \in \mathbb{R}^{m \times n}$：</p>
+
+<table>
+<tr><th>情况</th><th>条件</th><th>结果</th></tr>
+<tr><td>方阵满秩 ($m = n, \text{rank} = n$)</td><td>$\det(\mathbf{A}) \ne 0$</td><td>唯一解 $\mathbf{x} = \mathbf{A}^{-1}\mathbf{b}$</td></tr>
+<tr><td>超定 ($m > n$)</td><td>通常无精确解</td><td>最小二乘解</td></tr>
+<tr><td>欠定 ($m < n$)</td><td>通常有无穷解</td><td>最小范数解</td></tr>
+</table>
+
+<h3>高斯消元</h3>
+
+<p>解方程组的经典算法：把 $[\mathbf{A} | \mathbf{b}]$ 做行变换化为阶梯形，再回代。时间复杂度 $O(n^3)$。工程上直接写矩阵求逆几乎不用——用 LU 分解求解更稳、更快。</p>
+
+<h3>广义逆（Moore-Penrose 伪逆）</h3>
+
+<p>当 $\mathbf{A}$ 不是方阵、或是方阵但不可逆，传统 $\mathbf{A}^{-1}$ 不存在。<strong>伪逆</strong> $\mathbf{A}^+$ 是推广：</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- 若 $\mathbf{A}$ 列满秩（$m \ge n$，$\text{rank} = n$）：$\mathbf{A}^+ = (\mathbf{A}^\top \mathbf{A})^{-1} \mathbf{A}^\top$</li>
+<li>- 若 $\mathbf{A}$ 行满秩（$m \le n$，$\text{rank} = m$）：$\mathbf{A}^+ = \mathbf{A}^\top (\mathbf{A} \mathbf{A}^\top)^{-1}$</li>
+<li>- 一般情形：用 SVD 构造</li>
+</ul>
+
+<p>$\mathbf{x} = \mathbf{A}^+ \mathbf{b}$ 在超定情况下给出最小二乘解（残差范数最小），在欠定情况下给出最小范数解。这两件事合并成一个公式，干净得不像话。</p>
+
+<h3>在 AI 里</h3>
+
+<p><strong>线性回归</strong>：给定 $n$ 个样本 $(\mathbf{x}_i, y_i)$，拟合 $y = \mathbf{w}^\top \mathbf{x}$，写成矩阵形式 $\mathbf{X}\mathbf{w} = \mathbf{y}$（$\mathbf{X}$ 是 $n \times d$，$n > d$ 超定），最小二乘解就是 $\mathbf{w} = \mathbf{X}^+ \mathbf{y} = (\mathbf{X}^\top \mathbf{X})^{-1} \mathbf{X}^\top \mathbf{y}$——这就是机器学习最早的算法的数学形式。</p>
+
+<p><strong>实际计算不要直接求逆</strong>。$(\mathbf{X}^\top \mathbf{X})^{-1}$ 数值不稳定——当列之间高度相关时，$\mathbf{X}^\top \mathbf{X}$ 接近奇异。工程做法是直接对 $\mathbf{X}$ 做 QR 分解或 SVD，稳得多。这也是 <code>numpy.linalg.lstsq</code> 的实现方式。</p>
+
+<!-- 1.1.3 -->
+<h2 id="s1-2-4"><span class="num">1.2.4</span>特征分解与矩阵的对角化</h2>
+<p class="pos">定位：找出矩阵"本征"的变换方向——PCA、谱方法、图神经网络的数学根基。</p>
+
+<h3>特征值与特征向量</h3>
+
+<p>对方阵 $\mathbf{A}$，如果存在非零向量 $\mathbf{v}$ 和标量 $\lambda$ 使得：</p>
+<div class="formula">$\mathbf{A}\mathbf{v} = \lambda \mathbf{v}$</div>
+<p>就称 $\mathbf{v}$ 是<strong>特征向量</strong>，$\lambda$ 是对应的<strong>特征值</strong>。几何含义：$\mathbf{A}$ 作用在 $\mathbf{v}$ 上<em>只改变长度、不改变方向</em>（$\lambda < 0$ 时方向反转）。这是矩阵"本征"的方向——它作用下最简单的方向。</p>
+
+<h3>对角化</h3>
+
+<p>如果 $\mathbf{A}$ 有 $n$ 个线性无关的特征向量 $\mathbf{v}_1, \ldots, \mathbf{v}_n$，把它们作为列组成矩阵 $\mathbf{V}$，对应特征值组成对角矩阵 $\boldsymbol{\Lambda}$，则：</p>
+<div class="formula">$\mathbf{A} = \mathbf{V}\boldsymbol{\Lambda}\mathbf{V}^{-1}$</div>
+<p>这是<strong>特征分解</strong>。直觉：$\mathbf{A}$ 作用在任何向量上，等于"先把向量表示成特征向量的线性组合（$\mathbf{V}^{-1}$）、每个分量按对应特征值拉伸（$\boldsymbol{\Lambda}$）、再变回原坐标系（$\mathbf{V}$）"。</p>
+
+<p>对称矩阵是一类特殊情形：<em>对称矩阵一定可对角化，且特征向量相互正交</em>——即 $\mathbf{A} = \mathbf{Q}\boldsymbol{\Lambda}\mathbf{Q}^\top$，其中 $\mathbf{Q}^\top\mathbf{Q} = \mathbf{I}$。这叫<strong>谱定理</strong>，是数值稳定、几何直观的最佳情况。协方差矩阵、拉普拉斯矩阵、Hessian 都是对称矩阵，所以谱定理在 AI 里反复出现。</p>
+
+<h3>PCA：特征分解的经典应用</h3>
+
+<p>主成分分析的目标：把高维数据 $\mathbf{X} \in \mathbb{R}^{n \times d}$ 降维到 $k$ 维（$k \ll d$），同时尽可能保留方差。</p>
+
+<p>步骤：中心化数据 → 算协方差矩阵 $\mathbf{C} = \frac{1}{n}\mathbf{X}^\top \mathbf{X}$（$\mathbf{C}$ 对称）→ 对 $\mathbf{C}$ 做特征分解 → 取前 $k$ 大特征值对应的特征向量作为新基。</p>
+
+<p>为什么这样就能保留最大方差？因为<em>数据在某方向上的方差 = 协方差矩阵在该方向上的二次型值 = 对应特征值</em>（当方向是特征向量时）。所以选最大的 $k$ 个特征值就是选方差最大的 $k$ 个方向。</p>
+
+<pre><code class="language-python">import numpy as np
+
+np.random.seed(0)
+X = np.random.randn(1000, 5)
+# 人工让第 1、2 维的方差远大于其它维
+X[:, 0] *= 5; X[:, 1] *= 3
+
+X_c = X - X.mean(axis=0)                    # 中心化
+C = X_c.T @ X_c / len(X)                    # 协方差
+eigvals, eigvecs = np.linalg.eigh(C)        # eigh 专门处理对称矩阵
+order = np.argsort(eigvals)[::-1]
+eigvals, eigvecs = eigvals[order], eigvecs[:, order]
+print("各主成分方差占比:", eigvals / eigvals.sum())
+
+# 取前 2 个主成分降到 2 维
+X_pca = X_c @ eigvecs[:, :2]
+print("降维后方差:", X_pca.var(axis=0))
+</code></pre>
+
+<h3>在 AI 里</h3>
+
+<p>PCA 虽然在深度学习时代让位给了可学习的降维（autoencoder, embedding），但谱分解的思想一直在。<strong>图神经网络的谱方法</strong>（GCN）把拉普拉斯矩阵对角化，在频谱域定义卷积；<strong>Hessian 分析</strong>的特征值告诉你损失曲面的曲率分布；<strong>矩阵低秩近似</strong>只取大特征值对应的成分，就是压缩模型权重的基础。</p>
+
+<!-- 1.1.4 -->
+<h2 id="s1-2-5"><span class="num">1.2.5</span>奇异值分解 (SVD)</h2>
+<p class="pos">定位：线性代数的皇冠——最通用的矩阵分解，直接对应 LoRA 的理论依据。</p>
+
+<h3>SVD 的形式</h3>
+
+<p>任意矩阵 $\mathbf{A} \in \mathbb{R}^{m \times n}$ 都可以分解为：</p>
+<div class="formula">$\mathbf{A} = \mathbf{U} \boldsymbol{\Sigma} \mathbf{V}^\top$</div>
+<p>其中 $\mathbf{U} \in \mathbb{R}^{m \times m}$、$\mathbf{V} \in \mathbb{R}^{n \times n}$ 都是正交矩阵，$\boldsymbol{\Sigma} \in \mathbb{R}^{m \times n}$ 是对角矩阵（非方阵时对角线之外全 0），对角元素 $\sigma_1 \ge \sigma_2 \ge \ldots \ge 0$ 是<strong>奇异值</strong>。</p>
+
+<p>和特征分解的关系：若 $\mathbf{A}$ 是对称正定的方阵，SVD 和特征分解重合，奇异值就是特征值。但 SVD 对<strong>任意矩阵</strong>（可以不是方阵、不可逆、不对称）都存在——这是它比特征分解通用的地方。</p>
+
+<h3>几何含义</h3>
+
+<p>把 $\mathbf{A}\mathbf{x}$ 拆成三步：<strong>$\mathbf{V}^\top$ 旋转坐标系 → $\boldsymbol{\Sigma}$ 沿各轴缩放 → $\mathbf{U}$ 再旋转到输出空间</strong>。所以任何线性变换都是"旋转 + 缩放 + 旋转"的组合。这个结论极其强大。</p>
+
+<h3>低秩近似</h3>
+
+<p>SVD 可以写成外积求和形式：</p>
+<div class="formula">$\mathbf{A} = \sum_{i=1}^r \sigma_i \mathbf{u}_i \mathbf{v}_i^\top$</div>
+<p>$r = \text{rank}(\mathbf{A})$。<strong>Eckart-Young 定理</strong>告诉我们：如果只保留最大的 $k$ 项（$k < r$），得到的 $\mathbf{A}_k = \sum_{i=1}^k \sigma_i \mathbf{u}_i \mathbf{v}_i^\top$ 是 $\mathbf{A}$ 在 Frobenius 范数或谱范数下<em>最优的秩 $k$ 近似</em>。没有其它秩 $k$ 矩阵比它更接近 $\mathbf{A}$。</p>
+
+<p>这是压缩、降维、去噪的统一数学基础。图像压缩、推荐系统的矩阵填充、模型权重压缩——全都依赖这条定理。</p>
+
+<h3>在 AI 里：LoRA</h3>
+
+<p>LoRA 的假设是：LLM 微调引起的权重变化 $\Delta \mathbf{W}$ 是<em>低秩</em>的。数学表达：$\Delta \mathbf{W} \approx \mathbf{B}\mathbf{A}$，其中 $\mathbf{A} \in \mathbb{R}^{r \times d}$、$\mathbf{B} \in \mathbb{R}^{d \times r}$，$r \ll d$。参数量从 $d^2$ 降到 $2rd$——7B 模型的 $d \approx 4096$、取 $r = 16$，压缩 128 倍。</p>
+
+<p>为什么能这样？经验观察：神经网络各层的"有效信息维度"远低于其参数维度，SVD 截断保留前 $r$ 项几乎不损失性能。这不是数学上严格证明的结论，而是实证规律，但 SVD 给了它理论语言。</p>
+
+<pre><code class="language-python">import numpy as np
+
+np.random.seed(0)
+# 模拟一个 512×512 权重矩阵, 其实它本质是 rank-10 + 噪声
+rank_true = 10
+U_true = np.random.randn(512, rank_true)
+V_true = np.random.randn(rank_true, 512)
+W = U_true @ V_true + 0.01 * np.random.randn(512, 512)
+
+U, S, Vt = np.linalg.svd(W, full_matrices=False)
+# 用不同 rank 重构, 看误差
+for r in [5, 10, 20, 50, 100]:
+    W_r = U[:, :r] @ np.diag(S[:r]) @ Vt[:r, :]
+    err = np.linalg.norm(W - W_r) / np.linalg.norm(W)
+    print(f"rank {r:3d}: 相对误差 {err:.4f}")
+</code></pre>
+
+<p>跑一下会发现 rank=10 附近误差陡降后趋平——验证了"低秩近似能高保真还原"。这就是你可以信任 LoRA 的数学凭据。</p>
+
+<!-- 1.1.5 -->
+<h2 id="s1-2-6"><span class="num">1.2.6</span>内积空间与距离度量</h2>
+<p class="pos">定位：在向量空间里定义"角度"和"距离"——embedding 检索的数学基础。</p>
+
+<h3>内积与范数</h3>
+
+<p>内积把两个向量映射到一个标量：$\langle \mathbf{u}, \mathbf{v} \rangle = \mathbf{u}^\top \mathbf{v} = \sum u_i v_i$。它满足对称性、线性、正定性三条公理。范数是从内积派生的：</p>
+<div class="formula">$\|\mathbf{v}\|_2 = \sqrt{\langle \mathbf{v}, \mathbf{v} \rangle}$</div>
+<p>这是<strong>L2 范数</strong>（欧几里得长度）。更一般的 Lp 范数：$\|\mathbf{v}\|_p = (\sum |v_i|^p)^{1/p}$，$p=1$ 是曼哈顿范数，$p=\infty$ 是最大值范数。</p>
+
+<h3>角度：余弦相似度</h3>
+
+<p>由 $\langle \mathbf{u}, \mathbf{v} \rangle = \|\mathbf{u}\| \|\mathbf{v}\| \cos\theta$，得到：</p>
+<div class="formula">$\cos\theta = \frac{\mathbf{u}^\top \mathbf{v}}{\|\mathbf{u}\| \|\mathbf{v}\|}$</div>
+<p>这就是<strong>余弦相似度</strong>。它只关心方向、不关心大小——两个向量指向同方向余弦值 1、垂直 0、反方向 $-1$。在 embedding 语义检索里这是最常用的相似度：<em>查询向量和文档向量的方向越接近，语义越相关，长度差异不重要</em>。</p>
+
+<h3>常见距离度量</h3>
+
+<table>
+<tr><th>距离</th><th>公式</th><th>适用</th></tr>
+<tr><td>欧氏距离 (L2)</td><td>$\sqrt{\sum (u_i - v_i)^2}$</td><td>位置、像素、物理量</td></tr>
+<tr><td>曼哈顿距离 (L1)</td><td>$\sum |u_i - v_i|$</td><td>对异常值更稳健</td></tr>
+<tr><td>余弦距离</td><td>$1 - \cos\theta$</td><td>embedding 语义匹配</td></tr>
+<tr><td>汉明距离</td><td>不同位数</td><td>二值向量、哈希</td></tr>
+<tr><td>KL 散度</td><td>$\sum p_i \log(p_i / q_i)$</td><td>概率分布之间</td></tr>
+</table>
+
+<p>KL 散度严格说不是距离（不对称），但在 AI 里用得极多——蒸馏、变分推断、RLHF 都依赖 KL 约束两个分布不要离得太远。</p>
+
+<h3>在 AI 里</h3>
+
+<p><strong>KNN、KMeans</strong>：基于欧氏距离找最近邻。<strong>向量数据库</strong>（如 FAISS、Milvus）：以余弦/内积近似最近邻（ANN）为核心。<strong>对比学习</strong>（CLIP、SimCLR）：最大化正样本对的余弦相似度、最小化负样本对的。<strong>RAG 检索</strong>：把 query 和文档都 embedding 化，按余弦排序取 top-k。</p>
+
+<!-- ==================== 1.3 概率 ==================== -->
+<div class="part-header">
+  <div class="part-label">PART THREE</div>
+  <h2 class="part-title">1.3 概率</h2>
+  <p class="part-desc">不确定性的数学语言——贯穿机器学习从损失函数到采样推理。</p>
+</div>
+
+<!-- 1.3.1 -->
+<h2 id="s1-3-1"><span class="num">1.3.1</span>基础概率：POTC 与 Balls and Bins</h2>
+<p class="pos">定位：用"两选一负载均衡"这个具体问题，把概率建模的思路讲清楚。</p>
+
+<h3>概率的定义</h3>
+
+<p>样本空间 $\Omega$ 是所有可能结果的集合，事件是 $\Omega$ 的子集。概率 $P$ 是一个把事件映射到 $[0, 1]$ 的函数，满足 $P(\Omega) = 1$ 和可列可加性 $P(\cup_i A_i) = \sum_i P(A_i)$（$A_i$ 两两不交）。条件概率 $P(A|B) = P(A \cap B) / P(B)$，独立即 $P(A \cap B) = P(A) P(B)$。</p>
+
+<p>贝叶斯公式是最重要的推论：</p>
+<div class="formula">$P(A|B) = \frac{P(B|A) P(A)}{P(B)}$</div>
+
+<h3>随机变量</h3>
+
+<p>随机变量 $X$ 是从 $\Omega$ 到 $\mathbb{R}$ 的函数——把"结果"映射成数值。离散 RV 用概率质量函数 $p(x) = P(X=x)$ 描述；连续 RV 用概率密度函数 $f(x)$ 描述，$P(a \le X \le b) = \int_a^b f(x)\,dx$。期望 $\mathbb{E}[X] = \sum x p(x)$ 或 $\int x f(x) dx$，方差 $\text{Var}(X) = \mathbb{E}[(X - \mathbb{E}[X])^2]$。</p>
+
+<h3>Balls and Bins 模型</h3>
+
+<p>把 $n$ 个球随机扔进 $n$ 个桶，问：最满的桶里有多少球？这是<strong>负载均衡</strong>的数学抽象。</p>
+
+<p>每个球独立均匀选桶，每个桶接收球数近似 $\text{Poisson}(1)$。通过分析尾部概率可以证明：<em>最大负载以高概率约为 $\Theta(\log n / \log\log n)$</em>。$n = 1000$ 时最满的桶里大约 5 个球，不算太糟，但已经是平均值的 5 倍。</p>
+
+<h3>POTC：Power of Two Choices</h3>
+
+<p>改进策略：每个球独立随机选<em>两个</em>桶，放到其中较少的那一个里。这个看似微小的改动带来的效果是——<em>最大负载以高概率约为 $\Theta(\log\log n)$</em>——指数级下降。$n = 1000$ 时最满桶的球数从 5 降到 2。</p>
+
+<p>这是概率论里最令人印象深刻的结果之一："多看一个选项"带来指数级改进。直觉：让差桶拒绝球的概率更高，从而把分布推向更均匀。</p>
+
+<pre><code class="language-python">import numpy as np
+import random
+
+def simulate_balls_bins(n, strategy='random'):
+    bins = [0] * n
+    for _ in range(n):
+        if strategy == 'random':
+            bins[random.randrange(n)] += 1
+        elif strategy == 'potc':
+            i, j = random.randrange(n), random.randrange(n)
+            bins[i if bins[i] <= bins[j] else j] += 1
+    return max(bins)
+
+n = 10000
+print("随机扔  最大负载:", np.mean([simulate_balls_bins(n, 'random') for _ in range(50)]))
+print("POTC    最大负载:", np.mean([simulate_balls_bins(n, 'potc')   for _ in range(50)]))
+# 典型输出: 随机 ~6.5, POTC ~3.1
+</code></pre>
+
+<h3>在 AI 里</h3>
+
+<p>Balls and Bins 是分析<strong>hash 冲突</strong>、<strong>分布式训练的参数服务器负载</strong>、<strong>MoE 模型专家路由</strong>的基本工具。MoE 里一个常见现象是"路由坍缩"——大部分 token 都路由到少数几个专家，利用率低。这本质就是 balls-and-bins 里 ball 不独立的版本，需要加辅助 loss 强制均匀。</p>
+
+<!-- 1.3.2 -->
+<h2 id="s1-3-2"><span class="num">1.3.2</span>常见概率分布与基本定理</h2>
+<p class="pos">定位：离散/轻尾/重尾三大类分布 + 大数定律、中心极限——特征工程的直觉根基。</p>
+
+<h3>离散分布</h3>
+
+<table>
+<tr><th>分布</th><th>含义</th><th>PMF</th><th>均值/方差</th></tr>
+<tr><td>伯努利 Ber(p)</td><td>一次抛硬币</td><td>$P(X=1) = p$</td><td>$p, p(1-p)$</td></tr>
+<tr><td>二项 Bin(n, p)</td><td>n 次伯努利和</td><td>$\binom{n}{k} p^k (1-p)^{n-k}$</td><td>$np, np(1-p)$</td></tr>
+<tr><td>泊松 Poi(λ)</td><td>稀有事件计数</td><td>$\frac{\lambda^k e^{-\lambda}}{k!}$</td><td>$\lambda, \lambda$</td></tr>
+<tr><td>几何 Geo(p)</td><td>直到成功的次数</td><td>$(1-p)^{k-1} p$</td><td>$1/p, (1-p)/p^2$</td></tr>
+</table>
+
+<p>泊松是 $n \to \infty, p \to 0, np = \lambda$ 时二项的极限。它描述"大量独立稀有事件"——用户访问量、系统崩溃次数、基因突变。</p>
+
+<h3>轻尾分布</h3>
+
+<p><strong>正态分布</strong> $\mathcal{N}(\mu, \sigma^2)$ 是最核心的连续分布。密度：</p>
+<div class="formula">$f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)$</div>
+
+<p>标准正态 $\mathcal{N}(0,1)$ 的"68-95-99.7"规则：$\pm 1\sigma$ 含 68% 概率，$\pm 2\sigma$ 含 95%，$\pm 3\sigma$ 含 99.7%。</p>
+
+<p><strong>指数分布</strong> $\text{Exp}(\lambda)$：$f(x) = \lambda e^{-\lambda x}$，描述"事件间等待时间"。无记忆性：已等了 $s$ 时间再等 $t$ 时间的概率，和从头等 $t$ 时间一样。</p>
+
+<p><strong>对数正态</strong>：取对数之后是正态。适合描述大小变量（如文件大小、收入），总是正、右偏。</p>
+
+<h3>重尾分布</h3>
+
+<p>重尾的技术定义是"尾部比指数函数衰减更慢"。结果是<strong>极端值不再稀有</strong>。</p>
+
+<p><strong>Pareto 分布</strong>：$P(X > x) \propto x^{-\alpha}$。经典的"80/20 法则"。互联网流量、文件访问频率都是重尾的。</p>
+
+<p><strong>幂律</strong>：和 Pareto 等价的另一种表述，特征是在 log-log 坐标下是直线。</p>
+
+<p>重尾分布里<em>样本均值不是方差的好估计</em>——一个极端值能把均值拉得很远。处理重尾数据必须：取对数变换、用中位数代替均值、用分位数截断（winsorize）。</p>
+
+<h3>大数定律与中心极限定理</h3>
+
+<p><strong>大数定律</strong>：$n$ 个独立同分布样本的均值 $\bar{X}_n$ 以概率 1 收敛到真均值 $\mu$（在有限方差前提下）。这是所有基于"样本估计总体"的统计方法的根基——也是 SGD 能工作的理由（用小批量梯度估计全数据集梯度）。</p>
+
+<p><strong>中心极限定理</strong>：任何分布的 $n$ 个独立样本均值，当 $n \to \infty$，分布趋近于正态：</p>
+<div class="formula">$\sqrt{n}(\bar{X}_n - \mu) \xrightarrow{d} \mathcal{N}(0, \sigma^2)$</div>
+<p>这就是为什么正态分布无处不在——<em>"求和/平均"会抹平原始分布的形状</em>，只留下正态。但注意：CLT 要求<strong>有限方差</strong>。重尾分布（如 Pareto $\alpha \le 2$）不满足，不适用 CLT。</p>
+
+<h3>在 AI 里</h3>
+
+<p>特征工程里判断分布类型是基本功：轻尾的可以标准化、重尾的必须先 log。训练数据的 token 频率经典地遵循 Zipf（幂律），这直接影响 tokenizer 设计。MoE 专家负载天然重尾，所以必须用辅助 loss 强制均衡。</p>
+
+<!-- ==================== 1.4 统计 ==================== -->
+<div class="part-header">
+  <div class="part-label">PART FOUR</div>
+  <h2 class="part-title">1.4 统计</h2>
+  <p class="part-desc">从数据反推未知——模型训练的哲学内核。</p>
+</div>
+
+<!-- 1.4.1 -->
+<h2 id="s1-4-1"><span class="num">1.4.1</span>参数估计</h2>
+<p class="pos">定位：极大似然估计是交叉熵损失的数学身份。</p>
+
+<h3>问题设置</h3>
+
+<p>假设数据 $x_1, \ldots, x_n$ 独立采样自某个分布 $p(x; \theta)$，$\theta$ 未知。任务：从数据估计 $\theta$。估计有两种范式：频率派（$\theta$ 是未知常数，用数据估它）和贝叶斯派（$\theta$ 有先验分布，用数据更新）。深度学习主流是频率派。</p>
+
+<h3>极大似然估计 (MLE)</h3>
+
+<p>似然函数：在给定参数 $\theta$ 下观察到当前数据的概率：</p>
+<div class="formula">$L(\theta) = \prod_{i=1}^n p(x_i; \theta)$</div>
+<p>MLE 就是找使 $L(\theta)$ 最大的 $\theta$。工程上取对数（把连乘变连加，数值更稳）：</p>
+<div class="formula">$\hat{\theta}_{\text{MLE}} = \arg\max_\theta \sum_{i=1}^n \log p(x_i; \theta)$</div>
+
+<h3>MLE = 最小化交叉熵</h3>
+
+<p>这个等价关系是理解深度学习损失函数的关键。假设分类任务用模型 $p(y|x; \theta)$ 给每个样本输出类别分布。MLE 要最大化：</p>
+<div class="formula">$\sum_i \log p(y_i | x_i; \theta)$</div>
+<p>取负号就是最小化负对数似然。而<strong>交叉熵损失</strong> $\text{CE} = -\sum_c y_c \log \hat{y}_c$（one-hot 标签 $y$ 与预测分布 $\hat{y}$ 的交叉熵）在逐样本累加后正好就是负对数似然。</p>
+
+<p>所以：<em>分类任务用交叉熵损失 = 做极大似然估计</em>。这不是两件事，是一件事的两种说法。</p>
+
+<h3>MAP（最大后验）</h3>
+
+<p>给 $\theta$ 加先验 $p(\theta)$，求使后验 $p(\theta | \text{data}) \propto L(\theta) p(\theta)$ 最大的 $\theta$。取对数后：</p>
+<div class="formula">$\hat{\theta}_{\text{MAP}} = \arg\max_\theta \left[\log L(\theta) + \log p(\theta)\right]$</div>
+<p>如果先验 $p(\theta)$ 是高斯 $\mathcal{N}(0, \sigma^2)$，$\log p(\theta)$ 里会产生 $-\|\theta\|^2 / (2\sigma^2)$ 项——这就是<strong>L2 正则化</strong>。如果先验是拉普拉斯，对应 L1 正则。正则化的贝叶斯解释由此而来。</p>
+
+<h3>置信区间</h3>
+
+<p>点估计 $\hat{\theta}$ 是一个数，不告诉你它有多确定。置信区间 $[\hat{\theta} - c, \hat{\theta} + c]$ 表示"在重复抽样 100 次中，有 95% 的置信区间会包含真值"——注意是区间包含真值的概率，不是真值落在区间的概率（频率派里 $\theta$ 是常数，不谈"落在哪"的概率）。</p>
+
+<h3>在 AI 里</h3>
+
+<p>模型训练基本都是 MLE。评估模型性能时，光给一个准确率数字不够——要给 bootstrap 置信区间、多次重跑的标准差。"我们模型比 baseline 高 0.3%" 这句话如果没有置信区间，很可能只是采样噪声。</p>
+
+<!-- 1.4.2 -->
+<h2 id="s1-4-2"><span class="num">1.4.2</span>假设检验</h2>
+<p class="pos">定位：定量判断"两个模型有没有显著差异"——A/B 测试、消融实验的基础。</p>
+
+<h3>核心概念</h3>
+
+<p><strong>原假设 $H_0$</strong>：我们想反驳的默认立场（"新模型和旧模型没区别"）。<strong>备择假设 $H_1$</strong>：我们想证明的观点（"新模型更好"）。</p>
+
+<p><strong>检验统计量</strong>：从数据计算的一个数，它在 $H_0$ 下有已知分布。<strong>p 值</strong>：在 $H_0$ 下，观察到"当前统计量或更极端值"的概率。p 值小说明"如果 $H_0$ 真，当前数据不太可能出现"，因此拒绝 $H_0$。</p>
+
+<p>p 值阈值常用 0.05 或 0.01。这个阈值是历史习惯不是数学定律——近年很多领域因为"p 值滥用"推荐 0.005 甚至直接不用 p 值改用贝叶斯。</p>
+
+<h3>两类错误</h3>
+
+<table>
+<tr><th></th><th>真相 $H_0$ 为真</th><th>真相 $H_1$ 为真</th></tr>
+<tr><td>接受 $H_0$</td><td>正确</td><td>第二类错误 (漏报, β)</td></tr>
+<tr><td>拒绝 $H_0$</td><td>第一类错误 (误报, α)</td><td>正确 (功效 1-β)</td></tr>
+</table>
+
+<p>$\alpha$ 和 $\beta$ 不能同时减小——增大样本量才能同时压低两者。做实验前应该做<strong>power analysis</strong>：目标效应大小 + 期望 α、β → 需要多少样本量。很多 AI 实验样本太少，power 不够，差异再真实也检出不来。</p>
+
+<h3>t 检验</h3>
+
+<p>最常用的检验。比较两组样本均值是否有显著差异。假设两组都是正态，方差相等，统计量：</p>
+<div class="formula">$t = \frac{\bar{X}_1 - \bar{X}_2}{s_p \sqrt{1/n_1 + 1/n_2}}$</div>
+<p>$s_p$ 是合并标准差。$H_0$ 下 $t$ 服从 t 分布。</p>
+
+<h3>卡方检验</h3>
+
+<p>检验分类数据。给定一个 $k$ 类频次表，检验"观测频次 vs 理论频次"是否一致。统计量：</p>
+<div class="formula">$\chi^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}$</div>
+<p>用于数据分布检验、tokenizer 的语言覆盖测试、MoE 专家激活均匀性测试等。</p>
+
+<h3>在 AI 里</h3>
+
+<p>模型 A 在 benchmark 上 85.3%，模型 B 85.7%——这 0.4% 的差距是真的吗？两种处理思路：</p>
+<ol>
+<li><strong>每模型多跑几个随机种子</strong>，做 t 检验；</li>
+<li><strong>同一测试集上做配对检验</strong>（McNemar 检验），因为两模型在同一组样本上比较，是配对数据，比独立样本检验功效更高。</li>
+</ol>
+
+<p>论文报告里应有的最低标准：多 seed 的均值 ± 标准差，最好附上显著性检验的 p 值。</p>
+
+<!-- ==================== 1.5 随机过程 ==================== -->
+<div class="part-header">
+  <div class="part-label">PART FIVE</div>
+  <h2 class="part-title">1.5 随机过程</h2>
+  <p class="part-desc">随时间演化的随机性——LLM 推理本质就是一个马尔可夫决策过程。</p>
+</div>
+
+<!-- 1.5.1 -->
+<h2 id="s1-5-1"><span class="num">1.5.1</span>基础随机过程</h2>
+<p class="pos">定位：离散/连续随机过程、泊松过程、马尔可夫过程、平稳性——点到为止。</p>
+
+<h3>定义</h3>
+
+<p>随机过程 $\{X_t\}_{t \in T}$ 是随时间（或空间）索引的一族随机变量。$T$ 离散（如 $\{0, 1, 2, \ldots\}$）就是离散时间过程，$T$ 连续（如 $[0, \infty)$）就是连续时间过程。</p>
+
+<h3>泊松过程</h3>
+
+<p>计数"稀有事件发生次数"的随机过程。性质：</p>
+<ol>
+<li>$N(0) = 0$；</li>
+<li>不相交时间段内事件数独立；</li>
+<li>在时间段 $[s, s+t]$ 内事件数服从 $\text{Poisson}(\lambda t)$。</li>
+</ol>
+<p>事件间隔时间服从 $\text{Exp}(\lambda)$。这是排队论、服务器请求建模的基础。</p>
+
+<h3>马尔可夫过程</h3>
+
+<p>核心性质：<strong>给定现在，未来与过去独立</strong>——$P(X_{t+1} | X_t, X_{t-1}, \ldots) = P(X_{t+1} | X_t)$。离散时间马尔可夫链由转移矩阵 $\mathbf{P}$ 描述，$P_{ij} = P(X_{t+1}=j | X_t=i)$。</p>
+
+<p>关键问题：长时间之后分布长什么样？答案：如果链遍历且非周期，会收敛到<strong>稳态分布</strong> $\boldsymbol{\pi}$，满足 $\boldsymbol{\pi}^\top \mathbf{P} = \boldsymbol{\pi}^\top$。稳态是转移矩阵的左特征向量（特征值 1）——又是线性代数。</p>
+
+<h3>平稳性</h3>
+
+<p><strong>严平稳</strong>：所有有限维分布不随时间平移改变。过强，工程上少用。<strong>宽平稳</strong>：均值和协方差不随时间变——$\mathbb{E}[X_t] = \mu$ 对所有 $t$ 成立，$\text{Cov}(X_t, X_{t+h})$ 只依赖 $h$ 不依赖 $t$。很多时间序列方法（ARIMA）基于宽平稳假设。</p>
+
+<h3>在 AI 里</h3>
+
+<p><strong>LLM 自回归采样</strong>本质是马尔可夫过程：下一个 token 只依赖当前 hidden state（虽然通过 KV Cache 间接依赖所有历史，但每步的"状态"就是 KV）。<strong>强化学习</strong>的 MDP 就是带动作的马尔可夫过程。<strong>扩散模型</strong>的去噪过程是马尔可夫链。<strong>MCMC 采样</strong>构造特定稳态分布的马尔可夫链做推断。随机过程这个领域本身不必深学，但马尔可夫思想遍地都是。</p>
+
+<!-- 1.5.2 -->
+<h2 id="s1-5-2"><span class="num">1.5.2</span>Tree of Thoughts 的随机过程建模</h2>
+<p class="pos">定位：把 LLM 推理看作树状随机过程——一个具体的随机过程应用实例。</p>
+
+<h3>从 <a href="ch5_partB_preview.html#p16">Chain of Thought</a> 到 Tree of Thoughts</h3>
+
+<p>Chain of Thought (CoT)：让 LLM 在回答前"一步步想"，生成中间推理链。数学上是一个序列生成过程：每步依赖之前所有步（经 KV Cache），策略是单路径采样。</p>
+
+<p>Tree of Thoughts (ToT)：在每个推理节点上扩展多个分支，形成树状探索空间，再用某种策略（DFS、BFS、beam search）找到最好的叶子节点答案。</p>
+
+<h3>随机过程视角</h3>
+
+<p>把 ToT 建模为带评估的随机决策过程：</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>状态</strong>：当前已生成的推理前缀；</li>
+<li>- <strong>动作</strong>：LLM 生成的下一步推理；</li>
+<li>- <strong>转移</strong>：采样得到的下一状态（随机，因为 LLM 采样带温度）；</li>
+<li>- <strong>评估</strong>：用 LLM 自己或一个评价器给每个中间状态打分；</li>
+<li>- <strong>策略</strong>：如何选择下一步扩展（贪心 / 蒙特卡洛树搜索 / beam）。</li>
+</ul>
+
+<p>这和 AlphaGo 的 MCTS 完全类比——只是动作空间从棋位变成自然语言。随机性来自两层：LLM 采样本身的温度，以及树搜索策略里的探索随机化。</p>
+
+<h3>为什么这样建模有用</h3>
+
+<p>单路径 CoT 遇到错误会一路错下去——一旦某步推错，后续无法纠正。ToT 提供"后悔"能力：评分低的分支被剪掉，从更早节点重新展开。数学上这是以计算开销换可靠性——一次推理变成几十次但正确率提升。</p>
+
+<p>对应到随机过程理论，这是<strong>有选择的马尔可夫过程</strong>：我们不只是被动观察状态演化，而是在每步根据评估函数做决策。这也正是 RL 的基本设定。</p>
+
+<p class="footnote">ToT 在 Game of 24 任务上能把 GPT-4 的正确率从 4% 提到 74%（<em>Tree of Thoughts</em>, Yao et al. 2023）。代价是 token 消耗增加 5–100 倍。</p>
+
+<!-- ==================== 1.6 信息论 ==================== -->
+<div class="part-header">
+  <div class="part-label">PART SIX</div>
+  <h2 class="part-title">1.6 信息论</h2>
+  <p class="part-desc">Shannon 建立的"信息"的数学——从熵到互信息，交叉熵损失的家。</p>
+</div>
+
+<!-- 1.6.1 -->
+<h2 id="s1-6-1"><span class="num">1.6.1</span>信息论的核心问题</h2>
+<p class="pos">定位：信息论研究两个基本问题——数据能压缩到多小？信道能可靠传多快？</p>
+
+<p>Shannon 1948 年的论文定义了整个领域。他问了两个数学化的问题：</p>
+
+<p><strong>压缩</strong>：一个数据源的随机性有多大？能否用更少的比特无损表示它？答案：<em>不能少于熵 $H(X)$ 比特每符号</em>。这是数据压缩的信息论下界。</p>
+
+<p><strong>传输</strong>：一个噪声信道每单位时间能可靠传多少信息？答案：<em>不能超过信道容量 $C$</em>。在此之下，存在编码方案使错误率任意小；超过则一定有错误。</p>
+
+<p>这两个结果干净得不像话——都是尖锐的"可达不可超"极限。它们不告诉你怎么做（存在性证明），但告诉你"再优化也到此为止"。工程上信息论是一面镜子，任何现实压缩算法或通信系统都在和这个极限比较。</p>
+
+<!-- 1.6.2 -->
+<h2 id="s1-6-2"><span class="num">1.6.2</span>信息的度量</h2>
+<p class="pos">定位：熵、条件熵、互信息、KL 散度——深度学习损失函数的直接祖先。</p>
+
+<h3>熵</h3>
+
+<p>随机变量 $X$ 的熵：</p>
+<div class="formula">$H(X) = -\sum_x p(x) \log p(x)$</div>
+<p>对数底数决定单位：$\log_2$ 是比特，$\ln$ 是奈特。直觉两层：</p>
+<ol>
+<li><strong>不确定性</strong>：$X$ 的结果难以预测的程度。均匀分布熵最大，退化分布（某值概率 1）熵为 0。</li>
+<li><strong>最小编码长度</strong>：用最优前缀码编码 $X$，平均每个符号需要 $H(X)$ 比特。</li>
+</ol>
+
+<p>抛均匀硬币 $H = 1$ 比特；掷均匀骰子 $H = \log_2 6 \approx 2.58$ 比特——确实需要约 2.58 比特才能编码一个骰子结果。</p>
+
+<h3>交叉熵与 KL 散度</h3>
+
+<p>两个分布 $p, q$ 之间的<strong>交叉熵</strong>：</p>
+<div class="formula">$H(p, q) = -\sum_x p(x) \log q(x)$</div>
+<p>含义：用针对分布 $q$ 的最优编码，来编码实际来自分布 $p$ 的数据，平均每个符号需要的比特数。显然 $H(p,q) \ge H(p)$，多出来的部分就是<strong>KL 散度</strong>：</p>
+<div class="formula">$D_{\text{KL}}(p \parallel q) = H(p, q) - H(p) = \sum_x p(x) \log \frac{p(x)}{q(x)}$</div>
+
+<p>$D_{\text{KL}} \ge 0$，等号当且仅当 $p = q$。<strong>不对称</strong>：$D_{\text{KL}}(p \| q) \ne D_{\text{KL}}(q \| p)$——这不是数学瑕疵，反而有用："用 q 近似 p"和"用 p 近似 q"本来就是两件事，KL 的不对称忠实地反映了这个不对称。</p>
+
+<h3>互信息</h3>
+
+<p>两个随机变量共享的信息量：</p>
+<div class="formula">$I(X; Y) = D_{\text{KL}}(p(x,y) \parallel p(x)p(y)) = H(X) - H(X|Y)$</div>
+<p>两种等价形式。第一种：联合分布离"独立"有多远。第二种：知道 $Y$ 之后 $X$ 的不确定性减少了多少。$I(X;Y) = 0$ iff $X, Y$ 独立。</p>
+
+<h3>在 AI 里</h3>
+
+<p><strong>分类任务的交叉熵损失</strong>：one-hot 标签 $\mathbf{y}$、模型预测 $\hat{\mathbf{y}}$，损失就是 $H(\mathbf{y}, \hat{\mathbf{y}}) = -\sum_c y_c \log \hat{y}_c$。不是用个 L2 损失也行——为什么一定用交叉熵？因为它等价于 MLE，且在输出概率饱和（接近 0 或 1）时梯度不会消失，而 L2 会。</p>
+
+<p><strong>KL 散度作为约束</strong>：VAE 里强制隐变量分布接近标准正态，用的是 KL；RLHF 里用 KL 约束 RL 优化后的策略不要离 SFT 模型太远；蒸馏里用 KL 衡量学生和老师的分布距离。</p>
+
+<p><strong>互信息作为目标</strong>：自监督学习的许多方法（InfoNCE、CPC）在最大化数据不同视角之间的互信息——"两视角共享的语义"就是我们要学的。</p>
+
+<!-- 1.6.3 -->
+<h2 id="s1-6-3"><span class="num">1.6.3</span>信息的压缩：信源编码</h2>
+<p class="pos">定位：Huffman、算术编码——压缩算法的经典方案。简短。</p>
+
+<h3>信源编码定理</h3>
+
+<p>Shannon 第一定理：任何无损编码的平均码长 $\ge H(X)$，且存在码使其达到 $H(X) + 1$（整数比特限制）。</p>
+
+<h3>Huffman 编码</h3>
+
+<p>贪心算法：每次合并概率最小的两个符号，形成二叉树，左 0 右 1。结果：高频符号短码、低频符号长码。平均码长接近熵（差距 $< 1$ 比特每符号）。</p>
+
+<p>缺点：必须以整数比特编码每个符号。如果某符号概率 0.9，信息量只有 $-\log 0.9 \approx 0.15$ 比特，Huffman 仍要用 1 比特，浪费。</p>
+
+<h3>算术编码</h3>
+
+<p>把整条消息映射到 $[0,1)$ 的一个区间，用该区间内一个实数的二进制表示。理论上能达到熵极限，不受整数比特约束。现代压缩算法（AV1 视频、Brotli 压缩）多基于算术编码或其变种 ANS。</p>
+
+<h3>在 AI 里</h3>
+
+<p><strong>LLM 作为压缩器</strong>：DeepMind 和其它研究表明，大语言模型可以作为强力的通用压缩器——把文本喂给模型，用每步预测的条件概率做算术编码，压缩比超过 gzip。直觉：LLM 学到了更好的 $p(x_{t+1} | x_{1:t})$，模型越好预测越准、编码越短。这是信息论和 LLM 最精致的连接点之一：<em>压缩即理解</em>。</p>
+
+<!-- 1.6.4 -->
+<h2 id="s1-6-4"><span class="num">1.6.4</span>信息的传输：信道编码</h2>
+<p class="pos">定位：加冗余对抗噪声——通信领域的核心技术。AI 里应用较远，简短。</p>
+
+<p>Shannon 第二定理：噪声信道有容量 $C = \max_{p(x)} I(X; Y)$，在传输速率 $R < C$ 下存在编码方案使错误概率趋于 0。</p>
+
+<p>实现：加冗余比特。最简单的重复码 $(0 \to 000, 1 \to 111)$，通过多数判决解码。但效率低——传 1 比特用 3 比特。</p>
+
+<p>实用码：Reed-Solomon 码（CD/二维码）、卷积码 + Viterbi 解码、LDPC（5G）、Polar 码（也是 5G，由土耳其学者 Erdal Arıkan 提出）。这些码都能以接近容量的速率传输。</p>
+
+<p>AI 里除了某些端到端通信研究（把编码器/解码器替换成神经网络）之外，工程师日常不会碰。了解"有这么个东西"即可。</p>
+
+<!-- 1.6.5 -->
+<h2 id="s1-6-5"><span class="num">1.6.5</span>边界与安全：信息论在 ML、密码学中的应用</h2>
+<p class="pos">定位：差分隐私、成员推断攻击——AI 安全的信息论视角。</p>
+
+<h3>差分隐私</h3>
+
+<p>一个算法 $\mathcal{M}$ 是 $\epsilon$-差分隐私的，如果对任意两个只差一条记录的数据集 $D, D'$ 和任意输出 $S$：</p>
+<div class="formula">$P(\mathcal{M}(D) \in S) \le e^\epsilon \cdot P(\mathcal{M}(D') \in S)$</div>
+<p>直觉：看模型输出几乎无法判断某条数据是否在训练集里。$\epsilon$ 越小隐私越强。工程上通过给梯度加高斯噪声（DP-SGD）实现。</p>
+
+<h3>成员推断攻击</h3>
+
+<p>攻击者尝试判断某条数据是否在训练集里。方法通常利用"训练过的样本在模型上 loss 更低"这个信号。信息论视角：模型记忆了训练集，训练集和模型参数之间互信息 $I(\text{data}; \theta) > 0$——互信息越大隐私越差。</p>
+
+<h3>为什么 LLM 的隐私问题严重</h3>
+
+<p>LLM 通过足够大的容量可以精确记住训练集中的稀有序列（如 GitHub 上的 API key、个人邮箱）。成员推断、逐字记忆提取（extraction attack）都已被证明可行。差分隐私训练能缓解但代价是模型质量下降——目前大规模 LLM 下这是未解决的工程权衡。</p>
+
+<!-- 1.6.6 -->
+<h2 id="s1-6-6"><span class="num">1.6.6</span>信息论的未来</h2>
+<p class="pos">定位：量子信息、AI 通信、脑机接口——前沿方向的简短一瞥。</p>
+
+<p>量子信息论：用量子态做信息单位（qubit），qubit 可以叠加，有 von Neumann 熵、量子纠缠等新概念。理论极限比经典信息论更宽。但距离实用工程仍远。</p>
+
+<p>语义通信：传统通信关心比特精确传达，语义通信关心意义保真——允许字面不同但语义一致的输出。AI 模型（特别是 LLM）作为语义编码器/解码器是这个方向的核心工具。6G 的一个候选技术方向。</p>
+
+<p>脑机接口：神经信号—意图—文字/动作之间的信息率上限是一个信息论问题。Neuralink 和同类研究都在这条曲线上推进。</p>
+
+<p>这一节没有深挖的必要，工程岗位几年内不会碰。建立"信息论不是老学科、在新前沿还在活跃"的印象即可。</p>
+
+<!-- ==================== 1.7 数值计算 ==================== -->
+<div class="part-header">
+  <div class="part-label">PART SEVEN</div>
+  <h2 class="part-title">1.7 数值计算</h2>
+  <p class="part-desc">让数学在有限精度的计算机上真正跑起来——AI 工程师日常最频繁打交道的一块。</p>
+</div>
+
+<!-- 1.7.1 -->
+<h2 id="s1-7-1"><span class="num">1.7.1</span>误差分析</h2>
+<p class="pos">定位：浮点数不是实数——这一节是量化、低精度训练、NaN 排查的全部根基。</p>
+
+<h3>IEEE 754 浮点</h3>
+
+<p>浮点数的表示：</p>
+<div class="formula">$x = (-1)^s \cdot (1.f) \cdot 2^{e}$</div>
+<p>$s$ 是符号位、$f$ 是尾数（小数部分）、$e$ 是指数。FP32 有 1+8+23 位，FP16 有 1+5+10 位，BF16 有 1+8+7 位。</p>
+
+<p>核心事实：<strong>浮点数不是连续的</strong>，而是离散点阵，点阵密度随数值大小变化——小数附近点密集、大数附近稀疏。这决定了所有数值行为。</p>
+
+<h3>机器精度</h3>
+
+<p>大于 1 的最小浮点数是 $1 + \epsilon$，这个 $\epsilon$ 就是<strong>机器精度</strong>。FP32 $\epsilon \approx 1.19 \times 10^{-7}$，FP16 $\epsilon \approx 9.77 \times 10^{-4}$，BF16 $\epsilon \approx 3.91 \times 10^{-3}$。BF16 的精度比 FP16 还差 4 倍，但它有更大的动态范围（指数位同 FP32），所以训练用 BF16 而不是 FP16。</p>
+
+<h3>几个经典的数值坑</h3>
+
+<p><strong>坑一：灾难性相消</strong>。相近两数相减损失精度。</p>
+<pre><code class="language-python">import numpy as np
+x = np.float32(1e8)
+y = x + np.float32(1.0)
+print(y - x)   # 期望 1.0, 实际可能是 0.0 —— 1.0 被 1e8 的精度吃掉了
+</code></pre>
+
+<p><strong>坑二：softmax 的数值爆炸</strong>。直接算 $\exp(x_i)/\sum\exp(x_j)$，当 $x_i$ 大时 $\exp$ 会溢出 inf。标准做法是<strong>减最大值</strong>：</p>
+<div class="formula">$\text{softmax}(x_i) = \frac{\exp(x_i - \max_j x_j)}{\sum_k \exp(x_k - \max_j x_j)}$</div>
+<p>数学上等价（分子分母同乘 $\exp(-\max)$），但数值上所有 $\exp$ 输入都 $\le 0$，结果在 $(0, 1]$，不溢出。</p>
+
+<p><strong>坑三：log-sum-exp</strong>。$\log\sum\exp(x_i)$ 直接算也会溢出，同样用减最大值技巧：</p>
+<div class="formula">$\log\sum_i \exp(x_i) = \max_j x_j + \log\sum_i \exp(x_i - \max_j x_j)$</div>
+
+<p>这些不是高深的优化，是所有数值库（numpy、torch）底层默认使用的标准技巧。自己写 softmax 忘了减最大值就会在训练中莫名 NaN。</p>
+
+<h3>在 AI 里</h3>
+
+<p><strong>低精度训练</strong>：用 FP16/BF16 训练 FP32 模型。梯度可能在 FP16 下溢（小于最小正数变 0），需要 loss scaling——把 loss 乘以一个大数（如 $2^{15}$）让梯度值域进入 FP16 可表示范围，更新参数前再除回去。BF16 因为指数范围大，通常不需要 loss scaling。</p>
+
+<p><strong>量化</strong>：INT8/INT4 推理。把浮点权重映射到整数。这里的"映射"就是引入额外量化误差，误差的积累决定了压缩极限。INT4 在 LLM 上能用（AWQ、GPTQ），再低到 INT2/INT3 精度就严重掉了——不是算法不行，是误差超过了模型本身对扰动的容忍度。</p>
+
+<p><strong>数值稳定性检查清单</strong>：所有带 exp 的地方减最大值；所有带 log 的地方加小 $\epsilon$（$\log(0)$ 是 -inf）；所有除法检查分母；矩阵求逆改为 solve；Hessian 是否正定用 Cholesky 代替。</p>
+
+<!-- 1.7.2 -->
+<h2 id="s1-7-2"><span class="num">1.7.2</span>经典数值分析算法</h2>
+<p class="pos">定位：线性方程组、矩阵分解、特征值求解——科学计算库的"底盘"。</p>
+
+<h3>LU 分解</h3>
+
+<p>$\mathbf{A} = \mathbf{L}\mathbf{U}$，$\mathbf{L}$ 下三角（对角 1）、$\mathbf{U}$ 上三角。求解 $\mathbf{A}\mathbf{x} = \mathbf{b}$ 步骤：$\mathbf{L}\mathbf{y} = \mathbf{b}$（前代，$O(n^2)$）→ $\mathbf{U}\mathbf{x} = \mathbf{y}$（回代，$O(n^2)$）。总 $O(n^3)$ 分解 + $O(n^2)$ 求解。实际实现用部分选主元（PLU）保证数值稳定。</p>
+
+<h3>QR 分解</h3>
+
+<p>$\mathbf{A} = \mathbf{Q}\mathbf{R}$，$\mathbf{Q}$ 正交、$\mathbf{R}$ 上三角。比 LU 更稳，常用于最小二乘和特征值求解。构造方法：Gram-Schmidt（不稳）、Householder 反射（稳，实际使用）、Givens 旋转。</p>
+
+<h3>Cholesky 分解</h3>
+
+<p>专用于对称正定矩阵：$\mathbf{A} = \mathbf{L}\mathbf{L}^\top$。计算量是一般 LU 的一半。在高斯过程、贝叶斯推断、卡尔曼滤波里反复使用，因为协方差矩阵总是对称正定。</p>
+
+<h3>特征值求解</h3>
+
+<p>小矩阵：直接求特征多项式 $\det(\mathbf{A} - \lambda \mathbf{I}) = 0$。大矩阵：<strong>QR 算法</strong>（迭代做 QR 分解收敛到对角/三角）是标准方案，<code>numpy.linalg.eig</code> 背后就是它。</p>
+
+<p><strong>只要前 k 个特征值</strong>：用<strong>幂迭代</strong>。从随机向量 $\mathbf{v}_0$ 开始反复 $\mathbf{v}_{k+1} = \mathbf{A}\mathbf{v}_k / \|\mathbf{A}\mathbf{v}_k\|$，收敛到最大特征值对应特征向量。结合 deflation 或 Lanczos 方法能拿多个主特征向量。</p>
+
+<p>PageRank 就是幂迭代——把网页链接矩阵反复乘，收敛到的就是各页的稳态概率。Google 最早的核心算法。</p>
+
+<h3>线性规划</h3>
+
+<p>目标：$\min \mathbf{c}^\top \mathbf{x}$，约束 $\mathbf{A}\mathbf{x} \le \mathbf{b}, \mathbf{x} \ge \mathbf{0}$。<strong>单纯形法</strong>沿多面体顶点走，经典但最坏指数时间。<strong>内点法</strong>（Karmarkar）从内部走，多项式时间，现代求解器标配。SVM 的原始优化、LASSO 的求解都可以规约到 LP/QP。</p>
+
+<h3>在 AI 里</h3>
+
+<p>科学计算库（numpy、scipy）封装了这些算法。日常工作里很少手写，但要<em>会选 API</em>：解线性方程组用 <code>np.linalg.solve</code>（LU）不要用 <code>inv</code>；最小二乘用 <code>np.linalg.lstsq</code>（SVD/QR）；对称正定系统用 <code>scipy.linalg.cho_solve</code>。选错 API 数值精度和速度都可能差一个量级。</p>
+
+<!-- 1.7.3 -->
+<h2 id="s1-7-3"><span class="num">1.7.3</span>插值与函数拟合</h2>
+<p class="pos">定位：给点阵拟合出函数——从经典插值到最小二乘。</p>
+
+<h3>插值与拟合的区别</h3>
+
+<p><strong>插值</strong>：拟合曲线必须穿过每个给定点。常用于已知精确值、希望填补之间的空白。<strong>拟合</strong>：不要求穿过每个点，而是最小化总误差。常用于噪声数据。机器学习里用拟合，不用插值。</p>
+
+<h3>常见插值</h3>
+
+<p><strong>线性插值</strong>：两点连直线。简单、但不光滑（导数在节点不连续）。</p>
+
+<p><strong>拉格朗日插值</strong>：$n+1$ 个点唯一确定 $n$ 次多项式。</p>
+<div class="formula">$L(x) = \sum_{i=0}^n y_i \prod_{j \ne i} \frac{x - x_j}{x_i - x_j}$</div>
+<p>缺点：高次多项式在端点剧烈震荡（Runge 现象），点多了反而拟合更差。</p>
+
+<p><strong>三次样条</strong>：分段三次多项式，段间二阶导连续。避免高次多项式的震荡，是工程首选。</p>
+
+<h3>最小二乘拟合</h3>
+
+<p>给定 $n$ 个数据点 $(x_i, y_i)$，拟合直线 $y = a + bx$：最小化 $\sum (y_i - a - bx_i)^2$。解析解：</p>
+<div class="formula">$b = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i - \bar{x})^2}, \quad a = \bar{y} - b\bar{x}$</div>
+<p>推广到多元：$\mathbf{w} = (\mathbf{X}^\top \mathbf{X})^{-1} \mathbf{X}^\top \mathbf{y}$——又回到伪逆。</p>
+
+<h3>在 AI 里</h3>
+
+<p>神经网络就是"超高阶、带约束、非线性的函数拟合器"。理解最小二乘和 Runge 现象后，你会更理解为什么要<strong>正则化</strong>——数据点少的地方不受约束，模型容易产生类似 Runge 的剧烈波动（过拟合）；L2/Dropout/数据增强都是在压制这种波动。</p>
+
+<!-- 1.7.4 -->
+<h2 id="s1-7-4"><span class="num">1.7.4</span>机器学习优化算法</h2>
+<p class="pos">定位：SGD、Momentum、Adam——本章第二个关键节，和 1.1.4 并列。</p>
+
+<h3>批量梯度下降的问题</h3>
+
+<p>标准梯度下降每步用全数据算梯度，精确但每步慢。<strong>随机梯度下降 (SGD)</strong>：每步只用一个样本估计梯度，快但方向噪声大。<strong>mini-batch SGD</strong>：折中，用一小批（32/64/256/...）。这是现代深度学习的标配。</p>
+
+<p>SGD 的梯度是真梯度的无偏估计，噪声方差反比批量大小。为什么有噪声反而好？经验上噪声帮助模型<em>跳出糟糕的局部极小、收敛到更宽的谷</em>。"宽谷 → 更好泛化"有不少经验证据（尽管理论未完全解决）。</p>
+
+<h3>Momentum</h3>
+
+<p>SGD 在狭长沟壑中会来回震荡（垂直方向斜率大、水平方向斜率小）。Momentum 加入"惯性"：</p>
+<div class="formula">$\mathbf{v}_{t+1} = \beta \mathbf{v}_t + \nabla L(\boldsymbol{\theta}_t), \quad \boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta \mathbf{v}_{t+1}$</div>
+<p>$\beta \approx 0.9$。效果：震荡的方向互相抵消、沿正确方向累积。收敛更快、更稳。</p>
+
+<h3>Adam</h3>
+
+<p>最流行的优化器。核心思想：<em>每个参数用独立的学习率，根据该参数历史梯度的一阶矩和二阶矩自适应调整</em>。</p>
+
+<div class="formula">
+$\mathbf{m}_t = \beta_1 \mathbf{m}_{t-1} + (1-\beta_1) \mathbf{g}_t$ (一阶矩, ~Momentum)
+</div>
+<div class="formula">
+$\mathbf{v}_t = \beta_2 \mathbf{v}_{t-1} + (1-\beta_2) \mathbf{g}_t^2$ (二阶矩, 梯度平方的滑动平均)
+</div>
+<div class="formula">
+$\hat{\mathbf{m}}_t = \mathbf{m}_t / (1 - \beta_1^t), \quad \hat{\mathbf{v}}_t = \mathbf{v}_t / (1 - \beta_2^t)$ (bias correction)
+</div>
+<div class="formula">
+$\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta \frac{\hat{\mathbf{m}}_t}{\sqrt{\hat{\mathbf{v}}_t} + \epsilon}$
+</div>
+
+<p>$\beta_1 = 0.9, \beta_2 = 0.999, \epsilon = 10^{-8}$ 是默认值。<strong>bias correction</strong> 是细节但重要：初期 $\mathbf{m}_0 = \mathbf{v}_0 = 0$ 让早期估计偏小，除以 $(1 - \beta^t)$ 修正。</p>
+
+<p>直觉：大梯度的参数自动用小学习率（因为 $\sqrt{\mathbf{v}}$ 大），小梯度的参数用大学习率——在每个参数维度上自动调节。这就是"自适应学习率"。</p>
+
+<pre><code class="language-python">import numpy as np
+
+def adam_step(params, grads, state, lr=1e-3, b1=0.9, b2=0.999, eps=1e-8):
+    t = state['t'] + 1
+    m = state.get('m', [np.zeros_like(p) for p in params])
+    v = state.get('v', [np.zeros_like(p) for p in params])
+    new_params = []
+    for i, (p, g) in enumerate(zip(params, grads)):
+        m[i] = b1 * m[i] + (1 - b1) * g
+        v[i] = b2 * v[i] + (1 - b2) * g * g
+        m_hat = m[i] / (1 - b1 ** t)
+        v_hat = v[i] / (1 - b2 ** t)
+        new_params.append(p - lr * m_hat / (np.sqrt(v_hat) + eps))
+    return new_params, {'t': t, 'm': m, 'v': v}
+</code></pre>
+
+<p>30 行就是 Adam 的全部。PyTorch 的 <code>torch.optim.Adam</code> 和这段代码数学等价，只是加了 fused kernel、支持稀疏梯度等工程细节。</p>
+
+<h3>AdamW</h3>
+
+<p>Adam + 解耦的权重衰减。原始 Adam 里 L2 正则和自适应学习率耦合在一起效果打折，AdamW 把权重衰减从梯度计算里拿出来直接作用在参数上：</p>
+<div class="formula">$\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta \left(\frac{\hat{\mathbf{m}}_t}{\sqrt{\hat{\mathbf{v}}_t} + \epsilon} + \lambda \boldsymbol{\theta}_t\right)$</div>
+<p>现代 LLM 训练（GPT、LLaMA、Qwen）基本都用 AdamW，不用 Adam。</p>
+
+<h3>收敛速度</h3>
+
+<p>理论上，凸函数：GD 是 $O(1/t)$、加速梯度法 (Nesterov) 是 $O(1/t^2)$、牛顿法是二阶收敛 $O(\rho^{2^t})$。但非凸 + SGD 下这些结果大多不适用，工程上更多看经验规律。学习率调度（warmup + 余弦衰减）、batch size 调节对实际收敛速度影响更大。</p>
+
+<h3>在 AI 里</h3>
+
+<p>训练 LLM 基本就是 AdamW + warmup + 余弦衰减 + 梯度裁剪。这套组合在各种规模下都能工作。想要更省显存：8-bit Adam（量化优化器状态）；想要更大 batch：LAMB（AdamW + layer-wise 学习率缩放）。这些都是 Adam 的变种，万变不离其宗。</p>
+
+<!-- 1.7.5 -->
+<h2 id="s1-7-5"><span class="num">1.7.5</span>数值积分、微分与方程求根</h2>
+<p class="pos">定位：数值积分（辛普森）、微分方程数值解、方程求根——工程常用工具。</p>
+
+<h3>数值积分</h3>
+
+<p><strong>梯形法</strong>：分段线性逼近被积函数。$\int_a^b f(x) dx \approx \frac{h}{2}[f(x_0) + 2f(x_1) + \ldots + 2f(x_{n-1}) + f(x_n)]$。</p>
+
+<p><strong>辛普森法</strong>：分段抛物线逼近，每三个点一段。精度高得多，工程常用。</p>
+
+<p>高维积分不能用这些规则法（网格点数随维度指数爆炸），必须用<strong>蒙特卡洛积分</strong>：$\int f(x) p(x) dx \approx \frac{1}{N} \sum_i f(x_i)$，$x_i \sim p$。方差以 $1/\sqrt{N}$ 下降，与维度无关。这是重要性采样、RL 里的期望估计、贝叶斯推断的通用工具。</p>
+
+<h3>常微分方程</h3>
+
+<p>$y' = f(t, y), y(0) = y_0$ 的数值解。</p>
+
+<p><strong>显式欧拉</strong>：$y_{n+1} = y_n + h f(t_n, y_n)$。简单但不稳，步长大了炸。</p>
+
+<p><strong>隐式欧拉</strong>：$y_{n+1} = y_n + h f(t_{n+1}, y_{n+1})$。需要解方程，但稳定性好很多。对<em>刚性方程</em>（不同尺度的时间常数并存）必须用隐式。</p>
+
+<p><strong>Runge-Kutta 4 (RK4)</strong>：用一个步长内多个中间点的加权平均，4 阶精度，工程通用方案。</p>
+
+<h3>方程求根</h3>
+
+<p><strong>二分法</strong>：在 $[a, b]$ 上找 $f(x) = 0$，要求 $f(a) f(b) < 0$。每步把区间减半。收敛慢但绝对稳。</p>
+
+<p><strong>牛顿法</strong>：$x_{n+1} = x_n - f(x_n)/f'(x_n)$。收敛二阶（极快），但要求导数可算、初值够近、无极点。失败概率不低。</p>
+
+<h3>在 AI 里</h3>
+
+<p><strong>扩散模型</strong>：采样过程是求解一个 SDE（或等价 ODE），用 DDPM（朴素欧拉）、DDIM（改进步长）、DPM-Solver（高阶方法）。"采样需要 50 步"和"采样需要 5 步"的差距就是 ODE 求解器的精度差异。</p>
+
+<p><strong>Neural ODE</strong>：把神经网络的离散层数换成连续时间参数，前向是求解一个 ODE $\frac{d\mathbf{h}}{dt} = f(\mathbf{h}, t, \theta)$，反向通过 adjoint 方法。小众但概念优雅。</p>
+
+<p><strong>牛顿法在 LLM 优化</strong>：二阶优化器（K-FAC、Shampoo）用牛顿法思想近似 Hessian，在某些场景比 Adam 收敛更快。没成为主流，但在大批量训练（batch size = 数千）有优势。</p>
+
+<hr style="margin-top:60px; border:none; border-top:1px dashed var(--rule);">
+
+<p style="color:var(--muted); font-size:14px; font-style:italic; text-align:center; margin-top:40px;">
+— 第 1 章 终 —<br>
+共 29 节 · 下一章：系统软件（CPU、OS、编程语言、数据库、网络栈）
+</p>
+
+</main>
+
+<script>
+  hljs.highlightAll();
+  mermaid.initialize({ startOnLoad: true, theme: 'neutral', fontFamily: 'Inter, sans-serif' });
+</script>
+
+</body>
+</html>

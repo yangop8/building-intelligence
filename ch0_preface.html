@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>序章 — AI 工程师知识体系</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+  window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+:root {
+  --bg: #fbfaf7;
+  --fg: #1d1d1b;
+  --muted: #6b6b68;
+  --accent: #2d5a7a;
+  --accent-soft: #e6edf2;
+  --rule: #e3dfd6;
+  --code-bg: #282c34;
+  --sidebar-bg: #f4f1ea;
+  --mono: "SFMono-Regular", "JetBrains Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --serif: "Source Serif Pro", "Songti SC", "STSong", Georgia, "Times New Roman", serif;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--fg);
+  background: var(--bg);
+  display: flex;
+}
+aside.toc {
+  position: sticky;
+  top: 0;
+  width: 300px;
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--rule);
+  padding: 24px 20px;
+  font-family: var(--sans);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+aside.toc h1 {
+  font-family: var(--serif);
+  font-size: 18px;
+  margin: 0 0 4px 0;
+  color: var(--accent);
+}
+aside.toc .sub {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+aside.toc .group {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 14px;
+  margin-bottom: 4px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--rule);
+}
+aside.toc ol { list-style: none; padding: 0; margin: 0; }
+aside.toc ol li { margin-bottom: 2px; }
+aside.toc a {
+  color: var(--fg);
+  text-decoration: none;
+  display: block;
+  padding: 3px 6px;
+  border-radius: 3px;
+  transition: all 0.15s;
+}
+aside.toc a:hover { background: var(--accent-soft); color: var(--accent); }
+aside.toc .num { color: var(--muted); font-family: var(--mono); margin-right: 6px; font-size: 11px; }
+
+main {
+  flex: 1;
+  max-width: 880px;
+  padding: 60px 72px 120px 72px;
+  min-width: 0;
+}
+header.cover {
+  border-bottom: 2px solid var(--fg);
+  padding-bottom: 32px;
+  margin-bottom: 48px;
+}
+header.cover h1 {
+  font-size: 42px;
+  line-height: 1.15;
+  margin: 0 0 12px 0;
+  font-weight: 700;
+}
+header.cover .subtitle {
+  font-size: 20px;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 20px;
+}
+header.cover .meta {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+h2 {
+  font-size: 26px;
+  margin-top: 72px;
+  margin-bottom: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+  scroll-margin-top: 20px;
+}
+h3 {
+  font-size: 18px;
+  margin-top: 28px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+p { margin: 0 0 14px 0; text-align: justify; }
+
+.callout {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  padding: 10px 16px;
+  margin: 16px 0;
+  font-size: 15px;
+}
+.callout .tag {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 4px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+  font-family: var(--sans);
+}
+th, td {
+  border-bottom: 1px solid var(--rule);
+  padding: 7px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+th { background: var(--sidebar-bg); font-weight: 600; }
+
+@media (max-width: 1100px) {
+  aside.toc { display: none; }
+  main { padding: 40px 32px; }
+}
+</style>
+</head>
+<body>
+
+<aside class="toc">
+  <h1>序章</h1>
+  <div class="sub">AI 工程师知识体系</div>
+
+  <div class="group">目录</div>
+  <ol>
+    <li><a href="#why"><span class="num">1</span>为什么写这本书</a></li>
+    <li><a href="#audience"><span class="num">2</span>写给谁</a></li>
+    <li><a href="#structure"><span class="num">3</span>全书结构</a></li>
+    <li><a href="#reading-guide"><span class="num">4</span>阅读指南</a></li>
+    <li><a href="#papers"><span class="num">5</span>论文精读说明</a></li>
+    <li><a href="#conventions"><span class="num">6</span>体例说明</a></li>
+    <li><a href="#updates"><span class="num">7</span>更新与勘误</a></li>
+  </ol>
+</aside>
+
+<main>
+
+<header class="cover">
+  <h1>序章</h1>
+  <div class="subtitle">从数学到 Agent——AI 工程师的完整知识地图</div>
+  <div class="meta">内部学习材料 · 2026 年修订</div>
+</header>
+
+<!-- ===================== 为什么 ===================== -->
+<h2 id="why">为什么写这本书</h2>
+
+<p>AI 工程师是一个跨度极大的角色。你需要理解<strong>微积分里梯度为什么能优化损失函数</strong>,也需要知道<strong>Linux 内核的 CFS 调度器和 HugePages 如何影响训练吞吐</strong>;你要掌握从决策树到 XGBoost 的经典机器学习,也要跟上 Transformer、MoE、FlashAttention 的前沿演进;你需要读懂 RLHF 和 DPO 的数学推导,也要会用 vLLM 和 LoRA 把模型部署到生产环境。</p>
+
+<p>市面上不缺好书——数学有《线性代数应该这样学》,深度学习有花书,系统有 CSAPP。但它们各自覆盖一个领域,而现实工作中这些知识是<strong>同时需要</strong>的。一个推理优化问题可能同时涉及 Roofline 模型（数值计算）、KV Cache 量化（线性代数 + 信息论）、PagedAttention（操作系统内存管理）和 FP8 训练（硬件架构）。</p>
+
+<p>这本书试图把 AI 工程师需要的核心知识<strong>放在一个体系里</strong>,用统一的密度和视角覆盖从数学基础到 Agent 应用的完整链路。不是教科书——没有习题和冗长证明;也不是速查手册——每个主题都讲到"一个有经验的同事能给你讲 30 分钟"的深度。</p>
+
+<!-- ===================== 读者 ===================== -->
+<h2 id="audience">写给谁</h2>
+
+<p>这本书面向三类读者:</p>
+
+<table>
+<tr><th>读者类型</th><th>背景</th><th>阅读建议</th></tr>
+<tr><td><strong>AI 工程师</strong></td><td>有深度学习基础,在做模型训练/推理/部署</td><td>数学章节可跳读,重点看系统软件和性能工程,论文精读查漏补缺</td></tr>
+<tr><td><strong>系统工程师转 AI</strong></td><td>熟悉 Linux/网络/数据库,开始接触模型</td><td>从第 2 章（系统软件）建立信心,然后按序读第 1、3、4 章</td></tr>
+<tr><td><strong>在校学生 / 自学者</strong></td><td>有编程基础,系统学习 AI 工程</td><td>按章节顺序从头到尾,遇到不懂的数学回第 1 章补</td></tr>
+</table>
+
+<p>前提假设:你会 Python,了解基本的数据结构和算法,用过至少一个深度学习框架（PyTorch 优先）。不假设你有研究生数学背景——第 1 章会从头复习。</p>
+
+<!-- ===================== 结构 ===================== -->
+<h2 id="structure">全书结构</h2>
+
+<p>全书分为 5 章,从底层数学到上层应用,层层递进:</p>
+
+<h3>第 1 章 · 数学基础</h3>
+<p>面向 AI 工程师的数学复习手册。覆盖微积分（梯度下降与反向传播的数学本质）、线性代数（从 SVD 到 LoRA 的低秩近似）、概率与统计（MLE 与交叉熵的联系）、随机过程（Tree of Thoughts 的马尔可夫建模）、信息论（熵、KL 散度与 LLM 训练损失）、数值计算（浮点精度、Adam 优化器、扩散模型的 ODE 求解）。每个主题都有"在 AI 里"小节,把数学概念锚定到工程实践。共 7 部分 29 节。</p>
+
+<h3>第 2 章 · 系统软件</h3>
+<p>从 CPU 到 DPDK/VPP——AI 工程师需要的系统视角。覆盖 CPU 与 GPU/NPU 架构（CUDA 编程模型、Tensor Core）、操作系统核心（进程调度、虚拟内存、并发原语、eBPF）、编程语言与编译器（Rust 所有权、LLVM/MLIR、AI 编译器）、数据库（B+Tree vs LSM-Tree、图数据库、时序数据库、向量数据库与 HNSW）、消息中间件、高性能网络栈（DPDK 用户态驱动、VPP 向量化转发、TCP/QUIC、可观测性）。共 6 部分 28 节。</p>
+
+<h3>第 3 章 · AI 模型技术</h3>
+<p>从传统机器学习到性能工程——最厚的一章。覆盖传统 ML（KMeans 到 XGBoost 完整推导）、神经网络基础算子（GEMM、卷积、激活函数、归一化）、经典深度学习（CNN/LSTM/GNN/GAN/VAE/扩散模型）、数据与特征工程、训练优化（监督/自监督/SFT/RLHF/DPO/RL/蒸馏/联邦学习/AutoML）、AI 性能工程（Roofline 模型、量化剪枝、FlashAttention、软件栈优化）、AI 在网络领域的应用（流量分类、日志异常检测、KPI 时序预测）。共 7 部分 36 节。</p>
+
+<h3>第 4 章 · LLM 技术</h3>
+<p>从 Transformer 到 Agent——大模型时代的核心技术栈。覆盖 LLM 全景与 Scaling Law、Transformer 架构完整推导、位置编码（RoPE 及长上下文外推）、注意力优化（MQA/GQA/MLA/稀疏注意力/Mamba）、Tokenizer 与 Embedding、MoE 原理与工程、分布式训练（DDP/ZeRO/3D 并行）、推理引擎（KV Cache/PagedAttention/连续批处理/推测解码）、推理压缩（AWQ/GPTQ/FP8）、RAG（基础到 GraphRAG/Agentic RAG）、Agent（ReAct/Function Calling/MCP/多 Agent）、多模态（VLM/视频生成/统一多模态）。共 12 部分。</p>
+
+<h3>第 5 章 · 论文精读</h3>
+<p>从 ResNet 到 DeepSeek——精选核心论文的深度解读。这是本书的独特设计:前四章讲"是什么"和"怎么用",论文精读章讲"为什么这样设计"和"数学推导的完整链路"。每篇论文包含背景、核心方法（含公式推导）、代码实现、实验结果、影响与批判性视角。高引用论文配有完整代码示例和架构图。前面章节中提到论文的地方都有超链接跳转到对应的精读。</p>
+
+<!-- ===================== 阅读指南 ===================== -->
+<h2 id="reading-guide">阅读指南</h2>
+
+<p>这不是一本需要从头读到尾的书。根据你的目标,推荐几条路径:</p>
+
+<h3>路径 A:快速上手 LLM 工程</h3>
+<p>第 4 章（LLM 技术）→ 第 3 章 3.5-3.6 节（训练优化与性能工程）→ 第 5 章相关论文。遇到数学不懂的回第 1 章查。</p>
+
+<h3>路径 B:系统工程师转型</h3>
+<p>第 2 章（系统软件,建立信心）→ 第 1 章（补数学）→ 第 3 章（AI 模型,从传统 ML 开始）→ 第 4 章（LLM）。</p>
+
+<h3>路径 C:面试准备</h3>
+<p>第 1 章重点看微积分 + 线代 + 概率 → 第 3 章 3.1-3.3（传统 ML + 深度学习）→ 第 4 章 4.2-4.4（Transformer + 注意力）→ 第 5 章论文精读快速过。</p>
+
+<h3>路径 D:完整学习</h3>
+<p>按章节顺序:第 1 章 → 第 2 章 → 第 3 章 → 第 4 章 → 第 5 章。每章结束后读对应的论文精读。</p>
+
+<div class="callout">
+<span class="tag">提示</span>
+每一节开头的蓝色定位条说明了该节在整个知识体系中的位置和重要程度,帮助你决定是精读还是跳读。
+</div>
+
+<!-- ===================== 论文说明 ===================== -->
+<h2 id="papers">论文精读说明</h2>
+
+<p>第 5 章是本书的一个特色设计。我们从前四章涉及的数百篇论文中,精选了约 26 篇进行深度解读,分为几个维度:</p>
+
+<table>
+<tr><th>类别</th><th>覆盖论文</th><th>深度</th></tr>
+<tr><td>经典模型（第 3 章相关）</td><td>ResNet、LSTM、BatchNorm、Adam、XGBoost、GAN、VAE、DDPM、Word2Vec</td><td>1-3 页,高引用含代码</td></tr>
+<tr><td>系统基础（第 2 章相关）</td><td>HNSW、Raft</td><td>1-2 页</td></tr>
+<tr><td>Transformer 与预训练（第 4 章相关）</td><td>Attention Is All You Need、BERT/GPT、Scaling Law、RoPE</td><td>2-3 页,含完整实现</td></tr>
+<tr><td>效率与推理（第 4 章相关）</td><td>FlashAttention、LoRA/QLoRA、PagedAttention、MoE</td><td>2-3 页,含算法伪代码</td></tr>
+<tr><td>对齐与应用（第 4 章相关）</td><td>InstructGPT/RLHF、DPO、Chain-of-Thought、DeepSeek-V3</td><td>2-3 页</td></tr>
+<tr><td>LLM 补充</td><td>Mamba、RAG、ReAct</td><td>1-2 页</td></tr>
+</table>
+
+<p>论文精读不是论文翻译——我们关注的是:<strong>这篇论文解决了什么问题、核心 idea 是什么、数学推导的关键步骤、以及它如何影响了后续工作</strong>。每篇最后都有"批判性视角",指出局限性和后续演进。</p>
+
+<!-- ===================== 体例 ===================== -->
+<h2 id="conventions">体例说明</h2>
+
+<h3>密度与风格</h3>
+<p>每一节的目标密度是"一个有经验的同事给你讲 30 分钟"——比教科书紧凑,比博客深入。公式只在必要时出现,出现就完整推导。代码示例以 Python/PyTorch 为主,偶尔用 C/Rust/SQL。</p>
+
+<h3>交叉引用</h3>
+<p>知识之间的联系很重要。每节开头的定位条标注了与其他章节的关系。论文在正文中首次出现时,会有超链接指向第 5 章的精读。例如当正文提到"FlashAttention 的 tiling 策略"时,你可以直接跳转到论文精读了解完整算法。</p>
+
+<h3>"在 AI 里"小节</h3>
+<p>第 1-2 章的每个主题都以"在 AI 里"收尾,把基础知识锚定到 AI 工程实践。这是刻意的设计——孤立的知识容易忘,和实际应用关联后才能真正内化。</p>
+
+<!-- ===================== 更新 ===================== -->
+<h2 id="updates">更新与勘误</h2>
+
+<p>AI 领域的演进速度极快。本书内容反映截至 <strong>2026 年 4 月</strong>的技术状态。我们会持续更新以下内容:</p>
+
+<ul style="list-style:none; padding-left:0;">
+<li>- 新发布的重要模型和架构（如 DeepSeek V4/R2、Qwen3.6-Plus、Claude Mythos 等）</li>
+<li>- 论文精读的持续扩充</li>
+<li>- 社区反馈的勘误修正</li>
+<li>- 过时信息的更新（如硬件规格、框架版本、生态变化）</li>
+</ul>
+
+<p>如发现错误或有内容建议,请反馈给维护团队。</p>
+
+<p style="margin-top:48px; padding-top:24px; border-top:1px solid var(--rule); color:var(--muted); font-size:14px; font-family:var(--sans);">
+全书共 5 章,约 130+ 节,覆盖数学、系统、AI 模型、LLM、论文精读五大模块。祝阅读愉快。
+</p>
+
+</main>
+
+<script>hljs.highlightAll();</script>
+</body>
+</html>

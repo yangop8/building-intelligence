@@ -1,0 +1,2016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM Technology — From Transformer to Agent</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+:root{--bg:#fbfaf7;--fg:#1d1d1b;--muted:#6b6b68;--accent:#9a2f2f;--accent-soft:#f2e4e4;--rule:#e3dfd6;--code-bg:#282c34;--sidebar-bg:#f4f1ea;--mono:"SFMono-Regular","JetBrains Mono",Consolas,"Liberation Mono",Menlo,monospace;--serif:"Source Serif Pro","Songti SC","STSong",Georgia,"Times New Roman",serif;--sans:"Inter",-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;}
+*{box-sizing:border-box;}html,body{margin:0;padding:0;}
+body{font-family:var(--serif);font-size:16px;line-height:1.75;color:var(--fg);background:var(--bg);display:flex;}
+aside.toc{position:sticky;top:0;width:310px;height:100vh;overflow-y:auto;background:var(--sidebar-bg);border-right:1px solid var(--rule);padding:24px 20px;font-family:var(--sans);font-size:13px;flex-shrink:0;}
+aside.toc h1{font-family:var(--serif);font-size:18px;margin:0 0 4px 0;color:var(--accent);}
+aside.toc .sub{color:var(--muted);font-size:12px;margin-bottom:20px;font-style:italic;}
+aside.toc .group{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin-top:14px;margin-bottom:4px;padding-bottom:3px;border-bottom:1px solid var(--rule);}
+aside.toc ol{list-style:none;padding:0;margin:0;}aside.toc ol li{margin-bottom:2px;}
+aside.toc a{color:var(--fg);text-decoration:none;display:block;padding:3px 6px;border-radius:3px;transition:all 0.15s;}
+aside.toc a:hover{background:var(--accent-soft);color:var(--accent);}
+aside.toc .num{color:var(--muted);font-family:var(--mono);margin-right:6px;font-size:11px;}
+main{flex:1;max-width:880px;padding:60px 72px 120px 72px;min-width:0;}
+header.cover{border-bottom:2px solid var(--fg);padding-bottom:32px;margin-bottom:48px;}
+header.cover h1{font-size:42px;line-height:1.15;margin:0 0 12px 0;font-weight:700;}
+header.cover .subtitle{font-size:20px;color:var(--muted);font-style:italic;margin-bottom:20px;}
+header.cover .meta{font-family:var(--sans);font-size:13px;color:var(--muted);}
+h2{font-size:26px;margin-top:72px;margin-bottom:6px;padding-bottom:8px;border-bottom:1px solid var(--rule);scroll-margin-top:20px;}
+h2 .num{color:var(--accent);font-family:var(--mono);font-weight:400;margin-right:10px;font-size:20px;}
+.pos{font-family:var(--sans);font-size:13px;color:var(--muted);font-style:italic;margin-top:0;margin-bottom:16px;padding:6px 12px;background:var(--accent-soft);border-left:2px solid var(--accent);}
+h3{font-size:18px;margin-top:28px;margin-bottom:8px;font-weight:600;}
+h4{font-size:15px;margin-top:18px;margin-bottom:4px;font-weight:600;color:var(--accent);}
+p{margin:0 0 14px 0;text-align:justify;}
+code{font-family:var(--mono);font-size:14px;background:var(--accent-soft);color:var(--accent);padding:1px 5px;border-radius:3px;}
+pre{background:var(--code-bg);border-radius:6px;padding:14px 18px;overflow-x:auto;font-size:13px;line-height:1.55;margin:16px 0;}
+pre code{background:transparent;color:inherit;padding:0;font-size:inherit;}
+.callout{border-left:3px solid var(--accent);background:var(--accent-soft);padding:10px 16px;margin:16px 0;font-size:15px;}
+.callout .tag{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:4px;}
+.formula{font-family:var(--serif);padding:10px 18px;background:#faf3f3;border-left:2px solid var(--muted);margin:12px 0;font-size:16px;overflow-x:auto;}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;font-family:var(--sans);}
+th,td{border-bottom:1px solid var(--rule);padding:7px 10px;text-align:left;vertical-align:top;}
+th{background:var(--sidebar-bg);font-weight:600;}
+.part-header{margin-top:100px;margin-bottom:24px;padding:24px 28px;background:linear-gradient(to right,var(--accent-soft),transparent);border-left:4px solid var(--accent);}
+.part-header .part-label{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:0.15em;color:var(--accent);}
+.part-header h2.part-title{font-size:32px;margin:4px 0 8px 0;padding:0;border:none;}
+.part-header .part-desc{font-size:15px;color:var(--muted);font-style:italic;margin:0;}
+.mermaid{margin:20px 0;text-align:center;}
+.footnote{font-size:13px;color:var(--muted);margin-top:6px;}
+@media (max-width:1100px){aside.toc{display:none;}main{padding:40px 32px;}}
+</style>
+</head>
+<body>
+<aside class="toc">
+<h1>LLM Technology</h1><div class="sub">Chapter 4 · From Transformer to Agent</div>
+<div class="group">4.1 LLM Overview</div>
+<ol><li><a href="#s4-1-1"><span class="num">1</span>From LM to LLM</a></li><li><a href="#s4-1-2"><span class="num">2</span>Open-Source vs Closed-Source Ecosystems</a></li></ol>
+<div class="group">4.2 Transformer Architecture</div>
+<ol><li><a href="#s4-2-1"><span class="num">1</span>Overall Structure</a></li><li><a href="#s4-2-2"><span class="num">2</span>Self-Attention</a></li><li><a href="#s4-2-3"><span class="num">3</span>Multi-Head</a></li><li><a href="#s4-2-4"><span class="num">4</span>FFN, Residual Connections, Normalization</a></li><li><a href="#s4-2-5"><span class="num">5</span>Encoder/Decoder</a></li><li><a href="#s4-2-6"><span class="num">6</span>Transformer Evolution</a></li></ol>
+<div class="group">4.3 Positional Encoding</div>
+<ol><li><a href="#s4-3-1"><span class="num">1</span>History of Positional Encoding</a></li><li><a href="#s4-3-2"><span class="num">2</span>RoPE</a></li><li><a href="#s4-3-3"><span class="num">3</span>Long Context Extrapolation</a></li></ol>
+<div class="group">4.4 Attention Optimizations</div>
+<ol><li><a href="#s4-4-1"><span class="num">1</span>MQA/GQA/MLA</a></li><li><a href="#s4-4-2"><span class="num">2</span>Sparse Attention</a></li><li><a href="#s4-4-3"><span class="num">3</span>Linear Attention and Mamba</a></li></ol>
+<div class="group">4.5 Tokenizer and Embedding</div>
+<ol><li><a href="#s4-5-1"><span class="num">1</span>BPE Family</a></li><li><a href="#s4-5-2"><span class="num">2</span>Modern Tokenizer Engineering</a></li><li><a href="#s4-5-3"><span class="num">3</span>Embedding Models</a></li></ol>
+<div class="group">4.6 MoE</div>
+<ol><li><a href="#s4-6-1"><span class="num">1</span>MoE Fundamentals</a></li><li><a href="#s4-6-2"><span class="num">2</span>MoE Engineering Practice</a></li></ol>
+<div class="group">4.7 Distributed Training</div>
+<ol><li><a href="#s4-7-1"><span class="num">1</span>Data Parallelism (DDP)</a></li><li><a href="#s4-7-2"><span class="num">2</span>ZeRO Three Stages</a></li><li><a href="#s4-7-3"><span class="num">3</span>Tensor Parallelism and Pipeline Parallelism</a></li><li><a href="#s4-7-4"><span class="num">4</span>3D Parallelism and Training Stack</a></li></ol>
+<div class="group">4.8 Inference Engines</div>
+<ol><li><a href="#s4-8-1"><span class="num">1</span>Inference Workload Characteristics</a></li><li><a href="#s4-8-2"><span class="num">2</span>KV Cache</a></li><li><a href="#s4-8-3"><span class="num">3</span>PagedAttention/vLLM</a></li><li><a href="#s4-8-4"><span class="num">4</span>Continuous Batching</a></li><li><a href="#s4-8-5"><span class="num">5</span>Speculative Decoding</a></li></ol>
+<div class="group">4.9 Inference Compression</div>
+<ol><li><a href="#s4-9-1"><span class="num">1</span>AWQ/GPTQ</a></li><li><a href="#s4-9-2"><span class="num">2</span>KV Cache Quantization and FP8</a></li></ol>
+<div class="group">4.10 RAG</div>
+<ol><li><a href="#s4-10-1"><span class="num">1</span>Basic Pipeline</a></li><li><a href="#s4-10-2"><span class="num">2</span>Advanced RAG</a></li><li><a href="#s4-10-3"><span class="num">3</span>GraphRAG/Agentic RAG</a></li></ol>
+<div class="group">4.11 Agent</div>
+<ol><li><a href="#s4-11-1"><span class="num">1</span>From Prompt to ReAct</a></li><li><a href="#s4-11-2"><span class="num">2</span>Function Calling/MCP/Multi-Agent</a></li><li><a href="#s4-11-3"><span class="num">3</span>Agent Framework Ecosystem</a></li><li><a href="#s4-11-4"><span class="num">4</span>Coding Agents</a></li></ol>
+<div class="group">4.12 Multimodal</div>
+<ol><li><a href="#s4-12-1"><span class="num">1</span>VLM Architecture</a></li><li><a href="#s4-12-2"><span class="num">2</span>Audio, Video, and Unified Multimodal</a></li></ol>
+</aside>
+
+<main>
+<header class="cover">
+<h1>LLM Technology</h1>
+<div class="subtitle">From Transformer to Agent — Complete Technical Stack of Large Language Models</div>
+<div class="meta">Chapter 4 · Internal Learning Material · 37 Sections · Revised Early 2026</div>
+</header>
+
+<p>LLM is no longer just a "model"—it is an entire technology stack. From low-level Transformer operators, to distributed training strategies, to inference-side scheduling optimizations, to RAG and Agent on the application side, every layer involves substantial engineering decisions and algorithm choices. This chapter ties these layers together so you can see the whole picture from top to bottom.</p>
+
+<p>37 sections, all deep dives. Key anchors include: complete derivation of Self-Attention (4.2.2), RoPE rotation matrices (4.3.2), DeepSeek's MLA low-rank decomposition (4.4.1), Mamba's selective state space (4.4.3), ZeRO three-stage memory sharding (4.7.2), PagedAttention's paging mechanism (4.8.3), acceptance rate analysis for speculative decoding (4.8.5), mathematics of AWQ/GPTQ (4.9.1), reranking and query rewriting in advanced RAG (4.10.2), and ReAct loop implementation (4.11.1). Other sections maintain the density of "conceptual intuition + minimal derivation + engineering details."</p>
+
+<p>When discussing concrete products, we focus on <strong>open-source</strong> (Transformers, vLLM, TGI, llama.cpp, DeepSpeed, FSDP, LangChain, LlamaIndex, etc.), with OpenAI/Anthropic APIs mentioned for comparison. This way you see the full ecosystem landscape without being tied to any single vendor.</p>
+
+<div class="part-header"><div class="part-label">PART ONE</div><h2 class="part-title">4.1 LLM Overview</h2><p class="part-desc">Establish a coordinate system for the entire LLM field—where capabilities come from and how the landscape divides.</p></div>
+
+<h2 id="s4-1-1"><span class="num">4.1.1</span>From LM to LLM</h2>
+<p class="pos">Position: How Scaling transforms "language models" into "general reasoning systems"—history, key milestones, Scaling Law.</p>
+
+<h3>The Old Problem of Language Models</h3>
+<p>The definition of a language model has never changed: given the first $t-1$ tokens, predict the probability distribution of the $t$-th token.</p>
+<div class="formula">$P(w_t | w_1, w_2, \ldots, w_{t-1})$</div>
+<p>From Shannon's information theory in 1948, to N-grams in the 1980s, to Bengio's neural language models in 2003, to Word2Vec and GloVe—for decades, NLP researchers have been finding better ways to model this conditional probability. But no one could have predicted that "stacking" this simple objective large enough would lead to emergent reasoning, programming, and mathematical abilities.</p>
+
+<h3>Key Breakthroughs</h3>
+<p><strong>2017 Transformer</strong>: Google's "<a href="ch5_partA_preview.html#p06">Attention is All You Need</a>." Completely replaces RNNs, training is parallelizable, and results are superior. Foundation for everything that followed.</p>
+<p><strong>2018 <a href="ch5_partA_preview.html#p07">BERT / GPT-1</a></strong>: Establishes the pre-training + fine-tuning paradigm. BERT uses masked language modeling for pre-training, dominating various downstream tasks; GPT uses causal language modeling, taking the generation route.</p>
+<p><strong>2020 GPT-3</strong>: 175B parameters, can perform tasks via few-shot learning without fine-tuning. "In-context learning" becomes the new paradigm—as models grow larger, they can learn new tasks from prompts. This is the turning point where LLM transforms from "feature extractor" to "general reasoner."</p>
+<p><strong>2022 ChatGPT</strong>: Brings <a href="ch5_partB_preview.html#p14">RLHF</a> to product grade; models can now "chat." Overnight, LLM transforms from a research topic to a consumer product.</p>
+<p><strong>2023 GPT-4 / Claude 2 / LLaMA-2</strong>: Multimodal, 100K+ context windows, and strong open-source models emerge. The ecosystem begins to bifurcate—closed-source commercial vs. open-weight.</p>
+<p><strong>2024 <a href="ch5_partB_preview.html#p17">DeepSeek-V3</a> / o1 / Claude 3.5 / Qwen2.5</strong>: Open-source catches up with the first tier of closed-source models; "thinking at test time" (test-time compute) becomes a new dimension, allowing models to "think" for extended periods before output.</p>
+<p><strong>2025 DeepSeek-R1 / Qwen3 / LLaMA 4 / Claude 4 / GPT-5 / Gemini 3</strong>: Explosion of reasoning models. DeepSeek-R1 launches in early 2025, achieving GPT-4o-level reasoning via pure RL but at a tenth the cost, triggering a global open-source race; Qwen3 introduces a "thinking mode" toggle, covering both reasoning and non-reasoning scenarios in a single model; DeepSeek's subsequent V3.1 unifies thinking/non-thinking modes, while V3.2 introduces Sparse Attention (DSA) to further reduce costs; LLaMA 4 family (Scout/Maverick) uses MoE for the first time; Claude 4/4.5 emphasizes agent stability, while OpenAI GPT-5 and Google Gemini 3 compete for top reasoning benchmarks.</p>
+<p><strong>Early 2026</strong>: Open-source MoE densifies further—Qwen3-Next 80B-A3B, Qwen3.5-397B-A17B, Kimi K2, GLM-4.5/4.6, and MiniMax-M2 all emerge from late 2025 through early 2026. On the closed-source side, OpenAI releases GPT-4.2 (2025.12), followed by GPT-4.4 on 2026.3.5; the Claude series evolves to Opus 4.6 / Sonnet 4.6 / Haiku 4.5. Anthropic's <strong>Claude Mythos Preview</strong> in 2026.4 is a critical milestone—this unreleased frontier model exhibits "emergent-level" abilities in cybersecurity, automatically discovering thousands of zero-day vulnerabilities in mainstream operating systems and browsers. Anthropic makes an exception by not releasing it publicly, instead providing it exclusively to 50+ major enterprise partners through Project Glasswing for defensive purposes. This is the first time a major AI company has proactively constrained a frontier model's release for safety reasons since OpenAI's restricted GPT-2 release in 2019.</p>
+<p>In March 2026, DeepSeek releases <strong>V4</strong> (next-generation flagship) and <strong>R2</strong> (R1's successor reasoning model with significantly improved multilingual reasoning); Alibaba releases <strong>Qwen3.6-Plus Preview</strong>, supporting 1M context and always-on CoT reasoning. Major disruption in video generation: OpenAI announces on 2026.3.24 the <strong>shutdown of the entire Sora product line</strong> (including standalone app and API), redirecting resources to robot world simulation research; meanwhile, Kling 3.0 becomes the first natively 4K 60fps video generation model.</p>
+<p>The gap between open-source and closed-source narrows further to 3-6 months. Anthropic's MCP (Model Context Protocol) becomes the standard for Agent tool calling throughout 2025, widely adopted across Claude, Cursor, and the VSCode ecosystem. In 2025.12, MCP is donated to the Linux Foundation's Agentic AI Foundation (jointly founded by Anthropic, Block, and OpenAI), becoming the industry-standard protocol.</p>
+
+<h3><a href="ch5_partA_preview.html#p08">Scaling Law</a>: The Mathematical Explanation for All This</h3>
+<p>Why does scaling up enable emergent abilities? Two papers provide the answer: Kaplan 2020 and Chinchilla 2022. <strong>Loss is a power-law function of parameter count $N$, data quantity $D$, and compute budget $C$.</strong></p>
+<div class="formula">$L(N, D) \approx E + \frac{A}{N^\alpha} + \frac{B}{D^\beta}$</div>
+<p>$E$ is the irreducible entropy of the data (theoretical lower bound), and $A/N^\alpha, B/D^\beta$ are compressible portions. The power law means that as long as compute continues to scale, loss continues to decrease—no saturation has been observed.</p>
+<p>More intriguingly, Chinchilla's finding: given a compute budget $C = 6ND$, the optimal point is when $N$ and $D$ grow in roughly equal proportion (with a specific ratio of about 1:20 tokens/param). GPT-3's 175B parameters actually didn't have enough training data (300B tokens); Chinchilla proved that 70B parameters with 1.4T tokens performs better. This guided the design of the LLaMA family.</p>
+
+<h3>Emergent Abilities</h3>
+<p>Scaling is not linear—certain abilities suddenly appear when model size crosses a threshold (in-context learning, CoT reasoning, multi-step math). This is called "<strong>emergent abilities</strong>." Small models can't learn from limited prompts; large models master a task from just two or three examples.</p>
+<p>Some 2023 work argued that emergence is an illusion of metric choice (BIG-Bench uses strict accuracy, appearing to "emerge" as it jumps from 0 to non-zero; switching to log-likelihood smooths it out). But even so, the phenomenon remains: <strong>there are real qualitative differences in capability between large and small models.</strong></p>
+
+<h3>From Scaling to Test-Time Compute</h3>
+<p>In late 2024, the rules of the game changed again. OpenAI's o1 demonstrated that models don't just scale during training—<strong>test-time scaling also offers enormous gains.</strong> Letting models "think" for extended periods (generating many reasoning tokens before outputting an answer) can double performance. OpenAI subsequently released <strong>o3 and o3-mini</strong>, further boosting reasoning—o3 achieves breakthrough results (87.5%) on the ARC-AGI benchmark, exceeding the human average for the first time. DeepSeek-R1, QwQ, and Claude 3.7 Sonnet's thinking mode all follow this path.</p>
+<p>Throughout 2025, this direction dominated LLM evolution. Key developments:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>DeepSeek-R1 (2025.1)</strong>: An open-source reasoning model trained via pure RL (GRPO algorithm) without requiring human annotations of reasoning traces—overturning the assumption that "alignment data is essential." The R1-0528 version exceeds GPT-4o on AIME math problems.</li>
+<li><strong>Hybrid thinking/non-thinking modes</strong>: Qwen3 pioneers a "mode toggle"—users flip a switch to enable or disable extended reasoning. DeepSeek V3.1 further merges both modes into one model, with chat templates controlling behavior. This design became standard for open-source models in the second half of 2025.</li>
+<li><strong>Thinking budget</strong>: The product side gradually exposes a "thinking budget" parameter, letting users control reasoning length—the same question can be answered with 1K tokens of thinking (fast) or 16K tokens (deep).</li>
+</ul>
+<p>Test-time compute transforms "one forward pass determines capability" into "pay more compute for better answers"—a significant shift for the product side. This is one of the major axes of LLM evolution in the coming years.</p>
+
+<h2 id="s4-1-2"><span class="num">4.1.2</span>Open-Source vs Closed-Source Ecosystems</h2>
+<p class="pos">Position: Two different development paths—open weights vs API services—and their technical/commercial tradeoffs.</p>
+
+<h3>Closed-Source Commercial Model</h3>
+<p>Typical examples: OpenAI's GPT series, Anthropic's Claude series, Google's Gemini. Model weights are not public; access is via API. Advantages: frontier capabilities (new releases often lead open-source by 6-12 months), managed service (no ops burden), comprehensive multimodal abilities.</p>
+<p>Tradeoffs: data must leave your infrastructure (privacy compliance), costs scale with usage, vendor lock-in, limited or no fine-tuning. Best for application development companies and non-sensitive workloads.</p>
+
+<h3>Open-Source Weight Models</h3>
+<p>Main families (as of early 2026):</p>
+<table>
+<tr><th>Family</th><th>Latest</th><th>License</th><th>Characteristics</th></tr>
+<tr><td>LLaMA</td><td>LLaMA 4 Scout / Maverick</td><td>Community License</td><td>Meta-led; LLaMA 4 first to use MoE architecture</td></tr>
+<tr><td>Qwen</td><td>Qwen3 (0.6B-235B MoE), Qwen3-Next 80B-A3B</td><td>Apache 2.0</td><td>Alibaba; thinking mode toggle; strong in Chinese/English; full MoE and dense lineup</td></tr>
+<tr><td>DeepSeek</td><td>DeepSeek-V3.1/V3.2, R1</td><td>MIT</td><td>MLA, DSA architectural innovations; strong reasoning; extremely low cost</td></tr>
+<tr><td>Mistral</td><td>Mistral Large 3, Ministral</td><td>Partial Apache 2.0</td><td>European open-source pioneer</td></tr>
+<tr><td>Kimi (Moonshot)</td><td>Kimi K2, K2-Instruct</td><td>Permissive License</td><td>Emerged in 2025; strong long context and reasoning</td></tr>
+<tr><td>GLM (Zhipu)</td><td>GLM-4.5, GLM-4.6</td><td>Permissive License</td><td>Chinese MoE; shared experts + attention bias</td></tr>
+<tr><td>MiniMax</td><td>MiniMax-M2</td><td>Open Weight</td><td>Chinese; Flash Attention variant</td></tr>
+<tr><td>Phi</td><td>Phi-4</td><td>MIT</td><td>Microsoft; strong small models</td></tr>
+<tr><td>Gemma</td><td>Gemma 2, Gemma 3</td><td>Gemma License</td><td>Google's open-source version based on Gemini</td></tr>
+<tr><td>GPT-OSS</td><td>gpt-oss-20b, gpt-oss-120b</td><td>Apache 2.0</td><td>OpenAI's first open-source in 2025; first since GPT-2</td></tr>
+<tr><td>Granite</td><td>Granite 4 (Mamba-Attention hybrid)</td><td>Apache 2.0</td><td>IBM; enterprise use cases; architectural innovation</td></tr>
+<tr><td>Nemotron</td><td>Nemotron 2</td><td>Open</td><td>NVIDIA; Mamba2-Transformer hybrid</td></tr>
+</table>
+<p>Note that "open-source" is a spectrum—LLaMA's community license has commercial restrictions (customers with 700M+ monthly active users need separate licensing), so it's strictly "open-weight." Mistral, Qwen, DeepSeek, Kimi, GLM, and GPT-OSS are true Apache/MIT, enabling unlimited commercial use.</p>
+<p>A notable 2025 shift: <strong>Chinese open-source models become the absolute driving force</strong>—Qwen, DeepSeek, Kimi, GLM, MiniMax, Xiaomi MiMo and others surge collectively. The Chinchilla principle (data quantity matching parameter count) is widely adopted, with training data scaling from 15T tokens in the LLaMA-3 era to 30-40T.</p>
+
+<h3>Capability Gaps Are Narrowing</h3>
+<p>A striking 2024 trend: the gap between open-source flagship models and closed-source frontiers narrows to 6 months. By 2025, it shrinks to 3-6 months—DeepSeek-V3.2, Qwen3-235B-A22B, and Kimi K2 match or exceed contemporary closed-source models in math reasoning, coding, and general benchmarks. DeepSeek-R1 even surpasses GPT-4o-level models on some math benchmarks while costing 20x less.</p>
+<p>The "DeepSeek Moment" in February 2025: After R1's release, the global AI community is shaken; 94% of GitHub Trending's weekly rankings are AI-related. Closed-source vendors accelerate: OpenAI launches GPT-5, GPT-4.1, and GPT-4.2 (2025.12, with consecutive Codex-specific versions) in 2025; releases GPT-4.4 in 2026.3 unifying reasoning, coding, and computer use (1M context, 75% OSWorld-Verified), and rarely, open-sources GPT-OSS-20B/120B. Anthropic releases Claude Sonnet 4.5, Opus 4.6, Haiku 4.5, and previews Claude Mythos Preview in 2026.4—the gap reopens, but often closes again within months as the next open-source generation catches up.</p>
+<p>Closed-source maintains advantages in a few areas: multimodal completeness (Gemini 3's video understanding, GPT-4o/GPT-5's real-time voice chat); ultra-long context (Gemini's practical 1M+, GPT-4.4's usable 1M tokens); Agent tool-calling stability (Claude's Computer Use maturity); safety guardrails and compliance. Plus domain-specific "emergent abilities"—cybersecurity breakthroughs like Mythos Preview remain beyond current open-source models.</p>
+
+<h3>Deployment Modes</h3>
+<p>Deployment options for open-source models:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Local inference</strong> (laptop/workstation): llama.cpp, Ollama, LM Studio. Quantized to INT4, 7B models run on 5GB RAM.</li>
+<li><strong>Self-hosted service</strong> (data center): vLLM, TGI (HuggingFace), SGLang, LMDeploy. High concurrency, high throughput.</li>
+<li><strong>Edge deployment</strong> (embedded devices): llama.cpp with ARM NEON, MNN, MediaPipe. Phones, routers, IoT.</li>
+<li><strong>Cloud-hosted</strong>: AWS Bedrock, Azure AI, Alibaba Cloud PAI—third-party vendors host open-source models and provide APIs.</li>
+</ul>
+
+<h3>Inference Engine Landscape</h3>
+<p>Section 4.8 dives deep; here's the landscape (as of early 2026):</p>
+<table>
+<tr><th>Engine</th><th>Language</th><th>Primary Use</th><th>Characteristics</th></tr>
+<tr><td>Transformers</td><td>Python</td><td>Research/Prototype</td><td>HuggingFace official; broadest compatibility</td></tr>
+<tr><td>vLLM</td><td>Python+CUDA</td><td>Production Service</td><td>PagedAttention, continuous batching; growth accelerates after v1 architecture rewrite in 2025</td></tr>
+<tr><td>SGLang</td><td>Python+CUDA</td><td>Complex Workflows</td><td>RadixAttention, structured generation; one of fastest-growing engines in 2025</td></tr>
+<tr><td>TGI</td><td>Rust</td><td>Production Service</td><td>HuggingFace product; comprehensive ecosystem</td></tr>
+<tr><td>TensorRT-LLM</td><td>C++</td><td>NVIDIA Production</td><td>Highest performance; hardware-bound</td></tr>
+<tr><td>NVIDIA Dynamo</td><td>C++/Python</td><td>Massive-Scale Inference</td><td>NVIDIA 2025 release; unifies vLLM/SGLang/TRT-LLM backends; distributed scheduling</td></tr>
+<tr><td>LMDeploy</td><td>Python</td><td>Production Service</td><td>Shanghai AI Lab; recommended by DeepSeek and others</td></tr>
+<tr><td>llama.cpp</td><td>C++</td><td>Local/Edge</td><td>Pure CPU capable; comprehensive quantization</td></tr>
+<tr><td>MLC-LLM</td><td>Python+TVM</td><td>Cross-Hardware</td><td>WebGPU, ARM, Chinese chips</td></tr>
+<tr><td>Ollama</td><td>Go</td><td>Personal Use</td><td>User-level layer on llama.cpp</td></tr>
+</table>
+<p>By 2025, the inference engine landscape forms a duopoly: vLLM + SGLang, cross-referencing and competing with each other. DeepSeek's V3 release explicitly recommends both, further solidifying their positions.</p>
+
+<h3>Application-Layer Frameworks</h3>
+<p><strong>LangChain</strong>: Most comprehensive features, largest ecosystem; criticized for "over-abstraction." Good for rapid prototyping.</p>
+<p><strong>LlamaIndex</strong>: RAG-focused; strongest data connection and retrieval capabilities.</p>
+<p><strong>DSPy</strong> (Stanford): Treats LLM calls as "programmable components" with automatic prompt optimization.</p>
+<p><strong>Haystack</strong>: Enterprise-grade RAG framework; high production readiness.</p>
+<p><strong>自己写</strong>:很多团队发现直接调 OpenAI SDK + 一点胶水代码比框架更清晰——LLM 调用本质就是 HTTP 请求,抽象层越厚反而越难调试。</p>
+
+<div class="part-header"><div class="part-label">PART TWO</div><h2 class="part-title">4.2 Transformer 架构</h2><p class="part-desc">所有 LLM 的基础——把这一块搞透,后面全通。</p></div>
+
+<h2 id="s4-2-1"><span class="num">4.2.1</span>整体结构与信息流</h2>
+<p class="pos">定位:一个 token 从进入模型到输出的完整路径——建立宏观图景。</p>
+
+<h3>整体流程</h3>
+<p>从用户输入 "Hello world" 到模型预测下一个 token,步骤:</p>
+<div class="mermaid">
+flowchart TB
+    INP[User Input Text] --> TOK[Tokenization]
+    TOK --> EMB[Token Embedding]
+    EMB --> POS[+ Position Encoding]
+    POS --> L1[Transformer Block x N]
+    L1 --> NORM[Final LayerNorm/RMSNorm]
+    NORM --> LMH[LM Head Linear]
+    LMH --> SOFT[Softmax]
+    SOFT --> SAM[Sample next token]
+</div>
+<p>每个 <strong>Transformer Block</strong> 是相同结构的重复单元。GPT-3 有 96 个,LLaMA-3-70B 有 80 个。每个 Block 做两件事:</p>
+<ol>
+<li><strong>Self-Attention</strong>:让每个位置"看到"其他位置,信息横向交流</li>
+<li><strong>FFN (Feed-Forward Network)</strong>:对每个位置独立变换,增强表达</li>
+</ol>
+<p>每件事都包在 "归一化 + 残差连接" 里,现代 LLM 用 Pre-Norm 结构——归一化在残差之前,原始 Transformer 用 Post-Norm(残差后再归一化)不稳。</p>
+
+<h3>形状演变</h3>
+<p>跟踪一个形状 <code>[B, L]</code> 的 token ID 张量(B=batch, L=seq len)走完模型:</p>
+<table>
+<tr><th>阶段</th><th>形状</th></tr>
+<tr><td>输入 token IDs</td><td>[B, L]</td></tr>
+<tr><td>Embedding 之后</td><td>[B, L, d_model]</td></tr>
+<tr><td>每层 attention 内部</td><td>[B, H, L, d_head] (H 头, d_head = d_model/H)</td></tr>
+<tr><td>每层 attention 输出</td><td>[B, L, d_model]</td></tr>
+<tr><td>FFN 中间</td><td>[B, L, d_ff] (d_ff 通常 4×d_model)</td></tr>
+<tr><td>最后输出</td><td>[B, L, vocab_size]</td></tr>
+</table>
+
+<h3>参数量分布</h3>
+<p>一个 Transformer Block 的参数量主要在:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Attention</strong> 的 Q/K/V/O 四个线性层: $4 \times d_{model}^2$</li>
+<li><strong>FFN</strong> 的两个线性层: $2 \times d_{model} \times d_{ff} = 8 \times d_{model}^2$ (按 $d_{ff} = 4 d_{model}$)</li>
+</ul>
+<p>所以<strong>FFN 占每层 2/3 参数量</strong>,attention 占 1/3。这给 MoE 提供动机——把大 FFN 稀疏化,显著降计算。</p>
+<p>整个模型参数 $\approx 12 \times N_{layers} \times d_{model}^2$ + embedding 表($V \times d_{model}$,V 词表大小)。LLaMA-3-70B 层数 80、d_model=8192,算出 ≈ 64B,加上 embedding 和少量其他 ≈ 70B。</p>
+
+<h3>前向和反向</h3>
+<p>训练时给定整个序列,前向一次得到每个位置的预测分布。损失是<strong>每个位置都算交叉熵</strong>(预测下一个 token),求和再反传。一次前向 + 反向的计算量约 $6 \times N_{params} \times N_{tokens}$。</p>
+<p>推理时从 prompt 开始,每次只预测下一个 token。详见 4.8 节。</p>
+
+<h2 id="s4-2-2"><span class="num">4.2.2</span>Self-Attention 完整推导</h2>
+<p class="pos">定位:LLM 灵魂算子——推导每一个细节,包括为什么要除 √d。</p>
+
+<h3>问题设定</h3>
+<p>输入:$L$ 个 token,每个是 $d$ 维向量 $\mathbf{x}_i \in \mathbb{R}^d$。目标:让每个位置 $i$ 的输出 $\mathbf{y}_i$ 是所有输入位置信息的<strong>动态加权组合</strong>,权重由 $\mathbf{x}_i$ 和其他位置的"相似度"决定。</p>
+
+<h3>Query / Key / Value 的角色</h3>
+<p>核心思想:每个位置扮演三个角色:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Query</strong>(查询):$\mathbf{q}_i = W_Q \mathbf{x}_i$,"我想找什么样的信息"</li>
+<li><strong>Key</strong>(键):$\mathbf{k}_i = W_K \mathbf{x}_i$,"我是什么样的信息"</li>
+<li><strong>Value</strong>(值):$\mathbf{v}_i = W_V \mathbf{x}_i$,"我要贡献什么"</li>
+</ul>
+<p>计算位置 $i$ 的输出时:用 $\mathbf{q}_i$ 和所有 $\mathbf{k}_j$ 比对,得到权重 $\alpha_{ij}$,然后用 $\alpha_{ij}$ 对所有 $\mathbf{v}_j$ 加权平均。这个三分离让模型有表达力——要让"i 对 j 的相关度"和"j 对 i 的相关度"可以不同。</p>
+
+<h3>矩阵化推导</h3>
+<p>把所有 token 堆叠:$\mathbf{X} \in \mathbb{R}^{L \times d}$。算:</p>
+<div class="formula">$\mathbf{Q} = \mathbf{X} W_Q, \quad \mathbf{K} = \mathbf{X} W_K, \quad \mathbf{V} = \mathbf{X} W_V$</div>
+<p>都是 $L \times d$ 矩阵($W_*$ 是 $d \times d$ 投影)。然后算相似度:</p>
+<div class="formula">$\mathbf{S} = \mathbf{Q} \mathbf{K}^\top \in \mathbb{R}^{L \times L}$</div>
+<p>$S_{ij}$ 就是 query $i$ 和 key $j$ 的点积——越大表示越"像"。</p>
+
+<h3>为什么要除 √d</h3>
+<p>这里有个关键细节。$\mathbf{q}_i \cdot \mathbf{k}_j = \sum_{k=1}^d q_k \cdot k_k$。如果 $q, k$ 的每一维独立、均值 0 方差 1,那点积的方差是 $d$(标准差 $\sqrt{d}$)。</p>
+<p>$d$ 大时点积值域很宽——有的很大,有的很小。送入 softmax 后,softmax 会被最大值支配(softmax 的"尖锐化"效应)。如果 $s_1 = 30, s_2 = 25$,差 5 就会让 softmax 几乎只关注 $s_1$。更严重:梯度会消失——softmax 在"一家独大"的区域梯度极小。</p>
+<p>Transformer 原论文的 fix:除以 $\sqrt{d_k}$,让点积方差回到 1:</p>
+<div class="formula">$\text{Attention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) = \text{softmax}\left(\frac{\mathbf{Q} \mathbf{K}^\top}{\sqrt{d_k}}\right) \mathbf{V}$</div>
+<p>这就是"Scaled Dot-Product Attention"。</p>
+
+<h3>Causal Mask</h3>
+<p>LLM 是 causal(每个位置只能看到自己和之前的位置),所以要把 $\mathbf{S}$ 的上三角设为 $-\infty$,softmax 之后上三角变 0:</p>
+<pre><code class="language-python">import torch
+
+def causal_attention(Q, K, V):
+    # Q, K, V: [B, H, L, d_head]
+    d_k = Q.size(-1)
+    S = Q @ K.transpose(-2, -1) / d_k ** 0.5   # [B, H, L, L]
+    L = S.size(-1)
+    mask = torch.triu(torch.ones(L, L, dtype=torch.bool), diagonal=1)
+    S = S.masked_fill(mask, float('-inf'))
+    A = torch.softmax(S, dim=-1)
+    return A @ V   # [B, H, L, d_head]
+</code></pre>
+
+<h3>计算复杂度</h3>
+<p>计算 $\mathbf{Q}\mathbf{K}^\top$: $O(L^2 d)$。softmax: $O(L^2)$。和 $\mathbf{V}$ 乘: $O(L^2 d)$。总计 $O(L^2 d)$。</p>
+<p>内存:$\mathbf{S}$ 矩阵 $O(L^2)$,$L=4096$ 时 16M 元素 × FP16 = 32MB 每头每样本。这就是 attention 的"二次复杂度瓶颈"——长上下文的根本挑战。<a href="ch5_partB_preview.html#p10">FlashAttention</a>、稀疏注意力、<a href="ch5_partC_supplement.html#p24">Mamba</a> 都是在解决这个。</p>
+
+<h2 id="s4-2-3"><span class="num">4.2.3</span>Multi-Head Attention</h2>
+<p class="pos">定位:把注意力拆成多头——为什么有效、怎么实现。</p>
+
+<h3>动机</h3>
+<p>单头 attention 只能学一种"注意模式"——可能学会"指代关系"、也可能学会"语法邻近",但一头只能表示一种。多头让模型同时学多种:每个头有独立的 $W_Q^h, W_K^h, W_V^h$,学不同模式。</p>
+
+<h3>实现</h3>
+<p>朴素实现会搞 $H$ 次 attention 再拼接。实际为了效率,用一个大投影分头:</p>
+<ol>
+<li>把 $\mathbf{X}$ 投到 $d_{model}$ 维的 Q/K/V</li>
+<li>Reshape 成 $H$ 个 $d_{head}$ 维子空间: $d_{model} = H \times d_{head}$</li>
+<li>每个头独立做 attention</li>
+<li>拼回 $d_{model}$ 维,再一个输出投影 $W_O$</li>
+</ol>
+<pre><code class="language-python">import torch
+import torch.nn as nn
+
+class MultiHeadAttention(nn.Module):
+    def __init__(self, d_model, n_heads):
+        super().__init__()
+        assert d_model % n_heads == 0
+        self.H = n_heads
+        self.d_head = d_model // n_heads
+        self.Wq = nn.Linear(d_model, d_model, bias=False)
+        self.Wk = nn.Linear(d_model, d_model, bias=False)
+        self.Wv = nn.Linear(d_model, d_model, bias=False)
+        self.Wo = nn.Linear(d_model, d_model, bias=False)
+
+    def forward(self, x, mask=None):
+        B, L, D = x.shape
+        Q = self.Wq(x).view(B, L, self.H, self.d_head).transpose(1, 2)
+        K = self.Wk(x).view(B, L, self.H, self.d_head).transpose(1, 2)
+        V = self.Wv(x).view(B, L, self.H, self.d_head).transpose(1, 2)
+        S = Q @ K.transpose(-2, -1) / self.d_head ** 0.5
+        if mask is not None: S = S.masked_fill(mask, float('-inf'))
+        A = torch.softmax(S, dim=-1)
+        out = A @ V
+        out = out.transpose(1, 2).reshape(B, L, D)
+        return self.Wo(out)
+</code></pre>
+
+<h3>常见参数</h3>
+<table>
+<tr><th>模型</th><th>d_model</th><th>头数 H</th><th>d_head</th></tr>
+<tr><td>GPT-2 small</td><td>768</td><td>12</td><td>64</td></tr>
+<tr><td>GPT-3 175B</td><td>12288</td><td>96</td><td>128</td></tr>
+<tr><td>LLaMA-3 70B</td><td>8192</td><td>64</td><td>128</td></tr>
+<tr><td>LLaMA-3 405B</td><td>16384</td><td>128</td><td>128</td></tr>
+</table>
+<p>$d_{head}$ 一般固定在 64 或 128——太小每头信息不够,太大头数就少没多头的意义。</p>
+
+<h3>多头的可视化</h3>
+<p>BertViz、LLM Attention Viewer 这类工具能把每头的注意力可视化。实测发现:不同头确实学到不同模式——有的头看句末标点、有的头看最近邻、有的头做指代消解。但也有大量"无意义"的头(去掉不影响效果)——这启发了后续的 head pruning。</p>
+
+<h2 id="s4-2-4"><span class="num">4.2.4</span>FFN、残差与归一化</h2>
+<p class="pos">定位:Transformer Block 的另一半——FFN 增强表达,残差/归一化保证训练。</p>
+
+<h3>FFN 的作用</h3>
+<p>Attention 让位置之间交流,但<strong>attention 的输出仍在 token 表示的线性子空间里</strong>——光有 attention,模型表达力有限。FFN 在每个位置独立做非线性变换,把表示投到高维非线性空间再投回。</p>
+<div class="formula">$\text{FFN}(\mathbf{x}) = W_2 \cdot \text{activation}(W_1 \mathbf{x} + \mathbf{b}_1) + \mathbf{b}_2$</div>
+<p>$W_1$ 是 $d_{model} \to d_{ff}$(升维),$W_2$ 是 $d_{ff} \to d_{model}$(降回)。$d_{ff}$ 通常 4× $d_{model}$。</p>
+
+<h3>激活函数演进</h3>
+<p><strong>原始 Transformer</strong>:ReLU。<strong>BERT/GPT 时代</strong>:GELU。<strong>LLaMA 时代</strong>:SwiGLU。</p>
+
+<h3>SwiGLU 的机制</h3>
+<p>SwiGLU 不是普通激活函数,是"门控线性单元"。把 FFN 改成:</p>
+<div class="formula">$\text{SwiGLU}(\mathbf{x}) = W_3 \cdot \left( \text{SiLU}(W_1 \mathbf{x}) \odot (W_2 \mathbf{x}) \right)$</div>
+<p>用了三个线性投影 $W_1, W_2, W_3$。$W_1$ 过 SiLU,$W_2$ 不过,两者逐元素乘。$W_3$ 把结果投回 $d_{model}$。</p>
+<p>逐元素乘 $(W_2 \mathbf{x})$ 起"门"的作用——它决定哪些维度放行、哪些抑制。比纯 MLP 表达力强。</p>
+<p>参数控制:为了保持总参数量和 4× FFN 一致,把中间维度从 $4 d$ 改成 $\frac{8}{3} d$。LLaMA、Qwen、Mistral、DeepSeek 都这么做。</p>
+<pre><code class="language-python">class SwiGLU(nn.Module):
+    def __init__(self, d_model, d_ff=None):
+        super().__init__()
+        d_ff = d_ff or int(8 * d_model / 3)
+        self.W1 = nn.Linear(d_model, d_ff, bias=False)
+        self.W2 = nn.Linear(d_model, d_ff, bias=False)
+        self.W3 = nn.Linear(d_ff, d_model, bias=False)
+
+    def forward(self, x):
+        return self.W3(nn.functional.silu(self.W1(x)) * self.W2(x))
+</code></pre>
+
+<h3>残差连接</h3>
+<p>第 3 章 4.4.1 讲过 ResNet 的残差思想。Transformer 也用:每个 sublayer(attention 和 FFN)输出都加上输入。$\mathbf{y} = \mathbf{x} + \text{Sublayer}(\mathbf{x})$。</p>
+<p>好处:梯度通过残差路径直达深层,避免消失;如果某层没学到有用变换,残差让它趋近恒等映射,不拖后腿;可训 80+ 层模型。</p>
+
+<h3>Pre-Norm vs Post-Norm</h3>
+<p>归一化放哪儿有讲究。</p>
+<p><strong>Post-Norm</strong>(原始 Transformer):<code>y = LayerNorm(x + Sublayer(x))</code>。残差相加后再归一化。</p>
+<p><strong>Pre-Norm</strong>(GPT-2 后):<code>y = x + Sublayer(LayerNorm(x))</code>。归一化后进 sublayer,残差直接加到输入。</p>
+<p>Pre-Norm 胜在<strong>训练稳定性</strong>:残差路径是"纯"的,梯度可以无阻碍传递。Post-Norm 的残差路径经过 LayerNorm,梯度被缩放,深层网络难训。</p>
+<p>代价:Pre-Norm 的最终输出方差随层数累积(每层加一次残差),所以 Pre-Norm 模型最后要加一个 final LayerNorm。现代 LLM 全部 Pre-Norm。</p>
+
+<h3>RMSNorm 替代 LayerNorm</h3>
+<p>第 3 章 4.3.5 提过。LayerNorm:$\frac{x - \mu}{\sigma} \gamma + \beta$,要算均值、方差、加 bias。</p>
+<p>RMSNorm 简化:只除以均方根,不减均值、不加 bias。</p>
+<div class="formula">$\text{RMSNorm}(\mathbf{x}) = \frac{\mathbf{x}}{\sqrt{\frac{1}{d}\sum_i x_i^2 + \epsilon}} \odot \boldsymbol{\gamma}$</div>
+<p>实测效果和 LayerNorm 差不多,但更快(省一次均值计算、一次减法)、参数少(无 $\beta$)。LLaMA 用 RMSNorm,之后大部分新模型都跟进。</p>
+
+<h2 id="s4-2-5"><span class="num">4.2.5</span>Encoder/Decoder 分野</h2>
+<p class="pos">定位:三种 Transformer 变体——Encoder-only、Decoder-only、Encoder-Decoder——的使用分野。</p>
+
+<h3>三种架构</h3>
+<p>原始 Transformer(2017)是 Encoder-Decoder——为翻译任务设计:encoder 读源语言,decoder 看 encoder 输出并生成目标语言。后来演化出三条路线。</p>
+
+<h3>Encoder-Only(BERT 家族)</h3>
+<p>只有 encoder 栈,双向注意力(每个位置看到所有位置)。训练目标:MLM(Masked Language Modeling)——遮住 15% 的 token 让模型预测。</p>
+<p>优势:理解类任务(分类、命名实体识别、句子相似度)一流,因为每个位置的表示都有完整上下文。</p>
+<p>代表:BERT(2018)、RoBERTa、DeBERTa、Electra。今天仍广泛用作"文本编码器"——句嵌入、RAG 的 embedding model 底座多是这类。</p>
+
+<h3>Decoder-Only(GPT 家族)</h3>
+<p>只有 decoder 栈,单向注意力(causal mask,每个位置只看自己和之前)。训练目标:CLM(Causal LM)——预测下一个 token。</p>
+<p>优势:生成天然匹配。而且 in-context learning、few-shot 这些涌现能力,主要出现在 decoder-only 大模型上。</p>
+<p>代表:GPT 系列、LLaMA、Qwen、DeepSeek、Mistral——几乎全部现代 LLM。</p>
+
+<h3>Encoder-Decoder(T5/BART)</h3>
+<p>完整的 encoder-decoder 结构。训练目标多样:T5 用 span corruption(遮一段让生成)、BART 用 denoising(多种破坏后恢复)。</p>
+<p>优势:有明确输入输出分离的任务(翻译、摘要、问答),encoder 专注理解、decoder 专注生成。</p>
+<p>代表:T5(Google)、BART、mT5、FLAN-T5。今天主流 LLM 几乎放弃这个路线——decoder-only 更简单、scaling 效果更好。</p>
+
+<h3>为什么 Decoder-Only 赢了</h3>
+<ol>
+<li><strong>训练简单</strong>:一个目标(下一 token),所有文本都是训练数据。Encoder-Decoder 要设计"输入-输出"对。</li>
+<li><strong>In-context learning</strong>:把任务说明和例子写进 prompt,模型自适应——不需要设计专门架构。</li>
+<li><strong>生成能力</strong>:即便理解类任务,让 decoder-only 写出答案也行(甚至更强,因为可以 CoT)。</li>
+<li><strong>Scaling 效果</strong>:经验上 decoder-only 对参数增加的响应最好。</li>
+</ol>
+<p>Encoder-only 在"要 embedding"的场景仍活跃——因为 decoder-only 天然不产生"句子级表示"(要用"最后一个 token"或平均池化近似)。但生成任务 decoder-only 一统江湖。</p>
+
+<h2 id="s4-2-6"><span class="num">4.2.6</span>Transformer 的演进</h2>
+<p class="pos">定位:从 2017 原版到今天——关键改动有哪些。</p>
+
+<h3>演进清单</h3>
+<p>7 年时间里原版 Transformer 被改了很多地方。这些改动每一个都能用上面几节讲过的工具理解。下面一张图给出从 2017 到 2024 的主要变化:</p>
+<table>
+<tr><th>组件</th><th>原始 Transformer (2017)</th><th>LLaMA-3 (2024)</th></tr>
+<tr><td>归一化</td><td>Post-Norm + LayerNorm</td><td>Pre-Norm + RMSNorm</td></tr>
+<tr><td>位置编码</td><td>正弦绝对</td><td>RoPE 旋转位置</td></tr>
+<tr><td>激活</td><td>ReLU</td><td>SwiGLU</td></tr>
+<tr><td>Attention</td><td>MHA</td><td>GQA</td></tr>
+<tr><td>Bias</td><td>所有 Linear 都有</td><td>全部去掉</td></tr>
+<tr><td>Dropout</td><td>使用</td><td>大多不用(数据足够就不过拟合)</td></tr>
+<tr><td>Tokenizer</td><td>WordPiece</td><td>SentencePiece/BPE,大词表</td></tr>
+</table>
+
+<h3>改动的脉络</h3>
+<p>大致三个主题:</p>
+<p><strong>训练稳定性</strong>:Pre-Norm、RMSNorm、去 bias、权重初始化改进——让大模型能收敛。</p>
+<p><strong>计算/内存效率</strong>:GQA、SwiGLU、FlashAttention、MoE——同样参数量下更快、更少显存。</p>
+<p><strong>长上下文</strong>:RoPE、YaRN、滑窗注意力、MLA——让模型能处理更长序列。</p>
+
+<h3>不变的是什么</h3>
+<p>有趣的是,<strong>Transformer 的骨架 7 年没变</strong>:"Attention + FFN + 残差"的 block 重复堆叠。所有改进都是对组件的精细化,没有架构层面的颠覆。</p>
+<p>候选颠覆者 Mamba、RWKV、RetNet 在研究热度上起来了,但到 2024 年底主流商业部署仍是纯 Transformer。这说明 Transformer 的通用性极强,改进空间远未穷尽。</p>
+
+<div class="part-header"><div class="part-label">PART THREE</div><h2 class="part-title">4.3 位置编码与长上下文</h2><p class="part-desc">Attention 本身不知道顺序——位置编码告诉它。长上下文则要求位置编码"外推"。</p></div>
+
+<h2 id="s4-3-1"><span class="num">4.3.1</span>位置编码发展史</h2>
+<p class="pos">定位:从正弦绝对编码,到学习式,到相对位置,到 RoPE——演化逻辑。</p>
+
+<h3>为什么需要位置编码</h3>
+<p>Attention 是"集合运算"——如果打乱输入 token 顺序,attention 输出对应位置也跟着换,但<em>语义上</em>每个位置的表示不变。这对"The cat sat on the mat" 和 "mat the on sat cat The" 会产生一模一样的中间表示。显然不对。所以必须给每个位置注入"位置信息"。</p>
+
+<h3>正弦绝对编码(原始 Transformer)</h3>
+<p>用不同频率的正弦余弦给每个位置一个 $d$ 维向量:</p>
+<div class="formula">$\text{PE}(\text{pos}, 2i) = \sin(\text{pos} / 10000^{2i/d})$</div>
+<div class="formula">$\text{PE}(\text{pos}, 2i+1) = \cos(\text{pos} / 10000^{2i/d})$</div>
+<p>把这个加到 token embedding 上。好处:无参数、外推到训练长度外时有"猜测"能力(因为是连续函数)。问题:外推效果实际很糟——训练到 2048 位置的模型,推理到 2049 就崩。</p>
+
+<h3>学习式位置编码</h3>
+<p>GPT-2 简化:直接给每个位置一个可学习 embedding。训练多少长度就支持多少——超出直接爆。对训练窗口内的位置表达力更强但完全不能外推。</p>
+
+<h3>相对位置编码</h3>
+<p>思路转变:真正重要的不是绝对位置"第 5 个词",而是相对距离"两词间隔几个"。</p>
+<p>T5 的做法:给 attention score 加一个偏置 $b_{i-j}$,$b$ 是可学习的。距离相同用同一个偏置。ALiBi(2022)更激进:用固定的线性衰减 $-m \cdot |i - j|$ 作为偏置,无可学习参数。ALiBi 训练到 1024 长度能外推到 4096+。</p>
+
+<h3><a href="ch5_partA_preview.html#p09">RoPE</a></h3>
+<p>RoFormer（2021）提出。今天几乎所有主流模型(LLaMA、Qwen、DeepSeek、Mistral)都用。下一节深挖。</p>
+
+<h3>对比</h3>
+<table>
+<tr><th>方案</th><th>外推能力</th><th>参数</th><th>典型模型</th></tr>
+<tr><td>正弦绝对</td><td>差</td><td>无</td><td>原始 Transformer</td></tr>
+<tr><td>学习绝对</td><td>无</td><td>L×d</td><td>GPT-2</td></tr>
+<tr><td>T5 偏置</td><td>有限</td><td>少量</td><td>T5</td></tr>
+<tr><td>ALiBi</td><td>良</td><td>H (每头一个 m)</td><td>BLOOM, MPT</td></tr>
+<tr><td>RoPE</td><td>良(+ YaRN 等技术)</td><td>无</td><td>LLaMA/Qwen/DeepSeek</td></tr>
+</table>
+
+<h2 id="s4-3-2"><span class="num">4.3.2</span>RoPE 深挖</h2>
+<p class="pos">定位:旋转位置编码——数学优雅、实现简单、成为事实标准。</p>
+
+<h3>核心思想</h3>
+<p>RoPE 不对输入加位置向量,而是<em>对 Q 和 K 做旋转</em>——使得 $\mathbf{q}_m \cdot \mathbf{k}_n$ 的结果自然编码了相对位置 $m - n$。</p>
+
+<h3>二维情形</h3>
+<p>先看 2 维 case。把 Q、K 的每对相邻维度看作复数(或 2D 平面向量)。对位置 $m$,把 $\mathbf{q}_m$ 旋转角度 $m\theta$:</p>
+<div class="formula">$\begin{pmatrix} q_m^{(1)} \\ q_m^{(2)} \end{pmatrix} \to \begin{pmatrix} \cos m\theta & -\sin m\theta \\ \sin m\theta & \cos m\theta \end{pmatrix} \begin{pmatrix} q_m^{(1)} \\ q_m^{(2)} \end{pmatrix}$</div>
+<p>类似旋转 $\mathbf{k}_n$ 角度 $n\theta$。然后算内积:</p>
+<div class="formula">$\mathbf{q}_m^{\text{RoPE}} \cdot \mathbf{k}_n^{\text{RoPE}} = f(m - n)$</div>
+<p>只依赖 $m - n$! 这正是相对位置编码想要的性质。</p>
+<p>直觉:把向量当复数 $q_m, k_n$,旋转 $m\theta$ 等同于乘 $e^{im\theta}$。内积变成 $q_m e^{im\theta} \cdot (k_n e^{in\theta})^* = q_m k_n^* e^{i(m-n)\theta}$——只和 $m-n$ 有关。</p>
+
+<h3>高维:分段旋转</h3>
+<p>$d$ 维空间的 Q、K 向量,把维度两两配对,每对独立做 2D 旋转,但用不同频率:</p>
+<div class="formula">$\theta_i = 10000^{-2(i-1)/d}, \quad i = 1, \ldots, d/2$</div>
+<p>低维维度用高频($\theta_1 = 1$,每步转 1 弧度),高维度用低频($\theta_{d/2} \approx 10000^{-1}$,每步转很小)。这样不同维度能捕捉不同尺度的位置差异。</p>
+
+<h3>实现</h3>
+<pre><code class="language-python">import torch
+
+def build_rope_freqs(d_head, max_seq_len, base=10000):
+    freqs = 1.0 / (base ** (torch.arange(0, d_head, 2).float() / d_head))
+    t = torch.arange(max_seq_len).float()
+    freqs_cis = torch.outer(t, freqs)
+    return torch.polar(torch.ones_like(freqs_cis), freqs_cis)
+
+def apply_rope(x, freqs_cis):
+    x_complex = torch.view_as_complex(x.float().reshape(*x.shape[:-1], -1, 2))
+    x_out = x_complex * freqs_cis[:x.size(-2)]
+    return torch.view_as_real(x_out).flatten(-2).type_as(x)
+
+Q = apply_rope(Q, freqs_cis)
+K = apply_rope(K, freqs_cis)
+</code></pre>
+<p>几个细节:RoPE 只作用于 Q 和 K,不作用 V——V 承载内容信息不该带位置;<code>freqs_cis</code> 可以预计算并缓存,推理零开销。</p>
+
+<h3>RoPE 的三大优势</h3>
+<ol>
+<li><strong>相对位置</strong>:自然编码距离而非绝对位置</li>
+<li><strong>衰减性</strong>:远距离的内积自然衰减——符合"远处词关联弱"的直觉</li>
+<li><strong>外推潜力</strong>:未训练的位置可以外推——连续的三角函数不会突然失效(虽然真要大幅外推需要 YaRN 等技术辅助)</li>
+</ol>
+
+<h2 id="s4-3-3"><span class="num">4.3.3</span>长上下文外推</h2>
+<p class="pos">定位:怎么让训练到 4K 的模型用到 128K——PI、NTK-aware、YaRN、LongRoPE。</p>
+
+<h3>问题</h3>
+<p>训练时看过 0 到 4K 的位置,推理时来一个 64K 的序列——高频旋转角度在 64K 时已经翻转过千万次,模型从未见过这个旋转状态,效果崩盘。</p>
+
+<h3>PI:位置插值</h3>
+<p>Meta 2023 年提出 Position Interpolation。思路简单粗暴:把推理时的位置<em>压缩</em>回训练范围。如果训练长度 $L_{\text{train}}$、目标长度 $L_{\text{new}}$,让位置 $m$ 变成 $m \cdot L_{\text{train}} / L_{\text{new}}$。</p>
+<p>数学上等价于把 RoPE 的旋转频率降 $L_{\text{new}}/L_{\text{train}}$ 倍。缺点:高频信息变模糊,模型需要轻微微调(几百步)适应。</p>
+
+<h3>NTK-aware Scaling</h3>
+<p>PI 不区分不同频率,把所有维度一起压。NTK-aware(2023 民间提出)观察到:<strong>低频维度不该压缩(它们原本就没循环完一圈)</strong>,只压高频。</p>
+<p>具体做法:把 RoPE 的 base 从 10000 改大(如 40000)。这相当于让所有频率都变小,但对原本就小的低频影响更小——精密保留了大尺度信息。</p>
+<p>好处:无需微调就能 2-4× 外推,质量下降小。</p>
+
+<h3>YaRN</h3>
+<p>Nous Research 2023 年提出 YaRN(Yet another RoPE extensioN)。在 NTK-aware 基础上加精细化调整:按维度频率分三档(高频保持原样、中频 NTK 缩放、低频 PI 插值);加温度缩放补偿长度变化带来的方差。</p>
+<p>YaRN 配合少量微调(1B token 量级)能把 LLaMA-2 从 4K 拓到 128K 而质量损失很小。是今天开源社区主流做法。</p>
+
+<h3>LongRoPE</h3>
+<p>Microsoft 2024 年提出,YaRN 的升级版。核心创新:<strong>不是所有 RoPE 维度都用同一个缩放系数,而是通过搜索找出最优的每维度缩放</strong>——有些维度多压、有些少压。搜索成本可观,但效果:2M token 的 LLaMA-3 基础上可行。</p>
+
+<h3>原生长上下文训练</h3>
+<p>外推是省事做法,但不如从头训。现在大厂越来越直接用长文档训练:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>LLaMA-3</strong>:8K 预训练,后续用 800M token 扩到 128K</li>
+<li><strong>Qwen2.5-1M</strong>:从 32K 扩到 256K/1M,用阶段性长文训练</li>
+<li><strong>Gemini 1.5</strong>:号称 1M 甚至 10M 上下文,技术细节不公开</li>
+</ul>
+
+<h3>上下文长度的实际意义</h3>
+<p>模型"支持"128K 不等于"用好"128K。<strong>Lost in the Middle</strong> 现象:长上下文里中间段的信息会被模型忽略。评估标准:Needle in a Haystack(在长文中藏一句关键信息,问模型能否找到);RULER(多种长上下文任务综合评估);LongBench。很多号称 100K 的模型在 50K 以后准确率已经暴跌。实际工程要测过才知道。</p>
+
+<div class="part-header"><div class="part-label">PART FOUR</div><h2 class="part-title">4.4 注意力优化变体</h2><p class="part-desc">Attention 的二次复杂度是 LLM 最大瓶颈——从 MHA 到 MLA 到 Mamba 的演化。</p></div>
+
+<h2 id="s4-4-1"><span class="num">4.4.1</span>MQA / GQA / MLA</h2>
+<p class="pos">定位:减少 KV Cache 的几代方案——从 MQA 到 DeepSeek 的 MLA。</p>
+
+<h3>为什么 KV Cache 是瓶颈</h3>
+<p>推理时,每生成一个新 token 都要算新 token 的 Q、K、V;把新 K、V 追加到之前的;新 Q 对所有 K、V 做 attention。如果每次都重新算前面所有位置的 K、V,是 $O(L^2)$ 计算。<strong>KV Cache</strong> 缓存前面算过的 K、V,新 token 只算自己那份,总计算 $O(L)$。</p>
+<p>但 KV Cache 占显存。估算:<code>2 × layers × H × d_head × seq_len × 2 bytes (FP16)</code>。LLaMA-3-70B 在 L=8K 时 KV Cache ≈ 2.5 GB/样本。batch=10 就 25GB——比模型权重还大。长上下文下 KV Cache 是显存主要杀手。</p>
+
+<h3>MHA / MQA / GQA</h3>
+<p>标准 MHA,$H$ 个头每头独立 Q、K、V。KV Cache 需要存 $H$ 份 K 和 $H$ 份 V。这是基线。</p>
+<p><strong>MQA</strong>(Noam Shazeer 2019):极端化,所有头共享一组 K、V,只有 Q 是每头独立。KV Cache 缩 $H$ 倍!但效果损失明显——单组 K、V 表达力不够。PaLM、Falcon 用过。</p>
+<p><strong>GQA</strong>:MHA 和 MQA 的折中。$H$ 个头分 $G$ 组,每组共享一组 K、V。$G = H$ 时退化成 MHA,$G = 1$ 时退化成 MQA。LLaMA-3-70B 用 $G = 8$(64 头共享 8 组 K、V),KV Cache 缩 8 倍,效果几乎无损。</p>
+<p>今天 LLaMA、Qwen、Mistral 都用 GQA。</p>
+
+<pre><code class="language-python">class GroupedQueryAttention(nn.Module):
+    def __init__(self, d_model, n_heads=64, n_kv_heads=8):
+        super().__init__()
+        self.H = n_heads
+        self.G = n_kv_heads
+        self.d_head = d_model // n_heads
+        self.Wq = nn.Linear(d_model, n_heads * self.d_head, bias=False)
+        self.Wk = nn.Linear(d_model, n_kv_heads * self.d_head, bias=False)
+        self.Wv = nn.Linear(d_model, n_kv_heads * self.d_head, bias=False)
+        self.Wo = nn.Linear(d_model, d_model, bias=False)
+
+    def forward(self, x):
+        B, L, _ = x.shape
+        Q = self.Wq(x).view(B, L, self.H, self.d_head).transpose(1, 2)
+        K = self.Wk(x).view(B, L, self.G, self.d_head).transpose(1, 2)
+        V = self.Wv(x).view(B, L, self.G, self.d_head).transpose(1, 2)
+        K = K.repeat_interleave(self.H // self.G, dim=1)
+        V = V.repeat_interleave(self.H // self.G, dim=1)
+        S = Q @ K.transpose(-2, -1) / self.d_head ** 0.5
+        A = torch.softmax(S, dim=-1)
+        out = (A @ V).transpose(1, 2).reshape(B, L, -1)
+        return self.Wo(out)
+</code></pre>
+
+<h3>MLA:DeepSeek 的创新</h3>
+<p>DeepSeek-V2 提出 MLA(Multi-head Latent Attention),进一步压缩 KV Cache。</p>
+<p>核心思想:<strong>不存 K 和 V,只存它们的低秩潜在表示</strong>。具体地:</p>
+<div class="formula">$\mathbf{c}_{\text{kv}} = W_{DKV} \mathbf{x} \in \mathbb{R}^{d_c}$</div>
+<p>$d_c \ll d_{model}$。这个压缩向量 $\mathbf{c}_{\text{kv}}$ 存进 Cache。需要 K、V 时上投影恢复:</p>
+<div class="formula">$\mathbf{k} = W_{UK} \mathbf{c}_{\text{kv}}, \quad \mathbf{v} = W_{UV} \mathbf{c}_{\text{kv}}$</div>
+<p>类比 <a href="ch5_partB_preview.html#p11">LoRA</a>——用低秩分解压缩矩阵。但 MLA 的精妙在于:<strong>上投影矩阵 $W_{UK}$ 可以和 Q 的投影合并,推理时不需要真的上投影</strong>。</p>
+<p>具体地,attention score $\mathbf{q}^\top \mathbf{k} = \mathbf{q}^\top W_{UK} \mathbf{c}_{\text{kv}} = (\mathbf{q}^\top W_{UK}) \mathbf{c}_{\text{kv}}$。预先把 $W_{UK}$ 吸收到 Q 的投影里,推理时直接算 $\tilde{\mathbf{q}}^\top \mathbf{c}_{\text{kv}}$——KV Cache 里只有压缩向量。</p>
+<p>DeepSeek-V2 用 $d_c = 4 d_{head}$,KV Cache 比等效 MHA 小 90%+,效果还更好(低秩分解某种程度起正则作用)。</p>
+
+<h3>MLA 的 RoPE 处理</h3>
+<p>MLA 有个别扭之处:RoPE 作用在 K 上会破坏"合并矩阵"的数学。DeepSeek 的解法是把 K 分成两半——<strong>没有位置信息的部分</strong>(走 MLA 压缩)+ <strong>带 RoPE 的小份</strong>(不压缩,正常存)。这半/半拆分是工程折中。</p>
+
+<h3>DSA:DeepSeek Sparse Attention(V3.2 引入)</h3>
+<p>DeepSeek 2025 年 10 月发布的 V3.2 带来进一步创新——Sparse Attention(DSA)。动机:长上下文下,MLA 已经把 KV Cache 压得很小,但 attention 本身仍是 $O(L^2)$ 计算。DSA 在 MLA 基础上加入"细粒度稀疏"——每个 Q 只看重要的 K 子集,不再全看。</p>
+<p>关键创新点:</p>
+<ol>
+<li><strong>动态 top-k 选择</strong>:对每个 query,用轻量打分算出最相关的 K 小集合,只在这些 K 上做 attention。不同 query 选不同 K。</li>
+<li><strong>和 MLA 无缝结合</strong>:稀疏 + 低秩压缩双重减负,长上下文 compute 成本降 50% 左右,质量几乎无损。</li>
+<li><strong>思考/非思考统一</strong>:V3.2 继承 V3.1 的混合模式,同一模型既能快速回答也能深度推理。</li>
+</ol>
+<p>DSA 是稀疏注意力多年积累后,在大模型上第一次做到"效果和密集 attention 相当、成本显著更低"。这也说明 4.4.2 讲过的稀疏注意力路线并未失败,只是之前的方案不够精细。</p>
+<p>V3.2 还有 Speciale 变种,把推理能力推到据称接近闭源顶级模型的水平——2025 年末开源侧的标杆。</p>
+
+<h2 id="s4-4-2"><span class="num">4.4.2</span>稀疏注意力</h2>
+<p class="pos">定位:放弃"每个位置看所有位置",只看关键子集——用 $O(L \log L)$ 甚至 $O(L)$ 替代 $O(L^2)$。</p>
+
+<h3>思路</h3>
+<p>全注意力的大部分权重其实很小——大部分位置关联不强。稀疏注意力选择性计算,省时省内存。</p>
+
+<h3>Sliding Window</h3>
+<p>最简单:每个位置只看窗口大小 $w$ 内的近邻。复杂度 $O(L w)$,$w$ 固定时线性。Longformer、BigBird、Mistral(窗口 4096)用。问题:远处信息传不过来。解法——多层叠加后感受野扩大(第 $k$ 层感受野 $k w$)。</p>
+
+<h3>Dilated Attention</h3>
+<p>跳跃式看——每隔 $d$ 个位置看一次。类似膨胀卷积。几层叠加后覆盖大范围。</p>
+
+<h3>Global Token</h3>
+<p>指定少数"全局 token"(如 [CLS])能看到所有位置、所有位置也能看到它们。其他位置只看局部。全局 token 起"信息汇聚点"作用。BigBird 组合了 Sliding Window + Dilated + Global,既有局部细节也有长距离桥接。</p>
+
+<h3>Routing Attention</h3>
+<p>动态选择看哪些位置。Reformer 用 LSH(局部敏感哈希)找相似的 Q、K 对;Routing Transformer 用聚类。这类方法在某些任务有效但实现复杂。</p>
+
+<h3>Sliding Window + Attention Sink</h3>
+<p>StreamingLLM(2023)观察到一个有趣现象:初始几个 token(attention sink)对保持 attention 分布稳定至关重要——即便它们语义上不重要,模型会给它们大量 attention 权重(起归一化作用)。</p>
+<p>流式场景下:保留初始几个 token + 最近窗口 + 丢掉中间——模型可以处理无限长输入而不退化。实用。</p>
+
+<h3>为什么稀疏注意力没主导</h3>
+<p>虽然理论优雅,稀疏注意力在大模型上实际<em>没有取代</em>全注意力。原因:</p>
+<ol>
+<li>FlashAttention 把全注意力的常数优化到极致,$L^2$ 的墙没那么高</li>
+<li>模型 scaling 带来的能力提升远超过稀疏注意力的效率</li>
+<li>稀疏模式硬编码的归纳偏置不一定适合所有任务</li>
+</ol>
+<p>今天开源模型里典型的混合方案是 Mistral 的"Sliding Window + 全注意力"——浅层 sliding,最后几层全注意力——既省内存又不失表达力。</p>
+
+<h2 id="s4-4-3"><span class="num">4.4.3</span>线性注意力与 <a href="ch5_partC_supplement.html#p24">Mamba</a></h2>
+<p class="pos">定位:RNN 的复兴——用"状态"替代 KV Cache,$O(L)$ 推理,挑战 Transformer。</p>
+
+<h3>线性注意力的想法</h3>
+<p>标准 attention: $\text{softmax}(QK^\top) V$。如果能去掉 softmax,就能改写成:</p>
+<div class="formula">$\text{LinAttn}(Q, K, V) = Q (K^\top V)$</div>
+<p>复杂度: $K^\top V$ 是 $(d \times L)(L \times d) = d \times d$,$O(L d^2)$。然后 $Q (K^\top V)$ 是 $O(L d^2)$。总 $O(L d^2)$——线性!</p>
+<p>但 softmax 不是可以随便去掉的——它保证权重归一、稳定性好。去掉后效果普遍下降。各种线性 attention 工作(Linformer、Performer、Linear Transformer)提出不同的"近似 softmax"方案,效果都不如全注意力。</p>
+
+<h3>SSM:状态空间模型</h3>
+<p>从控制论借来的思路。一个线性状态空间系统:</p>
+<div class="formula">$\mathbf{h}_t = A \mathbf{h}_{t-1} + B \mathbf{x}_t, \quad \mathbf{y}_t = C \mathbf{h}_t$</div>
+<p>$\mathbf{h}_t$ 是"状态"——一个固定大小的向量,存历史信息。这是一个 RNN 结构。</p>
+<p>初始 SSM 工作(S4,HiPPO)用精心设计的 $A$ 矩阵(HiPPO 矩阵)让状态能长期记忆。但 $A, B, C$ 对每个样本是固定的——没法"选择性关注"不同位置。效果不如 Transformer。</p>
+
+<h3>Mamba 的选择性</h3>
+<p>Mamba(2023, Albert Gu)的关键创新:<strong>让 $B, C, \Delta$(步长)依赖输入 $\mathbf{x}_t$</strong>。不同位置的"记忆动力"不同——模型可以选择性地"记"或"忘"。</p>
+<div class="formula">$B_t = \text{Linear}_B(\mathbf{x}_t), \quad C_t = \text{Linear}_C(\mathbf{x}_t), \quad \Delta_t = \text{softplus}(\text{Linear}_\Delta(\mathbf{x}_t))$</div>
+<p>这让模型有了"动态内容寻址"能力——类似 attention 的选择性,但用 $O(L)$ 状态更新而非 $O(L^2)$ 全比对。</p>
+
+<h3>硬件感知扫描</h3>
+<p>选择性 SSM 有个工程难点:依赖输入的 $B_t, C_t$ 意味着传统"用 FFT 加速 convolution"的方法不行了。Mamba 用"硬件感知的并行扫描"算法——基于 prefix-sum 思路,在 GPU 上保持并行性。</p>
+<p>训练:前向可以用并行扫描,$O(L)$ FLOPs 但 wall-clock 时间 $O(\log L)$。</p>
+<p>推理:是纯递归,每步 $O(1)$——状态大小固定。无 KV Cache!内存占用不随序列长度增加。</p>
+
+<h3>Mamba 与 Transformer 的对比</h3>
+<table>
+<tr><th>维度</th><th>Transformer</th><th>Mamba</th></tr>
+<tr><td>训练</td><td>全并行</td><td>并行扫描 ($O(L)$)</td></tr>
+<tr><td>推理</td><td>$O(L)$ attention + $O(L)$ KV Cache</td><td>$O(1)$ 状态更新</td></tr>
+<tr><td>推理内存</td><td>随 L 增长(KV Cache)</td><td>固定</td></tr>
+<tr><td>长序列</td><td>受 KV Cache 限制</td><td>天然支持</td></tr>
+<tr><td>可解释性</td><td>attention 可视化</td><td>状态不可直接观察</td></tr>
+<tr><td>精确召回</td><td>强(attention 精确指向)</td><td>弱(状态压缩有损)</td></tr>
+</table>
+<p>Mamba 的短板在"精确召回任务"——"给定前 1000 个 token 里第 473 位是什么"这类,Mamba 容易忘,Transformer 能准确指出。</p>
+
+<h3>混合架构</h3>
+<p>Jamba(AI21)、Zamba 等工作早期探索"Transformer + Mamba 混合"路线——大部分层用 Mamba(快),少数层用 attention(精确召回)。2025 年这个方向变成主流之一:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>NVIDIA Nemotron 2</strong>:Mamba2-Transformer 混合,长上下文速度优于纯 Transformer</li>
+<li><strong>IBM Granite 4</strong>:Mamba-Attention 混合 + MoE,企业级生产</li>
+<li><strong>Qwen3-Next 80B-A3B(2025.9)</strong>:引入 <strong>Gated Delta Networks</strong>(类似 Mamba)+ 稀疏 MoE,3B 激活参数做到 235B 非混合模型水平</li>
+<li><strong>Qwen3.5 全系</strong>:全部采用 Gated Delta Networks + MoE 的混合架构</li>
+</ul>
+<p><strong>Mamba-3</strong>（ICLR 2026）进一步改进:引入复数值状态更新和 MIMO（多输入多输出）架构,在 1.5B 规模下平均下游准确率比 Gated DeltaNet 提升 0.6 个百分点,且只用一半的状态大小达到与 Mamba-2 相当的困惑度。</p>
+<p>这个趋势说明:Mamba 不是"取代 Transformer",而是作为长上下文和低显存场景的补充层,和 attention 一起组成"更好的架构"。</p>
+<p>也有完全纯 Transformer 继续做创新的路线——DeepSeek V3.2 的 DSA 就是在 attention 内部优化,不走 Mamba 路线也能做到类似效果。两条技术路径 2025-2026 年并行。</p>
+
+<div class="part-header"><div class="part-label">PART FIVE</div><h2 class="part-title">4.5 Tokenizer 与 Embedding</h2><p class="part-desc">文字进入模型的第一关——tokenizer 的细节影响 LLM 能力的方方面面。</p></div>
+
+<h2 id="s4-5-1"><span class="num">4.5.1</span>BPE 家族</h2>
+<p class="pos">定位:从 BPE 到 WordPiece 到 SentencePiece——现代 tokenizer 的三条主线。</p>
+
+<h3>为什么不按字符、不按词</h3>
+<p>两种极端:</p>
+<p><strong>按字符</strong>:词表小(英文 128 个 ASCII),每个字符一个 token。问题:序列长,一个 5 字母单词 5 个 token,attention 的 $O(L^2)$ 爆炸。</p>
+<p><strong>按词</strong>:词表自然(每个词一个 token)。问题:词表爆炸(英文百万词级)、OOV(训练没见过的词)、无法处理拼写变体。中文"词"边界模糊更棘手。</p>
+<p>子词(subword)是折中:常用词整个是一个 token,稀有词拆成有意义的子词。"unbelievable" → ["un", "believ", "able"]。</p>
+
+<h3>BPE(Byte-Pair Encoding)</h3>
+<p>起源是 1994 年的数据压缩算法,2015 年被 NMT 借来做 tokenization。</p>
+<p>训练:</p>
+<ol>
+<li>初始化词表为所有字符</li>
+<li>统计语料中相邻 token 对的频率</li>
+<li>合并频率最高的一对,加入词表</li>
+<li>重复 2-3 直到词表达目标大小(如 50K)</li>
+</ol>
+<pre><code class="language-python">from collections import Counter
+
+def train_bpe(corpus, vocab_size):
+    words = Counter()
+    for line in corpus:
+        for w in line.split():
+            words[' '.join(list(w)) + ' &lt;/w&gt;'] += 1
+    vocab = set()
+    for w in words: vocab.update(w.split())
+    while len(vocab) &lt; vocab_size:
+        pairs = Counter()
+        for w, freq in words.items():
+            toks = w.split()
+            for i in range(len(toks) - 1):
+                pairs[(toks[i], toks[i+1])] += freq
+        if not pairs: break
+        best = pairs.most_common(1)[0][0]
+        merged = ''.join(best)
+        new_words = {}
+        for w, freq in words.items():
+            new_w = w.replace(' '.join(best), merged)
+            new_words[new_w] = freq
+        words = new_words
+        vocab.add(merged)
+    return vocab
+</code></pre>
+<p>推理:用训练好的合并规则,对新词按规则递归应用,得到 token 序列。</p>
+
+<h3>WordPiece</h3>
+<p>Google 用于 BERT 的变种。区别:不按"频率最高的对"合并,按"让语言模型似然提升最多的对"合并。效果类似但理论更清晰。</p>
+
+<h3>SentencePiece</h3>
+<p>Google 2018 年开源。解决几个痛点:</p>
+<ol>
+<li><strong>不预分词</strong>:直接在原始文本上训,不依赖"词"的概念——对中日韩这种无空格语言友好</li>
+<li><strong>可逆</strong>:tokenize 后能完美还原原始字符串(包括空格)——通过特殊的 ▁ 符号标记词首</li>
+<li><strong>Unigram 算法</strong>:和 BPE 不同的合并策略,从大词表开始删</li>
+</ol>
+<p>LLaMA、T5、mT5、ChatGLM 都用 SentencePiece。</p>
+
+<h3>BBPE:Byte-level BPE</h3>
+<p>GPT-2 用的变种。把文本先转成 UTF-8 字节序列(256 个可能),再在字节序列上做 BPE。好处:<strong>零 OOV</strong>——任何 Unicode 字符都能表示(至少作为字节序列),不需要 [UNK] token。GPT-3/4、LLaMA、Qwen、DeepSeek 全部 BBPE。是事实标准。</p>
+
+<h2 id="s4-5-2"><span class="num">4.5.2</span>现代 Tokenizer 工程</h2>
+<p class="pos">定位:词表大小选择、中文/多语言处理、tiktoken vs SentencePiece——工程细节。</p>
+
+<h3>词表大小</h3>
+<p>历史上的典型选择:</p>
+<table>
+<tr><th>模型</th><th>词表大小</th></tr>
+<tr><td>BERT</td><td>30K</td></tr>
+<tr><td>GPT-2</td><td>50K</td></tr>
+<tr><td>GPT-3</td><td>50K</td></tr>
+<tr><td>LLaMA-2</td><td>32K</td></tr>
+<tr><td>LLaMA-3</td><td>128K</td></tr>
+<tr><td>Qwen 2.5</td><td>152K</td></tr>
+<tr><td>DeepSeek-V2</td><td>100K</td></tr>
+<tr><td>GPT-4o</td><td>200K</td></tr>
+</table>
+<p>大词表趋势明显。好处:序列更短、对多语言友好(小词表会把中文拆得特别碎)。代价:Embedding 表和 LM Head 变大(都是 <code>vocab × d_model</code>);罕见 token 训练不充分,embedding 质量差。</p>
+
+<h3>中文 token 率</h3>
+<p>一个常见基准:同一段中文,不同 tokenizer 的 token 数比。</p>
+<table>
+<tr><th>Tokenizer</th><th>中文字符/token 比</th></tr>
+<tr><td>GPT-2 (50K)</td><td>≈ 0.5 (两个 token 一个汉字)</td></tr>
+<tr><td>GPT-3.5/4 (cl100k)</td><td>≈ 1.5</td></tr>
+<tr><td>LLaMA-2 (32K)</td><td>≈ 0.6</td></tr>
+<tr><td>LLaMA-3 (128K)</td><td>≈ 1.3</td></tr>
+<tr><td>Qwen (152K)</td><td>≈ 1.6</td></tr>
+<tr><td>DeepSeek (100K)</td><td>≈ 1.5</td></tr>
+</table>
+<p>国产大模型刻意优化中文 token 率——同样上下文能装更多中文内容,同样生成预算输出更多中文字。</p>
+
+<h3>tiktoken</h3>
+<p>OpenAI 开源的 BPE tokenizer,Rust 实现,极快。GPT-3.5、GPT-4 用 cl100k_base,GPT-4o 用 o200k_base。和 SentencePiece 差异:tiktoken 是纯 BPE;不支持训练只支持 encode/decode;性能极致。</p>
+
+<h3>HuggingFace Tokenizers</h3>
+<p>Rust 实现,Python 绑定。支持 BPE、WordPiece、Unigram、BBPE 等。可训练、可序列化、快。是开源生态事实标准——几乎所有开源模型的 tokenizer 都是 Tokenizers 库生产。</p>
+
+<h3>特殊 Token 设计</h3>
+<p>现代 LLM 除了常规 token 还有一堆特殊 token:BOS/EOS;对话角色(system/user/assistant);工具调用(tool_call/tool_response);推理段(reasoning_start/end);大量保留位为未来功能预留。特殊 token 设计对对话模板、prompt injection 防御、工具调用协议都至关重要。LLaMA-3 预留了 250 个特殊 token,Qwen2.5 有 22 个,各家差异大。</p>
+
+<h3>Tokenizer 踩坑</h3>
+<p><strong>尾随空格</strong>:<code>"hello"</code> 和 <code>"hello "</code> tokenize 结果不同,经常被忽略导致 prompt 模板错。</p>
+<p><strong>Chat Template</strong>:不同模型对话格式不同。HuggingFace Transformers 的 <code>apply_chat_template</code> 是标准方案——不要手写字符串拼接。</p>
+<p><strong>BOS/EOS 处理</strong>:有的模型加了 BOS 再微调,有的没。混用会训练/推理不一致。</p>
+<p><strong>Unicode 归一化</strong>:NFC/NFD 的差异能让同样显示的字符 tokenize 结果不同。数据清洗阶段要统一。</p>
+
+<h2 id="s4-5-3"><span class="num">4.5.3</span>Embedding 模型</h2>
+<p class="pos">定位:从 <a href="ch5_partC_supplement.html#p23">Word2Vec</a> 到 BGE——专做文本相似度的模型家族,RAG 的关键组件。</p>
+
+<h3>从词嵌入到句嵌入</h3>
+<p>早期 Word2Vec、GloVe 是"词嵌入"——每个词一个固定向量。但"bank"在"river bank"和"bank account"里含义不同,固定向量做不好。</p>
+<p>BERT 时代进入"上下文嵌入"——同一个词在不同上下文有不同向量。但 BERT 输出是 token 级的,怎么得到一句话的表示?</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>CLS token</strong>:BERT 预训练时 [CLS] 位置代表整句,但实际这个表示对相似度任务效果差</li>
+<li><strong>平均池化</strong>:对所有 token 的表示平均,简单但损失精度</li>
+<li><strong>Sentence-BERT</strong>:专门微调双塔结构,让"相似句子表示相近"——相似度任务质变</li>
+</ul>
+
+<h3>现代 Embedding 模型</h3>
+<table>
+<tr><th>模型</th><th>维度</th><th>上下文</th><th>特点</th></tr>
+<tr><td>OpenAI text-embedding-3</td><td>256-3072</td><td>8K</td><td>商业,Matryoshka 可调</td></tr>
+<tr><td>Cohere Embed v3</td><td>1024</td><td>512</td><td>商业,多语言强</td></tr>
+<tr><td>BGE (智源)</td><td>512/768/1024</td><td>512-8K</td><td>开源,中英双强</td></tr>
+<tr><td>Qwen3-Embedding</td><td>1024/2048/4096</td><td>32K</td><td>开源,长上下文</td></tr>
+<tr><td>NV-Embed</td><td>4096</td><td>32K</td><td>开源,MTEB 榜单强</td></tr>
+<tr><td>E5</td><td>1024</td><td>512</td><td>微软开源,多语言</td></tr>
+</table>
+
+<h3>训练方法</h3>
+<p>现代 embedding 训练是多阶段:弱监督预训练(从网页文本对做对比学习);有监督微调(标注相似对精化);硬负样本挖掘(找"看起来像但其实不相似"的对)。</p>
+
+<h3>对比学习损失</h3>
+<p>Embedding 模型训练的核心是对比损失,典型的 InfoNCE:</p>
+<div class="formula">$\mathcal{L} = -\log \frac{\exp(\text{sim}(q, p^+) / \tau)}{\exp(\text{sim}(q, p^+) / \tau) + \sum_{p^-} \exp(\text{sim}(q, p^-) / \tau)}$</div>
+<p>$q, p^+$ 是正样本对,$p^-$ 是负样本,$\tau$ 是温度。目标:让 $q$ 和 $p^+$ 更相似,和所有 $p^-$ 更远。</p>
+
+<h3>Matryoshka Embedding</h3>
+<p>一个新颖思路:训一个 1024 维 embedding,但让它的<strong>前 64 维、前 256 维、前 512 维</strong>分别也都是有效的。用户可以按需截断——要质量取完整,要速度取前 N 维。</p>
+<p>OpenAI text-embedding-3 和一些开源模型(如 Matryoshka-BGE)支持这特性。在存储和性能之间灵活取舍。</p>
+
+<h3>Embedding 质量评估</h3>
+<p>MTEB(Massive Text Embedding Benchmark)是行业标准——56 个任务评估 embedding 模型。分类、聚类、检索、STS、重排各覆盖。榜单几周一变,但 NV-Embed、BGE-M3、Qwen3-Embedding 是第一梯队。实际选型要测自己的场景。</p>
+
+<div class="part-header"><div class="part-label">PART SIX</div><h2 class="part-title">4.6 Mixture of Experts</h2><p class="part-desc">稀疏激活让"万亿参数模型"在计算上可行——开源最大模型几乎全 MoE。</p></div>
+
+<h2 id="s4-6-1"><span class="num">4.6.1</span><a href="ch5_partB_preview.html#p13">MoE</a> 基本原理</h2>
+<p class="pos">定位:为什么 MoE、怎么 MoE——核心数学和基本架构。</p>
+
+<h3>动机</h3>
+<p>Transformer 的参数主要在 FFN(4.2.1 算过,占 2/3)。FFN 对每个 token 都做同样的处理——但不同 token 可能需要不同处理(名词需要的特征和动词不同)。MoE 的想法:替换单个 FFN 为<strong>多个"专家"FFN</strong>,每个 token 只激活其中 1-2 个专家。效果:总参数翻倍,但计算量只变多一点。</p>
+
+<h3>结构</h3>
+<p>一个 MoE 层:</p>
+<ol>
+<li><strong>Router</strong>:对输入 $\mathbf{x}$ 算每个专家的分数 $g_i = \text{softmax}(W_{router} \mathbf{x})_i$</li>
+<li><strong>Top-K 选择</strong>:选分数最高的 K 个专家(通常 K=1 或 2)</li>
+<li><strong>路由</strong>:$\mathbf{x}$ 只送给选中的专家,其他专家不算</li>
+<li><strong>加权组合</strong>:$\mathbf{y} = \sum_{i \in \text{top-k}} g_i \cdot \text{Expert}_i(\mathbf{x})$</li>
+</ol>
+
+<h3>计算-参数权衡</h3>
+<p>假设总专家数 $N$,每个专家和原 FFN 参数相同,激活 K 个。</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>总参数</strong>:约 $N \times$ 原 FFN 参数 + attention 层参数</li>
+<li><strong>激活参数</strong>(实际参与 forward 的):$K \times$ 原 FFN + attention</li>
+<li><strong>计算量</strong>:和激活参数成正比</li>
+</ul>
+<p>Mixtral 8x7B: 8 个专家每个 ≈ 7B,激活 2 个。总参数 47B(不是 56B,因为 attention 共享),激活约 13B——<em>推理像 13B 模型,能力接近 47B 稠密模型</em>。这是 MoE 的核心价值。</p>
+
+<h3>路由函数</h3>
+<pre><code class="language-python">class Router(nn.Module):
+    def __init__(self, d_model, n_experts, top_k=2):
+        super().__init__()
+        self.W = nn.Linear(d_model, n_experts, bias=False)
+        self.top_k = top_k
+
+    def forward(self, x):
+        logits = self.W(x)
+        top_k_logits, top_k_idx = logits.topk(self.top_k, dim=-1)
+        top_k_gates = top_k_logits.softmax(dim=-1)
+        return top_k_idx, top_k_gates
+</code></pre>
+
+<h3>负载均衡</h3>
+<p>最大问题:如果训练不当,<strong>路由会退化——总把流量送到少数几个专家</strong>,其他专家饿死。</p>
+<p>解决:<strong>负载均衡损失</strong>。定义每个专家的 $f_i$ = 被路由到它的 token 比例;$P_i$ = 所有 token 对它的平均 gate 值。加一个辅助损失:</p>
+<div class="formula">$\mathcal{L}_{\text{aux}} = N \sum_i f_i P_i$</div>
+<p>理想情况 $f_i = P_i = 1/N$,$\mathcal{L}_{\text{aux}} = 1$。某个专家过载 $f_i$ 大 $P_i$ 也大,损失变大,梯度推动路由再均衡。</p>
+
+<h3>稀疏 vs 密集</h3>
+<p>MoE 几乎所有新模型都选 <strong>fine-grained expert(细粒度专家)</strong>架构——小专家多个(DeepSeek-V3 256 个,每个小)。比"8 个大专家"细粒度更好:专家更专业化、组合更多样、负载均衡更自然。</p>
+
+<h3>共享专家</h3>
+<p>DeepSeek-V2/V3 用"共享专家 + 路由专家":有 1-2 个共享专家所有 token 都过,其他 N-2 个按路由。直觉:有些知识(语法、基础逻辑)所有 token 都需要,不用每次路由选。</p>
+
+<h2 id="s4-6-2"><span class="num">4.6.2</span>MoE 工程实践</h2>
+<p class="pos">定位:MoE 好在纸上,难在工程——训练、部署、通信、负载都要解决。</p>
+
+<h3>训练挑战</h3>
+<p><strong>不稳定</strong>:路由是离散的(top-k 选择),梯度难传。训练初期路由乱飞,专家没分化——要很长 warmup 才稳定。</p>
+<p><strong>专家并行</strong>:8 个专家可以分到 8 个 GPU,但这样每层都要跨卡通信(token 按路由分发、算完收回)。All-to-all 通信成为瓶颈。</p>
+<p><strong>动态 shape</strong>:每个专家收到的 token 数不等——小的专家可能只收几个,大的可能上万。GPU 喜欢规则 batch,动态 shape 让 kernel 优化难。</p>
+
+<h3>Expert Parallelism</h3>
+<p>MoE 的分布式策略有专门命名:Expert Parallelism(EP)。把 N 个专家均匀分到 P 个 GPU,每 GPU 上 N/P 个专家。</p>
+<p>forward 流程:每个 GPU 自己的 token 过 attention(正常 TP/DP);Router 决定每个 token 要哪个专家;<strong>All-to-all</strong>:每 GPU 把 token 发给持有对应专家的 GPU;每 GPU 上激活的专家处理收到的 token;<strong>All-to-all</strong>:把结果发回 token 原本所在的 GPU。</p>
+<p>两次 all-to-all 通信量大,但在高速互联(NVLink + IB)下可接受。DeepSpeed-MoE、Megatron-LM 都实现了这个。</p>
+
+<h3>Token 掉包</h3>
+<p>负载不均时,某个专家可能收到的 token 超过容量(capacity factor)。处理方式:Drop(超出容量的 token 直接跳过这层——简单但损失信息);Capacity Bias(训练时加容量惩罚,鼓励路由均匀)。</p>
+<p>实际大模型的 capacity factor 设 1.25(允许 25% 超额),drop 少。</p>
+
+<h3>MoE 推理部署</h3>
+<p>推理比训练更棘手:</p>
+<p><strong>显存占用</strong>:所有专家都要加载(因为不知道哪个 token 路由到哪)。Mixtral 8x7B 推理要 80GB+ 显存——不是 13B 的"感觉"。</p>
+<p><strong>批处理效率</strong>:小 batch 下,大多数专家空闲(没 token 路由到),GPU 利用率极低。MoE 的推理性能在大 batch 下才发挥。</p>
+<p><strong>专家放置</strong>:单机多卡推理时,把专家怎么分配?启发式:高频专家放到通信近的卡、冷专家放远或 offload 到 CPU。vLLM、SGLang、TGI 对 MoE 推理都有专门优化。</p>
+
+<h3>代表模型</h3>
+<table>
+<tr><th>模型</th><th>总参数</th><th>激活参数</th><th>专家配置</th></tr>
+<tr><td>Switch Transformer (2021)</td><td>1.6T</td><td>-</td><td>Top-1 路由</td></tr>
+<tr><td>Mixtral 8x7B (2023)</td><td>47B</td><td>13B</td><td>8 expert, top-2</td></tr>
+<tr><td>Mixtral 8x22B (2024)</td><td>141B</td><td>39B</td><td>8 expert, top-2</td></tr>
+<tr><td>DeepSeek-V2 (2024)</td><td>236B</td><td>21B</td><td>160 routed + 2 shared, top-6</td></tr>
+<tr><td>DeepSeek-V3 (2024)</td><td>671B</td><td>37B</td><td>256 routed + 1 shared, top-8</td></tr>
+<tr><td>Qwen2 MoE</td><td>57B</td><td>14B</td><td>64 expert, top-8</td></tr>
+<tr><td>Grok-1 (xAI)</td><td>314B</td><td>79B</td><td>8 expert, top-2</td></tr>
+<tr><td>Qwen3-235B-A22B (2025.4)</td><td>235B</td><td>22B</td><td>8 routed, 无共享专家</td></tr>
+<tr><td>Qwen3-Next 80B-A3B (2025.9)</td><td>80B</td><td>3B</td><td>高专家数 + 共享,稀疏化极端</td></tr>
+<tr><td>LLaMA 4 Maverick (2025)</td><td>-</td><td>-</td><td>2 active experts, hidden 8192(少而大)</td></tr>
+<tr><td>DeepSeek-V3.1 / V3.2 (2025)</td><td>671B</td><td>37B</td><td>继承 V3 + DSA 稀疏 attention + 混合思考</td></tr>
+<tr><td>Kimi K2 (2025)</td><td>大规模 MoE</td><td>-</td><td>Moonshot 出品,推理和长上下文强</td></tr>
+<tr><td>GLM-4.5 / 4.6(智谱)</td><td>MoE</td><td>-</td><td>共享专家(类似 DeepSeek),保留 attention bias</td></tr>
+<tr><td>gpt-oss-120b (2025)</td><td>120B</td><td>-</td><td>OpenAI 首款开源 MoE,attention bias 保留</td></tr>
+</table>
+<p>DeepSeek-V3 是 2024 年开源 MoE 的巅峰;V3.1 把推理和非推理合一;V3.2 引入 DSA 进一步降成本,2025 年末成为开源推理标杆——671B 总参数但推理只激活 37B。</p>
+<p><strong>2025 年 MoE 架构的趋势</strong>:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>细粒度专家</strong>普及:从 8 个大专家转向几十到几百个小专家,组合数爆炸</li>
+<li><strong>共享专家</strong>分化:DeepSeek/GLM 保留共享专家(所有 token 都过),Qwen3 反其道去掉共享专家</li>
+<li><strong>稀疏度极端化</strong>:Qwen3-Next 80B 只激活 3B(3.75%),Qwen3.5-35B-A3B 只激活 3B(8.6%)</li>
+<li><strong>MoE + Mamba 混合</strong>:Qwen3-Next、Granite 4、Nemotron 2 这类混合架构</li>
+<li><strong>工程优化</strong>:DeepSeek-V3 的多 token 预测、FP8 训练、All-to-All 通信优化让 MoE 训练的经济性大幅提升</li>
+</ul>
+
+<div class="part-header"><div class="part-label">PART SEVEN</div><h2 class="part-title">4.7 分布式训练</h2><p class="part-desc">百亿级以上模型一张卡装不下——必须跨卡、跨机。</p></div>
+
+<h2 id="s4-7-1"><span class="num">4.7.1</span>数据并行 DDP</h2>
+<p class="pos">定位:最简单的分布式策略——每卡完整模型,不同 batch 分片。</p>
+
+<h3>基本思路</h3>
+<p>$N$ 张 GPU,每张装完整模型副本。一个大 batch $B$ 切成 $N$ 份,每卡 $B/N$。前向各算自己的 loss,反向各算梯度。梯度 <strong>AllReduce</strong> 聚合成全 batch 平均梯度,每卡用这个梯度更新参数——参数保持同步。</p>
+
+<h3>AllReduce</h3>
+<p>DDP 的核心通信原语。给定每卡一个张量(梯度),计算所有卡张量的和(或平均),每卡最终得到相同结果。</p>
+<p>实现有多种,最流行是 <strong>Ring AllReduce</strong>:把每卡的张量切成 $N$ 块;第一阶段环形传递,每轮每卡把一块加到下一卡,$N-1$ 轮后每卡有完整的某一块的和;第二阶段环形传递,把每卡的"已完成块"传一圈,$N-1$ 轮后所有卡都有所有完整块。</p>
+<p>通信量:每卡收发 $2(N-1)/N \cdot S$($S$ 是张量大小),几乎和 $N$ 无关——扩展性好。NCCL 是 GPU 上的事实标准实现。</p>
+
+<h3>PyTorch DDP</h3>
+<pre><code class="language-python">import torch
+import torch.distributed as dist
+from torch.nn.parallel import DistributedDataParallel as DDP
+
+dist.init_process_group(backend='nccl')
+local_rank = int(os.environ['LOCAL_RANK'])
+torch.cuda.set_device(local_rank)
+
+model = MyModel().cuda()
+model = DDP(model, device_ids=[local_rank])
+
+from torch.utils.data.distributed import DistributedSampler
+sampler = DistributedSampler(dataset)
+loader = DataLoader(dataset, sampler=sampler, batch_size=per_rank_bs)
+
+for batch in loader:
+    loss = model(batch).mean()
+    loss.backward()     # DDP 自动 all-reduce 梯度
+    optimizer.step()
+</code></pre>
+
+<h3>Gradient Accumulation</h3>
+<p>有时想用大 batch 但单卡装不下完整 batch。梯度累积:多次 forward+backward 不 step,直到累积够再 step。配合 DDP 减梯度同步次数(只在 step 前一次 all-reduce)。</p>
+
+<h3>DDP 的局限</h3>
+<p>DDP 最大限制:<strong>每卡要装得下完整模型 + 梯度 + 优化器状态</strong>。</p>
+<p>算一下 7B FP16 模型单卡需求:参数 14GB;梯度 14GB;Adam 状态(m, v,FP32)56GB;激活约 10GB。总 ~100GB,A100 80G 不够,H100 80G 也不够。所以 7B 以上训练必须分片——进入 ZeRO。</p>
+
+<h2 id="s4-7-2"><span class="num">4.7.2</span>ZeRO 三阶段</h2>
+<p class="pos">定位:DeepSpeed 的旗舰技术——分片优化器状态、梯度、参数,内存线性下降。</p>
+
+<h3>核心洞察</h3>
+<p>DDP 里每卡都存完整的参数、梯度、优化器状态——但其实每卡只需要处理自己那部分参数的更新,其他参数的状态是多余的。ZeRO(Zero Redundancy Optimizer, Microsoft 2020)说:<strong>把这些冗余分片到不同卡</strong>,需要时通信获取。</p>
+
+<h3>三阶段</h3>
+<p>ZeRO 三阶段逐步分片更多东西:</p>
+<table>
+<tr><th>阶段</th><th>分片</th><th>通信开销</th><th>内存节省(N 卡)</th></tr>
+<tr><td>ZeRO-1</td><td>优化器状态</td><td>和 DDP 一样</td><td>优化器 /N</td></tr>
+<tr><td>ZeRO-2</td><td>+ 梯度</td><td>稍增</td><td>优化器和梯度 /N</td></tr>
+<tr><td>ZeRO-3</td><td>+ 参数</td><td>明显增</td><td>全部 /N</td></tr>
+</table>
+
+<h3>ZeRO-1</h3>
+<p>最简单。每卡仍存完整参数和梯度,但只存 $1/N$ 的优化器状态(只负责 $1/N$ 的参数更新)。</p>
+<p>更新流程:所有卡前向;所有卡反向,得到完整梯度(和 DDP 一样 AllReduce);每卡只更新自己负责的那 $1/N$ 参数(用它存的那份优化器状态);AllGather 更新后的参数分片,同步全局参数。</p>
+<p>Adam 状态是最大头(8 字节/参数),ZeRO-1 已经能省大部分。</p>
+
+<h3>ZeRO-2</h3>
+<p>连梯度也不存完整。反向时 ReduceScatter(一边 reduce 一边 scatter),每卡最终只拿到自己负责的那 $1/N$ 参数对应的梯度。通信量和 ZeRO-1 类似(只是通信操作名字不同)。内存进一步省:不再有完整梯度。</p>
+
+<h3>ZeRO-3</h3>
+<p>连参数也分片。每卡常驻只有 $1/N$ 的参数。前向算某一层时:AllGather 该层的完整参数(所有卡贡献自己的那份分片);这层算完立刻释放(只保留自己那份);下一层再 AllGather。反向同样——需要时临时 gather,用完就丢。</p>
+<p>内存省到极致:7B 模型在 8 卡下每卡只占约 12-15GB。代价:前向和反向都多一圈 AllGather,通信开销明显增加。</p>
+
+<h3>FSDP</h3>
+<p>PyTorch 官方的 ZeRO-3 实现叫 FSDP(Fully Sharded Data Parallel)。接口比 DeepSpeed 简单,和 PyTorch 生态融合更好。</p>
+<pre><code class="language-python">from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
+from torch.distributed.fsdp import MixedPrecision
+
+mp = MixedPrecision(
+    param_dtype=torch.bfloat16,
+    reduce_dtype=torch.bfloat16,
+    buffer_dtype=torch.bfloat16,
+)
+model = FSDP(
+    model,
+    mixed_precision=mp,
+    sharding_strategy=ShardingStrategy.FULL_SHARD,  # ZeRO-3
+    auto_wrap_policy=size_based_auto_wrap_policy,
+    device_id=local_rank,
+)
+</code></pre>
+
+<h3>ZeRO-Offload 和 Infinity</h3>
+<p>更极端的 ZeRO 变种:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>ZeRO-Offload</strong>:把优化器状态和梯度 offload 到 CPU 内存,需要更新时再拉回。可以在单卡上训 10B+ 模型,但慢 2-3×。</li>
+<li><strong>ZeRO-Infinity</strong>:进一步 offload 到 NVMe SSD。理论上万亿参数单机可训,实际极慢。适合研究,不适合生产。</li>
+</ul>
+
+<h3>何时用 ZeRO</h3>
+<p>看参数量:&lt; 1B: DDP 够用;1B-10B: ZeRO-2 平衡;10B-100B: ZeRO-3 或 FSDP;100B+: ZeRO-3 + 张量并行 + 流水并行。</p>
+
+<h2 id="s4-7-3"><span class="num">4.7.3</span>张量并行与流水并行</h2>
+<p class="pos">定位:切开单层计算(TP),切开层序列(PP)——把"大模型"拆到多卡。</p>
+
+<h3>张量并行(TP)</h3>
+<p>把单层内的矩阵乘切开。最典型:Linear 层 $\mathbf{Y} = \mathbf{X} W$。</p>
+<p><strong>列并行</strong>:把 $W$ 按列切成 $[W_1, W_2, \ldots]$,每卡持有一部分。计算后各卡得到 $\mathbf{Y}$ 的不同列,拼接或 AllGather 合并。</p>
+<p><strong>行并行</strong>:把 $W$ 按行切,输入 $\mathbf{X}$ 也对应切列。各卡算出部分结果,AllReduce 求和。</p>
+<p>Megatron-LM 的 attention 和 FFN TP 组合:Attention 里 $W_Q, W_K, W_V$ 列并行(每卡算部分头),$W_O$ 行并行——attention 内部无通信,出口一次 AllReduce;FFN 里 $W_1$ 列并行,$W_2$ 行并行——FFN 内部无通信,出口一次 AllReduce。</p>
+<p>这样每层只需 2 次 AllReduce。通信是瓶颈但可忍受。</p>
+<p>TP 的约束:需要高速互联。NVLink 的 GPU 组(一般 8 卡)内可以 TP,跨节点的 InfiniBand 带宽不足以撑 TP。</p>
+
+<h3>流水并行(PP)</h3>
+<p>把 $L$ 层模型切 $P$ 段,每段放一张卡。一个 batch 的数据在卡之间顺序流过。</p>
+<p>朴素实现有"气泡"问题——大部分时间大多数卡在空等。解法:<strong>把 batch 切成 micro-batch,流水执行</strong>(1F1B schedule)。</p>
+<p><strong>GPipe</strong>(2018):把 batch 切 $M$ 个 micro-batch,依次前向 $M$ 次再反向 $M$ 次。气泡占比 $(P-1)/(P+M-1)$,$M$ 大时小。</p>
+<p><strong>PipeDream / 1F1B</strong>:交错前向反向,更少气泡。</p>
+<p><strong>Interleaved 1F1B</strong>(Megatron):每卡放非连续的多段,气泡进一步减少。</p>
+
+<h3>TP vs PP</h3>
+<table>
+<tr><th></th><th>TP</th><th>PP</th></tr>
+<tr><td>切什么</td><td>单层内部</td><td>层序列</td></tr>
+<tr><td>通信</td><td>每层内多次</td><td>段与段之间少量(激活传递)</td></tr>
+<tr><td>带宽需求</td><td>高(NVLink)</td><td>中(IB 可)</td></tr>
+<tr><td>范围</td><td>典型 8 卡内</td><td>典型跨节点</td></tr>
+<tr><td>限制</td><td>层必须能整除</td><td>气泡、micro-batch 调度复杂</td></tr>
+</table>
+
+<h2 id="s4-7-4"><span class="num">4.7.4</span>3D 并行与训练栈</h2>
+<p class="pos">定位:组合 DP + TP + PP——千亿模型的标准打法。再看 Megatron/DeepSpeed/FSDP。</p>
+
+<h3>3D 并行</h3>
+<p>真正的大模型训练,三个维度一起用:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>TP</strong>:节点内(NVLink 8 卡组),切单层</li>
+<li><strong>PP</strong>:跨节点(IB 连),切层序列</li>
+<li><strong>DP</strong>:在上面两个之外的"剩余"维度,切数据</li>
+</ul>
+<p>假设 512 张 GPU(64 节点 × 8 卡):TP=8(节点内)、PP=8(8 组节点)、DP=8(数据并行维度)。$8 \times 8 \times 8 = 512$。</p>
+<p>每个 GPU 上的模型状态:持有 $\frac{1}{8}$ 的单层参数(TP);持有 $\frac{1}{8}$ 的层(PP);看到 $\frac{1}{8}$ 的 batch(DP)。实际每卡显存压力 ≈ 模型 / 64,可控。</p>
+
+<h3>加上 ZeRO</h3>
+<p>在 DP 维度上再加 ZeRO 进一步省内存:ZeRO-1(优化器状态按 DP 维度分片);FSDP(参数、梯度、优化器全按 DP 分片)。</p>
+<p>GPT-4 量级训练据传用 TP=8 + PP=16 + DP=64 + ZeRO-1,共 8192 张 H100。</p>
+
+<h3>激活重计算</h3>
+<p>反传时需要前向的中间激活。完整保存显存压力大。<strong>Gradient Checkpointing</strong>:只保留少数"检查点"位置的激活,反传时从最近检查点重新算。典型只保留每个 Transformer block 的输入,反传时每 block 重算一次 forward——30% 额外计算换 3-5× 激活内存。千亿模型训练必开。</p>
+
+<h3>训练栈对比</h3>
+<table>
+<tr><th>框架</th><th>开发方</th><th>核心特点</th></tr>
+<tr><td>DeepSpeed</td><td>Microsoft</td><td>ZeRO 起源,3D 并行完整</td></tr>
+<tr><td>Megatron-LM</td><td>NVIDIA</td><td>TP/PP 原创,GPU 优化极致</td></tr>
+<tr><td>FSDP</td><td>PyTorch 官方</td><td>集成度好,社区活跃</td></tr>
+<tr><td>Megatron-DeepSpeed</td><td>微软+NVIDIA</td><td>两者融合</td></tr>
+<tr><td>Colossal-AI</td><td>HPC-AI Tech</td><td>国产,策略完整</td></tr>
+<tr><td>torchtitan</td><td>PyTorch 官方</td><td>2024 出现,现代化、简洁</td></tr>
+</table>
+<p>DeepSpeed 和 Megatron 是工业界事实标准。Meta 训 LLaMA 系列用自研 + FSDP 路线。HuggingFace 的 accelerate 库是上层包装。</p>
+
+<h3>训练配方</h3>
+<p>跑一次千亿模型训练的典型配置(类比 LLaMA-3-70B):</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- 硬件:1024 张 H100(128 节点)</li>
+<li>- 并行:TP=8, PP=4, DP=32, ZeRO-1</li>
+<li>- 数据:~15T tokens</li>
+<li>- 时间:~8 周</li>
+<li>- 优化器:AdamW,bf16 混合精度</li>
+<li>- lr 调度:linear warmup + cosine decay</li>
+<li>- Batch:global 8192 序列 × 8192 tokens ≈ 67M tokens/step</li>
+</ul>
+<p>电费+硬件折旧:千万美元级。所以大模型训练是巨头游戏——但一旦训好,开源释放,所有人受益。</p>
+
+<div class="part-header"><div class="part-label">PART EIGHT</div><h2 class="part-title">4.8 推理引擎与调度</h2><p class="part-desc">训完只是开始——推理优化是 LLM 能否用起来的关键。</p></div>
+
+<h2 id="s4-8-1"><span class="num">4.8.1</span>推理负载特征</h2>
+<p class="pos">定位:Prefill vs Decode——LLM 推理的两个阶段有截然不同的瓶颈。</p>
+
+<h3>两阶段模型</h3>
+<p>LLM 推理分两阶段:</p>
+<p><strong>Prefill</strong>:处理整个输入 prompt(比如 1000 个 token),一次 forward 算出所有 token 的 KV Cache,并预测下一个 token。</p>
+<p><strong>Decode</strong>:基于已有 KV Cache,每次生成一个新 token——每次 forward 只处理 1 个新 token,但要读取所有历史的 KV Cache 做 attention。</p>
+<p>典型一次对话:100 token prompt + 500 token 回答 = 1 次 prefill(100 token)+ 500 次 decode。</p>
+
+<h3>计算特征差异</h3>
+<table>
+<tr><th></th><th>Prefill</th><th>Decode</th></tr>
+<tr><td>每次 forward 处理</td><td>整段 prompt (百-千 token)</td><td>1 个 token</td></tr>
+<tr><td>计算量</td><td>大,compute-bound</td><td>小,memory-bound</td></tr>
+<tr><td>主要开销</td><td>GEMM</td><td>读 KV Cache</td></tr>
+<tr><td>batch 收益</td><td>小(prompt 长度已大)</td><td>大(多条请求合并)</td></tr>
+</table>
+<p>decode 的 bottleneck 是<strong>内存带宽</strong>。每生成一个 token,要把所有层的 KV Cache 从 HBM 读出来做 attention。模型权重也要过一遍。算量很小但搬数据搬半天——GPU 算力利用率低到 5-10%。这个特征驱动了整个推理优化领域。</p>
+
+<h3>关键指标</h3>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>TTFT</strong>(Time To First Token):从请求到首 token 返回的时间。由 prefill 决定。用户感知延迟。</li>
+<li><strong>TPOT</strong>(Time Per Output Token):两个 token 之间的平均时间。由 decode 决定。决定生成速度。</li>
+<li><strong>吞吐 throughput</strong>:系统整体 tokens/s——对服务商最重要。</li>
+<li><strong>并发 concurrency</strong>:同时服务多少请求。</li>
+</ul>
+<p>延迟和吞吐 trade-off。batch 大吞吐高但 TPOT 变长——怎么调度是推理引擎的核心。</p>
+
+<h3>硬件瓶颈分析</h3>
+<p>H100 在 LLaMA-3-70B FP16 decode 下:模型权重 140GB;HBM 带宽 3 TB/s;理论上限 3000 / 140 ≈ 21 token/s(单请求)。</p>
+<p>实测 decode 25-40 token/s(vLLM 数据)——基本接近带宽上限。想提升只能:压缩权重(量化)、压缩 KV Cache、并行多请求(batch 摊薄带宽)。</p>
+
+<h2 id="s4-8-2"><span class="num">4.8.2</span>KV Cache</h2>
+<p class="pos">定位:LLM 推理的灵魂——把 $O(L^2)$ 复杂度砍到 $O(L)$,但带来显存压力。</p>
+
+<h3>为什么需要</h3>
+<p>Decode 阶段生成第 $t$ 个 token,要做的 attention 只需要新 token 的 $\mathbf{q}_t$,但需要<strong>所有之前位置的 K、V</strong>。如果每次都重算 $\mathbf{k}_1, \ldots, \mathbf{k}_{t-1}$,是 $O(t)$ 额外计算每步——总 $O(t^2)$。KV Cache 缓存之前所有位置的 K、V——每步新 token 只算自己的 $\mathbf{k}_t, \mathbf{v}_t$,追加到 cache。总计算 $O(t)$。</p>
+
+<h3>显存占用</h3>
+<p>LLaMA-3-70B(80 层,64 头,d_head=128,GQA=8):</p>
+<p>每 token 每层 KV:$2 \times 8 \times 128 \times 2 = 4 KB$(FP16)</p>
+<p>每 token 总:$80 \times 4 KB = 320 KB$</p>
+<p>一个 10K token 的对话:3.2 GB/样本</p>
+<p>单张 H100 80G 只能同时服务 20 来个这样的对话——显存即并发上限。</p>
+
+<h3>朴素 KV Cache 的问题</h3>
+<p>早期推理引擎(原版 Transformers、早期 TGI)把每个样本的 KV Cache 分配成<strong>连续的、最大长度的</strong>预留空间。</p>
+<p>问题:内存浪费(预留 max_length=4096 但实际只用 500,浪费 87.5%);内部碎片(不同请求长度不同,空间利用率差);外部碎片(新请求需要连续大块空间,短请求释放的小块不够用);并发上限低。这就是 PagedAttention 要解决的。</p>
+
+<h2 id="s4-8-3"><span class="num">4.8.3</span><a href="ch5_partB_preview.html#p12">PagedAttention</a> 与 vLLM</h2>
+<p class="pos">定位:OS 虚拟内存思想应用到 KV Cache——vLLM 的核心创新。</p>
+
+<h3>核心想法</h3>
+<p>PagedAttention(UC Berkeley 2023)的灵感直接来自 OS 虚拟内存:<strong>物理内存切成固定大小的 page,逻辑地址通过 page table 映射到物理 page</strong>。</p>
+<p>搬到 KV Cache:把 GPU 显存切成固定大小 block(如每个 block 16 个 token 的 KV);每个请求维护一个 block table,记录它的逻辑 token 位置 → 物理 block;Block 按需分配,不预留;Attention kernel 通过 block table 查实际位置。</p>
+
+<h3>效果</h3>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong>内存利用率</strong>:从 ~40% 提到 ~96%(官方数据)</li>
+<li>- <strong>并发能力</strong>:同样 80G 显存下并发数 4-10 倍</li>
+<li>- <strong>吞吐</strong>:和现有方案比提升 2-4 倍</li>
+</ul>
+
+<h3>Attention kernel 的改造</h3>
+<p>标准 attention kernel 假设 K、V 在连续内存。PagedAttention 的 kernel 要按 block table 查 K、V 位置:</p>
+<pre><code class="language-c">// 简化伪代码
+for each query q_i:
+    output = 0; max_score = -inf; sum_exp = 0
+    for each logical token j in query's block_table:
+        block_id  = block_table[j / BLOCK_SIZE]
+        inner_idx = j % BLOCK_SIZE
+        k_j = K_pool[block_id * BLOCK_SIZE + inner_idx]
+        v_j = V_pool[block_id * BLOCK_SIZE + inner_idx]
+        score = q_i @ k_j / sqrt(d)
+        // 在线 softmax 更新
+        new_max = max(max_score, score)
+        sum_exp = sum_exp * exp(max_score - new_max) + exp(score - new_max)
+        output  = output  * exp(max_score - new_max) + exp(score - new_max) * v_j
+        max_score = new_max
+</code></pre>
+<p>额外的 indirection 有一点点开销,但远小于节省的内存压力。</p>
+
+<h3>Copy-on-Write 与共享</h3>
+<p>PagedAttention 还支持 KV Cache 共享——类似 OS 的 fork+COW。场景:beam search 或并行采样,多个候选共享相同前缀。朴素实现每个候选一份 KV Cache;PagedAttention 让多个序列的 block table 指向相同的物理 block,写时才复制。</p>
+<p>同样适用于<strong>Prefix Caching</strong>:多个请求有相同的 system prompt,prompt 部分的 KV Cache 可以共享——只需算一次。高并发 LLM 服务的 QPS 大大提升。</p>
+
+<h3>vLLM 与其他</h3>
+<p>PagedAttention 的参考实现。vLLM 从一个研究项目发展成事实标准开源推理引擎:PagedAttention + 连续批处理 + 推测解码;广泛兼容 HuggingFace 模型;支持 TP、多卡;OpenAI 兼容 API;活跃社区,更新快。</p>
+<p>不是唯一选择。SGLang 有自己的 <strong>RadixAttention</strong>(基数树组织的前缀共享),在复杂 workflow(多轮、多候选)下更快。TGI(HuggingFace 的 Rust 实现)稳定性好。TensorRT-LLM 在 NVIDIA 平台极致优化但生态封闭。</p>
+
+<h2 id="s4-8-4"><span class="num">4.8.4</span>连续批处理</h2>
+<p class="pos">定位:Dynamic Batching 的演化——让不同长度请求高效并行,而非等齐一批。</p>
+
+<h3>传统 Static Batching</h3>
+<p>早期方案:一批请求一起开始一起结束,padding 到最长。</p>
+<p>问题:要等够一批才开始——延迟大;请求长度差异大时,短请求空等长请求——吞吐低;结束的请求要等同批其他人,GPU 空转。</p>
+
+<h3>Continuous Batching</h3>
+<p>Orca(2022)和 vLLM(2023)推广的方案。核心:<strong>调度以 iteration(每个 decode step)为粒度,而非整个请求</strong>。</p>
+<p>每个 decode step:检查当前活跃请求,组成 batch 做一次 forward;更新每个请求的输出;结束的请求立即返回、腾出资源;有新请求进来,下一个 iteration 就加入 batch。</p>
+<p>GPU 利用率从 40% 提到 80%+。</p>
+
+<h3>Prefill/Decode 调度</h3>
+<p>一个细节:prefill 和 decode 计算特征差异大,混一起调度效率未必最优。有两种风格:</p>
+<p><strong>Iteration-level 混合</strong>(vLLM 早期):每个 iteration 可能同时有 prefill 和 decode 请求。prefill 是 compute-bound、decode 是 memory-bound,混合能互补——但单次 iteration 时间被 prefill 拉长,decode 的 TPOT 受影响。</p>
+<p><strong>Chunked Prefill</strong>(vLLM、SGLang 支持):把长 prompt 的 prefill 分块,每次和 decode 混合少量 prefill——平衡两者。</p>
+<p><strong>Prefill-Decode 分离</strong>(SplitWise、DistServe):prefill 和 decode 跑在不同 GPU/机器——prefill 机器高算力、decode 机器高带宽。KV Cache 跨节点传输。适合超大规模。</p>
+
+<h3>抢占与换出</h3>
+<p>GPU 显存满了怎么办?抢占某些请求——把它们的 KV Cache 换出到 CPU(或干脆丢掉重算)。</p>
+<p>策略:先来先服务(FCFS)、优先级(付费高级用户优先)、或 swap fairness。vLLM 实现了这些机制,生产环境稳健。</p>
+
+<h2 id="s4-8-5"><span class="num">4.8.5</span>推测解码</h2>
+<p class="pos">定位:用一个小模型猜,大模型验证——推理加速 2-3× 而无质量损失。</p>
+
+<h3>基本思路</h3>
+<p>Decode 的主瓶颈是每次 forward 只产 1 个 token。能不能一次产多个?标准方法不行——每个 token 要基于前一个。</p>
+<p>推测解码(Speculative Decoding, Google 和 DeepMind 独立提出)想法:用一个<strong>小模型(draft)</strong>快速生成 K 个候选 token;用<strong>大模型(target)</strong>一次 forward 验证这 K 个 token 是否符合它的分布;接受符合的 token(连续从前往后),拒绝从第一个不符的开始。</p>
+<p>关键:大模型的这一次 forward 算了 K 个位置的 logits,一次性完成了"验证 + 生成新 token"两件事。</p>
+
+<h3>为什么不改变分布</h3>
+<p>推测解码的数学保证:<strong>输出分布和直接用大模型一致</strong>(统计意义上)。推导:</p>
+<p>令小模型分布 $q(x)$,大模型分布 $p(x)$。候选 token $x$ 被接受的概率:</p>
+<div class="formula">$\min\left(1, \frac{p(x)}{q(x)}\right)$</div>
+<p>拒绝时从<strong>调整后的分布</strong>采样:</p>
+<div class="formula">$p'(x) = \frac{\max(0, p(x) - q(x))}{\sum_{x'} \max(0, p(x') - q(x'))}$</div>
+<p>这个 rejection sampling 机制保证最终采样分布恰好是 $p(x)$。</p>
+
+<h3>接受率</h3>
+<p>效率取决于小模型和大模型的"一致性"。一致性越高,接受率越高,加速越大。</p>
+<p>典型搭配:LLaMA-3-70B + LLaMA-3-8B:接受率 ~70%,加速 2-3×;同系列大小模型搭配效果最好——同一家族训练分布接近。</p>
+
+<h3>Medusa 与 EAGLE</h3>
+<p>变种:不用独立小模型,在目标模型上加几个"头"直接预测多个未来 token。</p>
+<p><strong>Medusa</strong>(2024):原模型之上加 K 个额外 head,每个预测下几个 token 的一个位置。加几百 M 参数,推理时并行生成 K 个候选。</p>
+<p><strong>EAGLE / EAGLE-2</strong>:更进化——不是"多头预测",而是一个轻量的自回归子网络,从主模型的隐藏状态生成候选。接受率可达 80%+,加速 3×+。</p>
+
+<h3>工程代价</h3>
+<p>推测解码的权衡:额外显存(小模型或额外 head);实现复杂,和 batch/KV Cache 交互有坑;小 batch 下收益大,大 batch 下(已经 memory-bound 减弱)收益减小。</p>
+<p>vLLM、TGI、TensorRT-LLM 都支持了推测解码。线上部署的高 QPS 服务收益明显;内部工具型服务收益小不一定值得。</p>
+
+<div class="part-header"><div class="part-label">PART NINE</div><h2 class="part-title">4.9 推理压缩</h2><p class="part-desc">量化不是推理加速的"附加项",是大模型开源能跑起来的前提。</p></div>
+
+<h2 id="s4-9-1"><span class="num">4.9.1</span>AWQ / GPTQ 深挖</h2>
+<p class="pos">定位:LLM 量化的两大主流方法——数学原理和工程差异。</p>
+
+<h3>LLM 量化的特殊性</h3>
+<p>第 3 章 4.7.2 讲过通用量化原理。LLM 的特别之处:权重极多(70B × 2B = 140GB),全 INT4 能压到 35GB——能装进单张 A100/H100;激活值有极端 outlier——某些维度值特别大,常规量化对它们损失严重;精度要求高——错一个 token 可能整个回答跑偏。</p>
+
+<h3>GPTQ</h3>
+<p>GPTQ(2022)用二阶信息做逐列量化。核心观察:量化一列权重引入的误差,可以通过调整剩余列来补偿。</p>
+<p>数学上是在求解:</p>
+<div class="formula">$\arg\min_{\hat{W}} \| \mathbf{X}(W - \hat{W}) \|^2$</div>
+<p>使用少量校准数据算 Hessian 的近似,按列逐步量化:对每列 $j$,找最接近的量化值 $\hat{w}_j$;算误差 $\delta = w_j - \hat{w}_j$;把误差"吸收"到剩余未量化列,让总误差最小;继续下一列。</p>
+<p>算法复杂度 $O(d^3)$(d 是层宽),几分钟量化一层。量化后 INT4 能保持 FP16 精度 95%+。</p>
+
+<h3>AWQ</h3>
+<p>AWQ(Activation-aware Weight Quantization, MIT 2023)的观察:<strong>不是所有权重都同等重要——对应激活幅度大的权重重要</strong>。</p>
+<p>传统量化把所有权重平均对待,"重要权重"的量化误差被放大(激活大 × 量化误差 = 大损失)。AWQ 的 fix:给重要通道<em>先缩放</em>,让它们量化时相对误差小。</p>
+<p>具体:对权重矩阵的每一列(对应激活的一个通道):</p>
+<div class="formula">$W' = W \cdot s, \quad \hat{W} = \text{Quantize}(W')$</div>
+<p>推理时把 $s$ 乘到激活上:$\mathbf{x}' = \mathbf{x} / s$。数学等价但量化误差分布改变——重要权重误差减小,代价是不重要权重误差加大(无所谓)。</p>
+<p>$s$ 怎么选?校准数据测激活幅度,重要通道 $s > 1$(权重放大,量化相对误差小),不重要通道 $s \le 1$。</p>
+
+<h3>GPTQ vs AWQ</h3>
+<table>
+<tr><th></th><th>GPTQ</th><th>AWQ</th></tr>
+<tr><td>思路</td><td>逐列量化,误差补偿</td><td>通道缩放,分散误差</td></tr>
+<tr><td>算力</td><td>高(Hessian)</td><td>中</td></tr>
+<tr><td>效果</td><td>略好,尤其 INT3</td><td>好,INT4 够用</td></tr>
+<tr><td>推理速度</td><td>相同(都是 INT4 GEMM)</td><td>相同</td></tr>
+<tr><td>生态</td><td>AutoGPTQ, ExLlamaV2</td><td>vLLM, TGI 原生支持</td></tr>
+</table>
+<p>实际选 AWQ 的多——工程更简单,推理速度同等,精度差距很小。</p>
+
+<h3>GGUF 与 llama.cpp</h3>
+<p>llama.cpp 用的量化格式 GGUF,有自己的量化方案(Q4_K_M、Q5_K_S、Q8_0 等)。类似 AWQ/GPTQ 但实现在 CPU/GPU 上都优化到极致。边缘部署(个人电脑、手机)首选。</p>
+
+<h3>超低比特</h3>
+<p>2024 的前沿是 <strong>INT2/INT1</strong>。BitNet(Microsoft)用 ternary(-1, 0, +1)权重训练,但需要从头训。</p>
+<p>更实用的是 <strong>QuIP</strong>、<strong>AQLM</strong>——把权重先做正交变换"平滑化",再量化到 2-3 bit,精度接近 INT4。</p>
+<p>一般生产部署仍是 INT4 主流——INT3 以下精度开始明显掉。</p>
+
+<h3>实战量化流程</h3>
+<pre><code class="language-python"># 用 AutoAWQ 量化 LLaMA-3-70B
+from awq import AutoAWQForCausalLM
+from transformers import AutoTokenizer
+
+model_path = "meta-llama/Meta-Llama-3-70B-Instruct"
+quant_path = "Meta-Llama-3-70B-Instruct-AWQ"
+
+model = AutoAWQForCausalLM.from_pretrained(model_path)
+tokenizer = AutoTokenizer.from_pretrained(model_path)
+
+quant_config = {
+    "zero_point": True,
+    "q_group_size": 128,
+    "w_bit": 4,
+    "version": "GEMM",
+}
+model.quantize(tokenizer, quant_config=quant_config, calib_data="pile_calib.jsonl")
+model.save_quantized(quant_path)
+
+# vLLM 直接加载:
+# vllm serve Meta-Llama-3-70B-Instruct-AWQ --quantization awq
+</code></pre>
+
+<h2 id="s4-9-2"><span class="num">4.9.2</span>KV Cache 量化与 FP8</h2>
+<p class="pos">定位:权重之外——KV Cache 和激活也要压缩,进一步释放内存。</p>
+
+<h3>KV Cache 量化</h3>
+<p>权重 INT4 量化是标准了,但 KV Cache 仍是 FP16——长上下文下它可能比权重还大。</p>
+<p><strong>INT8 KV Cache</strong>:简单好用。每个 token 的 K、V 按 channel 量化。显存减半,精度几乎无损。vLLM、TensorRT-LLM 支持。</p>
+<p><strong>INT4 KV Cache</strong>:显存再减半,但精度损失开始明显。需要精细的分组量化(每 64 或 128 token 一组 scale)才能保持质量。</p>
+<p><strong>KIVI</strong>(2024):Key 按 channel 量化、Value 按 token 量化——因为 Key 和 Value 的分布特性不同。INT2 下能保持精度。</p>
+<p>长上下文场景 KV Cache 量化收益最大。100K token 对话的 KV Cache 从 30GB 降到 7.5GB(INT4),彻底改变部署可能性。</p>
+
+<h3>FP8 与 Hopper</h3>
+<p>NVIDIA H100 Hopper 架构原生支持 FP8——两种格式:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>E4M3</strong>:指数 4 bit、尾数 3 bit。动态范围小,精度相对高。存权重和激活。</li>
+<li><strong>E5M2</strong>:指数 5 bit、尾数 2 bit。动态范围大,精度低。存梯度等要保留 outlier 的量。</li>
+</ul>
+<p>FP8 算力比 FP16 翻倍(H100 Tensor Core)。重要的是 FP8 训练也能用——不像 INT8 只能推理。</p>
+
+<p><strong>下一代：NVIDIA Blackwell</strong>。2024 年 NVIDIA 发布 Blackwell 架构（B200/GB200）,单芯片 FP4 算力达 20 PFLOPS,配备 192GB HBM3e,是 H100 的下一代旗舰训练/推理芯片。Blackwell 原生支持 FP4 精度,进一步降低推理成本;NVLink 5 提供 1.8 TB/s 芯片间带宽。2025 年起主要云厂商陆续部署 GB200 集群,成为大规模 LLM 训练的新标配。</p>
+
+<h3>FP8 训练</h3>
+<p>DeepSeek-V3、LLaMA-3、Qwen 2.5 都尝试了 FP8 训练。技术要点:前向激活用 FP8,反向梯度用 FP8;权重主副本仍 FP32(做优化器更新);Per-tensor 或 per-token scaling 防止 outlier 溢出;某些敏感操作(归一化、softmax)保留 FP16/FP32。</p>
+<p>DeepSeek-V3 实测 FP8 比 BF16 快 1.5-2×,精度几乎无损。是 2024 训练的重大进展之一。</p>
+
+<h3>FP8 推理</h3>
+<p>推理场景 FP8 的计算优势 + 比 FP16 更小的内存占用。但工具链成熟度目前不如 INT4——主要挑战是<strong>动态范围</strong>:INT4 靠 group quantize 校准,FP8 的 per-tensor scale 更精细。</p>
+<p>TensorRT-LLM 对 FP8 推理支持最好(毕竟 NVIDIA)。vLLM、SGLang 也在跟进。</p>
+
+<h3>KV Cache + 权重双量化</h3>
+<p>极端压缩路线:权重 INT4 + KV Cache INT4。LLaMA-3-70B 在 H100 单卡(80G):</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- 权重:140GB FP16 → 35GB INT4</li>
+<li>- KV Cache:8K 上下文下单样本 2.5GB → 0.6GB INT4</li>
+<li>- 并发:从不到 10 提到 50+</li>
+</ul>
+<p>这是开源 70B 在单卡 H100 能服务上规模用户的关键。</p>
+
+<div class="part-header"><div class="part-label">PART TEN</div><h2 class="part-title">4.10 <a href="ch5_partC_supplement.html#p25">RAG</a></h2><p class="part-desc">让 LLM 知道它不知道的——企业知识、实时数据、私有文档都靠它接入。</p></div>
+
+<h2 id="s4-10-1"><span class="num">4.10.1</span>RAG 基础流水线</h2>
+<p class="pos">定位:从朴素 RAG 的完整流程——每一步的设计决策。</p>
+
+<h3>为什么需要 RAG</h3>
+<p>LLM 的参数里是训练时的知识。三个问题:</p>
+<ol>
+<li><strong>过时</strong>:训练数据截至某个时间点,之后的事情不知道</li>
+<li><strong>幻觉</strong>:不知道的时候会编</li>
+<li><strong>私有数据</strong>:企业内部文档模型没见过</li>
+</ol>
+<p>解决方案 A 是微调——代价大,新知识又来了又要再微调。解决方案 B 是 RAG(Retrieval-Augmented Generation):<strong>查询时从知识库检索相关文档,拼进 prompt,让模型基于检索结果回答</strong>。</p>
+
+<h3>朴素 RAG 流水线</h3>
+<div class="mermaid">
+flowchart LR
+    subgraph Offline
+        DOC[Documents] --> CHUNK[Chunking]
+        CHUNK --> EMB[Embedding]
+        EMB --> VDB[Vector DB]
+    end
+    subgraph Online
+        Q[Query] --> QE[Query Embedding]
+        QE --> SEARCH[ANN Search]
+        VDB --> SEARCH
+        SEARCH --> CTX[Retrieved Chunks]
+        CTX --> PROMPT[Prompt Construction]
+        Q --> PROMPT
+        PROMPT --> LLM[LLM]
+        LLM --> A[Answer]
+    end
+</div>
+
+<h3>分块 Chunking</h3>
+<p>文档切成小块,每块独立嵌入。为什么?向量要能代表整块内容——块太大向量代表不了;喂给 LLM 的上下文有限,块太大放不下多个;检索粒度——用户问题通常匹配文档某一段,不是整篇。</p>
+<p>切法:</p>
+<ol>
+<li><strong>固定大小</strong>:每 500 token 一块,最简单。问题:句子被切断。</li>
+<li><strong>递归切分</strong>:优先在段落边界切,不行就句子,不行再固定大小。LangChain 的 RecursiveCharacterTextSplitter 默认做法。</li>
+<li><strong>语义切分</strong>:按语义相似度切,相邻句相似度骤降点是切点。</li>
+<li><strong>结构感知</strong>:Markdown 按标题切、代码按函数切。</li>
+</ol>
+<p>分块大小经验:技术文档 512-1024 token;对话/FAQ 256-512 token;代码按函数/类;<strong>overlap</strong> 相邻块重叠 10-20% 防边界信息丢。</p>
+
+<h3>Embedding 与 Indexing</h3>
+<p>每个块过 embedding 模型(4.4.3),得到 768/1024/4096 维向量。存入向量数据库(3.4.4 节讲过)。</p>
+<p>选向量数据库的考量:规模(百万级 pgvector/Chroma 够;亿级 Milvus/Qdrant);过滤(带元数据过滤,Qdrant、Milvus 强);部署(嵌入式 LanceDB/Chroma;服务化 Milvus/Qdrant);混合检索(Weaviate、Qdrant 原生支持)。</p>
+
+<h3>查询与检索</h3>
+<p>用户 query 过同一个 embedding 模型,在向量库搜 top-K(通常 3-10)最近邻。返回原始文本 + 元数据。</p>
+
+<h3>Prompt 构建</h3>
+<p>典型模板:</p>
+<pre><code class="language-text">基于下面的参考资料回答问题。如果参考资料中没有相关信息, 说明你不知道。
+
+【参考资料】
+[1] {chunk_1 文本}
+来源: {chunk_1 来源}
+
+[2] {chunk_2 文本}
+来源: {chunk_2 来源}
+
+...
+
+【问题】
+{user_query}
+
+【要求】
+- 回答时引用相关资料编号, 如 [1]
+- 只基于参考资料回答, 不编造
+</code></pre>
+<p>拼好后送 LLM 生成答案。</p>
+
+<h3>朴素 RAG 的问题</h3>
+<p>看起来简单但实际坑多:检索 recall 低(用户查询和文档表达差异大,向量相似度找不到相关内容);排序不准(top-K 里有相关的但不是最前面);chunks 之间丢失上下文(相关内容横跨多个 chunk,单独看都不完整);幻觉引用(LLM 编造不存在的引用);查询意图误解(模糊查询、多意图查询处理不好)。</p>
+<p>下一节讲的高级 RAG 就是针对这些问题。</p>
+
+<h2 id="s4-10-2"><span class="num">4.10.2</span>高级 RAG 技术</h2>
+<p class="pos">定位:从朴素 RAG 到生产 RAG——查询重写、混合检索、重排、上下文扩展。</p>
+
+<h3>查询端优化</h3>
+<p><strong>Query Expansion / Rewriting</strong>:用 LLM 先把用户 query 改写或扩展多个变体,再分别检索,结果合并。</p>
+<pre><code class="language-python">def rewrite_query(query, llm):
+    prompt = f"""把下面用户的问题改写成 3 个不同的版本, 覆盖可能的表达方式和关注点。
+只输出改写后的问题, 一行一个。
+
+原问题: {query}
+
+改写:"""
+    return llm(prompt).strip().split('\n')
+
+# 检索时用所有变体查, 结果合并去重
+all_chunks = []
+for q in rewrite_query(user_query, llm):
+    all_chunks.extend(vector_db.search(q, top_k=5))
+</code></pre>
+<p><strong>HyDE</strong>(Hypothetical Document Embedding):让 LLM 先<em>编</em>一个假设的答案,用这个假设答案去检索——比用原问题匹配得更准(答案和文档同属"答案空间")。</p>
+<p><strong>Query Decomposition</strong>:复杂多意图 query 拆成子查询,分别检索再合成。</p>
+
+<h3>混合检索</h3>
+<p>向量检索抓语义相似,但在<strong>专业术语、产品型号、人名</strong>这类精确匹配场景差。关键词检索(BM25)在这里更强。</p>
+<p>Hybrid Search:两种检索同时做,结果用 <strong>Reciprocal Rank Fusion(RRF)</strong> 合并:</p>
+<div class="formula">$\text{score}_{\text{RRF}}(d) = \sum_{r \in R} \frac{1}{k + \text{rank}_r(d)}$</div>
+<p>$R$ 是不同检索方法的排序,$\text{rank}_r(d)$ 是文档 $d$ 在方法 $r$ 里的排名,$k$ 通常取 60。简单粗暴但实测效果好——不需要训模型。Weaviate、Qdrant、Elasticsearch 都原生支持 hybrid search。</p>
+
+<h3>Reranking</h3>
+<p>第一阶段召回 top-50(向量 + BM25),第二阶段用更精细的模型重排出 top-5。</p>
+<p><strong>Cross-encoder reranker</strong>:和 embedding 的"双塔"不同,reranker 把 (query, chunk) 一起送进模型,直接输出相关度分数。速度慢 100× 但精度高得多。</p>
+<p>开源 reranker:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>BGE-Reranker-v2</strong>(智源):中英双强</li>
+<li><strong>Cohere Rerank</strong>:商业,API 形式</li>
+<li><strong>Jina Reranker</strong>:开源,长上下文</li>
+<li><strong>Qwen3-Reranker</strong>:2024 新出,榜单强</li>
+</ul>
+<p>在生产 RAG 里,<strong>rerank 是最有效的单点改进</strong>——上 rerank 往往把召回准确率从 60% 提到 85%+。代价就是多一次网络往返和几十 ms 延迟。</p>
+
+<h3>上下文压缩</h3>
+<p>检索到的 chunk 可能很大,塞进 prompt 浪费 token。<strong>Contextual Compression</strong>:用小模型或 LLM 把每个 chunk 压缩成"和 query 相关的部分",去掉无关句。LangChain 的 ContextualCompressionRetriever 实现这个。</p>
+
+<h3>父子文档策略</h3>
+<p>Embedding 友好的块(小,句子级)和 LLM 友好的块(大,段落级)矛盾。解法:两级结构——用小 chunk 做检索,找到后返回它所在的大 chunk 给 LLM。</p>
+<pre><code class="language-python">chunks = {}   # chunk_id  → {"text": ..., "parent_id": ...}
+parents = {}  # parent_id → large_chunk_text
+
+# 检索时
+top_chunks = vector_db.search(query, top_k=10)
+parent_ids = set(c.parent_id for c in top_chunks)
+context = [parents[pid] for pid in parent_ids]   # 送给 LLM 的是父块
+</code></pre>
+
+<h3>Sentence Window</h3>
+<p>变种:索引时每句一个向量,但检索命中后返回<em>前后各 N 句</em>一起给 LLM。命中精度 + 上下文完整,两全。</p>
+
+<h3>自纠错:Corrective RAG</h3>
+<p>CRAG(2024):检索完成后,让一个评估模型判断检索结果是否真的相关。不相关 → 触发更广泛检索或 fallback 到 LLM 自身知识。</p>
+
+<h3>Self-RAG</h3>
+<p>更激进:让 LLM 自己决定何时检索、检索什么、检索结果怎么用——通过特殊 token(Retrieve / Relevant / Support)让模型有"元认知"。需要专门微调。</p>
+
+<h3>评估</h3>
+<p>RAG 难评估。常用框架 <strong>RAGAS</strong> 给几个维度的分:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Faithfulness</strong>:答案是否基于给定上下文(有没有幻觉)</li>
+<li><strong>Answer Relevancy</strong>:答案是否切中问题</li>
+<li><strong>Context Precision</strong>:检索的 chunks 是否相关</li>
+<li><strong>Context Recall</strong>:真正需要的信息是否都在 chunks 里</li>
+</ul>
+<p>用 LLM-as-judge 自动评估各维度。虽然不完全可靠,但比盲调靠谱。</p>
+
+<h2 id="s4-10-3"><span class="num">4.10.3</span>GraphRAG 与 Agentic RAG</h2>
+<p class="pos">定位:RAG 的两个前沿方向——图谱增强和智能体化。</p>
+
+<h3>GraphRAG</h3>
+<p>朴素 RAG 按"语义相似"召回,在两类查询上表现差:</p>
+<ol>
+<li><strong>多跳问题</strong>:"A 和 B 之间的关系" → 需要串联多个实体</li>
+<li><strong>全局性问题</strong>:"这批文档的核心主题是什么" → 需要跨所有文档综合</li>
+</ol>
+<p>Microsoft 2024 年的 GraphRAG 方案:</p>
+<ol>
+<li><strong>实体抽取</strong>:用 LLM 从每个 chunk 抽取实体和关系,构建知识图</li>
+<li><strong>社区检测</strong>:用社区发现算法(Leiden)把图切成主题社区</li>
+<li><strong>社区摘要</strong>:给每个社区生成摘要(用 LLM 总结社区内所有实体/关系)</li>
+<li><strong>查询</strong>:根据问题类型,检索相关 chunks / 实体 / 社区摘要组合喂给 LLM</li>
+</ol>
+<p>好处:多跳推理、全局综合、可解释(能指出"根据知识图里这条边"推理)。</p>
+<p>代价:构建开销大——几十万 chunk 的文档库,抽取实体就要数千美元的 LLM 调用。只适合文档库相对稳定、查询价值高的场景(金融研报、医学文献、法律合规)。</p>
+
+<h3>LightRAG 与变种</h3>
+<p>Microsoft GraphRAG 过重。LightRAG(2024)用更轻的做法:双层索引(实体级和关系级)、增量更新、查询时才做图遍历。在开源社区流行起来。</p>
+<p>Neo4j + LlamaIndex 也有图谱 RAG 集成,成熟度较高。</p>
+
+<h3>Agentic RAG</h3>
+<p>朴素 RAG 是"一次检索一次回答"。Agentic RAG:<strong>LLM 自己决定何时、如何、检索多少次</strong>。</p>
+<div class="mermaid">
+flowchart TB
+    Q[Query] --> LLM[LLM Agent]
+    LLM --> DEC{决定}
+    DEC -->|直接回答| ANS[Answer]
+    DEC -->|检索| RET[Retrieve]
+    RET --> CTX[Context]
+    CTX --> LLM
+    DEC -->|多子任务| PLAN[Plan Subtasks]
+    PLAN --> SUB[子任务]
+    SUB --> LLM
+</div>
+<p>典型模式:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>ReAct RAG</strong>:4.11.1 的 ReAct 循环应用在 RAG 上——LLM 输出 "Search: xxx",执行,拿到结果,继续</li>
+<li><strong>Self-Ask</strong>:LLM 把复杂问题拆子问题,每个子问题独立检索回答,最后合成</li>
+<li><strong>Adaptive RAG</strong>:简单问题直接答,复杂的多轮检索</li>
+</ul>
+
+<h3>HyDE + Agentic 的组合</h3>
+<p>实际生产的高级 RAG 往往是多种技术混合:query 重写 → 多路召回(向量 + BM25)→ rerank → 如果置信低,LLM 触发二次检索 → 最终生成。LangChain / LlamaIndex 提供组合工具,也可以自己串。</p>
+
+<h3>何时不用 RAG</h3>
+<p>RAG 不是万能钥匙。这些场景 RAG 帮助有限或反而更差:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong>推理型任务</strong>(数学、代码):知识不是瓶颈,推理是</li>
+<li>- <strong>创作型任务</strong>:要自由发挥,检索限制反而束缚</li>
+<li>- <strong>高度动态/个性化</strong>:知识库没意义,更适合 fine-tune</li>
+<li>- <strong>短事实问答</strong> 但回答不需要精确来源:模型知识通常够用</li>
+</ul>
+
+<div class="part-header"><div class="part-label">PART ELEVEN</div><h2 class="part-title">4.11 Agent</h2><p class="part-desc">LLM 调用外部工具、自主规划执行——从"生成文字"到"做事"。</p></div>
+
+<h2 id="s4-11-1"><span class="num">4.11.1</span>从 Prompt 到 <a href="ch5_partC_supplement.html#p26">ReAct</a></h2>
+<p class="pos">定位:Agent 思想的源头——<a href="ch5_partB_preview.html#p16">CoT</a> 到 ReAct 到现代 Agent 循环。</p>
+
+<h3>Chain-of-Thought</h3>
+<p>CoT(Wei 等 2022)是 Agent 思想的第一步。核心发现:让 LLM"一步一步想"(加 "Let's think step by step")比直接给答案准确率更高,尤其在数学、逻辑推理任务上。</p>
+<p>直觉:LLM 的每个 token 计算是固定的 forward pass。复杂问题需要多步推理,直接给答案 = 用一次 forward 完成多步推理——算力不够。让模型输出推理过程 = 每一步一次 forward,总算力随推理长度线性增加。</p>
+<p>CoT 在小模型上收益小——模型要足够大(~60B+)才有显著提升。涌现的一部分。</p>
+
+<h3>Self-Consistency</h3>
+<p>CoT + 采样多条推理链 + 投票。模型对同一问题生成多个推理过程,答案最一致的胜出。能纠正个别推理链的错误。代价是 N 倍推理。</p>
+
+<h3>Tree of Thoughts / Graph of Thoughts</h3>
+<p>进一步——不是线性推理链,而是树状或图状展开,每个节点是一个中间推理状态,用搜索算法(BFS、DFS、beam search)探索多个路径。</p>
+<p>适合规划类问题(24 点、拼字游戏)。工程上开销大,工业界用得少——通常 CoT + self-consistency 就够了。</p>
+
+<h3>ReAct</h3>
+<p>Reasoning + Acting(Yao 等 2022)。关键 insight:让 LLM 的"推理"不只是文字,而是<strong>交替思考和行动</strong>——动作就是调用外部工具。</p>
+<p>ReAct 循环:</p>
+<div class="mermaid">
+flowchart LR
+    T[Thought: 我需要什么信息?] --> A[Action: 调用工具]
+    A --> O[Observation: 工具返回]
+    O --> T2[Thought: 基于结果下一步]
+    T2 --> A2[Action: ...]
+    A2 --> FIN[Action: finish + Answer]
+</div>
+<p>Prompt 格式示例:</p>
+<pre><code class="language-text">Question: 2024 年 F1 世界冠军是谁? 他多少岁?
+
+Thought: 我需要查 2024 年 F1 世界冠军。
+Action: search("2024 F1 world champion")
+Observation: Max Verstappen won the 2024 F1 World Championship.
+
+Thought: 现在我需要查 Max Verstappen 的生日。
+Action: search("Max Verstappen birth date")
+Observation: Max Verstappen was born on 30 September 1997.
+
+Thought: 2024 年他 27 岁。我有答案了。
+Action: finish("Max Verstappen, 27 岁")
+</code></pre>
+
+<h3>ReAct 实现</h3>
+<pre><code class="language-python">def run_react(question, tools, llm, max_steps=10):
+    transcript = f"Question: {question}\n\n"
+    for step in range(max_steps):
+        # 让 LLM 生成下一个 Thought 和 Action
+        response = llm(transcript + "Thought:", stop=["Observation:"])
+        transcript += "Thought:" + response
+        # 解析 Action
+        action = parse_action(response)   # 如 "search('xxx')"
+        if action.name == "finish":
+            return action.args
+        # 执行工具
+        result = tools[action.name](*action.args)
+        transcript += f"Observation: {result}\n"
+    return "Max steps reached"
+</code></pre>
+
+<h3>ReAct 的问题</h3>
+<p>ReAct 是早期 agent 的经典框架,但有毛病:prompt 格式脆弱(模型偶尔不按格式输出,解析失败);每步要整段 transcript 重新送入(token 开销大、慢);错误累积(长循环里错一步后面全错);没有结构化工具接口(纯文本描述工具,易错)。</p>
+
+<h3>现代 Agent</h3>
+<p>ReAct 被 <strong>Function Calling</strong>(下节讲)基本替代——模型原生支持结构化工具调用后,不再需要靠 prompt 约定。</p>
+<p>但 ReAct 的核心思想(Thought → Action → Observation → 循环)保留——现代 agent 循环本质就是这个,只是工具调用的表达形式升级了。</p>
+
+<h2 id="s4-11-2"><span class="num">4.11.2</span>Function Calling / MCP / 多 Agent</h2>
+<p class="pos">定位:现代 agent 基础设施——原生工具调用、标准协议、多 agent 协作。</p>
+
+<h3>Function Calling</h3>
+<p>OpenAI 2023 年 6 月推出 Function Calling(后统一为 Tools API):模型训练时就学了"输出结构化 JSON 调用函数"的格式。不再靠 prompt 约定,而是 API 级别支持。</p>
+<p>开发者向模型声明可用工具(JSON Schema):</p>
+<pre><code class="language-json">{
+  "type": "function",
+  "function": {
+    "name": "get_weather",
+    "description": "Get current weather for a location",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "location": {"type": "string", "description": "City name"},
+        "unit":     {"type": "string", "enum": ["celsius", "fahrenheit"]}
+      },
+      "required": ["location"]
+    }
+  }
+}
+</code></pre>
+<p>模型输出可能是普通文本,也可能是:</p>
+<pre><code class="language-json">{
+  "tool_calls": [{
+    "id": "call_123",
+    "type": "function",
+    "function": {
+      "name": "get_weather",
+      "arguments": "{\"location\": \"Paris\", \"unit\": \"celsius\"}"
+    }
+  }]
+}
+</code></pre>
+<p>应用执行函数,把结果作为 <code>tool_message</code> 送回模型,循环继续。</p>
+
+<h3>开源模型的 Function Calling</h3>
+<p>初期闭源模型(OpenAI、Anthropic)领先。2024 以后开源模型跟上——LLaMA-3.1、Qwen2.5、DeepSeek、Mistral 都原生支持 function calling。</p>
+<p>训练方式:SFT 阶段加入大量 function calling 数据(人工标注或合成),让模型学会识别何时调用工具、怎么填参数。</p>
+<p>评测:Berkeley Function Calling Leaderboard(BFCL)是标准——一批工具调用任务评估不同模型。Qwen2.5-72B、DeepSeek-V3 等在 BFCL 上接近 GPT-4o。</p>
+
+<h3>Structured Output</h3>
+<p>Function Calling 本质是结构化输出。近年 <strong>Constrained Decoding</strong>(受约束解码)成熟——直接在生成时强制遵循 JSON Schema / 正则 / CFG。</p>
+<p>代表:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Outlines</strong>:Python 库,强制 JSON/正则/Pydantic schema</li>
+<li><strong>xgrammar</strong>:C++,和 vLLM/SGLang 集成,快</li>
+<li><strong>LMQL</strong>:查询语言式 prompting</li>
+<li><strong>OpenAI Structured Output</strong>:API 级别支持</li>
+</ul>
+<p>原理:每个 token 位置,用 schema 动态计算"合法的下一个 token"集合,softmax 之前 mask 掉不合法 token。保证 100% 符合格式,几乎无性能损失。</p>
+
+<h3>MCP</h3>
+<p>Model Context Protocol(Anthropic 2024 年 11 月提出)。解决的问题:每个 AI 应用都要自己写工具集成代码,重复劳动、难复用。</p>
+<p>MCP 定义标准协议(基于 JSON-RPC),分 server 和 client:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>MCP Server</strong>:暴露工具、资源、提示模板的进程。可以是文件系统、数据库、GitHub、Slack 等</li>
+<li><strong>MCP Client</strong>:LLM 应用(Claude Desktop、Cursor 等)连接一个或多个 MCP Server,自动获得它们的工具</li>
+</ul>
+<p>好处:工具生态标准化——写一次 MCP server,所有支持 MCP 的 LLM 应用都能用。</p>
+<p>2025 年 MCP 生态爆炸式扩张——从 Anthropic 的单厂家提案,到全行业事实标准。Claude Desktop、Cursor、VSCode 的 LLM 插件、Cline、Windsurf、Continue、Zed 都接入。Qwen3、DeepSeek V3.1 等开源模型在 tokenizer 级别原生支持 MCP 格式。GitHub、Slack、Notion、Linear 等主流 SaaS 都推出官方 MCP server。2025 年下半年起,"MCP-ready"成为 AI 开发工具的基本要求。</p>
+<p>这是 LLM 生态少有的"标准化成功案例"——比 OpenAI 的 plugins(已停止)、ChatGPT 的 GPTs 市场影响更深远,因为 MCP 是模型无关的协议,不绑定任何一家厂商。</p>
+
+<h3>多 Agent 系统</h3>
+<p>单个 LLM 做所有事 vs 多个 LLM 分工协作。几种模式:</p>
+<p><strong>Supervisor-Worker</strong>:一个主 LLM 把任务拆给专门的 worker LLM(研究、编码、写作各一个),汇总结果。LangGraph、CrewAI 主推这种模式。</p>
+<p><strong>对话式多 Agent</strong>:多个 Agent 互相对话协作。AutoGen(Microsoft)是代表,两个或多个 agent 通过消息往返完成任务(一个写代码、一个审查、一个测试)。</p>
+<p><strong>Agent Mesh</strong>:松散耦合,每个 agent 独立能力,按需协作。</p>
+
+<h3>多 Agent 的坑</h3>
+<p>实际做下来经验:</p>
+<ol>
+<li><strong>成本爆炸</strong>:N 个 agent 互相通信,token 消耗成倍</li>
+<li><strong>错误放大</strong>:一个 agent 出错信息流到下一个,连锁崩</li>
+<li><strong>调试难</strong>:故障定位在 agent 之间来回</li>
+<li><strong>比单个强大 LLM 未必好</strong>:给 LLM 更多时间"想"(推理时计算)常常打败多 agent 协作</li>
+</ol>
+<p>实际生产部署的 agent 系统大多是<strong>Supervisor + 少数专用工具</strong>,不是几十个 agent 对话。OpenAI Swarm、LangGraph 的 StateGraph 都倾向简单的状态机模式。</p>
+
+<h3>记忆与规划</h3>
+<p>长期对话的 agent 需要记忆。典型架构:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>短期</strong>:当前对话历史(上下文窗口内)</li>
+<li><strong>中期</strong>:会话总结(长对话滚动压缩成摘要)</li>
+<li><strong>长期</strong>:向量存储的重要事实(和 RAG 融合)</li>
+</ul>
+<p>规划方面,ReAct 是"反应式"的——每步看情况决定。<strong>Plan-then-Execute</strong> 先拿出完整计划再执行,适合结构清晰的任务。</p>
+
+<h3>Agent 的边界</h3>
+<p>Agent 炒得火,但到 2026 年初真正可靠的商业 agent 场景仍相对窄:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>编程辅助</strong>:Cursor、Windsurf、Claude Code、Cline、OpenCode(2025 开源 Claude Code 替代)—— 最成熟的 agent 赛道</li>
+<li><strong>数据分析</strong>:OpenAI 的 Data Analysis、Code Interpreter</li>
+<li><strong>浏览器 / 屏幕操作</strong>:Anthropic Computer Use、Claude for Chrome(2025 末发布)——让 LLM 真正操作图形界面,是 agent 能力的一次质变</li>
+<li><strong>垂直场景自动化</strong>:财务分析、法律合规、客服工单</li>
+</ul>
+<p>"通用 agent"(替代助理、全能秘书)2025-2026 仍离实用有距离——主要问题是 LLM 在长程任务中的错误累积和自纠错能力不足。2025 年下半年,这方面的投入迅速增加,Google 推出 Gemini Agent + Antigravity 环境,Anthropic 持续打磨 Claude 的 agent 稳定性。推理模型(R1、V3.2、Claude 4.5)长程规划能力强,是 agent 可靠性的基础。</p>
+<p>另一条路线是<strong>agent编程框架</strong>的繁荣——下一节展开。</p>
+
+<!-- 4.11.3 -->
+<h2 id="s4-11-3"><span class="num">4.11.3</span>Agent框架生态</h2>
+<p class="pos">定位:2025-2026年Agent框架全景——从编排引擎到多Agent协作平台。</p>
+
+<h3>第一梯队:编排框架</h3>
+
+<p><strong>LangChain / LangGraph</strong>:LangChain于2022年末横空出世,迅速成为LLM应用开发的事实标准。2025年LangChain 1.0和LangGraph 1.0同步发布稳定版。LangGraph是其Agent编排层,核心卖点是<strong>持久化状态</strong>——Agent执行可以中断、恢复、回滚,支持human-in-the-loop审批节点。Uber、LinkedIn、Klarna等公司已在生产环境使用LangGraph。</p>
+
+<p><strong>CrewAI</strong>:以"角色扮演"为核心的多Agent框架。每个Agent有明确的role、goal、backstory,通过Task分配协作。支持三种编排:顺序(sequential)、层级(hierarchical)、共识(consensual)。GitHub 45,000+星,日执行量超1200万次Agent调用。原生支持MCP和Agent-to-Agent(A2A)通信。对中小团队而言是最低门槛的多Agent入口。</p>
+
+<p><strong>AutoGen → Microsoft Agent Framework</strong>:微软2023年推出的AutoGen是多Agent对话研究的先驱。2025年初v0.4重写为异步事件驱动架构,随后演进为闭源的Microsoft Agent Framework,AutoGen进入维护模式。核心贡献:证明了"多Agent对话"这种范式是可行的。</p>
+
+<h3>第二梯队:平台级产品</h3>
+
+<p><strong>Dify</strong>:开源低代码Agent平台,GitHub 60,000+星。提供可视化工作流编辑器、RAG管道、50+内置工具(搜索、DALL-E、Wolfram等)、模型管理和监控。定位是"让非工程师也能搭建Agent应用"。融资3000万美元Pre-A轮。</p>
+
+<p><strong>Coze(扣子,字节跳动)</strong>:2025年7月开源核心组件Coze Studio和Coze Loop。2026年1月发布2.0版本,从聊天工具转型为"智能工作伙伴"——支持长期Agent Plan(跨天执行)和Agent Skills(自定义技能市场)。在亚洲市场与Dify分庭抗礼。</p>
+
+<h3>第三梯队:厂商SDK</h3>
+
+<table>
+<tr><th>SDK</th><th>厂商</th><th>发布</th><th>核心设计</th></tr>
+<tr><td><strong>Agents SDK</strong></td><td>OpenAI</td><td>2025.3</td><td>四个原语:Agent、Handoff、Guardrail、Tracing。极简设计,模型无关</td></tr>
+<tr><td><strong>Claude Agent SDK</strong></td><td>Anthropic</td><td>2025.9</td><td>与Claude Code共享工具链(文件读写、命令执行、代码编辑),支持子Agent和Hook</td></tr>
+<tr><td><strong>ADK</strong></td><td>Google</td><td>2025</td><td>代码优先、模型无关、部署无关。支持Python/Go/Java/TS四语言</td></tr>
+</table>
+
+<p>趋势:三大厂商都推出了自己的Agent SDK,但设计理念各异——OpenAI追求极简(4个概念就够)、Anthropic追求实用(直接给你文件系统和终端)、Google追求通用(跨语言跨平台)。</p>
+
+<h3>框架选型决策树</h3>
+<ul style="list-style:none;padding-left:0;">
+<li>- 只需单Agent + 工具调用 → <strong>OpenAI Agents SDK</strong>或原生Function Calling</li>
+<li>- 需要有状态、可中断的Agent流程 → <strong>LangGraph</strong></li>
+<li>- 需要多Agent角色分工 → <strong>CrewAI</strong></li>
+<li>- 非工程师要搭Agent → <strong>Dify</strong>或<strong>Coze</strong></li>
+<li>- 做编程Agent → <strong>Claude Agent SDK</strong></li>
+<li>- 企业级、跨云部署 → <strong>Google ADK</strong></li>
+</ul>
+
+<!-- 4.11.4 -->
+<h2 id="s4-11-4"><span class="num">4.11.4</span>Coding Agent:最成熟的Agent赛道</h2>
+<p class="pos">定位:编程是Agent最成功的落地场景——工具链闭环、反馈即时、评估客观。</p>
+
+<h3>为什么编程Agent先成熟</h3>
+<p>Agent在通用场景(全能助理)仍不可靠,但编程领域先行一步。原因:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong>闭环反馈</strong>:代码能编译、能跑测试——Agent每一步有客观对错信号</li>
+<li>- <strong>工具链完整</strong>:文件读写、终端执行、Git操作、浏览器测试——已有成熟的MCP/工具生态</li>
+<li>- <strong>评估标准化</strong>:SWE-bench、HumanEval、MBPP等基准可量化比较</li>
+<li>- <strong>高价值</strong>:开发者时薪高,自动化ROI立竿见影</li>
+</ul>
+
+<h3>Coding Agent全景(2025-2026)</h3>
+
+<table>
+<tr><th>产品</th><th>类型</th><th>核心特点</th><th>状态(2026初)</th></tr>
+<tr><td><strong>Claude Code</strong></td><td>终端Agent</td><td>读全量代码库、多文件编辑、Git工作流、子Agent并行,Anthropic内部多数代码由其生成</td><td>终端+IDE+桌面+Web全端</td></tr>
+<tr><td><strong>Cursor</strong></td><td>AI原生IDE</td><td>基于VS Code,Composer 1.5(RL训练),Visual Editor(拖拽生成UI),多仓库支持</td><td>v3.0,估值293亿美元,年收入20亿+美元</td></tr>
+<tr><td><strong>Devin</strong></td><td>自主Agent</td><td>全自主:从Jira/Linear工单出发,规划→编码→调试→部署,处理4-8小时级任务</td><td>v2.0,ARR 1.55亿美元,高盛1.2万开发者试用</td></tr>
+<tr><td><strong>GitHub Copilot</strong></td><td>IDE插件+Agent</td><td>Agent Mode(自迭代修错),Coding Agent(异步在GitHub Actions中执行),Project Padawan(未来)</td><td>全IDE覆盖(VS Code/JetBrains/Xcode)</td></tr>
+<tr><td><strong>Windsurf</strong></td><td>AI原生IDE</td><td>Cascade系统(全库理解),2025年12月被Cognition收购(约2.5亿美元),100万+用户</td><td>IDE排名第一(LogRocket 2026.2)</td></tr>
+<tr><td><strong>Google Jules</strong></td><td>异步Agent</td><td>基于Gemini 2.5 Pro,GitHub集成,云端VM执行,音频变更日志</td><td>公开发布,API可用</td></tr>
+<tr><td><strong>Amazon Q Developer</strong></td><td>多模态Agent</td><td>深度AWS集成,SWE-bench Verified 66%(顶级),15+语言,agentic代码生成</td><td>免费+19美元/月</td></tr>
+<tr><td><strong>OpenAI Codex CLI</strong></td><td>终端Agent</td><td>开源Rust实现,轻量级,子Agent并行,MCP集成,codex-mini模型优化</td><td>活跃开发</td></tr>
+<tr><td><strong>Augment Code</strong></td><td>语义平台</td><td>Context Engine(全栈语义理解),Intent桌面(spec驱动+多Agent编排),代码审查准确率行业最高</td><td>企业级定位</td></tr>
+<tr><td><strong>OpenClaw</strong></td><td>开源终端Agent</td><td>开源Claude Code替代,支持多模型后端(Claude/GPT/Gemini/本地),社区驱动,MCP原生支持</td><td>活跃开源社区</td></tr>
+<tr><td><strong>ZeroClaw</strong></td><td>轻量终端Agent</td><td>零依赖极简设计,单文件部署,专注快速原型和小型项目,低token开销</td><td>轻量级替代</td></tr>
+<tr><td><strong>Hermes Agent</strong></td><td>AI助理Agent</td><td>通用任务自动化(不限于编程),浏览器操作+文件管理+API调用,长程任务规划</td><td>2025-2026新兴</td></tr>
+</table>
+
+<h3>开源/社区Coding Agent的崛起</h3>
+<p>2025年下半年,以Claude Code为代表的闭源终端Agent催生了一批开源替代:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong>OpenClaw</strong>:最早的开源Claude Code平替,设计理念是"同样的Agent循环(读代码→编辑→测试→提交),但模型后端可换"。支持通过MCP接入任意工具,社区贡献了数百个MCP server</li>
+<li>- <strong>ZeroClaw</strong>:极简派——单个Python文件,零外部依赖,专做"快速问答+小改动"场景。放弃了复杂的多文件编排,换取启动速度和低成本</li>
+<li>- <strong>Hermes Agent</strong>:不局限于编程,而是通用任务自动化——可以操作浏览器、管理文件、调用API、写文档。定位介于Coding Agent和通用Agent之间</li>
+<li>- <strong>Aider</strong>:早期开源pair programming agent,支持多模型,在终端中与开发者协作编辑代码,2025年持续活跃</li>
+<li>- <strong>Continue</strong>:VS Code/JetBrains插件,开源,支持任意模型(本地Ollama或云端API),定位"开源版Copilot"</li>
+</ul>
+<p>趋势:Coding Agent正在<strong>基础设施化</strong>——不再是某家公司的独占产品,而是每个开发者工具链里的标配。MCP协议的标准化加速了这个过程:写一次工具,所有Agent都能用。</p>
+
+<h3>Coding Agent的典型工作流</h3>
+<p>以Claude Code为例,一个典型的bug修复流程:</p>
+<pre><code class="language-text">1. 用户: "修复登录页面在Safari上的白屏问题"
+2. Agent读取项目结构 → 定位前端代码
+3. Agent搜索相关文件(login.tsx, auth.ts, safari相关CSS)
+4. Agent分析问题 → 发现是Safari不支持某CSS属性
+5. Agent编辑代码 → 添加兼容性前缀
+6. Agent运行测试 → 检查是否通过
+7. Agent运行浏览器测试 → 确认Safari正常
+8. Agent创建Git commit → 等待用户确认
+</code></pre>
+<p>关键:整个过程是<strong>ReAct循环的工程化实现</strong>——Thought(分析)→ Action(读文件/改代码/跑测试)→ Observation(结果)→ 循环。区别在于工具调用走Function Calling而非prompt文本,状态管理有checkpoint和回滚。</p>
+
+<h3>SWE-bench:Coding Agent的标准考试</h3>
+<p>SWE-bench(Princeton 2024)从真实GitHub issue中抽取编程任务,要求Agent在完整代码库上修bug/加功能。SWE-bench Verified是人工验证过的子集,更可靠。</p>
+<p>2024年初最好的Agent只能解决约5%的SWE-bench问题。到2026年初,前沿系统(Amazon Q Developer、Claude Code)达到<strong>50-66%</strong>——一年半内提升了10倍以上。这是Agent能力进步最直接的证据。</p>
+
+<h3>Coding Agent的局限</h3>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong>创意设计弱</strong>:擅长明确需求(修bug、写测试、迁移),拙于模糊需求(从零设计架构)</li>
+<li>- <strong>长任务不稳</strong>:超过30分钟的复杂任务,错误累积仍是问题</li>
+<li>- <strong>安全风险</strong>:自主执行代码有prompt注入、凭据泄露等风险,需沙箱隔离</li>
+<li>- <strong>成本考量</strong>:复杂任务可能消耗数万token,需评估ROI</li>
+<li>- <strong>人机协作最优</strong>:当前最优实践不是"全自主",而是Agent草拟+人审查确认</li>
+</ul>
+
+<div class="part-header"><div class="part-label">PART TWELVE</div><h2 class="part-title">4.12 多模态</h2><p class="part-desc">LLM 看图、听声——从"语言模型"到"基础模型"的扩展。</p></div>
+
+<h2 id="s4-12-1"><span class="num">4.12.1</span>VLM 架构</h2>
+<p class="pos">定位:视觉语言模型——把图像接入 LLM 的几种主流架构。</p>
+
+<h3>三大架构路线</h3>
+<p>VLM(Vision-Language Model)的核心问题:怎么让 LLM 接受图像输入?三种主要做法:</p>
+
+<p><strong>1. 投影连接(Adapter)</strong>:图像过一个独立视觉编码器(如 CLIP ViT)得到图像特征向量,通过一个轻量投影层(MLP 或 Q-Former)映射到 LLM 的 token 空间,和文本 token 一起送进 LLM。代表:LLaVA、MiniGPT、BLIP-2。优点:训练便宜(LLM 冻结,只训投影)。缺点:视觉信息压缩损失。</p>
+
+<p><strong>2. 交叉注意力(Cross-Attention)</strong>:视觉特征不变成 token,而是作为 LLM 每层新增的 cross-attention 的 K、V,让文本 token 通过 cross-attention "看"图像。代表:Flamingo、IDEFICS。优点:视觉特征保持高分辨率。缺点:改变 LLM 架构,训练复杂。</p>
+
+<p><strong>3. 统一 Transformer</strong>:一开始就把图像切 patch 和文本 token 混合输入,全在一个 Transformer 里做 self-attention。没有"视觉编码器"的概念。代表:Fuyu(Adept)、Gemini 原生多模态、Chameleon(Meta)。优点:无信息损失、扩展性好。缺点:从头训练,数据和算力需求大。</p>
+
+<h3>LLaVA 架构详解</h3>
+<p>LLaVA(Haotian Liu 2023)是开源多模态的代表,架构简单清晰:</p>
+<div class="mermaid">
+flowchart LR
+    IMG[Image 336x336] --> VE[CLIP ViT-L/14]
+    VE --> IF[Image Features 576 tokens]
+    IF --> PROJ[MLP Projector]
+    PROJ --> VT[Visual Tokens]
+    TXT[Text tokens] --> LLM[LLaMA / Vicuna]
+    VT --> LLM
+    LLM --> OUT[Text output]
+</div>
+<p>训练两阶段:</p>
+<ol>
+<li><strong>特征对齐</strong>:冻结 ViT 和 LLM,只训 projector。用图文对(图像 + caption)数据。目标让 projector 把视觉特征映射到 LLM 能"理解"的空间。</li>
+<li><strong>指令微调</strong>:解冻 LLM,用多模态指令数据(图 + 问 + 答)训练完整流程。</li>
+</ol>
+<p>总训练成本只要几千美元——相比重新训视觉模型便宜多了。</p>
+
+<h3>改进版本</h3>
+<p><strong>LLaVA-1.5</strong>:用更好的数据、MLP 代替单层线性。显著提升。</p>
+<p><strong>LLaVA-NeXT</strong>:把图像切成多个 336×336 的 patch 分别编码,支持高分辨率。</p>
+<p><strong>Qwen-VL / Qwen2-VL</strong>:动态分辨率(不必缩放到固定大小),支持视频。Qwen2-VL 在 2024 是开源 VLM 榜首。</p>
+<p><strong>InternVL2</strong>:商汤开源,能力强,覆盖多个尺寸。</p>
+
+<h3>高分辨率的挑战</h3>
+<p>低分辨率(336×336)下 VLM 看不清文字和细节。高分辨率有两条路:</p>
+<ol>
+<li><strong>切 Patch</strong>:把大图切成多个子图,每个独立编码,特征拼接。LLaVA-NeXT 做法。</li>
+<li><strong>动态分辨率</strong>:视觉编码器支持任意尺寸输入。Qwen2-VL 的 Naive Dynamic Resolution 做到了。</li>
+</ol>
+<p>代价:更多视觉 token(一张 2K 图可能 2000+ token)挤占上下文,推理变慢。</p>
+
+<h3>VLM 能做什么</h3>
+<table>
+<tr><th>任务</th><th>例子</th></tr>
+<tr><td>图像描述</td><td>Caption、VQA(视觉问答)</td></tr>
+<tr><td>文档理解</td><td>PDF 抽取、表格识别、图表解析</td></tr>
+<tr><td>OCR 融合</td><td>直接识别图中文字</td></tr>
+<tr><td>UI 理解</td><td>截图操作(WebAgent、Anthropic Computer Use)</td></tr>
+<tr><td>多图推理</td><td>比较两张图的差异</td></tr>
+<tr><td>视频理解</td><td>关键帧抽取+逐帧分析</td></tr>
+</table>
+
+<h3>闭源前沿</h3>
+<p>商业 API 层面:GPT-4o、Claude 3.5/3.7 Sonnet、Gemini 2.0 都有强多模态。GPT-4o 强在图像+语音实时对话;Claude 强在 UI 操作、文档理解;Gemini 强在视频(1.5 Pro 能看 1 小时视频)。</p>
+<p>开源跟进快——Qwen2-VL-72B、InternVL2-Pro、LLaVA-OneVision 在很多任务接近闭源水平。</p>
+
+<h2 id="s4-12-2"><span class="num">4.12.2</span>音频、视频与统一多模态</h2>
+<p class="pos">定位:超越图文——语音、视频、以及"一个模型吃所有模态"的趋势。</p>
+
+<h3>语音理解</h3>
+<p>传统 ASR(语音识别)是独立任务,用专门的模型(Whisper 是代表)转文字,再送 LLM。这种"级联"有两个问题:ASR 出错下游跟着错;语音里的情感、语气等信息丢失。</p>
+<p>新路线是<strong>直接把音频接入 LLM</strong>。和 VLM 架构类似:</p>
+<ol>
+<li>音频过一个声学编码器(如 Whisper encoder)得到特征</li>
+<li>投影层映射到 LLM token 空间</li>
+<li>和文本 token 一起送进 LLM</li>
+</ol>
+<p>代表开源:<strong>Qwen2-Audio</strong>、<strong>LLaMA-Omni</strong>、<strong>SALMONN</strong>、<strong>Whisper + Vicuna</strong> 等组合。</p>
+
+<h3>语音合成与双工</h3>
+<p>语音<em>生成</em>(TTS)传统也是独立模型(Tacotron、VITS、XTTS)。现在趋势:LLM 直接输出音频 token。</p>
+<p>SNAC、EnCodec、SoundStream 这类 neural audio codec 把音频压成离散 token 序列(大概每秒 50-100 个 token),LLM 可以像生成文字一样生成这些 token,decoder 还原成波形。</p>
+<p>代表:<strong>OpenAI GPT-4o</strong>(语音模式,据称端到端)、<strong>Fish Speech</strong>、<strong>LLaMA-Omni</strong>、<strong>Moshi</strong>(Kyutai,开源端到端语音对话)。</p>
+<p>关键指标是<strong>延迟</strong>——传统 ASR + LLM + TTS 级联延迟 1-3 秒,端到端 LLM 能做到 300ms 以内,才有"真实对话"的感觉。</p>
+
+<h3>视频理解</h3>
+<p>视频 = 图像序列 + 音频。挑战是时间维度——1 分钟视频 30fps 有 1800 帧,全送太贵。</p>
+<p>主流策略:</p>
+<ol>
+<li><strong>均匀采样</strong>:每 N 帧取一帧。粗暴但多数场景够用。</li>
+<li><strong>关键帧抽取</strong>:用传统 CV(场景切换检测)或 LLM 选择"信息密度高"的帧。</li>
+<li><strong>时空建模</strong>:专门的视频编码器(VideoMAE、Video-LLaMA)把相邻帧编码一起。</li>
+<li><strong>长上下文窗口</strong>:Gemini 1.5 的 1M 窗口可装大量帧。</li>
+</ol>
+<p>开源代表:Video-LLaMA、VideoChat、LLaVA-Video、Qwen2-VL(支持视频输入)。</p>
+
+<h3>图像生成</h3>
+<p>虽然严格不属于"LLM 范畴",但现代多模态框架里常一起提。主流图像生成架构:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>扩散模型</strong>(主流):Stable Diffusion、SDXL、SD3、FLUX、DALL-E 3。见第 3 章 4.4.4。</li>
+<li><strong>自回归</strong>:把图像切成 patch token,像生成文字一样生成。Parti、LLaMA-Gen、Emu3、Chameleon 是代表。和 LLM 自然融合,但效果目前不如扩散。</li>
+<li><strong>混合</strong>:用 LLM 生成 latent,用扩散 decoder 渲染。Transfusion(Meta)、Janus(DeepSeek)路线。</li>
+</ul>
+<p>趋势明显:<strong>理解和生成统一</strong>——一个模型既能看图又能画图。DeepSeek Janus-Pro、OmniGen 是开源代表。</p>
+
+<h3>视频生成</h3>
+<p>2024 年重大突破:OpenAI Sora、Google Veo、Runway Gen-3、Kling、快手可灵——生成几分钟的高质量视频。底层技术仍是扩散模型 + DiT(Diffusion Transformer)架构,把视频切成时空 patch。</p>
+<p>开源追赶中:<strong>CogVideoX</strong>(清华 + 智谱)、<strong>Open-Sora</strong>（2.0 版本仅 $200K 训练成本达到商用水平）、<strong>HunyuanVideo</strong>(腾讯)、<strong>Mochi</strong>、<strong>LTX-Video</strong>。质量正接近闭源,但算力门槛高(训练一次几百 GPU-day)。</p>
+<p><strong>重要转折</strong>:OpenAI 于 2026.3.24 宣布关停 Sora 全线产品,将资源转向机器人世界模拟。此前 Sora 2（2025.12 发布）支持 25 秒生成和原生音频同步,但商业化未达预期。取而代之的是 <strong>Kling 3.0</strong>（原生 4K 60fps 广播级质量）、<strong>Google Veo 3.1</strong> 和 <strong>Seedance 1.5 Pro</strong> 成为视频生成主力。</p>
+
+<h3>统一多模态</h3>
+<p>最前沿方向:<strong>Any-to-Any</strong>——一个模型支持文本、图像、音频、视频的理解和生成。</p>
+<p>代表:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Gemini 2.0</strong>(闭源):宣称原生多模态</li>
+<li><strong>GPT-4o</strong>(闭源):文本/语音/图像统一</li>
+<li><strong>Chameleon</strong>(Meta 开源):文本 + 图像统一 token 空间</li>
+<li><strong>Emu3</strong>(智源开源):一个模型做多模态生成</li>
+<li><strong>AnyGPT</strong>:四模态(文字、图、音、视频)端到端</li>
+</ul>
+<p>技术核心是"把所有模态转成离散 token"——图像用 VQ-VAE、音频用 neural codec、视频用时空 patch 量化。然后一个 Transformer 统一建模。</p>
+
+<h3>多模态的评估</h3>
+<p>多模态评估比单模态难——没有标准标签。常用基准:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>MMBench, MMMU, MMLU-Pro</strong>:多模态综合能力</li>
+<li><strong>ChartQA, DocVQA</strong>:文档和图表理解</li>
+<li><strong>MVBench, VideoMME</strong>:视频理解</li>
+<li><strong>GenEval, T2I-CompBench</strong>:图像生成</li>
+<li><strong>VBench</strong>:视频生成</li>
+</ul>
+<p>这些基准也在快速演进——模型能力增长太快,老 benchmark 过几个月就饱和了。</p>
+
+<h3>多模态的未来</h3>
+<p>三个方向值得关注:</p>
+<ol>
+<li><strong>实时性</strong>:端到端语音交互、实时视觉理解(手机 AR 眼镜场景)——延迟要进一步降到 100ms 级</li>
+<li><strong>长视频</strong>:理解几十分钟电影、几小时的会议——需要高效视频编码和长上下文</li>
+<li><strong>具身智能</strong>:多模态 + 物理世界动作——机器人操作、自动驾驶。VLA(Vision-Language-Action)模型是新范式</li>
+</ol>
+<p>2025 及之后 LLM 边界越来越模糊,成为"基础模型"的主体——文字只是其中一种模态。</p>
+
+<hr style="margin-top:60px;border:none;border-top:1px dashed var(--rule);">
+
+<p style="color:var(--muted);font-size:14px;font-style:italic;text-align:center;margin-top:40px;">
+— 第 3 章 Part B 终 —<br>
+Part B 包含 7 节 · 全章合并后共 36 节 · 配合 Part A (4.1-4.9) 阅读
+</p>
+
+<hr style="margin-top:60px;border:none;border-top:1px dashed var(--rule);">
+
+<p style="color:var(--muted);font-size:14px;font-style:italic;text-align:center;margin-top:40px;">
+— 第 3 章 终 —<br>
+共 37 节 · 至此第 2–5 章完整
+</p>
+
+</main>
+<script>
+hljs.highlightAll();
+mermaid.initialize({startOnLoad:true,theme:'neutral',fontFamily:'Inter,sans-serif'});
+</script>
+</body>
+</html>

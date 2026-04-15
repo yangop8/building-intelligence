@@ -1,0 +1,1985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Systems Software — From CPU to DPDK/VPP</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/rust.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+<style>
+:root {
+  --bg: #fbfaf7;
+  --fg: #1d1d1b;
+  --muted: #6b6b68;
+  --accent: #2f5d3a;
+  --accent-soft: #e6ede7;
+  --rule: #e3dfd6;
+  --code-bg: #282c34;
+  --sidebar-bg: #f4f1ea;
+  --mono: "SFMono-Regular", "JetBrains Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --serif: "Source Serif Pro", "Songti SC", "STSong", Georgia, "Times New Roman", serif;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--fg);
+  background: var(--bg);
+  display: flex;
+}
+aside.toc {
+  position: sticky;
+  top: 0;
+  width: 300px;
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--rule);
+  padding: 24px 20px;
+  font-family: var(--sans);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+aside.toc h1 {
+  font-family: var(--serif);
+  font-size: 18px;
+  margin: 0 0 4px 0;
+  color: var(--accent);
+}
+aside.toc .sub {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+aside.toc .group {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 14px;
+  margin-bottom: 4px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--rule);
+}
+aside.toc ol { list-style: none; padding: 0; margin: 0; }
+aside.toc ol li { margin-bottom: 2px; }
+aside.toc a {
+  color: var(--fg);
+  text-decoration: none;
+  display: block;
+  padding: 3px 6px;
+  border-radius: 3px;
+  transition: all 0.15s;
+}
+aside.toc a:hover { background: var(--accent-soft); color: var(--accent); }
+aside.toc .num { color: var(--muted); font-family: var(--mono); margin-right: 6px; font-size: 11px; }
+
+main {
+  flex: 1;
+  max-width: 880px;
+  padding: 60px 72px 120px 72px;
+  min-width: 0;
+}
+header.cover {
+  border-bottom: 2px solid var(--fg);
+  padding-bottom: 32px;
+  margin-bottom: 48px;
+}
+header.cover h1 {
+  font-size: 42px;
+  line-height: 1.15;
+  margin: 0 0 12px 0;
+  font-weight: 700;
+}
+header.cover .subtitle {
+  font-size: 20px;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 20px;
+}
+header.cover .meta {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+h2 {
+  font-size: 26px;
+  margin-top: 72px;
+  margin-bottom: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+  scroll-margin-top: 20px;
+}
+h2 .num {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-weight: 400;
+  margin-right: 10px;
+  font-size: 20px;
+}
+.pos {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: 0;
+  margin-bottom: 16px;
+  padding: 6px 12px;
+  background: var(--accent-soft);
+  border-left: 2px solid var(--accent);
+}
+h3 {
+  font-size: 18px;
+  margin-top: 28px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+h4 {
+  font-size: 15px;
+  margin-top: 18px;
+  margin-bottom: 4px;
+  font-weight: 600;
+  color: var(--accent);
+}
+p { margin: 0 0 14px 0; text-align: justify; }
+
+code {
+  font-family: var(--mono);
+  font-size: 14px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+pre {
+  background: var(--code-bg);
+  border-radius: 6px;
+  padding: 14px 18px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 16px 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+
+.callout {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  padding: 10px 16px;
+  margin: 16px 0;
+  font-size: 15px;
+}
+.callout .tag {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 4px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+  font-family: var(--sans);
+}
+th, td {
+  border-bottom: 1px solid var(--rule);
+  padding: 7px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+th { background: var(--sidebar-bg); font-weight: 600; }
+
+.part-header {
+  margin-top: 100px;
+  margin-bottom: 24px;
+  padding: 24px 28px;
+  background: linear-gradient(to right, var(--accent-soft), transparent);
+  border-left: 4px solid var(--accent);
+}
+.part-header .part-label {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+}
+.part-header h2.part-title {
+  font-size: 32px;
+  margin: 4px 0 8px 0;
+  padding: 0;
+  border: none;
+}
+.part-header .part-desc {
+  font-size: 15px;
+  color: var(--muted);
+  font-style: italic;
+  margin: 0;
+}
+
+.mermaid {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.footnote {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+@media (max-width: 1100px) {
+  aside.toc { display: none; }
+  main { padding: 40px 32px; }
+}
+</style>
+</head>
+<body>
+
+<aside class="toc">
+  <h1>Systems Software</h1>
+  <div class="sub">Ch 2 · CPU to DPDK</div>
+
+  <div class="group">2.1 CPU &amp; Core Architecture</div>
+  <ol>
+    <li><a href="#s2-1-1"><span class="num">1</span>CPU Overall Architecture</a></li>
+    <li><a href="#s2-1-2"><span class="num">2</span>Network Processing Units</a></li>
+    <li><a href="#s2-1-3"><span class="num">3</span>GPU / NPU Acceleration</a></li>
+    <li><a href="#s2-1-4"><span class="num">4</span>SoC Heterogeneous Computing</a></li>
+  </ol>
+
+  <div class="group">2.2 Operating Systems</div>
+  <ol>
+    <li><a href="#s2-2-1"><span class="num">1</span>OS Overview</a></li>
+    <li><a href="#s2-2-2"><span class="num">2</span>Processes &amp; Scheduling</a></li>
+    <li><a href="#s2-2-3"><span class="num">3</span>Memory Management</a></li>
+    <li><a href="#s2-2-4"><span class="num">4</span>Storage &amp; File Systems</a></li>
+    <li><a href="#s2-2-5"><span class="num">5</span>Exceptions &amp; Interrupts</a></li>
+    <li><a href="#s2-2-6"><span class="num">6</span>Concurrency, Mutual Exclusion &amp; Synchronization</a></li>
+    <li><a href="#s2-2-7"><span class="num">7</span>Devices &amp; System Calls</a></li>
+  </ol>
+
+  <div class="group">2.3 Programming Languages &amp; Compilers</div>
+  <ol>
+    <li><a href="#s2-3-1"><span class="num">1</span>Rust</a></li>
+    <li><a href="#s2-3-2"><span class="num">2</span>The Modern Evolution of C</a></li>
+    <li><a href="#s2-3-3"><span class="num">3</span>Compiler Fundamentals</a></li>
+    <li><a href="#s2-3-4"><span class="num">4</span>Compiler Optimizations</a></li>
+  </ol>
+
+  <div class="group">2.4 Databases</div>
+  <ol>
+    <li><a href="#s2-4-1"><span class="num">1</span>DB Core Principles</a></li>
+    <li><a href="#s2-4-2"><span class="num">2</span>Graph Databases</a></li>
+    <li><a href="#s2-4-3"><span class="num">3</span>Time-Series Databases</a></li>
+    <li><a href="#s2-4-4"><span class="num">4</span>Vector Databases</a></li>
+  </ol>
+
+  <div class="group">2.5 Message Middleware</div>
+  <ol>
+    <li><a href="#s2-5-1"><span class="num">1</span>High-Performance Message Bus</a></li>
+  </ol>
+
+  <div class="group">2.6 Network Stack (DPDK/VPP)</div>
+  <ol>
+    <li><a href="#s2-6-1"><span class="num">1</span>Bottlenecks of the Kernel Network Stack</a></li>
+    <li><a href="#s2-6-2"><span class="num">2</span>DPDK Architecture</a></li>
+    <li><a href="#s2-6-3"><span class="num">3</span>DPDK Key Mechanisms</a></li>
+    <li><a href="#s2-6-4"><span class="num">4</span>VPP Vectorized Forwarding</a></li>
+    <li><a href="#s2-6-5"><span class="num">5</span>TCP / UDP / Raw IP</a></li>
+    <li><a href="#s2-6-6"><span class="num">6</span>TLS &amp; QUIC</a></li>
+    <li><a href="#s2-6-7"><span class="num">7</span>Forwarding Management &amp; Control Plane</a></li>
+    <li><a href="#s2-6-8"><span class="num">8</span>Logging &amp; Observability</a></li>
+  </ol>
+</aside>
+
+<main>
+
+<header class="cover">
+  <h1>Systems Software</h1>
+  <div class="subtitle">The Systems Perspective for AI Engineers — From CPU to DPDK/VPP</div>
+  <div class="meta">Chapter 2 · 28 sections</div>
+</header>
+
+<p>What does systems software mean for AI engineers? Three things. First, <strong>training and inference both run on top of systems</strong> — no matter how fast the GPU, data traveling from disk to device memory must pass through PCIe, the kernel, and the file-system cache; every layer can become a bottleneck. Second, <strong>AI infrastructure is itself systems software</strong> — CUDA/CANN are driver-layer stacks, the vLLM scheduler borrows from OS process scheduling, and PagedAttention maps directly onto virtual-memory paging. Third, <strong>in the era of AI-assisted programming, judgment about low-level systems is worth more than raw implementation skill</strong> — AI can write the code, but architectural decisions, performance analysis, and fault diagnosis still require a human.</p>
+
+<p>This chapter unfolds 28 sections in stack order: chips → OS → languages/compilers → data storage → communication. As in Chapter 1, coverage is intentionally asymmetric: memory management, concurrency and synchronization, Rust ownership, compiler optimizations, and DPDK/VPP receive deep treatment; device drivers, traditional relational databases, and certain transport-protocol details are covered more briefly. Proprietary internal technology stacks (specific internal middleware, private protocols, etc.) are replaced throughout with open-source general-purpose equivalents — master DPDK, understanding any proprietary equivalent is just one more layer of abstraction.</p>
+
+<!-- ==================== 2.1 CPU ==================== -->
+<div class="part-header">
+  <div class="part-label">PART ONE</div>
+  <h2 class="part-title">2.1 CPU &amp; Core Architecture</h2>
+  <p class="part-desc">AI training depends on GPUs and NPUs, but the CPU is the prerequisite for understanding everything else.</p>
+</div>
+
+<!-- 2.1.1 -->
+<h2 id="s2-1-1"><span class="num">2.1.1</span>CPU Overall Architecture</h2>
+<p class="pos">Scope: ISA, pipeline, cache, multi-core — the skeleton of modern processors.</p>
+
+<h3>ISA: The Contract CPU Exposes to Software</h3>
+
+<p>The Instruction Set Architecture (ISA) is the programming model a CPU exposes to software. It defines which instructions exist, how many registers are available, and how memory is addressed. The three mainstream ISAs:</p>
+
+<table>
+<tr><th>ISA</th><th>Style</th><th>Examples</th><th>Use Cases</th></tr>
+<tr><td>x86 / x86-64</td><td>CISC</td><td>Intel / AMD</td><td>PCs, servers</td></tr>
+<tr><td>ARM</td><td>RISC</td><td>Apple M-series, Ampere</td><td>Mobile, cloud, embedded</td></tr>
+<tr><td>RISC-V</td><td>RISC (open)</td><td>SiFive, Alibaba T-Head</td><td>Emerging: IoT to HPC</td></tr>
+</table>
+
+<p>The CISC (Complex Instruction Set) vs. RISC (Reduced Instruction Set) divide is no longer as sharp as it once was — modern x86 CPUs decompose complex instructions into micro-operations (μops) at the front end, making the back-end execution units essentially identical to RISC. From a software perspective, though, the ISA still determines which assembly instructions you can use, whether vector extensions are AVX-512 or SVE, and whether a TSO memory model is in play.</p>
+
+<p>RISC-V occupies a special position because it is <strong>open</strong> — anyone can implement it freely and add their own extensions. It is reshaping the landscape of embedded and accelerator chips at a remarkable pace.</p>
+
+<h3>Microarchitecture: The Reality Beneath the ISA</h3>
+
+<p>The same ISA can yield several times the performance difference depending on the microarchitecture. Modern high-performance CPU cores contain these key components:</p>
+
+<p><strong>Pipeline</strong>: Overlaps the five stages — fetch, decode, execute, memory access, writeback — so that one instruction completes per cycle. Branches disrupt the pipeline, which is why there is a <strong>branch predictor</strong> that uses historical statistics to guess the next instruction. Accuracy routinely exceeds 95%. A misprediction flushes the pipeline at a cost of 15–20 cycles.</p>
+
+<p><strong>Out-of-order execution</strong>: Hardware detects when instructions have no dependencies and issues them in parallel. Code written sequentially by the programmer is reordered by hardware according to the dataflow. The Spectre/Meltdown vulnerabilities exploited side effects of this out-of-order execution.</p>
+
+<p><strong>SIMD</strong>: Single Instruction, Multiple Data. AVX-512 can compute 8 doubles with a single instruction. Before GPUs dominated, CPU inference relied on SIMD as its primary workhorse for deep learning.</p>
+
+<h3>Cache Hierarchy</h3>
+
+<p>Memory is two orders of magnitude slower than the CPU (100+ ns vs. &lt;1 ns). The solution is a three-level cache:</p>
+
+<table>
+<tr><th>Level</th><th>Size</th><th>Latency</th><th>Scope</th></tr>
+<tr><td>L1 (data + instr)</td><td>32KB + 32KB</td><td>~4 cycles</td><td>per-core</td></tr>
+<tr><td>L2</td><td>256KB–1MB</td><td>~12 cycles</td><td>per-core</td></tr>
+<tr><td>L3 (LLC)</td><td>several MB – tens of MB</td><td>~40 cycles</td><td>shared</td></tr>
+<tr><td>DRAM</td><td>GB</td><td>~200 cycles</td><td>global</td></tr>
+</table>
+
+<p>Understanding the cache is the key to understanding performance. <strong>Sequential array access</strong> lets the prefetcher predict the next cache line accurately, at near-zero cost; <strong>random linked-list traversal</strong> produces a cache miss on almost every access, slowing things down by tens of times. This is why tensors in AI almost universally use contiguous memory layouts.</p>
+
+<pre><code class="language-c">// The dramatic effect of cache on performance
+#define N 16384
+int a[N][N];
+
+// Version 1: row-major access, cache-friendly
+for (int i = 0; i < N; i++)
+    for (int j = 0; j < N; j++) sum += a[i][j];
+
+// Version 2: column-major access, strides N*sizeof(int) bytes each time
+for (int j = 0; j < N; j++)
+    for (int i = 0; i < N; i++) sum += a[i][j];
+
+// Version 2 is typically 5–10x slower than Version 1 — purely because of cache misses
+</code></pre>
+
+<h3>Multi-Core and Cache Coherence</h3>
+
+<p>When multiple cores share memory, the system must guarantee that "what I wrote, you can see." Hardware maintains cache-line state through the <strong>MESI protocol</strong> (Modified/Exclusive/Shared/Invalid). If one core modifies a cache line, copies held by other cores are marked Invalid; the next access on those cores must reload the line.</p>
+
+<p>This introduces a subtle trap — <strong>False Sharing</strong>. Two unrelated variables happen to reside on the same cache line (64 bytes). Two cores each write their respective variables frequently, and each write triggers a cache invalidation on the other core. The fix is <strong>cache-line alignment</strong> — annotate critical variables with <code>alignas(64)</code>, or pad them to 64 bytes.</p>
+
+<h3>In AI</h3>
+
+<p>AI training's data preprocessing, tokenization, and sampling logic all run on the CPU. One frequently overlooked detail: <strong>DataLoader CPU performance is often the training bottleneck</strong>. The GPU computes at blazing speed while the CPU cannot feed it data fast enough. The remedies are multi-process DataLoaders, binding workers to NUMA nodes, and using pinned memory to reduce copies — all of which rest on a basic understanding of CPU architecture.</p>
+
+<!-- 2.1.2 -->
+<h2 id="s2-1-2"><span class="num">2.1.2</span>Network Processing Units</h2>
+<p class="pos">Scope: dedicated hardware for accelerating network packet processing — from NP chips to smart NICs.</p>
+
+<h3>Why Dedicated Units Are Needed</h3>
+
+<p>Line-rate processing of 100 Gbps traffic, assuming 64-byte small packets, means <strong>148.8 Mpps</strong> (million packets per second). The per-packet budget is <strong>6.7 ns</strong> — not even enough time for a single DRAM access. General-purpose CPUs cannot keep up with pure software approaches; hardware is mandatory.</p>
+
+<h3>Hardware Acceleration Approaches</h3>
+
+<p><strong>NP (Network Processor)</strong>: A multi-core processor designed specifically for packet processing, with an instruction set that includes header parsing, table lookups, and checksum operations. Each core runs a segment of microcode, processing packets in a pipeline fashion. Examples: Broadcom XLP, Intel IXP.</p>
+
+<p><strong>ASIC (switching chip)</strong>: Fully hardened for fixed protocols. The Broadcom Tomahawk and Marvell Teralynx chips inside Ethernet switches are ASICs — table lookups, forwarding, and VLAN processing are all done in hardware. Latency can reach the hundreds-of-nanoseconds range, but functionality is fixed at fabrication time.</p>
+
+<p><strong>Smart NIC / DPU</strong>: NVIDIA BlueField, Intel IPU, AWS Nitro. Essentially a NIC with an ARM SoC on board that can run a full OS, offloading networking, storage, and security functions from the host CPU to the NIC. This is the dominant trend in data-center-scale acceleration.</p>
+
+<p><strong>P4 programmable pipeline</strong>: Positioned between ASICs and NPs. The hardware is a fixed pipeline, but the behavior of each pipeline stage is defined in P4 and loaded at power-on. Example: Barefoot Tofino.</p>
+
+<h3>Common Hardware Acceleration Features</h3>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>RSS (Receive Side Scaling)</strong>: The NIC hashes packets on the 5-tuple (source IP, destination IP, protocol, source port, destination port) and distributes them to receive queues on different CPU cores, enabling parallel processing without conflicts.</li>
+<li><strong>Hardware LRO/GRO</strong>: Combines multiple small packets from the same flow into a larger packet before handing them to the protocol stack, reducing the number of syscalls.</li>
+<li><strong>TSO/GSO</strong>: The reverse — the protocol stack hands a large segment to the NIC, which splits it into MTU-sized frames on its own.</li>
+<li><strong>Checksum/Crypto offload</strong>: TCP checksums and TLS encryption/decryption are performed entirely by the NIC.</li>
+<li><strong>ECMP hardware implementation</strong>: Equal-Cost Multi-Path routing; the hardware distributes traffic by hash.</li>
+</ul>
+
+<h3>In AI</h3>
+
+<p>Large-model training clusters (where GPUs communicate over RDMA via InfiniBand/RoCE) depend on NIC hardware capabilities. GPUDirect RDMA lets the NIC read and write GPU memory directly, bypassing CPU memory. The latency of a single AllReduce operation is dominated by the NIC's RDMA performance, not GPU compute throughput.</p>
+
+<!-- 2.1.3 -->
+<h2 id="s2-1-3"><span class="num">2.1.3</span>GPU and NPU Acceleration</h2>
+<p class="pos">Scope: the carrier of AI compute — hardware for parallel computation and tensor acceleration. Brief here; details in Chapter 4.</p>
+
+<p>This section overlaps with Chapter 4 / Section 5.2. Here we only establish the basic reference frame.</p>
+
+<h3>The GPU Parallel Model</h3>
+
+<p>The GPU's DNA is graphics rendering — shading a massive number of independent pixels is inherently parallel. Modern GPUs repurpose this capability for general-purpose computation (GPGPU). An NVIDIA H100 has approximately <strong>16,896 CUDA cores + 528 Tensor Cores</strong>, with FP16 Tensor Core throughput of roughly 989 TFLOPS (dense) / 1,979 TFLOPS (2:4 sparse).</p>
+
+<p>The GPU programming model is called SIMT (Single Instruction, Multiple Threads) — 32 threads form a warp and a single instruction acts on all 32 data elements simultaneously. This is conceptually the same as SIMD; the difference is that if threads within a warp diverge at a branch (if statement), the GPU serializes execution of both paths — known as warp divergence — causing a performance collapse.</p>
+
+<h3>NPU: Tensor-First Design</h3>
+
+<p>An NPU (Neural Processing Unit) is designed from the ground up for tensor computation. The core architecture is the <strong>systolic array</strong>: a two-dimensional grid of MAC (multiply-accumulate) units through which data flows like a pulse — each unit performs a multiply-accumulate on a fixed schedule. Google's TPU is the most well-known systolic array design.</p>
+
+<p>Huawei's Ascend uses the <strong>DaVinci architecture</strong>: a Cube unit for matrix multiplication, a Vector unit for element-wise operations, and a Scalar unit for control flow. Operator developers must explicitly dispatch computation to the appropriate unit.</p>
+
+<h3>Memory Structure</h3>
+
+<p>GPU/NPU memory hierarchies are more extreme:</p>
+
+<table>
+<tr><th>Level</th><th>Capacity</th><th>Bandwidth</th></tr>
+<tr><td>Registers</td><td>64KB per thread</td><td>extremely fast</td></tr>
+<tr><td>Shared memory / SRAM</td><td>~100KB per block</td><td>~several TB/s</td></tr>
+<tr><td>HBM</td><td>80GB (H100)</td><td>~3 TB/s</td></tr>
+</table>
+
+<p>HBM bandwidth is large, but still 10× slower than on-chip SRAM. The essence of operator optimizations like <strong><a href="ch5_partB_preview.html#p10">FlashAttention</a></strong> is to keep computation in SRAM as much as possible and minimize round-trips to HBM.</p>
+
+<!-- 2.1.4 -->
+<h2 id="s2-1-4"><span class="num">2.1.4</span>SoC Heterogeneous Computing</h2>
+<p class="pos">Scope: a single chip integrating CPU/GPU/NPU/accelerators — the paradigm for modern embedded and edge AI. Brief.</p>
+
+<p>SoC (System on Chip) is not a new concept. Mobile processors have been SoCs since the iPhone era — a single chip integrating CPU big and little cores, a GPU, an ISP (image signal processor), a neural network accelerator, and a modem. The data-center SoC trend is even more pronounced: AWS Graviton and Ampere Altra both integrate CPUs, memory controllers, PCIe, and network subsystems on a single die.</p>
+
+<h3>Challenges of Heterogeneous Computing</h3>
+
+<p>When multiple compute units share memory and buses on a single chip, the challenges are:</p>
+<ol>
+<li><strong>Data movement</strong>: Copying data between CPU memory and GPU/NPU memory is the dominant overhead. Unified memory (CUDA Unified Memory, Apple Silicon's Unified Memory Architecture) attempts to solve this, but truly zero-copy operation requires hardware coherence support.</li>
+<li><strong>Scheduling</strong>: Which code runs on the CPU and which runs on the accelerator? Frameworks like PyTorch and TensorFlow decide automatically, but edge cases are numerous.</li>
+<li><strong>Power wall</strong>: All units share the chip's power budget. Running the NPU at full tilt forces the CPU to throttle.</li>
+</ol>
+
+<h3>Common Offload Engines</h3>
+
+<p>Network device SoCs commonly include, beyond the CPU and NP:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>Compression engine</strong> (hardware-accelerated DEFLATE/LZ4)</li>
+<li>- <strong>Encryption/decryption engine</strong> (AES, SHA, Chinese national standard SM4)</li>
+<li>- <strong>Regex matching engine</strong> (DFA execution, used for IPS intrusion detection)</li>
+<li>- <strong>Table-lookup engine</strong> (TCAM, used for route lookups)</li>
+</ul>
+
+<p>These are not directly relevant to AI scenarios, but understanding the concept of "offloadable computation" is highly instructive for understanding DPUs and smart NICs — they are all, at their core, extensions of the SoC philosophy into the networking domain.</p>
+
+<!-- ==================== 2.2 OS ==================== -->
+<div class="part-header">
+  <div class="part-label">PART TWO</div>
+  <h2 class="part-title">2.2 Operating Systems</h2>
+  <p class="part-desc">The OS is the invisible infrastructure beneath all higher-level software — AI framework scheduling, containers, and networking all pass through it.</p>
+</div>
+
+<!-- 2.2.1 -->
+<h2 id="s2-2-1"><span class="num">2.2.1</span>OS Overview</h2>
+<p class="pos">Scope: what an OS is, what it does, and the differences between the major OS families.</p>
+
+<p>An operating system does two things: <strong>manage hardware resources</strong> (CPU, memory, disk, network) and <strong>provide abstractions to applications</strong> (processes, files, sockets). Dijkstra's old saying: "Abstraction is not about hiding details — it is about creating a new, precise level of description." The OS is exactly such a level.</p>
+
+<h3>Major OS Families</h3>
+
+<table>
+<tr><th>Family</th><th>Kernel</th><th>Examples</th><th>Use Cases</th></tr>
+<tr><td>Unix-like</td><td>Monolithic</td><td>Linux, FreeBSD</td><td>Servers, containers, supercomputers</td></tr>
+<tr><td>macOS / iOS</td><td>XNU (hybrid)</td><td>Darwin</td><td>Desktop, mobile</td></tr>
+<tr><td>Windows</td><td>NT (hybrid)</td><td>Windows 10/11</td><td>Desktop, enterprise servers</td></tr>
+<tr><td>Android</td><td>Custom Linux</td><td>AOSP</td><td>Mobile</td></tr>
+<tr><td>RTOS</td><td>Real-time microkernel</td><td>FreeRTOS, VxWorks, Zephyr</td><td>Embedded, industrial control</td></tr>
+</table>
+
+<p>AI infrastructure runs on Linux virtually 100% of the time. The Linux kernel spans 30 million lines of source code, but the core subsystems you interact with day-to-day number only five or six: process scheduling, memory management, VFS, the network stack, block devices, and character devices.</p>
+
+<h3>Monolithic Kernel vs. Microkernel</h3>
+
+<p>Monolithic kernel (Linux): the file system, network stack, and drivers all live in kernel space and communicate via direct function calls. Fast, but a bug in any subsystem can crash the entire machine.</p>
+
+<p>Microkernel (seL4, Mach): the kernel retains only the most essential IPC, scheduling, and memory-protection primitives; all other services run in user space and communicate through message passing. More resilient, but IPC overhead is significant.</p>
+
+<p>In practice, most modern OSes are hybrids — Linux itself has grown loadable kernel modules (LKMs) and eBPF as dynamic mechanisms, nudging it incrementally toward the microkernel direction.</p>
+
+<h3>Real-Time OS</h3>
+
+<p>The primary metric for an RTOS is not throughput but <strong>worst-case response latency</strong>. Scheduling must be predictable — a high-priority task that becomes ready must receive CPU time within a bounded interval. Linux is not an RTOS by default, but the PREEMPT_RT patch brings it close to real-time capability. Industrial control, automotive electronics, and robotics all require an RTOS.</p>
+
+<!-- 2.2.2 -->
+<h2 id="s2-2-2"><span class="num">2.2.2</span>Processes and Scheduling</h2>
+<p class="pos">Scope: processes are the basic unit of CPU resource allocation; the scheduler decides who runs and who waits. Focus on CFS and modern scheduling challenges.</p>
+
+<h3>Processes and Threads</h3>
+
+<p>In Linux, processes and threads look the same to the kernel — both are represented by a <code>task_struct</code>. The creation call determines whether it is a process (<code>fork</code>) or a thread (<code>clone</code> with flags like CLONE_VM). The essential distinction: processes have independent address spaces; threads share one.</p>
+
+<p>A <code>task_struct</code> contains:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- PID, parent process, user/group information</li>
+<li>- Run state (RUNNING, INTERRUPTIBLE, UNINTERRUPTIBLE, ZOMBIE, ...)</li>
+<li>- Scheduling policy and priority</li>
+<li>- Open file table, signal handler table</li>
+<li>- Memory map (mm_struct)</li>
+<li>- Context (registers, stack)</li>
+</ul>
+
+<h3>fork and Copy-on-Write</h3>
+
+<p><code>fork()</code> creates a child process; the traditional semantics copy the entire address space. A naive implementation would be very slow — because the vast majority of child processes immediately <code>exec</code> a new program, making the copied memory useless from the start.</p>
+
+<p>Copy-on-write (COW) is the elegant solution: at fork time nothing is copied; all pages are simply marked read-only with their reference count incremented. When either the parent or child writes to a page, a page fault fires and only then does the kernel copy that one page. Result: fork is nearly as fast as spawning a new thread.</p>
+
+<h3>Orphans and Zombies</h3>
+
+<p>If the parent dies before the child, the child becomes an <strong>orphan process</strong> and is adopted by init (PID 1).</p>
+
+<p>If the child dies before the parent calls wait, the child becomes a <strong>zombie process</strong> — the kernel retains its PID and exit status until the parent reads them. Zombies consume no memory but do occupy a PID table entry. Orphan vs. zombie is a classic Unix interview question.</p>
+
+<h3>CFS: Linux's Default Scheduler</h3>
+
+<p>The core idea of CFS (Completely Fair Scheduler) is the "ideal multi-tasking CPU" — if the CPU were infinitely fast, $N$ tasks should each receive exactly $1/N$ of the compute simultaneously. The real CPU is time-shared; CFS approximates this ideal.</p>
+
+<p>Implementation: each task maintains a <strong>virtual runtime</strong> (vruntime); each time it is scheduled, vruntime += actual run time × weight. The scheduler always picks the task with the lowest vruntime. Tasks are organized in a red-black tree, so selecting the next task costs $O(\log n)$.</p>
+
+<p>The nice value ([-20, 19]) influences the rate at which vruntime advances via weight: a lower nice value means higher weight, slower vruntime growth, and more frequent selection. This is a smooth implementation of "priority."</p>
+
+<p><strong>Note:</strong> Since Linux 6.6 (late 2023), the default fair scheduler has switched from CFS to <strong>EEVDF</strong> (Earliest Eligible Virtual Deadline First). EEVDF preserves virtual-time fairness while introducing virtual deadlines, improving tail latency and reducing scheduling jitter for interactive tasks. The underlying data structure is still a red-black tree, so $O(\log n)$ complexity is unchanged.</p>
+
+<h3>Real-Time Scheduling</h3>
+
+<p>Beyond CFS, Linux also has real-time scheduling classes (SCHED_FIFO, SCHED_RR). FIFO has no time slice — a high-priority task runs until it voluntarily yields or blocks, making it suitable for hard real-time scenarios. RR is FIFO with time-slice round-robin.</p>
+
+<p>There is also <strong>DEADLINE scheduling</strong> (EDF algorithm): each task declares (runtime, deadline, period), and the kernel guarantees that runtime is completed within each period without exceeding the deadline. This is currently the closest Linux comes to hard real-time scheduling.</p>
+
+<h3>Priority Inversion</h3>
+
+<p>A classic failure mode: low-priority task L holds a lock; medium-priority task M preempts L (without releasing M's hold on L); high-priority task H waits for the lock — H is indirectly blocked by M, a priority inversion. The 1997 Mars Pathfinder mission suffered exactly this bug.</p>
+
+<p>Fix: <strong>priority inheritance</strong> — while L holds the lock, it is temporarily elevated to H's priority so M cannot preempt it. <strong>Priority ceiling</strong> — statically assigns a higher ceiling. Both mechanisms are implemented in RT-mutex.</p>
+
+<h3>Cost of Context Switching</h3>
+
+<p>A single context switch costs roughly 1–5 μs and involves: saving registers, switching the page table (reloading CR3, partially invalidating the TLB), switching the kernel stack, and the scheduling decision. That sounds fast, but accumulated overhead is significant under a 1,000 Hz timer interrupt with frequent preemption.</p>
+
+<p>In AI training, <strong>CPU affinity</strong> (via taskset or sched_setaffinity) is commonly used to pin DataLoader workers to fixed cores, reducing both context switches and cache misses.</p>
+
+<!-- 2.2.3 -->
+<h2 id="s2-2-3"><span class="num">2.2.3</span>Memory Management</h2>
+<p class="pos">Scope: virtual memory, page tables, allocators, HugePages, OOM — the section most worth digging into in the entire chapter.</p>
+
+<h3>The Virtual Memory Contract</h3>
+
+<p>Every process sees an independent, contiguous address space that appears to belong entirely to it (128 TB of user space on x86-64). This is the illusion that virtual memory provides. Hardware (the MMU) and the OS (kernel page-table management) cooperate to maintain it.</p>
+
+<p><strong>4-level page tables</strong> (x86-64): a 48-bit virtual address is split into 9+9+9+9+12 bits. The first four 9-bit groups index four levels of page tables; the final 12 bits are the offset within the page. Why this design? A single-level page table covering the entire address space would require $2^{36} \times 8$ B = 512 GB per process — clearly impractical. Multi-level tables allocate on demand — only virtual memory ranges that are actually used have page table entries.</p>
+
+<h3>TLB</h3>
+
+<p>Walking all four levels of page tables on every memory access means four extra memory accesses — far too slow. Hardware uses a <strong>TLB</strong> (Translation Lookaside Buffer) to cache recently used virtual-to-physical mappings. A TLB hit incurs ~0 overhead; a miss triggers a full page walk costing ~100 cycles.</p>
+
+<p>A TLB holds only tens to hundreds of entries — random access across a large array causes the TLB miss rate to spike.</p>
+
+<h3>HugePages</h3>
+
+<p>Normal pages are 4 KB; 512 TLB entries cover 4 KB × 512 = 2 MB of data. <strong>HugePages</strong> are 2 MB (THP) or 1 GB (<code>hugetlbfs</code>), so a single TLB entry covers 2 MB or 1 GB. The benefit is pronounced for large-memory workloads such as databases and AI training.</p>
+
+<p>DPDK, databases, and the JVM all strongly recommend HugePages — not to save memory, but to reduce TLB misses.</p>
+
+<h3>Physical Memory Allocation</h3>
+
+<p>The kernel's physical page allocator is the <strong>Buddy System</strong>: physical memory is divided into power-of-two-sized blocks (4 KB, 8 KB, 16 KB, … 4 MB), with a free list for each size. On allocation, the smallest block greater than or equal to the request is found; if it is too large, it is <em>split in half</em> (into buddies) — one half goes to the requester and the other enters the next-smaller free list. On release, the kernel checks whether the buddy is also free; if so, they are merged.</p>
+
+<p>This algorithm balances avoiding external fragmentation with fast allocation speed. But 4 KB granularity is too coarse for small objects (tens of bytes), so a second layer is added:</p>
+
+<p><strong>Slab/Slub</strong>: a dedicated allocator for kernel objects. A set of pages is pre-allocated as a "slab" and divided into fixed-size objects (e.g., a <code>task_struct</code> at 2 KB), with a free list maintained at object granularity. Allocation and deallocation are O(1) and cache-friendly.</p>
+
+<h3>User-Space malloc</h3>
+
+<p>User-program malloc does not call the kernel directly. glibc's ptmalloc, jemalloc, and tcmalloc all obtain large blocks from the kernel via <code>brk()</code> or <code>mmap()</code> and then manage small-object allocation themselves. The core idea behind jemalloc (Redis, Rust default) and tcmalloc (Google) is <strong>per-thread caches</strong> — each thread maintains a local small-object cache so allocation is lock-free; the global pool is consulted only when the cache is exhausted. This is far faster than ptmalloc under multi-threaded workloads.</p>
+
+<h3>Page Reclamation</h3>
+
+<p>When physical memory runs low, the kernel must reclaim pages. Linux maintains two LRU lists: <strong>active</strong> and <strong>inactive</strong>. Accessing a page promotes it to the head of the active list; pages that go unaccessed for a long time migrate to the tail of the inactive list. Reclamation begins from the inactive tail.</p>
+
+<p>The <strong>kswapd</strong> kernel thread reclaims pages in the background, maintaining a certain amount of free memory. The reclamation paths are:</p>
+<ol>
+<li>Clean page-cache pages: discarded immediately (re-read from file on next access)</li>
+<li>Dirty page-cache pages: written back to disk first, then freed</li>
+<li>Anonymous memory (heap, stack): swapped out to the swap partition (if enabled)</li>
+</ol>
+
+<p>Swap is commonly disabled on server machines — an OOM kill is preferable to letting a program silently degrade in performance. AI training machines must have swap disabled.</p>
+
+<h3>OOM Killer</h3>
+
+<p>When even swap cannot help, the kernel invokes the OOM Killer to select and terminate a process. The scoring algorithm weighs memory consumption, running time, and <code>oom_score_adj</code> (tunable). In practice: critical services should be given a negative <code>oom_score_adj</code> to reduce the chance of being killed.</p>
+
+<h3>In AI</h3>
+
+<p>Most AI training memory problems arise in GPU VRAM; CPU memory is relatively abundant. However, these scenarios trip teams up frequently:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>fork with multiple DataLoader workers</strong>: Due to COW, large objects in the parent process (such as dataset indices) are copied page by page as child processes "touch" them, eventually duplicating all of that memory. Python multi-process training OOMs are often caused by this.</li>
+<li>- <strong>page cache overwhelming low-memory machines</strong>: Reading large datasets fills memory with page cache; on some kernel versions it is not released quickly enough.</li>
+<li>- <strong>zero-copy requirements</strong>: Ideally, training data travels from disk to GPU without the four-copy path of "disk → kernel → user space → GPU." Combining <code>mmap</code> + <code>O_DIRECT</code> + GPU pinned memory can reduce the number of copies.</li>
+</ul>
+
+<pre><code class="language-python"># PyTorch pinned memory example: enables DMA for host→device copies
+train_loader = DataLoader(
+    dataset,
+    batch_size=32,
+    num_workers=8,
+    pin_memory=True,   # allocate page-locked memory; GPU can DMA directly
+)
+# Pair with non_blocking=True in the training loop for asynchronous copies
+for x, y in train_loader:
+    x = x.cuda(non_blocking=True)
+    y = y.cuda(non_blocking=True)
+</code></pre>
+
+<!-- 2.2.4 -->
+<h2 id="s2-2-4"><span class="num">2.2.4</span>Storage and File Systems</h2>
+<p class="pos">Scope: VFS abstraction, inodes, page cache, I/O scheduling — the foundation for loading large datasets.</p>
+
+<h3>VFS: Everything Is a File</h3>
+
+<p>One of Unix's core philosophies. Files, directories, pipes, sockets, devices, and /proc information — all are accessed via <code>open/read/write/close</code>. VFS (Virtual File System) is the unified interface layer provided by the kernel, beneath which different concrete file systems are mounted: ext4, xfs, btrfs, overlayfs (containers), nfs (network).</p>
+
+<h3>inode</h3>
+
+<p>An inode is the metadata object for a file, containing: size, owner, permissions, timestamps, and pointers to data blocks. <strong>The filename is not in the inode</strong> — filenames are stored in the directory (which is itself a file whose content is a name-to-inode mapping).</p>
+
+<p>Hard link: two directory entries point to the same inode; the inode's reference count is incremented. Deleting a file actually removes a directory entry and decrements the reference count; the file is truly freed only when the count reaches zero.</p>
+
+<p>Symbolic link (symlink): a special file type whose content is the target path. Resolved recursively.</p>
+
+<h3>Page Cache</h3>
+
+<p>When a file is read, the kernel caches the data in the page cache (in physical memory). A second read of the same data is served directly from cache with no disk I/O. Writes also go to the page cache first by default (write-back), with the kernel flushing to disk in the background.</p>
+
+<p>The "buff/cache" shown by the <code>free</code> command is the page cache. It is not "wasted" memory — it is memory put to efficient use and can be reclaimed at any time.</p>
+
+<h3>I/O Scheduling</h3>
+
+<p>In the era of spinning disks, I/O schedulers (CFQ, deadline) focused on merging adjacent requests and minimizing seek time. With SSDs, seek cost has disappeared; Linux now defaults to <code>mq-deadline</code> or <code>none</code> (NVMe multi-queue with direct dispatch).</p>
+
+<h3>Synchronous vs. Asynchronous I/O</h3>
+
+<p>Standard <code>read/write</code> is synchronous and blocking. High-performance scenarios use:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>O_DIRECT</strong>: bypasses the page cache and DMA's directly into the user buffer. Commonly used by databases.</li>
+<li>- <strong>aio</strong> (Linux AIO): traditional asynchronous I/O, only truly asynchronous under O_DIRECT; limited capabilities.</li>
+<li>- <strong>io_uring</strong> (2019+): modern asynchronous I/O using shared ring-buffer submission/completion queues, capable of syscall-less I/O in polling mode. AI training data loaders, databases, and high-performance web servers are all migrating to it.</li>
+</ul>
+
+<pre><code class="language-c">// io_uring core ring-buffer structure (simplified)
+struct io_uring_sqe {  // Submission Queue Entry
+    __u8  opcode;      // IORING_OP_READ, _WRITE, ...
+    __s32 fd;
+    __u64 off;
+    __u64 addr;
+    __u32 len;
+    // ...
+};
+struct io_uring_cqe {  // Completion Queue Entry
+    __u64 user_data;
+    __s32 res;
+    __u32 flags;
+};
+// User space fills SQEs and reads CQEs directly — no syscall needed (in polling mode)
+</code></pre>
+
+<h3>In AI</h3>
+
+<p>Training datasets can easily reach terabytes, making load performance critical. A few practical points:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>Packed formats like WebDataset and TFRecord</strong>: pack tens of millions of small files into a small number of large files, avoiding inode/directory-traversal overhead.</li>
+<li>- <strong>Prefetching + multiple workers</strong>: DataLoader's <code>prefetch_factor</code> controls how many batches each worker prefetches ahead.</li>
+<li>- <strong>Beyond POSIX semantics</strong>: in distributed training, backends such as NFS, Lustre, and S3 have performance profiles that differ drastically from local disks — you must benchmark to know where the bottleneck is.</li>
+</ul>
+
+<!-- 2.2.5 -->
+<h2 id="s2-2-5"><span class="num">2.2.5</span>Exceptions and Interrupts</h2>
+<p class="pos">Scope: the mechanism by which the CPU communicates with the outside world — hardware interrupts, soft interrupts, tasklets, and workqueues.</p>
+
+<h3>Interrupt Classification</h3>
+
+<p><strong>Hardware interrupts (IRQ)</strong>: triggered by hardware; the CPU immediately suspends its current work and jumps to the interrupt handler. An interrupt vector table maps each interrupt number to a handler function.</p>
+
+<p><strong>Software interrupts / exceptions</strong>: triggered by the CPU itself — divide by zero, page fault, system call (a syscall is essentially a trap).</p>
+
+<h3>Two-Phase Interrupt Handling</h3>
+
+<p>There is an iron rule for interrupt handling: it <strong>must be fast</strong> — interrupt context cannot sleep or acquire potentially blocking locks. But events like a network packet arriving sometimes require complex processing (parsing protocols, routing, copying data).</p>
+
+<p>Linux's solution is "top half + bottom half":</p>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Top half</strong>: the interrupt handler itself. Does only the bare minimum — acknowledges the hardware, moves data into a memory buffer, schedules the bottom half. Runs with interrupts disabled; must be as short as possible.</li>
+<li><strong>Bottom half</strong>: interrupts re-enabled, schedulable. Three mechanisms:</li>
+</ul>
+
+<table>
+<tr><th>Mechanism</th><th>Characteristics</th><th>Use Cases</th></tr>
+<tr><td>softirq</td><td>Static types, per-CPU, cannot sleep</td><td>Network RX/TX, timers, block I/O</td></tr>
+<tr><td>tasklet</td><td>Built on softirq, dynamically created; a given tasklet runs on only one core at a time</td><td>Medium-overhead drivers</td></tr>
+<tr><td>workqueue</td><td>Kernel thread context, can sleep</td><td>Deferred work that needs to sleep</td></tr>
+</table>
+
+<p>The network packet receive path is a classic softirq user — after a hardware interrupt enqueues the skb, NET_RX_SOFTIRQ hands it to the protocol stack in the bottom half. This is why <code>ksoftirqd</code> frequently pins an entire core under high network load.</p>
+
+<h3>Interrupt Affinity and Load Balancing</h3>
+
+<p>By default, all interrupts may be handled by a single core (especially with cheap NICs). <code>/proc/irq/&lt;n&gt;/smp_affinity</code> can bind an interrupt to specific cores. Multi-queue NICs, combined with RSS, distribute different queues' interrupts across different cores for true parallelism.</p>
+
+<h3>In AI</h3>
+
+<p>AI relevance here is limited. However, GPU drivers are interrupt-intensive — when a CUDA kernel completes, the GPU fires an interrupt, and the driver notifies user space in the bottom half. Interrupt handling overhead is non-negligible in high-QPS inference services (thousands of requests per second).</p>
+
+<!-- 2.2.6 -->
+<h2 id="s2-2-6"><span class="num">2.2.6</span>Concurrency, Mutual Exclusion, and Synchronization</h2>
+<p class="pos">Scope: the basic tools for multi-core concurrency — atomics, locks, RCU, memory model. Worth digging into deeply.</p>
+
+<h3>The Nature of Races</h3>
+
+<p>When multiple threads read and write shared data without synchronization, things go wrong. The simplest counterexample:</p>
+<pre><code class="language-c">int counter = 0;
+// Two threads, each running:
+for (int i = 0; i < 1000000; i++) counter++;
+// Final counter is much less than 2000000
+</code></pre>
+<p><code>counter++</code> is not atomic — it is actually three steps: load, add, store. When two threads interleave these steps, updates are lost.</p>
+
+<h3>Atomic Operations</h3>
+
+<p>Hardware provides atomic instructions: the <code>LOCK</code> prefix on x86, LDREX/STREX on ARM. C11's <code>_Atomic</code>, C++11's <code>std::atomic</code>, and Rust's <code>AtomicUsize</code> are all language-level wrappers around these instructions.</p>
+
+<p>The most important atomic primitive is <strong>CAS</strong> (Compare-And-Swap):</p>
+<pre><code class="language-c">// Atomically: if *ptr == expected, write new and return true;
+// otherwise, update expected with *ptr and return false
+bool cas(int *ptr, int *expected, int new);
+</code></pre>
+<p>CAS is the foundation of all lock-free data structures. The typical pattern is a "loop until CAS succeeds":</p>
+<pre><code class="language-c">int old, new;
+do {
+    old = *counter;
+    new = old + 1;
+} while (!cas(counter, &old, new));
+</code></pre>
+
+<h3>Types of Locks</h3>
+
+<p><strong>Spinlock</strong>: busy-waits on failure. Suitable for extremely short critical sections on multi-core systems. Must be used in kernel interrupt handlers (cannot sleep).</p>
+
+<p><strong>Mutex</strong>: sleeps on failure and is woken when the lock becomes available. Suitable for longer critical sections. Higher overhead than a spinlock (context switch), but does not waste CPU cycles.</p>
+
+<p><strong>Read-write lock</strong>: multiple readers share access; writers get exclusive access. Advantageous in read-heavy, write-rare scenarios. Downside: writer starvation (a continuous stream of readers can keep a writer waiting indefinitely).</p>
+
+<p><strong>Semaphore</strong>: a lock with a count, allowing N concurrent holders. Commonly used for resource pools.</p>
+
+<p><strong>Condition variable</strong>: not a lock, but a primitive for "waiting until a condition becomes true." Typically used together with a mutex.</p>
+
+<h3>RCU</h3>
+
+<p>Read-Copy-Update is the most elegant concurrency primitive in the Linux kernel. It is suited for scenarios with overwhelmingly more reads than writes. The core idea:</p>
+<ol>
+<li>Readers <strong>take no lock at all</strong> — they read the old-version pointer directly</li>
+<li>The writer copies the data, modifies the copy, then <strong>atomically replaces the pointer</strong></li>
+<li>The old version is freed with a delay — only after all readers that had already started finish (the grace period)</li>
+</ol>
+
+<p>The RCU read path has near-zero overhead, almost identical to single-threaded access. The cost is write complexity, a temporary doubling of memory, and delayed reclamation. Linux's routing table, namespace structures, and module list all use RCU.</p>
+
+<pre><code class="language-c">// RCU reader: completely lock-free
+rcu_read_lock();
+struct foo *p = rcu_dereference(global_ptr);
+// use p...
+rcu_read_unlock();
+
+// RCU writer
+struct foo *new = kmalloc(...);
+*new = (struct foo){ .x = 42, ... };
+struct foo *old = rcu_dereference(global_ptr);
+rcu_assign_pointer(global_ptr, new);   // atomic pointer replacement
+synchronize_rcu();                      // wait for all readers to finish
+kfree(old);                             // safe to free
+</code></pre>
+
+<h3>Memory Model</h3>
+
+<p>Programmers assume their code executes in order, but both CPUs and compilers reorder instructions. In a single thread this is imperceptible (data dependencies are preserved), but in a multi-threaded context reordering can make another core observe an "impossible" state.</p>
+
+<p>Example:</p>
+<pre><code class="language-c">// Thread A:                Thread B:
+x = 1;                       if (flag) {
+flag = 1;                        assert(x == 1);  // may fail!
+                             }
+</code></pre>
+<p>The CPU or compiler may move <code>flag = 1</code> ahead of <code>x = 1</code> — Thread B sees flag=1 but x is still 0.</p>
+
+<p>Fix: <strong>memory barriers</strong>. x86 uses the TSO (Total Store Order) memory model, which is relatively strong — stores are ordered, but loads can be reordered. ARM is weakly ordered — almost anything can be reordered, and explicit barriers are mandatory.</p>
+
+<p>Higher-level language abstractions: C++11's <code>std::memory_order</code> and Rust's <code>Ordering</code> offer five levels: Relaxed, Acquire, Release, AcqRel, and SeqCst. SeqCst is the strongest (sequentially consistent) and most expensive; Relaxed is the weakest (only atomicity is guaranteed) and fastest. Using these correctly is the hallmark of a high-level systems engineer.</p>
+
+<h3>MESI and Cache Coherence</h3>
+
+<p>Multi-core cache coherence is guaranteed by the hardware MESI protocol. Cache lines migrate between cores through Modified/Exclusive/Shared/Invalid state transitions.</p>
+
+<p>A frequently overlooked observation: <strong>the cost of a lock is not "the lock primitive itself" — it is cache-line migration</strong>. After core A holds a lock and core B then contends for it, the lock variable's cache line migrates from A to B, costing ~100 cycles per migration. This explains why performance collapses under heavy lock contention.</p>
+
+<h3>Lock-Free Data Structures</h3>
+
+<p>Lock-free queues, stacks, and hash tables exist but are hard to write correctly — subtle mistakes lead to ABA problems and memory reclamation hazards. Industrial-grade implementations (Folly, Crossbeam) have been tuned over many years, but writing your own lock-free structures is not worth the risk.</p>
+
+<h3>In AI</h3>
+
+<p>PyTorch's internals make extensive use of lock-free atomics (Tensor reference counting, parameter server updates). The <code>c10::intrusive_ptr</code> in the C10 library is faster than <code>std::shared_ptr</code> because it embeds the reference count, avoiding an extra allocation.</p>
+
+<p>Parameter servers and asynchronous SGD in training clusters are concurrency problems through and through. NCCL synchronization for single-machine multi-GPU training also implicitly involves memory barriers — ensuring that AllReduce results are visible to all ranks.</p>
+
+<!-- 2.2.7 -->
+<h2 id="s2-2-7"><span class="num">2.2.7</span>Device Management and System Calls</h2>
+<p class="pos">Scope: syscalls are the only interface between user space and the kernel — io_uring and eBPF are reshaping it.</p>
+
+<h3>Device Driver Model</h3>
+
+<p>Linux divides devices into three classes:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Character devices</strong>: streaming reads and writes (serial ports, keyboard, <code>/dev/random</code>)</li>
+<li><strong>Block devices</strong>: random block access (HDDs, SSDs)</li>
+<li><strong>Network devices</strong>: do not use <code>read/write</code>; use the socket API</li>
+</ul>
+
+<p>A driver registers an operations table (<code>file_operations</code>) with the kernel — function pointers for open, read, write, ioctl, mmap, and others. Applications reach the device through the file system (<code>/dev/xxx</code>); calls are dispatched to the driver.</p>
+
+<h3>DMA and Zero-Copy</h3>
+
+<p>DMA (Direct Memory Access) lets a device read and write memory without involving the CPU. The traditional network receive path: NIC DMA's into a kernel buffer → kernel copies into the socket buffer → user-space <code>read</code> copies again into the user buffer. Three copies total.</p>
+
+<p><strong>Zero-copy</strong> techniques: <code>sendfile</code> (file to socket entirely within the kernel), <code>splice</code> (zero-copy through a pipe), <code>mmap</code>+<code>write</code> (maps the file into user space). Nginx and Kafka use sendfile extensively.</p>
+
+<h3>System Calls</h3>
+
+<p>A syscall is the only way user space enters the kernel. x86-64 uses the <code>syscall</code> instruction (the old <code>int 0x80</code> is obsolete), with arguments passed in specific registers. One syscall costs ~100 ns — not slow, but the cumulative cost becomes significant across tens of millions of iterations in a loop.</p>
+
+<p><strong>vDSO</strong> (virtual Dynamic Shared Object): implements a few high-frequency, lightweight syscalls (such as <code>gettimeofday</code>) as user-space functions, avoiding a kernel entry. Provided transparently through dynamic linking.</p>
+
+<h3>eBPF</h3>
+
+<p>eBPF (extended Berkeley Packet Filter) is the most important new mechanism added to Linux in recent years. It allows users to inject verified small programs into kernel hot paths (networking, tracing, security) without modifying the kernel or loading a module.</p>
+
+<p>Applications: <strong>tcpdump</strong> uses BPF for packet filtering; <strong>bpftrace</strong> for dynamic tracing; <strong>Cilium</strong> for container networking (replacing iptables); <strong>Katran</strong> for Layer-4 load balancing (Facebook). AI observability platforms (fine-grained monitoring of training jobs) are increasingly adopting eBPF.</p>
+
+<p>eBPF programs pass through a verifier that guarantees: no loops, no out-of-bounds accesses, bounded execution time. This makes them safe to run in kernel space.</p>
+
+<h3>Containers</h3>
+
+<p>Containers are not virtual machines — they are ordinary Linux processes that happen to use namespaces (for view isolation) and cgroups (for resource limits).</p>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>namespaces</strong>: eight kinds — PID, net, mount, IPC, UTS, user, cgroup (4.6+), and time (5.6+) — each isolating one dimension of resource visibility. A container seeing itself as PID 1 is the effect of the PID namespace.</li>
+<li><strong>cgroups</strong>: enforce quotas on CPU, memory, block I/O, and network bandwidth. Kubernetes resource limits are translated directly into cgroup settings.</li>
+</ul>
+
+<p>Docker, containerd, and Podman are all higher-level wrappers around these two primitives. AI training almost always runs inside containers (for reproducibility and scheduling); understanding namespaces and cgroups is indispensable when troubleshooting performance or permission issues.</p>
+
+<!-- ==================== 2.3 Programming Languages and Compilers ==================== -->
+<div class="part-header">
+  <div class="part-label">PART THREE</div>
+  <h2 class="part-title">2.3 Programming Languages & Compilers</h2>
+  <p class="part-desc">Language determines what you can think; the compiler determines how fast you can run.</p>
+</div>
+
+<!-- 2.2.0 -->
+<h2 id="s2-3-1"><span class="num">2.3.1</span>The Rust Language</h2>
+<p class="pos">Position: ownership model + no GC + zero-cost abstractions — the new baseline for systems programming.</p>
+
+<h3>Ownership: The Core of Rust</h3>
+
+<p>Rust's most distinctive feature is its <strong>ownership</strong> system. Three rules:</p>
+<ol>
+<li>Every value has exactly one owner.</li>
+<li>When the owner goes out of scope, the value is automatically dropped (resources freed).</li>
+<li>Assignment or passing a value as an argument moves ownership by default (unless the type implements <code>Copy</code>).</li>
+</ol>
+
+<p>These rules eliminate three classic C/C++ bugs at the root: use-after-free, double-free, and memory leaks. The compiler performs static checks at compile time with no runtime overhead.</p>
+
+<pre><code class="language-rust">fn main() {
+    let s1 = String::from("hello");
+    let s2 = s1;           // ownership moves; s1 is no longer valid
+    // println!("{}", s1); // compile error!
+    println!("{}", s2);    // OK
+} // s2 goes out of scope; the string is automatically freed
+</code></pre>
+
+<h3>Borrowing: Temporary Access Without Moving</h3>
+
+<p>Moving ownership everywhere would be cumbersome — borrowing lets you "use it temporarily without owning it":</p>
+<pre><code class="language-rust">fn len(s: &String) -> usize { s.len() }
+
+fn main() {
+    let s = String::from("hello");
+    let n = len(&s);       // pass an immutable borrow
+    println!("{}, len {}", s, n);  // s is still valid
+}
+</code></pre>
+
+<p>There are two kinds of borrows: immutable <code>&T</code> (multiple can coexist) and mutable <code>&mut T</code> (exclusive). The core rule: <strong>a mutable borrow is mutually exclusive with any other borrow</strong>. This is enforced at compile time, directly eliminating data races — if concurrent code compiles, it is (at the ownership + borrow level) race-free.</p>
+
+<h3>Lifetimes</h3>
+
+<p>A borrow must not outlive the value it borrows from. Most of the time the compiler infers this automatically; complex cases require explicit annotations:</p>
+<pre><code class="language-rust">// 'a is a lifetime parameter: the returned borrow cannot outlive
+// the shorter of the two inputs
+fn longer<'a>(s1: &'a str, s2: &'a str) -> &'a str {
+    if s1.len() > s2.len() { s1 } else { s2 }
+}
+</code></pre>
+
+<p>Lifetimes are the first mental hurdle for Rust beginners. Once you clear it, you realize how much "is this pointer still valid?" in C/C++ relies on intuition and convention — Rust turns it into the compiler's job.</p>
+
+<h3>Zero-Cost Abstractions</h3>
+
+<p>Rust's traits, iterators, and generics are <strong>zero-cost abstractions</strong>: after compilation they run as fast as hand-written C. An iterator chain like <code>v.iter().filter(...).map(...).sum()</code>, after LLVM optimization, produces assembly essentially identical to a hand-written for loop — no virtual dispatch overhead, no boxing. This is fundamentally different from the abstractions in Java or Python.</p>
+
+<h3>No GC, But No Manual malloc/free Either</h3>
+
+<p>Rust has no garbage collector — the ownership model makes memory management a compile-time decision. The compiler knows every drop point; resource cleanup is implemented in the <code>Drop</code> trait (similar to C++ RAII). <code>Box&lt;T&gt;</code>, <code>Rc&lt;T&gt;</code>, and <code>Arc&lt;T&gt;</code> handle exclusive heap allocation, single-threaded reference counting, and multi-threaded reference counting, respectively.</p>
+
+<h3>Async</h3>
+
+<p>Rust's <code>async/await</code> produces <strong>zero-cost Futures</strong> — each async function compiles into a state machine. The runtime (tokio, async-std) is responsible for scheduling and advancing state machines. This lets Rust async squeeze out performance close to C, though the ecosystem is still maturing.</p>
+
+<h3>In AI</h3>
+
+<p>PyTorch is Python + C++, not Rust. But Rust is heavily used in AI infrastructure surrounding it: <strong>tokenizers</strong> (HuggingFace), <strong>burn</strong> (a pure-Rust deep learning framework), <strong>candle</strong> (a Rust inference framework), <strong>certain components of vLLM</strong>, and various vector databases (Qdrant, LanceDB).</p>
+
+<p>Rust-Python interop is bridged via <strong>PyO3</strong>, now the preferred way to write Python extensions — far safer than writing C extensions.</p>
+
+<!-- 2.2.1 -->
+<h2 id="s2-3-2"><span class="num">2.3.2</span>The Modern Evolution of C</h2>
+<p class="pos">Position: C is still the general-purpose low-level language — let's look at how it's evolving, and at C++ as an alternative path for systems programming. Brief.</p>
+
+<p>This section covers the broader "C-family evolution." C is not dead — kernels, drivers, DPDK, and Redis are still written in C. But the C toolchain and its ecosystem keep improving:</p>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Sanitizer suite</strong>: AddressSanitizer (ASan) detects out-of-bounds accesses and use-after-free; ThreadSanitizer (TSan) detects data races; UBSan detects undefined behavior. Enable with <code>-fsanitize=address</code> at compile time; runtime overhead is 2–5×, but it catches the vast majority of memory bugs.</li>
+<li><strong>Static analysis</strong>: Clang Static Analyzer, Coverity, PVS-Studio. Catches code that compiles cleanly but fails at runtime.</li>
+<li><strong>Fuzz testing</strong>: libFuzzer, AFL++. Automatically generates inputs to probe for crashes. OpenSSL and SQLite have both found large numbers of bugs through fuzzing.</li>
+</ul>
+
+<h3>C++ in Systems Programming</h3>
+
+<p>C++ is far more expressive than C, but its complexity has exploded. Modern C++ (C++17/20/23) makes writing contemporary code much more pleasant with <code>std::unique_ptr</code>, <code>std::optional</code>, ranges, and more. The main problem is that <strong>dangerous features cannot be disabled</strong> — the safe subset of C++ exists, but must be enforced by discipline.</p>
+
+<p>Performance-wise, C++ and Rust are close (both have zero-cost abstractions, neither has a GC). The fundamental difference is that Rust performs ownership checks at compile time, while C++ relies on the programmer. Databases, browsers, and game engines still make heavy use of C++ (LLVM, Chromium, Unreal).</p>
+
+<h3>Language Selection Considerations</h3>
+
+<p>If you were starting a network device firmware, operating system, or database from scratch today, the general guidance on language choice is:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>Kernel/drivers</strong>: C (mainstream on Linux) or Rust (Rust for Linux has been merged into the mainline; multiple subsystem drivers have been rewritten in Rust; the ecosystem should mature after 2025).</li>
+<li>- <strong>Middleware/services</strong>: Rust first, Go second (GC is acceptable), C++ when the team has experience.</li>
+<li>- <strong>Upper-layer applications</strong>: Go, Python, Java.</li>
+</ul>
+
+<!-- 2.2.2 -->
+<h2 id="s2-3-3"><span class="num">2.3.3</span>Compiler Fundamentals</h2>
+<p class="pos">Position: lexical/syntactic/semantic analysis → IR → code generation. LLVM as the main thread.</p>
+
+<h3>The Classic Three-Stage Compiler</h3>
+
+<p><strong>Front end</strong>: source code → AST → intermediate representation (IR)</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>Lexical analysis</strong> (lexing): character stream → token stream. Tools: flex, or hand-written.</li>
+<li>- <strong>Syntactic analysis</strong> (parsing): token stream → AST. Tools: bison, ANTLR, or hand-written recursive descent.</li>
+<li>- <strong>Semantic analysis</strong>: type checking, scope resolution, generating a type-annotated AST.</li>
+<li>- <strong>IR generation</strong>: AST → IR (e.g., LLVM IR).</li>
+</ul>
+
+<p><strong>Middle end</strong>: optimizations on the IR (next section).</p>
+
+<p><strong>Back end</strong>: IR → target assembly. Includes instruction selection, register allocation, and instruction scheduling.</p>
+
+<h3>LLVM and SSA</h3>
+
+<p>LLVM's dominance rests on two things: its modular design (front end and back end decoupled) and its <strong>SSA</strong> (Static Single Assignment) IR.</p>
+
+<p>SSA requires that every variable be assigned exactly once. Traditional code:</p>
+<pre><code class="language-c">x = 1;
+x = x + 2;
+y = x * 3;
+</code></pre>
+<p>In SSA form:</p>
+<pre><code>x1 = 1
+x2 = x1 + 2
+y1 = x2 * 3
+</code></pre>
+
+<p>Each variable has exactly one definition, making def-use analysis trivial — "which definition does this use refer to?" is immediately obvious. At control-flow merge points, <strong>φ functions</strong> (phi) select the value from the appropriate path:</p>
+<pre><code>if (cond) x1 = 1;
+else      x2 = 2;
+x3 = φ(x1, x2);
+y  = x3 + 1;
+</code></pre>
+
+<p>SSA lets all dataflow optimizations (constant propagation, dead-code elimination, common subexpression elimination) be implemented with simple algorithms — that is LLVM's strength.</p>
+
+<h3>LLVM IR Example</h3>
+
+<pre><code class="language-rust">// C source: int add(int a, int b) { return a + b; }
+
+// LLVM IR (SSA form)
+define i32 @add(i32 %a, i32 %b) {
+entry:
+  %sum = add i32 %a, %b
+  ret i32 %sum
+}
+</code></pre>
+
+<p>LLVM IR is platform-independent — this IR can be compiled by different back ends (x86, ARM, RISC-V, GPU). This is the architectural foundation of cross-platform compilers.</p>
+
+<h3>Back End</h3>
+
+<p>Three main tasks for the back end:</p>
+<ol>
+<li><strong>Instruction selection</strong>: IR instructions → target architecture instructions. One IR instruction may map to multiple assembly instructions (or vice versa). Common algorithms: tree pattern matching, BURS.</li>
+<li><strong>Register allocation</strong>: IR is written assuming an unlimited number of registers; the back end must map them to a finite set of physical registers. The classic algorithm is <strong>graph coloring</strong> — color the register interference graph so variables with different colors can share a physical register. LLVM uses a more sophisticated linear-scan variant.</li>
+<li><strong>Instruction scheduling</strong>: On out-of-order CPUs, reordering instructions at compile time reduces pipeline stalls.</li>
+</ol>
+
+<h3>In AI</h3>
+
+<p>AI compilers (TVM, MLIR, XLA) apply the ideas of general-purpose compilers to tensor computation. <strong>MLIR</strong> (Multi-Level IR) is an extension of the LLVM project that provides multiple levels of intermediate representation — from PyTorch's ATen operator level, to the HLO tensor level, to the affine loop level, to the LLVM level — all unified in a single framework. PyTorch 2.0's TorchDynamo + Inductor and Triton's MLIR path are both products of this trend.</p>
+
+<!-- 2.2.3 -->
+<h2 id="s2-3-4"><span class="num">2.3.4</span>Compiler Optimizations</h2>
+<p class="pos">Position: dozens of optimizations working together can make code several times faster — with direct implications for AI kernel optimization.</p>
+
+<h3>Local Optimizations</h3>
+
+<p><strong>Constant propagation</strong>: <code>x = 5; y = x + 3;</code> → <code>y = 8;</code></p>
+
+<p><strong>Constant folding</strong>: Evaluate at compile time what can be evaluated at compile time. <code>86400 * 30</code> is not left to be multiplied at runtime.</p>
+
+<p><strong>Common subexpression elimination</strong> (CSE):</p>
+<pre><code class="language-c">a = x * y + 1;
+b = x * y + 2;
+// →
+tmp = x * y;
+a = tmp + 1;
+b = tmp + 2;
+</code></pre>
+
+<p><strong>Dead code elimination</strong>: Remove computations whose results are never used.</p>
+
+<p><strong>Strength reduction</strong>: Replace expensive operations with cheaper ones. <code>x * 8</code> → <code>x << 3</code>; replace <code>i*c</code> in loops with an accumulating variable.</p>
+
+<h3>Intraprocedural Optimizations</h3>
+
+<p><strong>Inlining</strong>: Replace a function call with the function body. This eliminates call/return overhead, and more importantly, exposes the inlined code and its call-site context to other optimizations — "inlining opens the optimization window."</p>
+
+<p>Cost: code bloat. The compiler uses heuristics to decide whether to inline: always inline small functions, inline hot functions, inline functions called only once. The <code>inline</code> keyword is merely a hint; the final decision belongs to the compiler.</p>
+
+<p><strong>Loop optimizations</strong> (important):</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>Loop unrolling</strong>: <code>for (i=0;i<4;i++) a[i]=0;</code> → 4 store instructions. Reduces branch overhead and exposes parallelism.</li>
+<li>- <strong>Loop fusion</strong>: Merge two adjacent independent loops into one. Improves cache locality.</li>
+<li>- <strong>Loop fission</strong>: Split one large loop into several smaller ones. Enables vectorization and exposes parallelism.</li>
+<li>- <strong>Loop interchange</strong>: Swap the order of nested loops so the inner loop accesses memory contiguously.</li>
+<li>- <strong>Loop-invariant code motion</strong> (LICM): Hoist computations that don't change inside the loop to outside it.</li>
+<li>- <strong>Vectorization</strong>: Transform scalar loops into SIMD instructions. <code>for (i=0;i<n;i++) c[i]=a[i]+b[i];</code> under AVX2 becomes a vector instruction that processes 8 floats at a time.</li>
+</ul>
+
+<h3>Interprocedural Optimizations</h3>
+
+<p>Optimizations that cross function boundaries: inlining, interprocedural constant propagation, dead function elimination. Require whole-program visibility — <strong>LTO</strong> (Link Time Optimization) lets the linker see all IR before optimizing, which is more powerful than the traditional approach of compiling each <code>.o</code> independently.</p>
+
+<h3>PGO</h3>
+
+<p>Profile-Guided Optimization: first compile a version with profiling enabled, run it under a real workload to collect a profile, then recompile — letting the compiler use the profile to drive optimization decisions (which branches are more likely taken, which functions are hot). Chromium and MySQL both use PGO; it typically yields a 5–15% performance improvement.</p>
+
+<h3>Limits of Auto-Vectorization</h3>
+
+<p>The compiler's auto-vectorization is powerful but not unlimited. It gives up in the following situations:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- Data dependencies (loop body contains <code>a[i] = a[i-1] + 1</code>)</li>
+<li>- Uncertain pointer aliasing (the <code>restrict</code> keyword can help the compiler)</li>
+<li>- Function calls blocking it (the <code>pure</code> attribute can help)</li>
+<li>- Complex branches</li>
+</ul>
+
+<p>So for performance-critical paths, inspecting the compiler-generated assembly (<code>gcc -S</code> or Compiler Explorer) is an essential skill for experts.</p>
+
+<h3>In AI</h3>
+
+<p>Hand-tuning AI kernels is applying these compiler optimization ideas to tensor computation:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>Operator fusion</strong> = loop fusion + inlining, reducing memory round-trips through intermediate tensors.</li>
+<li>- <strong>Tiling</strong> = loop blocking, keeping data resident in cache/SRAM.</li>
+<li>- <strong>Vectorization to SIMD/Tensor Cores</strong> = the tensor version of auto-vectorization.</li>
+<li>- <strong>Auto-tuning</strong> (TVM, Triton AutoTune) = the PGO idea — empirically search different parameters for the best configuration.</li>
+</ul>
+
+<p>Once you understand general compiler optimizations, AI compilers are just the same ideas applied to a specific domain.</p>
+
+<!-- ==================== 2.4 Databases ==================== -->
+<div class="part-header">
+  <div class="part-label">PART FOUR</div>
+  <h2 class="part-title">2.4 Databases</h2>
+  <p class="part-desc">An increasingly important piece of AI infrastructure — from relational databases to vector databases.</p>
+</div>
+
+<!-- 2.4.1 -->
+<h2 id="s2-4-1"><span class="num">2.4.1</span>Database Fundamentals</h2>
+<p class="pos">Position: storage engines, transactions, query optimization, logging — the four pillars of relational databases.</p>
+
+<h3>Storage Engines: B+Tree vs LSM-Tree</h3>
+
+<p>Two mainstream index architectures.</p>
+
+<p><strong>B+Tree</strong> (MySQL InnoDB, PostgreSQL): a balanced multi-way tree whose leaf nodes hold data pages linked in a list (convenient for range scans). Reads are fast ($\log_B n$ per lookup); updates are in-place. Downside: frequent random writes are unfriendly to SSDs.</p>
+
+<p><strong>LSM-Tree</strong> (RocksDB, Cassandra, LevelDB): Log-Structured Merge Tree. Writes first land in memory (memtable); when full, the memtable is flushed as an immutable SSTable to disk. Background compaction merges old SSTables. Reads may need to check multiple levels and consult bloom filters. Writes are extremely fast (purely sequential I/O); reads are somewhat slower; write amplification is the main concern.</p>
+
+<p>Choosing: read-heavy OLTP → B+Tree; write-intensive (logs, time-series) → LSM.</p>
+
+<h3>Row Storage vs Column Storage</h3>
+
+<p><strong>Row storage</strong> (OLTP): a row's data is physically contiguous. Fast for reading or writing whole rows. MySQL, PostgreSQL.</p>
+
+<p><strong>Column storage</strong> (OLAP): a column's data is physically contiguous. OLAP queries typically read only a few columns (<code>SELECT avg(salary) FROM emp</code>) and have high filter selectivity; columnar storage dramatically reduces I/O. Achieves high compression ratios (values in the same column are similar). ClickHouse, Parquet, DuckDB.</p>
+
+<h3>ACID Transactions</h3>
+
+<p><strong>A</strong> (Atomicity): a transaction either fully completes or has no effect. <strong>C</strong> (Consistency): transactions preserve data constraints. <strong>I</strong> (Isolation): concurrent transactions do not interfere with each other. <strong>D</strong> (Durability): once committed, data is not lost.</p>
+
+<p>Implementation relies on two mechanisms: <strong>locking</strong> (enforcing I) and <strong>logging</strong> (enforcing A and D).</p>
+
+<h3>Locking and Isolation Levels</h3>
+
+<p>The SQL standard defines four isolation levels, each preventing a stricter set of anomalies:</p>
+
+<table>
+<tr><th>Level</th><th>Dirty Read</th><th>Non-Repeatable Read</th><th>Phantom Read</th></tr>
+<tr><td>Read Uncommitted</td><td>Possible</td><td>Possible</td><td>Possible</td></tr>
+<tr><td>Read Committed</td><td>No</td><td>Possible</td><td>Possible</td></tr>
+<tr><td>Repeatable Read</td><td>No</td><td>No</td><td>Possible</td></tr>
+<tr><td>Serializable</td><td>No</td><td>No</td><td>No</td></tr>
+</table>
+
+<p>In practice, implementations use <strong>2PL</strong> (Two-Phase Locking) or <strong>MVCC</strong> (Multi-Version Concurrency Control). MVCC is the modern mainstream: each write creates a new version; readers see the snapshot from when their transaction began, so reads and writes do not block each other. PostgreSQL, MySQL InnoDB, and Oracle all use MVCC.</p>
+
+<h3>WAL and Recovery</h3>
+
+<p><strong>WAL</strong> (Write-Ahead Log): write to the log before modifying data pages (sequential log I/O is faster than random page I/O). After a crash, redo committed transactions and undo uncommitted ones using the log. The <strong>ARIES</strong> algorithm is the industry-standard recovery protocol: Analysis → Redo → Undo.</p>
+
+<h3>Query Optimizer</h3>
+
+<p>SQL is declarative — it says "what," not "how." The optimizer translates SQL into an execution plan.</p>
+
+<p>The process: SQL parsing → logical plan (relational algebra) → logical optimization (predicate pushdown, subquery rewriting) → physical plan (choosing concrete operators: hash join vs nested loop join, index scan vs full table scan) → cost estimation (based on statistics: table size, column distributions) → selecting the lowest-cost plan.</p>
+
+<p>The optimizer is the "brain" of a database; a good one can outperform a bad one by an order of magnitude.</p>
+
+<h3>Vectorized Execution</h3>
+
+<p>The traditional execution engine uses the <strong>row-at-a-time Volcano model</strong>: each operator's <code>next()</code> returns one row. Simple, but per-row overhead is high (virtual dispatch, cache misses).</p>
+
+<p><strong>Vectorized execution</strong>: each <code>next()</code> returns a batch of rows (e.g., 1024). Overhead is amortized across the batch; a single SIMD instruction processes multiple rows; cache utilization improves. ClickHouse, DuckDB, and Apache Arrow are all vectorized — roughly 10× faster than the Volcano model.</p>
+
+<h3>In AI</h3>
+
+<p>In AI infrastructure, relational databases remain the primary store for metadata — users, model versions, training job records, and experiment tracking. PostgreSQL + MLflow is a common combination. But the databases most relevant to AI are the three covered in the following sections: graph, time-series, and vector.</p>
+
+<!-- 2.4.2 -->
+<h2 id="s2-4-2"><span class="num">2.4.2</span>Graph Databases</h2>
+<p class="pos">Position: native storage of nodes and edges — the foundation for knowledge graphs, social networks, and reasoning chains.</p>
+
+<h3>Graph Storage</h3>
+
+<p>A relational database can store a graph (two tables: a node table and an edge table), but querying multi-hop relationships requires repeated joins and performs poorly. Graph databases use <strong>native storage</strong> for adjacency information — each node directly holds pointers to its outgoing edge list, so traversing k hops is k pointer dereferences.</p>
+
+<h3>The Property Graph Model</h3>
+
+<p>The mainstream graph model is the <strong>property graph</strong>: nodes have labels (types) and properties (key-value pairs); edges have direction, type, and properties. For example, a social graph: <code>(Alice :Person {age: 30})-[:FRIEND {since: 2020}]-&gt;(Bob :Person)</code>.</p>
+
+<p>Query languages: <strong>Cypher</strong> (Neo4j, most popular), <strong>Gremlin</strong> (TinkerPop, cross-database), <strong>SPARQL</strong> (RDF graphs, semantic web).</p>
+
+<h3>Cypher Example</h3>
+
+<pre><code class="language-sql">// Find friends-of-friends of Alice who are not already Alice's direct friends
+MATCH (alice:Person {name: 'Alice'})-[:FRIEND]->(friend)-[:FRIEND]->(fof)
+WHERE NOT (alice)-[:FRIEND]->(fof) AND fof <> alice
+RETURN DISTINCT fof.name
+</code></pre>
+
+<p>The equivalent SQL query requires self-joins and NOT EXISTS subqueries — worse in both readability and performance.</p>
+
+<h3>Common Graph Algorithms</h3>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>BFS/DFS</strong>: the most fundamental traversals</li>
+<li><strong>Shortest path</strong>: Dijkstra (no negative weights), Bellman-Ford (handles negative weights), A* (with heuristic)</li>
+<li><strong>PageRank</strong>: importance of pages/nodes</li>
+<li><strong>Community detection</strong>: Louvain, Label Propagation</li>
+<li><strong>Connected components</strong>: Union-Find</li>
+<li><strong>Centrality</strong>: degree, betweenness, closeness centrality</li>
+</ul>
+
+<h3>Representative Products</h3>
+
+<table>
+<tr><th>Product</th><th>Type</th><th>Characteristics</th></tr>
+<tr><td>Neo4j</td><td>Native graph</td><td>Birthplace of Cypher; broad community</td></tr>
+<tr><td>JanusGraph</td><td>Distributed graph</td><td>Built on HBase/Cassandra</td></tr>
+<tr><td>TigerGraph</td><td>Distributed native graph</td><td>Large-scale analytics</td></tr>
+<tr><td>NebulaGraph</td><td>Distributed graph</td><td>developed in China; Chinese community</td></tr>
+<tr><td>DGraph</td><td>Distributed graph</td><td>Written in Go; GraphQL interface</td></tr>
+</table>
+
+<h3>In AI</h3>
+
+<p><strong>Knowledge graph RAG</strong>: Traditional vector RAG performs poorly on "multi-hop reasoning" (questions requiring multiple associative steps). GraphRAG (Microsoft) first extracts entity-relationship graphs from documents, then combines vector retrieval and graph traversal at query time to improve complex question answering.</p>
+
+<p><strong>Graph neural networks</strong> (GNNs): node classification, link prediction, recommendation. Training typically loads the graph into memory, but large graphs require the graph database to perform sampling (sampling subgraphs by neighbor for mini-batch training).</p>
+
+<p><strong>Reasoning chain tracing</strong>: Every step an agent executes (LLM call → tool call → result) can be stored as a graph for easy retrospective analysis.</p>
+
+<!-- 2.4.3 -->
+<h2 id="s2-4-3"><span class="num">2.4.3</span>Time-Series Databases</h2>
+<p class="pos">Position: data streams ordered by timestamp — purpose-built for monitoring, IoT, and financial market data.</p>
+
+<h3>Characteristics of Time-Series Data</h3>
+
+<p>Time-series data differs from ordinary relational data in several ways:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>Ordered by time</strong>: the time dimension is a natural index</li>
+<li>- <strong>Append-heavy</strong>: old data is rarely modified</li>
+<li>- <strong>High write rate</strong>: monitoring may generate millions of points per second</li>
+<li>- <strong>Fixed query patterns</strong>: range aggregation, downsampling, time windows</li>
+<li>- <strong>Data has a lifecycle</strong>: old data is downsampled or deleted</li>
+</ul>
+
+<h3>Key Technology: Compression</h3>
+
+<p>Adjacent values in time-series data vary little, enabling very high compression ratios. Two classic techniques:</p>
+
+<p><strong>Delta-of-Delta</strong> (timestamp compression): store <code>Δ(Δt)</code>. For regularly sampled data, Δ is nearly constant, so ΔΔ is mostly zero; variable-length encoding reduces it to a few bits.</p>
+
+<p><strong>XOR encoding</strong> (value compression): XOR adjacent floating-point values; high-order bits are mostly zero. The compression algorithm from the Gorilla (Facebook) paper achieves 1.37 bytes per point in practice — a 10×+ compression over the raw 16 bytes (8 bytes each for timestamp and value).</p>
+
+<h3>Storage Structure</h3>
+
+<p>Most time-series databases are based on LSM-tree variants. Write path:</p>
+<ol>
+<li>Form a series by (metric, tags)</li>
+<li>Each series is appended to independently in time order</li>
+<li>Partition by time window (e.g., one chunk per 2 hours)</li>
+<li>Compress chunks to disk as they age out</li>
+</ol>
+
+<h3>Downsampling</h3>
+
+<p>Raw 1-second-granularity data is retained for 7 days, then downsampled to 1-minute granularity for 30 days, then to 1-hour granularity for 1 year. Automatic continuous aggregates materialize the rollups, avoiding the cost of recomputing them at query time.</p>
+
+<h3>Representative Products</h3>
+
+<table>
+<tr><th>Product</th><th>Key Characteristics</th></tr>
+<tr><td>InfluxDB</td><td>Most popular; InfluxDB 2.x (2024) migrated to Apache Arrow / DataFusion engine; query language shifted to SQL/InfluxQL; Flux is deprecated</td></tr>
+<tr><td>Prometheus</td><td>Standard monitoring stack; PromQL; pull model</td></tr>
+<tr><td>TimescaleDB</td><td>PostgreSQL extension; SQL compatible</td></tr>
+<tr><td>VictoriaMetrics</td><td>Prometheus-compatible; stronger performance</td></tr>
+<tr><td>IoTDB</td><td>developed in China; targets industrial IoT</td></tr>
+<tr><td>TDengine</td><td>developed in China; SQL interface</td></tr>
+</table>
+
+<h3>PromQL Example</h3>
+
+<pre><code class="language-sql">-- Total HTTP request QPS over the past 5 minutes, aggregated by service
+sum by (service) (rate(http_requests_total[5m]))
+
+-- 99th-percentile response latency
+histogram_quantile(0.99, sum by (le) (rate(http_duration_seconds_bucket[5m])))
+</code></pre>
+
+<h3>In AI</h3>
+
+<p>Observability metrics for AI training and inference are stored heavily in time-series databases: GPU utilization, VRAM usage, training loss curves, inference QPS/TTFT/P99 latency. Grafana + Prometheus + metrics exposed by model-serving frameworks is the standard setup.</p>
+
+<p>Training data for <strong>time-series forecasting models</strong> (ARIMA, Prophet, Transformer variants such as Informer) is pulled directly from time-series databases.</p>
+
+<!-- 2.4.4 -->
+<h2 id="s2-4-4"><span class="num">2.4.4</span>Vector Databases</h2>
+<p class="pos">Position: nearest-neighbor search over high-dimensional vectors — the foundation of RAG, semantic retrieval, and recommendation.</p>
+
+<h3>Problem Definition</h3>
+
+<p>Given $N$ vectors of dimension $d$ and a query vector $\mathbf{q}$, find the $k$ vectors closest to $\mathbf{q}$. Distance is typically measured by L2 distance or cosine similarity.</p>
+
+<p>Brute-force search is $O(Nd)$. With $N = 10^8$ and $d = 768$, each query takes several seconds — unacceptable. So the core of a vector database is <strong>approximate nearest neighbor</strong> (ANN) search: accept a small probability of returning a non-exact nearest neighbor in exchange for sub-millisecond query latency.</p>
+
+<h3>The ANN Algorithm Family</h3>
+
+<p><strong>LSH</strong> (Locality-Sensitive Hashing): use random hyperplanes to partition the space into buckets; similar vectors fall into the same bucket with high probability. Simple, but recall is low.</p>
+
+<p><strong>IVF</strong> (Inverted File): cluster all vectors with k-means first; at query time, search only the nearest few clusters. Typical usage: IVF_PQ (vectors within clusters are stored using PQ quantization).</p>
+
+<p><strong>PQ</strong> (Product Quantization): split a $d$-dimensional vector into $m$ segments of $d/m$ dimensions each; independently quantize each segment with k-means into an 8-bit codebook index. For $d=128$, 8 segments of 256 classes each compress the original 512 bytes down to 8 bytes — a 64× reduction. Distance computation is approximated via lookup tables.</p>
+
+<p><strong><a href="ch5_partC_supplement.html#p18">HNSW</a></strong> (Hierarchical Navigable Small World): a multi-layer graph index; the top layer is sparse, the bottom layer is dense. Queries start at the top layer and greedily "hop" toward the target. Recall and speed are best-in-class in most scenarios; it is currently the mainstream choice.</p>
+
+<h3>Intuition Behind HNSW</h3>
+
+<p>Think of all vectors as nodes in a graph, with each node connected to several nearby neighbors. A query starts at an entry point and at each step jumps to the neighbor closest to the query vector, until no neighbor is closer than the current node — a local optimum.</p>
+
+<p>HNSW adds <strong>hierarchy</strong>: multiple graph layers, where each layer is a sparse subset of the layer below; edges at higher layers span greater distances, while edges at lower layers are short. A query first takes large steps at the top layer to approach the target region, then descends layer by layer for refinement. Think of it as a two-dimensional generalization of a skip list.</p>
+
+<h3>Representative Products</h3>
+
+<table>
+<tr><th>Product</th><th>Characteristics</th></tr>
+<tr><td>FAISS</td><td>Facebook library; most mature; non-distributed</td></tr>
+<tr><td>Milvus</td><td>developed in China; distributed; supports multiple index types</td></tr>
+<tr><td>Qdrant</td><td>Written in Rust; strong performance; filter-friendly</td></tr>
+<tr><td>Weaviate</td><td>Written in Go; built-in multi-modal support</td></tr>
+<tr><td>pgvector</td><td>PostgreSQL extension; good fit when already using PG</td></tr>
+<tr><td>Chroma</td><td>Lightweight embedded; good for prototyping</td></tr>
+<tr><td>LanceDB</td><td>Written in Rust; zero-copy; multi-modal</td></tr>
+</table>
+
+<h3>Hybrid Retrieval</h3>
+
+<p>Pure vector retrieval underperforms keyword search on technical terms and exact matches. <strong>Hybrid retrieval</strong> fuses vector (semantic similarity) and BM25 (keyword) results using RRF (Reciprocal Rank Fusion) or other reranking methods. Industrial RAG systems almost universally use hybrid retrieval.</p>
+
+<h3>Filtering and Metadata</h3>
+
+<p>Real-world use cases require not just "similar," but also "only search within this user's documents" or "only results after 2024." This requires the vector database to support ANN with filters. Two approaches:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Pre-filter</strong>: filter by metadata first, then run ANN. If very few results survive the filter, brute-force search is used.</li>
+<li><strong>Post-filter</strong>: run ANN first, then filter. But this may return fewer than k results.</li>
+</ul>
+
+<p>Qdrant and Milvus implement <strong>filterable HNSW</strong> — checking filter conditions while traversing the HNSW graph, balancing speed and correctness.</p>
+
+<h3>In AI</h3>
+
+<p><strong><a href="ch5_partC_supplement.html#p25">RAG</a> (Retrieval-Augmented Generation)</strong>: documents → chunks → embeddings → stored in a vector database; query → embedding → ANN to fetch top-k → concatenated into the prompt → LLM answers. This is currently the most prevalent LLM application pattern.</p>
+
+<p><strong>Semantic search, recommendation systems, image-text retrieval, and deduplication</strong> are all direct applications of vector databases. <strong>Long-term memory</strong>: an agent's conversation history is stored as vectors and retrieved on demand — an increasingly important pattern in LLM applications.</p>
+
+<!-- ==================== 2.5 Message Middleware ==================== -->
+<div class="part-header">
+  <div class="part-label">PART FIVE</div>
+  <h2 class="part-title">2.5 Message Middleware</h2>
+  <p class="part-desc">The abstraction layer for inter-process/inter-node communication — a unified view of message queues, RPC, and publish-subscribe.</p>
+</div>
+
+<!-- 2.5.1 -->
+<h2 id="s2-5-1"><span class="num">2.5.1</span>High-Performance Message Bus</h2>
+<p class="pos">Position: The foundation of all inter-process/service communication patterns — RPC, Pub/Sub, message queues.</p>
+
+<h3>Classification of Communication Patterns</h3>
+
+<p>The underlying abstractions of middleware all revolve around a few fundamental communication semantics:</p>
+
+<table>
+<tr><th>Pattern</th><th>Semantics</th><th>Examples</th></tr>
+<tr><td>Unicast/Multicast</td><td>Point-to-point / point-to-many</td><td>UDP, shared memory</td></tr>
+<tr><td>RPC</td><td>Request-response</td><td>gRPC, Thrift</td></tr>
+<tr><td>Pub/Sub</td><td>Publish-subscribe, loose coupling</td><td>Kafka, NATS, ROS</td></tr>
+<tr><td>Message Queue</td><td>Persistent, ordered, consumed</td><td>RabbitMQ, Kafka</td></tr>
+<tr><td>Stream Processing</td><td>Continuous computation over event streams</td><td>Flink, Kafka Streams</td></tr>
+</table>
+
+<h3>Core Technical Points of RPC</h3>
+
+<p>gRPC is the de facto standard for modern RPC. Key elements:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>IDL</strong> (Interface Definition Language): Protobuf describes messages and services, automatically generating stubs for each language</li>
+<li><strong>Serialization</strong>: Protobuf is binary, compact, and cross-language. 3–10x smaller than JSON with faster parsing</li>
+<li><strong>Transport</strong>: HTTP/2 foundation — multiplexing, streaming, header compression</li>
+<li><strong>Streaming modes</strong>: Unidirectional/bidirectional streams</li>
+<li><strong>Interceptors</strong>: Authentication, rate limiting, tracing</li>
+</ul>
+
+<h3>The Loose Coupling of Pub/Sub</h3>
+
+<p>The design philosophy of Pub/Sub: producers and consumers are unaware of each other. Publishers deliver messages to a topic; subscribers register interest in topics to receive messages. Scaling the system means adding consumers or partitions.</p>
+
+<p>Kafka is the canonical example of "persistent-log Pub/Sub." Each topic is a partitioned append-only log; consumers read by offset and can replay history. A log retention period controls storage.</p>
+
+<h3>Zero-Copy and High Performance</h3>
+
+<p>All high-performance message middleware employs zero-copy optimizations:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- User-space ring buffer with lock-free multi-producer multi-consumer support</li>
+<li>- <code>sendfile</code>/<code>splice</code> (kernel-level zero-copy)</li>
+<li>- mmap shared memory (single-machine IPC)</li>
+<li>- RDMA (cross-machine)</li>
+</ul>
+
+<p>In single-machine scenarios, a shared-memory ring queue with atomic pointers can achieve 20M+ msg/s. In cross-machine scenarios, RDMA can reach line rate.</p>
+
+<h3>Service Discovery</h3>
+
+<p>The mandatory question in distributed service communication: "What IP and port is the service I need to call?" — that's service discovery. Several approaches:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>DNS</strong>: The simplest approach; TTL governs update speed</li>
+<li><strong>Client-side registries</strong>: Consul, Zookeeper, etcd — services register on startup, clients query</li>
+<li><strong>Service Mesh</strong>: Istio, Linkerd — a proxy intercepts traffic, transparently injecting discovery and governance</li>
+<li><strong>Kubernetes Service</strong>: Built-in DNS + kube-proxy</li>
+</ul>
+
+<h3>Reliability Guarantees</h3>
+
+<p>Three tiers of message delivery semantics:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>at-most-once</strong>: Delivered at most once; may be lost — simple and high-performance</li>
+<li><strong>at-least-once</strong>: Delivered at least once; may be duplicated — requires idempotent consumers</li>
+<li><strong>exactly-once</strong>: Delivered exactly once — expensive, requires transactions or deduplication</li>
+</ul>
+
+<p>Kafka's exactly-once holds <em>within Kafka itself</em> (via transactional messages); end-to-end exactly-once involving external systems remains difficult.</p>
+
+<h3>In AI</h3>
+
+<p>Message middleware sees considerable use in AI systems:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>Training job scheduling</strong>: Producers (users) submit jobs; consumers (training workers) process them</li>
+<li>- <strong>Pre-inference queuing</strong>: A queue in front of high-concurrency LLM services smooths traffic spikes</li>
+<li>- <strong>Data ingestion → feature engineering pipeline</strong>: Kafka as the intermediary</li>
+<li>- <strong>Distributed RL</strong>: Actors generate experience; learners consume from the queue</li>
+<li>- <strong>Agent tool-call bus</strong>: LLM → tool router → individual tool processes</li>
+</ul>
+
+<!-- ==================== 2.6 网络栈 ==================== -->
+<div class="part-header">
+  <div class="part-label">PART SIX</div>
+  <h2 class="part-title">2.6 Network Stack: DPDK &amp; VPP</h2>
+  <p class="part-desc">Two main paths to high-performance packet forwarding — DPDK for kernel bypass, VPP for vectorized processing.</p>
+</div>
+
+<!-- 2.6.1 -->
+<h2 id="s2-6-1"><span class="num">2.6.1</span>Bottlenecks of the Kernel Network Stack</h2>
+<p class="pos">Position: Why bypass the kernel — understanding the reason DPDK/VPP exists.</p>
+
+<h3>The Linux Network Stack Path</h3>
+
+<p>A TCP packet traveling from the NIC to the application must pass through:</p>
+
+<div class="mermaid">
+flowchart TB
+    NIC[Network Card] --> IRQ[Hardware IRQ]
+    IRQ --> SI[Softirq NET_RX]
+    SI --> NP[netif_receive_skb]
+    NP --> IP[IP layer]
+    IP --> TCP[TCP layer]
+    TCP --> SKB[socket buffer]
+    SKB --> SYS[syscall read]
+    SYS --> APP[Application]
+</div>
+
+<p>Every layer has a cost:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- Hardware interrupt overhead</li>
+<li>- sk_buff struct allocation/deallocation (once per packet, heavy pressure on the memory allocator)</li>
+<li>- Multi-layer protocol stack (Ethernet, IP, TCP) parsed layer by layer</li>
+<li>- User/kernel space data copies</li>
+<li>- System call overhead</li>
+<li>- Scheduler invocation per packet</li>
+</ul>
+
+<p>This architecture is superb for generality, but its performance ceiling is roughly <strong>1–2 Mpps per core</strong>. To handle 10G small-packet line rate (14.88 Mpps) or 100G line rate (148.8 Mpps), the kernel stack simply cannot keep up.</p>
+
+<h3>Root Causes of the Bottleneck</h3>
+
+<p><strong>Interrupt storms</strong>: At high packet rates, millions of hardware interrupts per second force the CPU to spend the majority of its time on interrupt handling. The NAPI mechanism partially mitigates this with an "interrupt fires → disable interrupts → poll" model, but is still limited.</p>
+
+<p><strong>Memory allocation</strong>: Receiving each packet requires a kmalloc for an sk_buff and a kfree when done. The allocator itself becomes the bottleneck.</p>
+
+<p><strong>Locks</strong>: The protocol stack contains global locks in many places (routing table, connection table). Multi-core scalability is poor.</p>
+
+<p><strong>Cache pollution</strong>: sk_buff migration across cores and the large protocol stack codebase cause frequent I-cache misses.</p>
+
+<h3>Two Paths to a Breakthrough</h3>
+
+<p><strong>Bypass the kernel</strong>: User space directly manipulates the NIC. DPDK, Netmap, Snabb.</p>
+
+<p><strong>Optimize the kernel</strong>: XDP (eBPF filtering/forwarding at the driver layer), io_uring, AF_XDP.</p>
+
+<p>The latter is maturing rapidly (XDP can reach 15 Mpps+ per core), but DPDK remains the preferred choice for maximum performance and is covered in detail in the next section.</p>
+
+<!-- 2.6.2 -->
+<h2 id="s2-6-2"><span class="num">2.6.2</span>DPDK Architecture</h2>
+<p class="pos">Position: The industry-standard framework for user-space networking that bypasses the kernel.</p>
+
+<h3>DPDK's Design Philosophy</h3>
+
+<p>DPDK (Data Plane Development Kit) is a user-space networking framework open-sourced by Intel in 2013 (internal development began around 2010). Four core decisions:</p>
+
+<ol>
+<li><strong>User-space driver</strong>: UIO/VFIO is used to unbind the NIC from the kernel; a user-space process directly mmaps the device registers.</li>
+<li><strong>Polling instead of interrupts</strong>: The application main loop polls the receive ring continuously — no interrupt overhead.</li>
+<li><strong>Pre-allocated huge-page memory</strong>: All required memory is allocated once at startup; no malloc at runtime.</li>
+<li><strong>Per-core isolation</strong>: One thread per core, pinned to a fixed NIC queue, with minimal shared data.</li>
+</ol>
+
+<p>Result: 10 Mpps+ per core with ease; single-server 100G line-rate forwarding is achievable.</p>
+
+<h3>Architecture Diagram</h3>
+
+<div class="mermaid">
+flowchart LR
+    subgraph UserSpace["User Space DPDK App"]
+        APP[Application Logic]
+        MBUF[mbuf pool]
+        RING[rte_ring]
+        PMD[Poll Mode Driver]
+    end
+    subgraph Kernel["Kernel (minimal)"]
+        UIO[UIO / VFIO]
+    end
+    subgraph HW["Hardware"]
+        NIC[NIC]
+    end
+    APP --> RING
+    RING --> PMD
+    PMD -->|mmap regs| UIO
+    UIO --> NIC
+    PMD --> MBUF
+</div>
+
+<h3>Key Components</h3>
+
+<p><strong>EAL</strong> (Environment Abstraction Layer): Abstracts the OS and hardware, providing a unified interface (memory, CPU, devices). <code>rte_eal_init()</code> is the entry point of every DPDK program.</p>
+
+<p><strong>PMD</strong> (Poll Mode Driver): User-space NIC driver. One PMD per NIC type (Intel ixgbe, Mellanox mlx5, virtio, etc.).</p>
+
+<p><strong>mbuf</strong>: DPDK's equivalent of sk_buff, but much simpler — a fixed-size header plus data, no linked list. Pre-allocated in a mempool.</p>
+
+<p><strong>rte_ring</strong>: Lock-free MPMC (multi-producer multi-consumer) ring queue — the primary primitive for user-space IPC.</p>
+
+<p><strong>mempool</strong>: Object pool. Allocation/deallocation in O(1); per-core cache reduces contention.</p>
+
+<h3>Minimal DPDK Application</h3>
+
+<pre><code class="language-c">#include <rte_eal.h>
+#include <rte_ethdev.h>
+#include <rte_mbuf.h>
+
+#define RX_RING_SIZE 1024
+#define NUM_MBUFS    8191
+#define BURST_SIZE   32
+
+int main(int argc, char *argv[]) {
+    rte_eal_init(argc, argv);
+
+    // Create mempool
+    struct rte_mempool *mbuf_pool = rte_pktmbuf_pool_create(
+        "MBUF_POOL", NUM_MBUFS, 250, 0,
+        RTE_MBUF_DEFAULT_BUF_SIZE, rte_socket_id());
+
+    // Configure port 0
+    uint16_t port = 0;
+    struct rte_eth_conf cfg = {0};
+    rte_eth_dev_configure(port, 1, 1, &cfg);
+    rte_eth_rx_queue_setup(port, 0, RX_RING_SIZE, rte_socket_id(), NULL, mbuf_pool);
+    rte_eth_tx_queue_setup(port, 0, RX_RING_SIZE, rte_socket_id(), NULL);
+    rte_eth_dev_start(port);
+
+    // Main loop: poll for received packets, echo them back
+    struct rte_mbuf *bufs[BURST_SIZE];
+    while (1) {
+        uint16_t nb_rx = rte_eth_rx_burst(port, 0, bufs, BURST_SIZE);
+        if (unlikely(nb_rx == 0)) continue;
+
+        // Process packets... (omitted here)
+
+        uint16_t nb_tx = rte_eth_tx_burst(port, 0, bufs, nb_rx);
+        // Free any packets that failed to transmit
+        for (uint16_t i = nb_tx; i < nb_rx; i++)
+            rte_pktmbuf_free(bufs[i]);
+    }
+}
+</code></pre>
+
+<p>This code runs on a dedicated CPU core to which the NIC is bound and can easily reach several Mpps of throughput — 10–50x faster than a kernel-stack socket program.</p>
+
+<h3>The Cost</h3>
+
+<p>DPDK is not a free lunch:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>Dedicated CPU</strong>: The polling core runs at 100% utilization even when there are no packets</li>
+<li>- <strong>No kernel protocol stack</strong>: TCP/UDP/ARP must be implemented yourself or via user-space stacks like mTCP or F-Stack</li>
+<li>- <strong>Development complexity</strong>: Standard socket libraries cannot be used</li>
+<li>- <strong>Hardware dependency</strong>: The NIC must have DPDK support</li>
+</ul>
+
+<p>DPDK is therefore suited to <strong>dedicated forwarding appliances</strong> (firewalls, load balancers, NFV) and not to general-purpose applications.</p>
+
+<!-- 2.6.3 -->
+<h2 id="s2-6-3"><span class="num">2.6.3</span>Key DPDK Mechanisms</h2>
+<p class="pos">Position: The secrets behind DPDK's performance — HugePages, lock-free rings, NUMA, and RSS.</p>
+
+<h3>HugePages</h3>
+
+<p>DPDK mandates the use of HugePages (2 MB or 1 GB). The reason was covered in Section 2.2.3: TLB coverage expands dramatically, eliminating TLB misses. A typical DPDK startup command specifies how many 2 MB huge pages to reserve on each NUMA node.</p>
+
+<h3>Lock-Free Ring Queue</h3>
+
+<p>rte_ring is one of DPDK's most elegant components. It is an MPMC ring queue based on two pairs of producer/consumer head/tail pointers:</p>
+<pre><code class="language-c">// Simplified rte_ring core variables
+struct rte_ring {
+    uint32_t size;           // Ring capacity (power of 2 for efficient & masking)
+    struct {
+        uint32_t head;       // Next position to be written
+        uint32_t tail;       // Last committed position
+    } prod, cons;
+    void *ring[size];
+};
+</code></pre>
+
+<p>Enqueue flow: atomic CAS increments prod.head by n (reserving slots) → copy data → wait for prod.tail to catch up to the original head → advance prod.tail. This two-phase approach allows multiple producers to <em>reserve concurrently and commit in order</em>, guaranteeing that data in the ring is complete when seen by a consumer.</p>
+
+<h3>NUMA Awareness</h3>
+
+<p>Modern servers have multiple sockets; cross-socket memory access doubles latency (remote DRAM vs. local DRAM). DPDK's <code>rte_socket_id()</code> lets you allocate mempools and queues on a specific NUMA node. Production code must NUMA-align all resources — NIC, CPU core, and memory pool must reside on the same socket.</p>
+
+<h3>RSS and Multi-Queue</h3>
+
+<p>A single queue on a single core has a throughput ceiling. DPDK works with the NIC's RSS to distribute packets from different flows across multiple receive queues, each bound to a core, enabling true parallelism.</p>
+
+<p>RSS hashes on the 5-tuple — <em>packets belonging to the same flow always go to the same queue</em> (preserving intra-flow ordering), while different flows are distributed evenly across cores. This design underlies all modern high-speed forwarding.</p>
+
+<h3>CPU Affinity</h3>
+
+<p>DPDK threads must be pinned to cores (the <code>--lcores</code> argument), preventing scheduler migrations that cause cache misses. Combined with the <code>isolcpus</code> kernel parameter to remove these cores from the Linux scheduler, they become fully dedicated.</p>
+
+<h3>Batch Processing</h3>
+
+<p>All DPDK APIs operate in batches — <code>rte_eth_rx_burst</code> receives 32 packets at a time, <code>rte_eth_tx_burst</code> transmits 32 at a time — amortizing per-packet overhead to near zero. Application logic should also batch: parse 32 Ethernet headers, look up 32 flow table entries, and so on, which is friendly to both the cache and the CPU pipeline.</p>
+
+<h3>Zero-Copy</h3>
+
+<p>The mbuf data region is directly the DMA region — the NIC DMAs packets into mbufs; the application reads them directly; on transmit, the NIC DMAs directly from the mbuf. The entire data path is zero-copy.</p>
+
+<!-- 2.6.4 -->
+<h2 id="s2-6-4"><span class="num">2.6.4</span>VPP Vectorized Forwarding</h2>
+<p class="pos">Position: A high-performance, programmable forwarding framework built on top of DPDK, based on the idea of "applying the same operation to a batch of packets consecutively."</p>
+
+<h3>VPP's Core Innovation: Graph Nodes + Vectorization</h3>
+
+<p>VPP (Vector Packet Processing) is the FD.io project (based on Cisco open-source code). Its two core concepts:</p>
+
+<p><strong>Forwarding graph</strong>: The processing pipeline is a directed graph; nodes are "processing stages" (e.g., ethernet-input, ip4-lookup, ip4-rewrite). Packets enter from source nodes, pass through a series of nodes, and reach a sink (transmit or drop). Each node does exactly one thing and is pluggable/extensible.</p>
+
+<p><strong>Vectorization</strong>: <em>Instead of processing one packet at a time, process a batch at a time.</em> The traditional "each packet traverses the entire forwarding pipeline" is replaced by "each node processes the entire batch before passing it to the next node."</p>
+
+<h3>Why Vectorization Is So Fast</h3>
+
+<p>Suppose a batch of 256 packets with 10 processing stages. Traditional approach:</p>
+<pre><code>for packet in 256:
+    for stage in 10:
+        do_stage(packet)
+</code></pre>
+<p>Each stage's code is fetched 256 times; each fetch may cause an I-cache miss.</p>
+
+<p>Vectorized approach:</p>
+<pre><code>for stage in 10:
+    for packet in 256:
+        do_stage(packet)
+</code></pre>
+<p>The stage code is fetched only once, staying warm in the I-cache. The 256 loop iterations allow data to remain in the D-cache (prefetcher-friendly). The improvement in <strong>I-cache hit rate</strong> is the primary reason VPP is fast — not SIMD vectorization.</p>
+
+<p>This is the network-forwarding equivalent of the compiler optimization known as <em>loop interchange</em> — swapping loop order to improve cache locality.</p>
+
+<h3>VPP Node Example</h3>
+
+<pre><code class="language-c">// Simplified sketch of the ip4-lookup node
+static uword
+ip4_lookup_node_fn(vlib_main_t *vm, vlib_node_runtime_t *node,
+                    vlib_frame_t *frame) {
+    u32 *from = vlib_frame_vector_args(frame);
+    u32 n_left = frame->n_vectors;   // Number of packets in this batch
+
+    // Process 4 at a time (use prefetch to hide cache miss latency)
+    while (n_left >= 4) {
+        vlib_buffer_t *b0, *b1, *b2, *b3;
+        b0 = vlib_get_buffer(vm, from[0]);
+        b1 = vlib_get_buffer(vm, from[1]);
+        b2 = vlib_get_buffer(vm, from[2]);
+        b3 = vlib_get_buffer(vm, from[3]);
+
+        // Prefetch the cache line for the next batch
+        CLIB_PREFETCH(vlib_get_buffer(vm, from[4]), CLIB_CACHE_LINE_BYTES, LOAD);
+        // ...
+
+        // Parallel route lookup for 4 packets
+        ip4_fib_mtrie_lookup(...);   // for b0
+        ip4_fib_mtrie_lookup(...);   // for b1
+        ip4_fib_mtrie_lookup(...);   // for b2
+        ip4_fib_mtrie_lookup(...);   // for b3
+
+        from += 4; n_left -= 4;
+    }
+
+    // Handle remaining 0–3 packets individually
+    while (n_left > 0) { /* ... */ }
+
+    return frame->n_vectors;
+}
+</code></pre>
+
+<p>This "4-at-a-time + prefetch" pattern is the hallmark of VPP code. It uses instruction-level parallelism and explicit prefetching to hide memory latency behind computation.</p>
+
+<h3>What VPP Can Do</h3>
+
+<ul style="list-style:none; padding-left:0;">
+<li>- IPv4/IPv6 route forwarding (FIB)</li>
+<li>- MPLS</li>
+<li>- Tunneling: VXLAN, GRE, etc.</li>
+<li>- NAT</li>
+<li>- Basic firewall ACL</li>
+<li>- Load balancing</li>
+<li>- IPSec</li>
+</ul>
+
+<p>Performance: 10+ Mpps per core; dual-socket servers can achieve 100 Gbps+ line rate.</p>
+
+<h3>Relationship with DPDK</h3>
+
+<p>VPP uses DPDK as its default I/O driver layer but also supports AF_XDP, Netmap, and others. VPP handles the "packet processing framework"; DPDK handles "talking to hardware." The two are complementary and are commonly used together.</p>
+
+<!-- 2.6.5 -->
+<h2 id="s2-6-5"><span class="num">2.6.5</span>TCP / UDP / Raw IP</h2>
+<p class="pos">Position: Transport-layer protocols — you use sockets every day, but you should know what's happening underneath.</p>
+
+<h3>The IP Layer</h3>
+
+<p>IP is an unreliable packet delivery service. Each IP packet is routed independently — <em>there is no concept of a "connection"</em>; intermediate routers forward each packet independently based on a lookup. The IPv4 header is 20 bytes (with optional fields); the IPv6 header is 40 bytes (but with simplified fields).</p>
+
+<p>Key IP mechanisms: <strong>fragmentation</strong> (when the next-hop MTU is smaller than the packet), <strong>TTL</strong> (decremented by one at each hop; discarded at zero to prevent loops), and <strong>checksum</strong> (header only).</p>
+
+<h3>UDP</h3>
+
+<p>The thinnest transport layer — an 8-byte header (source port, destination port, length, checksum). Connectionless, no retransmission, no congestion control, no ordering guarantee.</p>
+
+<p>Suitable for: DNS queries, real-time audio/video, game state synchronization, custom reliability layers (QUIC is built on UDP).</p>
+
+<h3>TCP: The Three Core Mechanisms</h3>
+
+<p><strong>Connection</strong>: Established with a three-way handshake; closed with a four-way handshake. Maintains state such as sequence numbers, acknowledgment numbers, and window size.</p>
+
+<p><strong>Reliable delivery</strong>: Retransmission based on sequence numbers and ACKs. Timeout retransmit + fast retransmit (retransmit on 3 duplicate ACKs without waiting for timeout).</p>
+
+<p><strong>Congestion control</strong>: AIMD (Additive Increase Multiplicative Decrease). The congestion window grows exponentially during slow start, then linearly after reaching the threshold, and is halved on packet loss. Algorithms include Reno, Cubic (Linux default), and BBR (Google — models bandwidth/delay rather than relying on loss feedback).</p>
+
+<h3>TCP Performance Tuning</h3>
+
+<p>Parameters to pay attention to in production deployments:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>Buffer sizes</strong>: <code>net.core.rmem_max/wmem_max</code>. Long fat networks (high bandwidth, high latency) require large buffers.</li>
+<li>- <strong>TCP_NODELAY</strong>: Disables the Nagle algorithm, sending small packets immediately — must be enabled for low-latency interactive workloads.</li>
+<li>- <strong>TCP_QUICKACK</strong>: Disables delayed ACKs.</li>
+<li>- <strong>Congestion algorithm</strong>: <code>net.ipv4.tcp_congestion_control</code>. BBR generally outperforms Cubic for data center or intercontinental links.</li>
+<li>- <strong>TCP Fast Open</strong>: Carries data in the SYN packet, saving one RTT.</li>
+</ul>
+
+<h3>Raw IP / Raw Socket</h3>
+
+<p>The application constructs IP packets directly (any protocol can be customized). Requires root privileges. Used for: ping (ICMP), routing protocols (OSPF, BGP), custom protocols. <code>socket(AF_INET, SOCK_RAW, IPPROTO_XXX)</code>.</p>
+
+<h3>In AI</h3>
+
+<p>AI training/inference communication primarily uses:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>TCP</strong>: gRPC/REST APIs, control plane for distributed training</li>
+<li>- <strong>RDMA</strong> (covered in Chapter 4, Section 5.7): Training data plane, completely bypassing TCP/IP</li>
+<li>- <strong>UDP</strong>: Occasionally used in custom AllReduce implementations</li>
+</ul>
+
+<!-- 2.6.6 -->
+<h2 id="s2-6-6"><span class="num">2.6.6</span>TLS and QUIC</h2>
+<p class="pos">Position: Two paradigms for encrypted transport — TLS over TCP vs. QUIC (UDP + encryption).</p>
+
+<h3>TLS Handshake</h3>
+
+<p>TLS 1.3 (2018) simplified the handshake to 1 RTT (TLS 1.2 required 2 RTT):</p>
+<ol>
+<li>Client Hello: carries supported algorithms and ECDHE public key share</li>
+<li>Server Hello + Certificate + Finished: server returns selected algorithm, certificate, its own ECDHE share, and signature</li>
+<li>Client Finished: client verifies the certificate; both sides derive the session key</li>
+</ol>
+
+<p>TLS 1.3 <strong>0-RTT</strong> mode: A client with an existing session can send request data in the very first packet (using a cached PSK). Zero latency overhead, but vulnerable to replay attacks.</p>
+
+<h3>QUIC's Design Motivation</h3>
+
+<p>TCP + TLS has several inherent limitations:</p>
+<ol>
+<li>TCP handshake (1 RTT) + TLS handshake (1 RTT) = at least 2 RTT before data can flow</li>
+<li>TCP is implemented in the OS; upgrades are slow (congestion algorithm deployment cycles are measured in years)</li>
+<li>TCP's head-of-line blocking: a single lost packet stalls the entire stream</li>
+<li>TCP connections are identified by a 4-tuple; when a phone switches between Wi-Fi and 4G, the IP changes and the connection breaks</li>
+</ol>
+
+<p>QUIC (Quick UDP Internet Connections) reinvents the transport layer on top of UDP, solving all four problems:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>1 RTT handshake</strong> (first connection), <strong>0 RTT</strong> (reconnection) — encryption and reliable transport are merged</li>
+<li>- <strong>User-space implementation</strong>: A library-level component; upgrading only requires a library update</li>
+<li>- <strong>Multiple streams</strong>: Many independent streams within a single connection; packet loss in one stream does not block others</li>
+<li>- <strong>Connection ID</strong>: Not tied to an IP address; connections survive network changes</li>
+</ul>
+
+<h3>HTTP/3</h3>
+
+<p>HTTP/3 = HTTP/2 semantics + QUIC transport. Compared to HTTP/2 over TCP+TLS: faster handshake, multiplexing without head-of-line blocking, and smooth network transitions. Standardized by the IETF in 2022; already supported by major browsers and CDNs.</p>
+
+<h3>Implementations</h3>
+
+<p>QUIC libraries: Google's QUICHE, Meta's mvfst, Cloudflare's quiche, Microsoft's msquic. All are user-space implementations.</p>
+
+<h3>In AI</h3>
+
+<p>LLM inference APIs (OpenAI, Anthropic, etc.) largely support HTTP/3, reducing time-to-first-token latency. Mobile AI applications (which switch networks frequently) benefit even more noticeably from QUIC.</p>
+
+<!-- 2.6.7 -->
+<h2 id="s2-6-7"><span class="num">2.6.7</span>Forwarding Management and the Control Plane</h2>
+<p class="pos">Position: The data plane uses DPDK/VPP to forward packets at speed; the control plane is responsible for distributing policies and synchronizing routing tables. Brief section.</p>
+
+<h3>Control Plane vs. Data Plane</h3>
+
+<p>Modern network devices separate CP and DP:</p>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Control plane</strong>: Routing protocols (BGP, OSPF), policy computation, configuration management. Runs on general-purpose CPUs; Python/Go implementations are fine. Being a bit slower is acceptable.</li>
+<li><strong>Data plane</strong>: Per-packet processing. DPDK/VPP/NP/ASIC. Must be fast.</li>
+</ul>
+
+<p>The CP computes routes and pushes them to the DP's forwarding table (FIB). The DP only performs table-lookup forwarding; it does not participate in routing computation.</p>
+
+<h3>SDN</h3>
+
+<p>Software-Defined Networking takes this separation to its logical extreme: <strong>extract the control plane from every individual device and centralize it in a single controller</strong>. The controller pushes forwarding rules via protocols such as OpenFlow, gNMI, and P4Runtime.</p>
+
+<p>Advantages: global-view optimization, unified policy, simplified devices (only the data plane needs to be implemented). Disadvantage: the controller becomes a single point of failure.</p>
+
+<h3>Control Plane Configuration Protocols</h3>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>CLI</strong>: Traditional — SSH into a device and type commands</li>
+<li><strong>SNMP</strong>: Legacy monitoring; read-heavy, write-light</li>
+<li><strong>NETCONF + YANG</strong>: Structured configuration with transaction support</li>
+<li><strong>gNMI</strong>: gRPC-based, streaming telemetry</li>
+<li><strong>OpenConfig</strong>: Vendor-neutral YANG models</li>
+</ul>
+
+<h3>Routing Protocols in Brief</h3>
+
+<ul style="list-style:none; padding-left:0;">
+<li><strong>BGP</strong>: The Internet backbone protocol — path-vector based, inter-AS routing. TCP port 179; rich policy support.</li>
+<li><strong>OSPF</strong>: IGP (Interior Gateway Protocol) — link-state algorithm (Dijkstra shortest path). Fast convergence; used within an AS.</li>
+<li><strong>IS-IS</strong>: Similar to OSPF; commonly used by ISPs.</li>
+</ul>
+
+<h3>In AI</h3>
+
+<p>The network topology of AI training clusters (fat-tree, dragonfly) has an enormous impact on performance. The control plane itself, however, has little direct bearing on AI; this section is included only for general awareness.</p>
+
+<!-- 2.6.8 -->
+<h2 id="s2-6-8"><span class="num">2.6.8</span>Logging and Observability</h2>
+<p class="pos">Position: The trinity of Metrics + Logs + Traces — without observability there is no production operations.</p>
+
+<h3>The Three Pillars of Observability</h3>
+
+<p><strong>Metrics</strong>: Numerical values stored as time series. QPS, CPU, latency. Low-frequency sampling, small volume, easily aggregated. Prometheus is the standard.</p>
+
+<p><strong>Logs</strong>: Textual records of discrete events. High cardinality, large volume. ELK (Elasticsearch + Logstash + Kibana) and Loki are common choices.</p>
+
+<p><strong>Traces</strong>: Distributed tracing of a single request across multiple services. Each span records start time, duration, and tags. Jaeger, Zipkin, Tempo.</p>
+
+<h3>Structured Logging</h3>
+
+<p>Traditional <code>printf</code>-style logs are difficult for machines to process. The modern approach is structured logging — JSON or logfmt format:</p>
+
+<pre><code class="language-json">{"time":"2024-05-01T10:30:15Z","level":"INFO","service":"inference",
+ "request_id":"abc123","model":"gpt-4","ttft_ms":234,"tokens":156}
+</code></pre>
+
+<p>Structure enables efficient search and aggregation. Go's slog, Python's structlog, and Rust's tracing all push in this direction.</p>
+
+<h3>OpenTelemetry</h3>
+
+<p>OpenTelemetry (OTel) is a CNCF graduated project that aims to <strong>unify observability data collection standards</strong> — language SDKs, data models, and transport protocol (OTLP). A single SDK simultaneously produces metrics, logs, and traces that can be routed to different backends (Prometheus, Jaeger, commercial APM).</p>
+
+<p>For any new service being written today, choosing OTel is almost always the right call.</p>
+
+<h3>Sampling</h3>
+
+<p>Full-volume traces are too expensive — storing 100K requests per second would overwhelm any disk. Sampling strategies:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Head-based sampling</strong>: Decided at the entry point — based on probability or rules</li>
+<li><strong>Tail-based sampling</strong>: Decided after the trace completes (can target errors and slow requests specifically)</li>
+<li><strong>Adaptive sampling</strong>: Dynamically adjusts the sampling rate</li>
+</ul>
+
+<h3>eBPF Observability</h3>
+
+<p>Traditional observability requires intrusive instrumentation of the application. eBPF lets you capture any function call, any syscall, and any socket event in the kernel without modifying the application. <strong>Pixie</strong>, <strong>Cilium Hubble</strong>, and <strong>Parca</strong> are all eBPF-driven observability tools.</p>
+
+<h3>In AI</h3>
+
+<p>Key observability metrics specific to LLM inference:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>TTFT</strong> (Time to First Token): Critical for the frontend experience</li>
+<li>- <strong>TPOT</strong> (Time Per Output Token): Steady-state generation speed</li>
+<li>- <strong>tokens/sec throughput</strong>: System-level throughput</li>
+<li>- <strong>KV cache hit rate</strong>: Effectiveness of prefix caching</li>
+<li>- <strong>Batch size distribution</strong>: Scheduler health</li>
+<li>- <strong>GPU utilization</strong>: Hardware efficiency</li>
+</ul>
+
+<p>Training observability: loss curves, gradient norms, learning rate, per-rank synchronization latency, data loading delay. TensorBoard, Weights &amp; Biases, and MLflow are purpose-built platforms.</p>
+
+<hr style="margin-top:60px; border:none; border-top:1px dashed var(--rule);">
+
+<p style="color:var(--muted); font-size:14px; font-style:italic; text-align:center; margin-top:40px;">
+— End of Chapter 2 —<br>
+28 sections total &middot; Next chapter: AI Model Technology (Classical ML + Deep Learning + Training Optimization + AI Performance Engineering)
+</p>
+
+</main>
+
+<script>
+  hljs.highlightAll();
+  mermaid.initialize({ startOnLoad: true, theme: 'neutral', fontFamily: 'Inter, sans-serif' });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM Technology — From Transformer to Agent</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+:root{--bg:#fbfaf7;--fg:#1d1d1b;--muted:#6b6b68;--accent:#9a2f2f;--accent-soft:#f2e4e4;--rule:#e3dfd6;--code-bg:#282c34;--sidebar-bg:#f4f1ea;--mono:"SFMono-Regular","JetBrains Mono",Consolas,"Liberation Mono",Menlo,monospace;--serif:"Source Serif Pro","Songti SC","STSong",Georgia,"Times New Roman",serif;--sans:"Inter",-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;}
+*{box-sizing:border-box;}html,body{margin:0;padding:0;}
+body{font-family:var(--serif);font-size:16px;line-height:1.75;color:var(--fg);background:var(--bg);display:flex;}
+aside.toc{position:sticky;top:0;width:310px;height:100vh;overflow-y:auto;background:var(--sidebar-bg);border-right:1px solid var(--rule);padding:24px 20px;font-family:var(--sans);font-size:13px;flex-shrink:0;}
+aside.toc h1{font-family:var(--serif);font-size:18px;margin:0 0 4px 0;color:var(--accent);}
+aside.toc .sub{color:var(--muted);font-size:12px;margin-bottom:20px;font-style:italic;}
+aside.toc .group{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin-top:14px;margin-bottom:4px;padding-bottom:3px;border-bottom:1px solid var(--rule);}
+aside.toc ol{list-style:none;padding:0;margin:0;}aside.toc ol li{margin-bottom:2px;}
+aside.toc a{color:var(--fg);text-decoration:none;display:block;padding:3px 6px;border-radius:3px;transition:all 0.15s;}
+aside.toc a:hover{background:var(--accent-soft);color:var(--accent);}
+aside.toc .num{color:var(--muted);font-family:var(--mono);margin-right:6px;font-size:11px;}
+main{flex:1;max-width:880px;padding:60px 72px 120px 72px;min-width:0;}
+header.cover{border-bottom:2px solid var(--fg);padding-bottom:32px;margin-bottom:48px;}
+header.cover h1{font-size:42px;line-height:1.15;margin:0 0 12px 0;font-weight:700;}
+header.cover .subtitle{font-size:20px;color:var(--muted);font-style:italic;margin-bottom:20px;}
+header.cover .meta{font-family:var(--sans);font-size:13px;color:var(--muted);}
+h2{font-size:26px;margin-top:72px;margin-bottom:6px;padding-bottom:8px;border-bottom:1px solid var(--rule);scroll-margin-top:20px;}
+h2 .num{color:var(--accent);font-family:var(--mono);font-weight:400;margin-right:10px;font-size:20px;}
+.pos{font-family:var(--sans);font-size:13px;color:var(--muted);font-style:italic;margin-top:0;margin-bottom:16px;padding:6px 12px;background:var(--accent-soft);border-left:2px solid var(--accent);}
+h3{font-size:18px;margin-top:28px;margin-bottom:8px;font-weight:600;}
+h4{font-size:15px;margin-top:18px;margin-bottom:4px;font-weight:600;color:var(--accent);}
+p{margin:0 0 14px 0;text-align:justify;}
+code{font-family:var(--mono);font-size:14px;background:var(--accent-soft);color:var(--accent);padding:1px 5px;border-radius:3px;}
+pre{background:var(--code-bg);border-radius:6px;padding:14px 18px;overflow-x:auto;font-size:13px;line-height:1.55;margin:16px 0;}
+pre code{background:transparent;color:inherit;padding:0;font-size:inherit;}
+.callout{border-left:3px solid var(--accent);background:var(--accent-soft);padding:10px 16px;margin:16px 0;font-size:15px;}
+.callout .tag{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:4px;}
+.formula{font-family:var(--serif);padding:10px 18px;background:#faf3f3;border-left:2px solid var(--muted);margin:12px 0;font-size:16px;overflow-x:auto;}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;font-family:var(--sans);}
+th,td{border-bottom:1px solid var(--rule);padding:7px 10px;text-align:left;vertical-align:top;}
+th{background:var(--sidebar-bg);font-weight:600;}
+.part-header{margin-top:100px;margin-bottom:24px;padding:24px 28px;background:linear-gradient(to right,var(--accent-soft),transparent);border-left:4px solid var(--accent);}
+.part-header .part-label{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:0.15em;color:var(--accent);}
+.part-header h2.part-title{font-size:32px;margin:4px 0 8px 0;padding:0;border:none;}
+.part-header .part-desc{font-size:15px;color:var(--muted);font-style:italic;margin:0;}
+.mermaid{margin:20px 0;text-align:center;}
+.footnote{font-size:13px;color:var(--muted);margin-top:6px;}
+@media (max-width:1100px){aside.toc{display:none;}main{padding:40px 32px;}}
+</style>
+</head>
+<body>
+<aside class="toc">
+<h1>LLM Technology</h1><div class="sub">Chapter 4 · From Transformer to Agent</div>
+<div class="group">4.1 LLM Overview</div>
+<ol><li><a href="#s4-1-1"><span class="num">1</span>From LM to LLM</a></li><li><a href="#s4-1-2"><span class="num">2</span>Open-Source vs Closed-Source Ecosystems</a></li></ol>
+<div class="group">4.2 Transformer Architecture</div>
+<ol><li><a href="#s4-2-1"><span class="num">1</span>Overall Structure</a></li><li><a href="#s4-2-2"><span class="num">2</span>Self-Attention</a></li><li><a href="#s4-2-3"><span class="num">3</span>Multi-Head</a></li><li><a href="#s4-2-4"><span class="num">4</span>FFN, Residual Connections, Normalization</a></li><li><a href="#s4-2-5"><span class="num">5</span>Encoder/Decoder</a></li><li><a href="#s4-2-6"><span class="num">6</span>Transformer Evolution</a></li></ol>
+<div class="group">4.3 Positional Encoding</div>
+<ol><li><a href="#s4-3-1"><span class="num">1</span>History of Positional Encoding</a></li><li><a href="#s4-3-2"><span class="num">2</span>RoPE</a></li><li><a href="#s4-3-3"><span class="num">3</span>Long Context Extrapolation</a></li></ol>
+<div class="group">4.4 Attention Optimizations</div>
+<ol><li><a href="#s4-4-1"><span class="num">1</span>MQA/GQA/MLA</a></li><li><a href="#s4-4-2"><span class="num">2</span>Sparse Attention</a></li><li><a href="#s4-4-3"><span class="num">3</span>Linear Attention and Mamba</a></li></ol>
+<div class="group">4.5 Tokenizer and Embedding</div>
+<ol><li><a href="#s4-5-1"><span class="num">1</span>BPE Family</a></li><li><a href="#s4-5-2"><span class="num">2</span>Modern Tokenizer Engineering</a></li><li><a href="#s4-5-3"><span class="num">3</span>Embedding Models</a></li></ol>
+<div class="group">4.6 MoE</div>
+<ol><li><a href="#s4-6-1"><span class="num">1</span>MoE Fundamentals</a></li><li><a href="#s4-6-2"><span class="num">2</span>MoE Engineering Practice</a></li></ol>
+<div class="group">4.7 Distributed Training</div>
+<ol><li><a href="#s4-7-1"><span class="num">1</span>Data Parallelism (DDP)</a></li><li><a href="#s4-7-2"><span class="num">2</span>ZeRO Three Stages</a></li><li><a href="#s4-7-3"><span class="num">3</span>Tensor Parallelism and Pipeline Parallelism</a></li><li><a href="#s4-7-4"><span class="num">4</span>3D Parallelism and Training Stack</a></li></ol>
+<div class="group">4.8 Inference Engines</div>
+<ol><li><a href="#s4-8-1"><span class="num">1</span>Inference Workload Characteristics</a></li><li><a href="#s4-8-2"><span class="num">2</span>KV Cache</a></li><li><a href="#s4-8-3"><span class="num">3</span>PagedAttention/vLLM</a></li><li><a href="#s4-8-4"><span class="num">4</span>Continuous Batching</a></li><li><a href="#s4-8-5"><span class="num">5</span>Speculative Decoding</a></li></ol>
+<div class="group">4.9 Inference Compression</div>
+<ol><li><a href="#s4-9-1"><span class="num">1</span>AWQ/GPTQ</a></li><li><a href="#s4-9-2"><span class="num">2</span>KV Cache Quantization and FP8</a></li></ol>
+<div class="group">4.10 RAG</div>
+<ol><li><a href="#s4-10-1"><span class="num">1</span>Basic Pipeline</a></li><li><a href="#s4-10-2"><span class="num">2</span>Advanced RAG</a></li><li><a href="#s4-10-3"><span class="num">3</span>GraphRAG/Agentic RAG</a></li></ol>
+<div class="group">4.11 Agent</div>
+<ol><li><a href="#s4-11-1"><span class="num">1</span>From Prompt to ReAct</a></li><li><a href="#s4-11-2"><span class="num">2</span>Function Calling/MCP/Multi-Agent</a></li></ol>
+<div class="group">4.12 Multimodal</div>
+<ol><li><a href="#s4-12-1"><span class="num">1</span>VLM Architecture</a></li><li><a href="#s4-12-2"><span class="num">2</span>Audio, Video, and Unified Multimodal</a></li></ol>
+</aside>
+
+<main>
+<header class="cover">
+<h1>LLM Technology</h1>
+<div class="subtitle">From Transformer to Agent — Complete Technical Stack of Large Language Models</div>
+<div class="meta">Chapter 4 · Internal Learning Material · 37 Sections · Revised Early 2026</div>
+</header>
+
+<p>An LLM is no longer just a "model"—it is an entire technology stack. From low-level Transformer operators, to distributed training strategies, to inference-side scheduling optimizations, to RAG and Agent on the application side, every layer involves substantial engineering decisions and algorithm choices. This chapter ties these layers together so you can see the whole picture from top to bottom.</p>
+
+<p>37 sections, all deep dives. Key anchors include: complete derivation of Self-Attention (4.2.2), RoPE rotation matrices (4.3.2), DeepSeek's MLA low-rank decomposition (4.4.1), Mamba's selective state space (4.4.3), ZeRO three-stage memory sharding (4.7.2), PagedAttention's paging mechanism (4.8.3), acceptance rate analysis for speculative decoding (4.8.5), mathematics of AWQ/GPTQ (4.9.1), reranking and query rewriting in advanced RAG (4.10.2), and ReAct loop implementation (4.11.1). Other sections are written at the same level of depth: conceptual intuition, minimal derivation, and engineering details.</p>
+
+<p>When discussing concrete products, we focus on <strong>open-source</strong> (Transformers, vLLM, TGI, llama.cpp, DeepSpeed, FSDP, LangChain, LlamaIndex, etc.), with OpenAI/Anthropic APIs mentioned for comparison. This way you see the full ecosystem landscape without being tied to any single vendor.</p>
+
+<div class="part-header"><div class="part-label">PART ONE</div><h2 class="part-title">4.1 LLM Overview</h2><p class="part-desc">Establish a coordinate system for the entire LLM field—where capabilities come from and how the landscape divides.</p></div>
+
+<h2 id="s4-1-1"><span class="num">4.1.1</span>From LM to LLM</h2>
+<p class="pos">Position: How Scaling transforms "language models" into "general reasoning systems"—history, key milestones, Scaling Law.</p>
+
+<h3>The Old Problem of Language Models</h3>
+<p>The definition of a language model has never changed: given the first $t-1$ tokens, predict the probability distribution of the $t$-th token.</p>
+<div class="formula">$P(w_t | w_1, w_2, \ldots, w_{t-1})$</div>
+<p>From Shannon's information theory in 1948, to N-grams in the 1980s, to Bengio's neural language models in 2003, to Word2Vec and GloVe—for decades, NLP researchers have been finding better ways to model this conditional probability. But no one could have predicted that "stacking" this simple objective large enough would lead to emergent reasoning, programming, and mathematical abilities.</p>
+
+<h3>Key Breakthroughs</h3>
+<p><strong>2017 Transformer</strong>: Google's "<a href="ch5_partA_preview.html#p06">Attention is All You Need</a>." Completely replaces RNNs, training is parallelizable, and results are superior. Foundation for everything that followed.</p>
+<p><strong>2018 <a href="ch5_partA_preview.html#p07">BERT / GPT-1</a></strong>: Establishes the pre-training + fine-tuning paradigm. BERT uses masked language modeling for pre-training, dominating various downstream tasks; GPT uses causal language modeling, taking the generation route.</p>
+<p><strong>2020 GPT-3</strong>: 175B parameters, can perform tasks via few-shot learning without fine-tuning. "In-context learning" becomes the new paradigm—as models grow larger, they can learn new tasks from prompts. This is the turning point where LLM transforms from "feature extractor" to "general reasoner."</p>
+<p><strong>2022 ChatGPT</strong>: Brings <a href="ch5_partB_preview.html#p14">RLHF</a> to product grade; models can now "chat." Overnight, LLM transforms from a research topic to a consumer product.</p>
+<p><strong>2023 GPT-4 / Claude 2 / LLaMA-2</strong>: Multimodal, 100K+ context windows, and strong open-source models emerge. The ecosystem begins to bifurcate—closed-source commercial vs. open-weight.</p>
+<p><strong>2024 <a href="ch5_partB_preview.html#p17">DeepSeek-V3</a> / o1 / Claude 3.5 / Qwen2.5</strong>: Open-source catches up with the first tier of closed-source models; "thinking at test time" (test-time compute) becomes a new dimension, allowing models to "think" for extended periods before output.</p>
+<p><strong>2025 DeepSeek-R1 / Qwen3 / LLaMA 4 / Claude 4 / GPT-5 / Gemini 3</strong>: Explosion of reasoning models. DeepSeek-R1 launches in early 2025, achieving GPT-4o-level reasoning via pure RL but at a tenth the cost, triggering a global open-source race; Qwen3 introduces a "thinking mode" toggle, covering both reasoning and non-reasoning scenarios in a single model; DeepSeek's subsequent V3.1 unifies thinking/non-thinking modes, while V3.2 introduces Sparse Attention (DSA) to further reduce costs; LLaMA 4 family (Scout/Maverick) uses MoE for the first time; Claude 4/4.5 emphasizes agent stability, while OpenAI GPT-5 and Google Gemini 3 compete for top reasoning benchmarks.</p>
+<p><strong>Early 2026</strong>: Open-source MoE densifies further—Qwen3-Next 80B-A3B, Qwen3.5-397B-A17B, Kimi K2, GLM-4.5/4.6, and MiniMax-M2 all emerge from late 2025 through early 2026. On the closed-source side, OpenAI releases GPT-4.2 (2025.12), followed by GPT-4.4 on 2026.3.5; the Claude series evolves to Opus 4.6 / Sonnet 4.6 / Haiku 4.5. Anthropic's <strong>Claude Mythos Preview</strong> in 2026.4 is a critical milestone—this unreleased frontier model exhibits "emergent-level" abilities in cybersecurity, automatically discovering thousands of zero-day vulnerabilities in mainstream operating systems and browsers. Anthropic makes an exception by not releasing it publicly, instead providing it exclusively to 50+ major enterprise partners through Project Glasswing for defensive purposes. This is the first time a major AI company has proactively constrained a frontier model's release for safety reasons since OpenAI's restricted GPT-2 release in 2019.</p>
+<p>In March 2026, DeepSeek releases <strong>V4</strong> (next-generation flagship) and <strong>R2</strong> (R1's successor reasoning model with significantly improved multilingual reasoning); Alibaba releases <strong>Qwen3.6-Plus Preview</strong>, supporting 1M context and always-on CoT reasoning. Major disruption in video generation: OpenAI announces on 2026.3.24 the <strong>shutdown of the entire Sora product line</strong> (including standalone app and API), redirecting resources to robot world simulation research; meanwhile, Kling 3.0 becomes the first natively 4K 60fps video generation model.</p>
+<p>The gap between open-source and closed-source narrows further to 3-6 months. Anthropic's MCP (Model Context Protocol) becomes the standard for Agent tool calling throughout 2025, widely adopted across Claude, Cursor, and the VSCode ecosystem. In 2025.12, MCP is donated to the Linux Foundation's Agentic AI Foundation (jointly founded by Anthropic, Block, and OpenAI), becoming the industry-standard protocol.</p>
+
+<h3><a href="ch5_partA_preview.html#p08">Scaling Law</a>: The Mathematical Explanation for All This</h3>
+<p>Why does scaling up enable emergent abilities? Two papers provide the answer: Kaplan 2020 and Chinchilla 2022. <strong>Loss is a power-law function of parameter count $N$, data quantity $D$, and compute budget $C$.</strong></p>
+<div class="formula">$L(N, D) \approx E + \frac{A}{N^\alpha} + \frac{B}{D^\beta}$</div>
+<p>$E$ is the irreducible entropy of the data (theoretical lower bound), and $A/N^\alpha, B/D^\beta$ are compressible portions. The power law means that as long as compute continues to scale, loss continues to decrease—no saturation has been observed.</p>
+<p>More intriguingly, Chinchilla's finding: given a compute budget $C = 6ND$, the optimal point is when $N$ and $D$ grow in roughly equal proportion (with a specific ratio of about 1:20 tokens/param). GPT-3's 175B parameters actually didn't have enough training data (300B tokens); Chinchilla proved that 70B parameters with 1.4T tokens performs better. This guided the design of the LLaMA family.</p>
+
+<h3>Emergent Abilities</h3>
+<p>Scaling is not linear—certain abilities suddenly appear when model size crosses a threshold (in-context learning, CoT reasoning, multi-step math). This is called "<strong>emergent abilities</strong>." Small models can't learn from limited prompts; large models master a task from just two or three examples.</p>
+<p>Some 2023 work argued that emergence is an illusion of metric choice (BIG-Bench uses strict accuracy, appearing to "emerge" as it jumps from 0 to non-zero; switching to log-likelihood smooths it out). But even so, the phenomenon remains: <strong>there are real qualitative differences in capability between large and small models.</strong></p>
+
+<h3>From Scaling to Test-Time Compute</h3>
+<p>In late 2024, the rules of the game changed again. OpenAI's o1 demonstrated that models don't just scale during training—<strong>test-time scaling also offers enormous gains.</strong> Letting models "think" for extended periods (generating many reasoning tokens before outputting an answer) can double performance. OpenAI subsequently released <strong>o3 and o3-mini</strong>, further boosting reasoning—o3 achieves breakthrough results (87.5%) on the ARC-AGI benchmark, exceeding the human average for the first time. DeepSeek-R1, QwQ, and Claude 3.7 Sonnet's thinking mode all follow this path.</p>
+<p>Throughout 2025, this direction dominated LLM evolution. Key developments:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>DeepSeek-R1 (2025.1)</strong>: An open-source reasoning model trained via pure RL (GRPO algorithm) without requiring human annotations of reasoning traces—overturning the assumption that "alignment data is essential." The R1-0528 version exceeds GPT-4o on AIME math problems.</li>
+<li><strong>Hybrid thinking/non-thinking modes</strong>: Qwen3 pioneers a "mode toggle"—users flip a switch to enable or disable extended reasoning. DeepSeek V3.1 further merges both modes into one model, with chat templates controlling behavior. This design became standard for open-source models in the second half of 2025.</li>
+<li><strong>Thinking budget</strong>: The product side gradually exposes a "thinking budget" parameter, letting users control reasoning length—the same question can be answered with 1K tokens of thinking (fast) or 16K tokens (deep).</li>
+</ul>
+<p>Test-time compute transforms "one forward pass determines capability" into "pay more compute for better answers"—a significant shift for the product side. This is one of the major axes of LLM evolution in the coming years.</p>
+
+<h2 id="s4-1-2"><span class="num">4.1.2</span>Open-Source vs Closed-Source Ecosystems</h2>
+<p class="pos">Position: Two different development paths—open weights vs API services—and their technical/commercial tradeoffs.</p>
+
+<h3>Closed-Source Commercial Model</h3>
+<p>Typical examples: OpenAI's GPT series, Anthropic's Claude series, Google's Gemini. Model weights are not public; access is via API. Advantages: frontier capabilities (new releases often lead open-source by 6-12 months), managed service (no ops burden), comprehensive multimodal abilities.</p>
+<p>Tradeoffs: data must leave your infrastructure (privacy compliance), costs scale with usage, vendor lock-in, limited or no fine-tuning. Best for application development companies and non-sensitive workloads.</p>
+
+<h3>Open-Source Weight Models</h3>
+<p>Main families (as of early 2026):</p>
+<table>
+<tr><th>Family</th><th>Latest</th><th>License</th><th>Characteristics</th></tr>
+<tr><td>LLaMA</td><td>LLaMA 4 Scout / Maverick</td><td>Community License</td><td>Meta-led; LLaMA 4 first to use MoE architecture</td></tr>
+<tr><td>Qwen</td><td>Qwen3 (0.6B-235B MoE), Qwen3-Next 80B-A3B</td><td>Apache 2.0</td><td>Alibaba; thinking mode toggle; strong in Chinese/English; full MoE and dense lineup</td></tr>
+<tr><td>DeepSeek</td><td>DeepSeek-V3.1/V3.2, R1</td><td>MIT</td><td>MLA, DSA architectural innovations; strong reasoning; extremely low cost</td></tr>
+<tr><td>Mistral</td><td>Mistral Large 3, Ministral</td><td>Partial Apache 2.0</td><td>European open-source pioneer</td></tr>
+<tr><td>Kimi (Moonshot)</td><td>Kimi K2, K2-Instruct</td><td>Permissive License</td><td>Emerged in 2025; strong long context and reasoning</td></tr>
+<tr><td>GLM (Zhipu)</td><td>GLM-4.5, GLM-4.6</td><td>Permissive License</td><td>Chinese MoE; shared experts + attention bias</td></tr>
+<tr><td>MiniMax</td><td>MiniMax-M2</td><td>Open Weight</td><td>Chinese; Flash Attention variant</td></tr>
+<tr><td>Phi</td><td>Phi-4</td><td>MIT</td><td>Microsoft; strong small models</td></tr>
+<tr><td>Gemma</td><td>Gemma 2, Gemma 3</td><td>Gemma License</td><td>Google's open-source version based on Gemini</td></tr>
+<tr><td>GPT-OSS</td><td>gpt-oss-20b, gpt-oss-120b</td><td>Apache 2.0</td><td>OpenAI's first open-source in 2025; first since GPT-2</td></tr>
+<tr><td>Granite</td><td>Granite 4 (Mamba-Attention hybrid)</td><td>Apache 2.0</td><td>IBM; enterprise use cases; architectural innovation</td></tr>
+<tr><td>Nemotron</td><td>Nemotron 2</td><td>Open</td><td>NVIDIA; Mamba2-Transformer hybrid</td></tr>
+</table>
+<p>Note that "open-source" is a spectrum—LLaMA's community license has commercial restrictions (customers with 700M+ monthly active users need separate licensing), so it's strictly "open-weight." Mistral, Qwen, DeepSeek, Kimi, GLM, and GPT-OSS are true Apache/MIT, enabling unlimited commercial use.</p>
+<p>A notable 2025 shift: <strong>Chinese open-source models become the absolute driving force</strong>—Qwen, DeepSeek, Kimi, GLM, MiniMax, Xiaomi MiMo and others surge collectively. The Chinchilla principle (data quantity matching parameter count) is widely adopted, with training data scaling from 15T tokens in the LLaMA-3 era to 30-40T.</p>
+
+<h3>Capability Gaps Are Narrowing</h3>
+<p>A striking 2024 trend: the gap between open-source flagship models and closed-source frontiers narrows to 6 months. By 2025, it shrinks to 3-6 months—DeepSeek-V3.2, Qwen3-235B-A22B, and Kimi K2 match or exceed contemporary closed-source models in math reasoning, coding, and general benchmarks. DeepSeek-R1 even surpasses GPT-4o-level models on some math benchmarks while costing 20x less.</p>
+<p>The "DeepSeek Moment" in February 2025: After R1's release, the global AI community is shaken; 94% of GitHub Trending's weekly rankings are AI-related. Closed-source vendors accelerate: OpenAI launches GPT-5, GPT-4.1, and GPT-4.2 (2025.12, with consecutive Codex-specific versions) in 2025; releases GPT-4.4 in 2026.3 unifying reasoning, coding, and computer use (1M context, 75% OSWorld-Verified), and rarely, open-sources GPT-OSS-20B/120B. Anthropic releases Claude Sonnet 4.5, Opus 4.6, Haiku 4.5, and previews Claude Mythos Preview in 2026.4—the gap reopens, but often closes again within months as the next open-source generation catches up.</p>
+<p>Closed-source maintains advantages in a few areas: multimodal completeness (Gemini 3's video understanding, GPT-4o/GPT-5's real-time voice chat); ultra-long context (Gemini's practical 1M+, GPT-4.4's usable 1M tokens); Agent tool-calling stability (Claude's Computer Use maturity); safety guardrails and compliance. Plus domain-specific "emergent abilities"—cybersecurity breakthroughs like Mythos Preview remain beyond current open-source models.</p>
+
+<h3>Deployment Modes</h3>
+<p>Deployment options for open-source models:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Local inference</strong> (laptop/workstation): llama.cpp, Ollama, LM Studio. Quantized to INT4, 7B models run on 5GB RAM.</li>
+<li><strong>Self-hosted service</strong> (data center): vLLM, TGI (HuggingFace), SGLang, LMDeploy. High concurrency, high throughput.</li>
+<li><strong>Edge deployment</strong> (embedded devices): llama.cpp with ARM NEON, MNN, MediaPipe. Phones, routers, IoT.</li>
+<li><strong>Cloud-hosted</strong>: AWS Bedrock, Azure AI, Alibaba Cloud PAI—third-party vendors host open-source models and provide APIs.</li>
+</ul>
+
+<h3>Inference Engine Landscape</h3>
+<p>Section 4.8 dives deep; here's the landscape (as of early 2026):</p>
+<table>
+<tr><th>Engine</th><th>Language</th><th>Primary Use</th><th>Characteristics</th></tr>
+<tr><td>Transformers</td><td>Python</td><td>Research/Prototype</td><td>HuggingFace official; broadest compatibility</td></tr>
+<tr><td>vLLM</td><td>Python+CUDA</td><td>Production Service</td><td>PagedAttention, continuous batching; growth accelerates after v1 architecture rewrite in 2025</td></tr>
+<tr><td>SGLang</td><td>Python+CUDA</td><td>Complex Workflows</td><td>RadixAttention, structured generation; one of fastest-growing engines in 2025</td></tr>
+<tr><td>TGI</td><td>Rust</td><td>Production Service</td><td>HuggingFace product; comprehensive ecosystem</td></tr>
+<tr><td>TensorRT-LLM</td><td>C++</td><td>NVIDIA Production</td><td>Highest performance; hardware-bound</td></tr>
+<tr><td>NVIDIA Dynamo</td><td>C++/Python</td><td>Massive-Scale Inference</td><td>NVIDIA 2025 release; unifies vLLM/SGLang/TRT-LLM backends; distributed scheduling</td></tr>
+<tr><td>LMDeploy</td><td>Python</td><td>Production Service</td><td>Shanghai AI Lab; recommended by DeepSeek and others</td></tr>
+<tr><td>llama.cpp</td><td>C++</td><td>Local/Edge</td><td>Pure CPU capable; comprehensive quantization</td></tr>
+<tr><td>MLC-LLM</td><td>Python+TVM</td><td>Cross-Hardware</td><td>WebGPU, ARM, Chinese chips</td></tr>
+<tr><td>Ollama</td><td>Go</td><td>Personal Use</td><td>User-level layer on llama.cpp</td></tr>
+</table>
+<p>By 2025, the inference engine landscape forms a duopoly: vLLM + SGLang, borrowing from and competing with each other. DeepSeek's V3 release explicitly recommends both, further solidifying their positions.</p>
+
+<h3>Application-Layer Frameworks</h3>
+<p><strong>LangChain</strong>: Most comprehensive features, largest ecosystem; criticized for "over-abstraction." Good for rapid prototyping.</p>
+<p><strong>LlamaIndex</strong>: RAG-focused; strongest data connection and retrieval capabilities.</p>
+<p><strong>DSPy</strong> (Stanford): Treats LLM calls as "programmable components" with automatic prompt optimization.</p>
+<p><strong>Haystack</strong>: Enterprise-grade RAG framework; high production readiness.</p>
+<p><strong>Roll Your Own</strong>: Many teams find that calling the OpenAI SDK directly with a bit of glue code is cleaner than using a framework—LLM calls are fundamentally HTTP requests, and thicker abstraction layers only make debugging harder.</p>
+
+<div class="part-header"><div class="part-label">PART TWO</div><h2 class="part-title">4.2 Transformer Architecture</h2><p class="part-desc">The foundation of all LLMs — master this section and everything downstream falls into place.</p></div>
+
+<h2 id="s4-2-1"><span class="num">4.2.1</span>Overall Structure and Information Flow</h2>
+<p class="pos">Position: The complete path of a token from model entry to output — establishing the macro picture.</p>
+
+<h3>Overall Flow</h3>
+<p>From user input "Hello world" to the model predicting the next token, the steps are:</p>
+<div class="mermaid">
+flowchart TB
+    INP[User Input Text] --> TOK[Tokenization]
+    TOK --> EMB[Token Embedding]
+    EMB --> POS[+ Position Encoding]
+    POS --> L1[Transformer Block x N]
+    L1 --> NORM[Final LayerNorm/RMSNorm]
+    NORM --> LMH[LM Head Linear]
+    LMH --> SOFT[Softmax]
+    SOFT --> SAM[Sample next token]
+</div>
+<p>Each <strong>Transformer Block</strong> is a repeated unit of the same structure. GPT-3 has 96, LLaMA-3-70B has 80. Each block does two things:</p>
+<ol>
+<li><strong>Self-Attention</strong>: lets each position "see" other positions, enabling lateral information exchange</li>
+<li><strong>FFN (Feed-Forward Network)</strong>: independently transforms each position, enhancing expressiveness</li>
+</ol>
+<p>Each operation is wrapped in "normalization + residual connection." Modern LLMs use Pre-Norm — normalization before the residual. The original Transformer used Post-Norm (normalize after residual), which is less stable.</p>
+
+<h3>Shape Evolution</h3>
+<p>Tracking a token ID tensor of shape <code>[B, L]</code> (B=batch, L=seq len) through the model:</p>
+<table>
+<tr><th>Stage</th><th>Shape</th></tr>
+<tr><td>Input token IDs</td><td>[B, L]</td></tr>
+<tr><td>After Embedding</td><td>[B, L, d_model]</td></tr>
+<tr><td>Inside each attention layer</td><td>[B, H, L, d_head] (H heads, d_head = d_model/H)</td></tr>
+<tr><td>Attention layer output</td><td>[B, L, d_model]</td></tr>
+<tr><td>Inside FFN</td><td>[B, L, d_ff] (d_ff is typically 4×d_model)</td></tr>
+<tr><td>Final output</td><td>[B, L, vocab_size]</td></tr>
+</table>
+
+<h3>Parameter Distribution</h3>
+<p>The parameters of a Transformer Block are mainly in:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Attention</strong>'s four linear layers Q/K/V/O: $4 \times d_{model}^2$</li>
+<li><strong>FFN</strong>'s two linear layers: $2 \times d_{model} \times d_{ff} = 8 \times d_{model}^2$ (with $d_{ff} = 4 d_{model}$)</li>
+</ul>
+<p>So <strong>FFN accounts for 2/3 of the parameters per layer</strong>, attention accounts for 1/3. This motivates MoE — sparsifying the large FFN significantly reduces computation.</p>
+<p>Total model parameters $\approx 12 \times N_{layers} \times d_{model}^2$ + embedding table ($V \times d_{model}$, V = vocabulary size). LLaMA-3-70B has 80 layers, d_model=8192, giving ≈ 64B, plus embedding and miscellaneous ≈ 70B.</p>
+
+<h3>Forward and Backward Pass</h3>
+<p>During training, given the entire sequence, one forward pass produces the predicted distribution for every position. The loss is <strong>cross-entropy computed at every position</strong> (predicting the next token), summed and then backpropagated. One forward + backward pass costs approximately $6 \times N_{params} \times N_{tokens}$ FLOPs.</p>
+<p>During inference, starting from a prompt, only the next token is predicted each time. See Section 4.8 for details.</p>
+
+<h2 id="s4-2-2"><span class="num">4.2.2</span>Self-Attention: Complete Derivation</h2>
+<p class="pos">Position: The soul operator of LLMs — deriving every detail, including why we divide by √d.</p>
+
+<h3>Problem Setup</h3>
+<p>Input: $L$ tokens, each a $d$-dimensional vector $\mathbf{x}_i \in \mathbb{R}^d$. Goal: make the output $\mathbf{y}_i$ at each position $i$ a <strong>dynamic weighted combination</strong> of all input positions, with weights determined by the "similarity" between $\mathbf{x}_i$ and other positions.</p>
+
+<h3>The Roles of Query / Key / Value</h3>
+<p>Core idea: each position plays three roles:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Query</strong>: $\mathbf{q}_i = W_Q \mathbf{x}_i$ — "what kind of information am I looking for"</li>
+<li><strong>Key</strong>: $\mathbf{k}_i = W_K \mathbf{x}_i$ — "what kind of information am I"</li>
+<li><strong>Value</strong>: $\mathbf{v}_i = W_V \mathbf{x}_i$ — "what am I contributing"</li>
+</ul>
+<p>When computing the output for position $i$: compare $\mathbf{q}_i$ against all $\mathbf{k}_j$ to get weights $\alpha_{ij}$, then use $\alpha_{ij}$ to compute a weighted average over all $\mathbf{v}_j$. This three-way separation gives the model expressiveness — the relevance of "i to j" and "j to i" can differ.</p>
+
+<h3>Matrix Derivation</h3>
+<p>Stack all tokens: $\mathbf{X} \in \mathbb{R}^{L \times d}$. Compute:</p>
+<div class="formula">$\mathbf{Q} = \mathbf{X} W_Q, \quad \mathbf{K} = \mathbf{X} W_K, \quad \mathbf{V} = \mathbf{X} W_V$</div>
+<p>These are all $L \times d$ matrices ($W_*$ are $d \times d$ projections). Then compute similarity:</p>
+<div class="formula">$\mathbf{S} = \mathbf{Q} \mathbf{K}^\top \in \mathbb{R}^{L \times L}$</div>
+<p>$S_{ij}$ is the dot product of query $i$ and key $j$ — larger values indicate greater "similarity."</p>
+
+<h3>Why Divide by √d</h3>
+<p>There is a critical detail here. $\mathbf{q}_i \cdot \mathbf{k}_j = \sum_{k=1}^d q_k \cdot k_k$. If each dimension of $q$ and $k$ is independent with mean 0 and variance 1, the variance of the dot product is $d$ (standard deviation $\sqrt{d}$).</p>
+<p>When $d$ is large, the range of dot products is wide — some very large, some very small. When fed into softmax, softmax is dominated by the maximum value (the "sharpening" effect of softmax). If $s_1 = 30, s_2 = 25$, a difference of 5 causes softmax to almost exclusively attend to $s_1$. Even worse: gradients vanish — softmax has near-zero gradients in the "winner-takes-all" regime.</p>
+<p>The original Transformer paper's fix: divide by $\sqrt{d_k}$ to bring the dot product variance back to 1:</p>
+<div class="formula">$\text{Attention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) = \text{softmax}\left(\frac{\mathbf{Q} \mathbf{K}^\top}{\sqrt{d_k}}\right) \mathbf{V}$</div>
+<p>This is "Scaled Dot-Product Attention."</p>
+
+<h3>Causal Mask</h3>
+<p>LLMs are causal (each position can only see itself and prior positions), so the upper triangle of $\mathbf{S}$ is set to $-\infty$, which becomes 0 after softmax:</p>
+<pre><code class="language-python">import torch
+
+def causal_attention(Q, K, V):
+    # Q, K, V: [B, H, L, d_head]
+    d_k = Q.size(-1)
+    S = Q @ K.transpose(-2, -1) / d_k ** 0.5   # [B, H, L, L]
+    L = S.size(-1)
+    mask = torch.triu(torch.ones(L, L, dtype=torch.bool), diagonal=1)
+    S = S.masked_fill(mask, float('-inf'))
+    A = torch.softmax(S, dim=-1)
+    return A @ V   # [B, H, L, d_head]
+</code></pre>
+
+<h3>Computational Complexity</h3>
+<p>Computing $\mathbf{Q}\mathbf{K}^\top$: $O(L^2 d)$. Softmax: $O(L^2)$. Multiply by $\mathbf{V}$: $O(L^2 d)$. Total: $O(L^2 d)$.</p>
+<p>Memory: the $\mathbf{S}$ matrix is $O(L^2)$; at $L=4096$, that's 16M elements × FP16 = 32MB per head per sample. This is the "quadratic complexity bottleneck" of attention — the fundamental challenge for long contexts. <a href="ch5_partB_preview.html#p10">FlashAttention</a>, sparse attention, and <a href="ch5_partC_supplement.html#p24">Mamba</a> all address this.</p>
+
+<h2 id="s4-2-3"><span class="num">4.2.3</span>Multi-Head Attention</h2>
+<p class="pos">Position: Splitting attention into multiple heads — why it works and how to implement it.</p>
+
+<h3>Motivation</h3>
+<p>Single-head attention can only learn one "attention pattern" — it might learn coreference, or syntactic proximity, but a single head can only represent one. Multiple heads let the model learn multiple patterns simultaneously: each head has independent $W_Q^h, W_K^h, W_V^h$ projections that learn different patterns.</p>
+
+<h3>Implementation</h3>
+<p>A naive implementation runs $H$ separate attention passes and concatenates. In practice, for efficiency, one large projection is used and split into heads:</p>
+<ol>
+<li>Project $\mathbf{X}$ to $d_{model}$-dimensional Q/K/V</li>
+<li>Reshape into $H$ subspaces of $d_{head}$ dimensions each: $d_{model} = H \times d_{head}$</li>
+<li>Each head independently performs attention</li>
+<li>Concatenate back to $d_{model}$ dimensions, then apply output projection $W_O$</li>
+</ol>
+<pre><code class="language-python">import torch
+import torch.nn as nn
+
+class MultiHeadAttention(nn.Module):
+    def __init__(self, d_model, n_heads):
+        super().__init__()
+        assert d_model % n_heads == 0
+        self.H = n_heads
+        self.d_head = d_model // n_heads
+        self.Wq = nn.Linear(d_model, d_model, bias=False)
+        self.Wk = nn.Linear(d_model, d_model, bias=False)
+        self.Wv = nn.Linear(d_model, d_model, bias=False)
+        self.Wo = nn.Linear(d_model, d_model, bias=False)
+
+    def forward(self, x, mask=None):
+        B, L, D = x.shape
+        Q = self.Wq(x).view(B, L, self.H, self.d_head).transpose(1, 2)
+        K = self.Wk(x).view(B, L, self.H, self.d_head).transpose(1, 2)
+        V = self.Wv(x).view(B, L, self.H, self.d_head).transpose(1, 2)
+        S = Q @ K.transpose(-2, -1) / self.d_head ** 0.5
+        if mask is not None: S = S.masked_fill(mask, float('-inf'))
+        A = torch.softmax(S, dim=-1)
+        out = A @ V
+        out = out.transpose(1, 2).reshape(B, L, D)
+        return self.Wo(out)
+</code></pre>
+
+<h3>Common Parameters</h3>
+<table>
+<tr><th>Model</th><th>d_model</th><th>Heads H</th><th>d_head</th></tr>
+<tr><td>GPT-2 small</td><td>768</td><td>12</td><td>64</td></tr>
+<tr><td>GPT-3 175B</td><td>12288</td><td>96</td><td>128</td></tr>
+<tr><td>LLaMA-3 70B</td><td>8192</td><td>64</td><td>128</td></tr>
+<tr><td>LLaMA-3 405B</td><td>16384</td><td>128</td><td>128</td></tr>
+</table>
+<p>$d_{head}$ is generally fixed at 64 or 128 — too small and each head has insufficient capacity; too large and there are too few heads to justify multi-head attention.</p>
+
+<h3>Visualizing Attention Heads</h3>
+<p>Tools like BertViz and LLM Attention Viewer can visualize the attention of each head. Empirically, different heads do learn different patterns — some heads attend to end-of-sentence punctuation, some to nearest neighbors, some perform coreference resolution. But there are also many "redundant" heads (removing them doesn't affect performance) — this inspired subsequent head pruning research.</p>
+
+<h2 id="s4-2-4"><span class="num">4.2.4</span>FFN, Residual Connections, and Normalization</h2>
+<p class="pos">Position: The other half of the Transformer Block — FFN enhances expressiveness, residual connections and normalization ensure trainability.</p>
+
+<h3>The Role of FFN</h3>
+<p>Attention enables communication between positions, but <strong>attention output remains in the linear subspace of token representations</strong> — attention alone limits model expressiveness. FFN independently applies a nonlinear transformation at each position, projecting the representation into a high-dimensional nonlinear space and back.</p>
+<div class="formula">$\text{FFN}(\mathbf{x}) = W_2 \cdot \text{activation}(W_1 \mathbf{x} + \mathbf{b}_1) + \mathbf{b}_2$</div>
+<p>$W_1$ maps $d_{model} \to d_{ff}$ (expanding), $W_2$ maps $d_{ff} \to d_{model}$ (contracting). $d_{ff}$ is typically 4× $d_{model}$.</p>
+
+<h3>Activation Function Evolution</h3>
+<p><strong>Original Transformer</strong>: ReLU. <strong>BERT/GPT era</strong>: GELU. <strong>LLaMA era</strong>: SwiGLU.</p>
+
+<h3>The Mechanism of SwiGLU</h3>
+<p>SwiGLU is not an ordinary activation function but a "gated linear unit." It modifies the FFN to:</p>
+<div class="formula">$\text{SwiGLU}(\mathbf{x}) = W_3 \cdot \left( \text{SiLU}(W_1 \mathbf{x}) \odot (W_2 \mathbf{x}) \right)$</div>
+<p>Three linear projections $W_1, W_2, W_3$ are used. $W_1$ goes through SiLU, $W_2$ does not, and the two are multiplied element-wise. $W_3$ projects the result back to $d_{model}$.</p>
+<p>The element-wise product $(W_2 \mathbf{x})$ acts as a "gate" — it determines which dimensions pass through and which are suppressed. More expressive than a plain MLP.</p>
+<p>Parameter control: to keep the total parameter count equivalent to a 4× FFN, the hidden dimension is changed from $4d$ to $\frac{8}{3}d$. LLaMA, Qwen, Mistral, and DeepSeek all do this.</p>
+<pre><code class="language-python">class SwiGLU(nn.Module):
+    def __init__(self, d_model, d_ff=None):
+        super().__init__()
+        d_ff = d_ff or int(8 * d_model / 3)
+        self.W1 = nn.Linear(d_model, d_ff, bias=False)
+        self.W2 = nn.Linear(d_model, d_ff, bias=False)
+        self.W3 = nn.Linear(d_ff, d_model, bias=False)
+
+    def forward(self, x):
+        return self.W3(nn.functional.silu(self.W1(x)) * self.W2(x))
+</code></pre>
+
+<h3>Residual Connections</h3>
+<p>Chapter 3 Section 4.4.1 covered ResNet's residual idea. Transformer uses it too: each sublayer's (attention and FFN) output is added to its input. $\mathbf{y} = \mathbf{x} + \text{Sublayer}(\mathbf{x})$.</p>
+<p>Benefits: gradients flow through the residual path directly to deeper layers, preventing vanishing gradients; if a layer doesn't learn a useful transformation, the residual keeps it close to identity mapping without degrading performance; enables training 80+ layer models.</p>
+
+<h3>Pre-Norm vs Post-Norm</h3>
+<p>Where normalization is placed matters.</p>
+<p><strong>Post-Norm</strong> (original Transformer): <code>y = LayerNorm(x + Sublayer(x))</code>. Normalize after residual addition.</p>
+<p><strong>Pre-Norm</strong> (since GPT-2): <code>y = x + Sublayer(LayerNorm(x))</code>. Normalize before the sublayer; residual is added directly to the input.</p>
+<p>Pre-Norm wins on <strong>training stability</strong>: the residual path is "clean," allowing gradients to flow unimpeded. Post-Norm's residual path passes through LayerNorm, scaling the gradients and making deep networks harder to train.</p>
+<p>Trade-off: Pre-Norm's final output variance accumulates across layers (one residual addition per layer), so Pre-Norm models need a final LayerNorm at the end. All modern LLMs use Pre-Norm.</p>
+
+<h3>RMSNorm as a Replacement for LayerNorm</h3>
+<p>Mentioned in Chapter 3 Section 4.3.5. LayerNorm: $\frac{x - \mu}{\sigma} \gamma + \beta$, requiring mean, variance, and bias computations.</p>
+<p>RMSNorm simplifies: divide only by the root mean square, no mean subtraction, no bias.</p>
+<div class="formula">$\text{RMSNorm}(\mathbf{x}) = \frac{\mathbf{x}}{\sqrt{\frac{1}{d}\sum_i x_i^2 + \epsilon}} \odot \boldsymbol{\gamma}$</div>
+<p>Empirically performs similarly to LayerNorm, but faster (saves one mean computation and one subtraction) and has fewer parameters (no $\beta$). LLaMA uses RMSNorm, and most subsequent models have followed suit.</p>
+
+<h2 id="s4-2-5"><span class="num">4.2.5</span>Encoder/Decoder Divide</h2>
+<p class="pos">Position: Three Transformer variants — Encoder-only, Decoder-only, Encoder-Decoder — and where each is used.</p>
+
+<h3>Three Architectures</h3>
+<p>The original Transformer (2017) is Encoder-Decoder — designed for translation tasks: the encoder reads the source language, and the decoder attends to the encoder output and generates the target language. Three lines evolved from this.</p>
+
+<h3>Encoder-Only (BERT Family)</h3>
+<p>Only an encoder stack, with bidirectional attention (each position sees all positions). Training objective: MLM (Masked Language Modeling) — mask 15% of tokens and have the model predict them.</p>
+<p>Strength: top-tier for understanding tasks (classification, NER, sentence similarity), because every position's representation has full context.</p>
+<p>Representatives: BERT (2018), RoBERTa, DeBERTa, Electra. Still widely used today as "text encoders" — most embedding models for sentence embeddings and RAG are in this family.</p>
+
+<h3>Decoder-Only (GPT Family)</h3>
+<p>Only a decoder stack, with unidirectional attention (causal mask — each position only sees itself and prior positions). Training objective: CLM (Causal LM) — predict the next token.</p>
+<p>Strength: naturally fits generation. Also, emergent abilities like in-context learning and few-shot learning appear mainly in decoder-only large models.</p>
+<p>Representatives: GPT series, LLaMA, Qwen, DeepSeek, Mistral — essentially all modern LLMs.</p>
+
+<h3>Encoder-Decoder (T5/BART)</h3>
+<p>Full encoder-decoder architecture. Diverse training objectives: T5 uses span corruption (mask a span and generate it); BART uses denoising (recover from various corruptions).</p>
+<p>Strength: tasks with clear input-output separation (translation, summarization, Q&amp;A) — encoder focuses on understanding, decoder focuses on generation.</p>
+<p>Representatives: T5 (Google), BART, mT5, FLAN-T5. Today's mainstream LLMs have largely abandoned this route — decoder-only is simpler and scales better.</p>
+
+<h3>Why Decoder-Only Won</h3>
+<ol>
+<li><strong>Simpler training</strong>: one objective (next token), all text is training data. Encoder-Decoder requires designing input-output pairs.</li>
+<li><strong>In-context learning</strong>: put task instructions and examples in the prompt, the model self-adapts — no specialized architecture design needed.</li>
+<li><strong>Generation capability</strong>: even for understanding tasks, having decoder-only write out an answer works (and is often stronger, because it can do CoT).</li>
+<li><strong>Scaling behavior</strong>: empirically, decoder-only responds best to parameter increases.</li>
+</ol>
+<p>Encoder-only remains active in scenarios that require embeddings — because decoder-only doesn't naturally produce "sentence-level representations" (one must approximate using the last token or average pooling). But for generation tasks, decoder-only dominates.</p>
+
+<h2 id="s4-2-6"><span class="num">4.2.6</span>Transformer Evolution</h2>
+<p class="pos">Position: From the 2017 original to today — what are the key changes.</p>
+
+<h3>Evolution Checklist</h3>
+<p>Over 7 years, the original Transformer has been modified in many places. Each of these changes can be understood using the tools covered in the preceding sections. The table below shows the major changes from 2017 to 2024:</p>
+<table>
+<tr><th>Component</th><th>Original Transformer (2017)</th><th>LLaMA-3 (2024)</th></tr>
+<tr><td>Normalization</td><td>Post-Norm + LayerNorm</td><td>Pre-Norm + RMSNorm</td></tr>
+<tr><td>Positional Encoding</td><td>Sinusoidal absolute</td><td>RoPE rotary positional encoding</td></tr>
+<tr><td>Activation</td><td>ReLU</td><td>SwiGLU</td></tr>
+<tr><td>Attention</td><td>MHA</td><td>GQA</td></tr>
+<tr><td>Bias</td><td>All linear layers have bias</td><td>All removed</td></tr>
+<tr><td>Dropout</td><td>Used</td><td>Mostly omitted (sufficient data prevents overfitting)</td></tr>
+<tr><td>Tokenizer</td><td>WordPiece</td><td>SentencePiece/BPE, large vocabulary</td></tr>
+</table>
+
+<h3>Themes of Change</h3>
+<p>Roughly three themes:</p>
+<p><strong>Training stability</strong>: Pre-Norm, RMSNorm, removing bias, improved weight initialization — enabling large models to converge.</p>
+<p><strong>Compute/memory efficiency</strong>: GQA, SwiGLU, FlashAttention, MoE — faster and less memory for the same parameter count.</p>
+<p><strong>Long context</strong>: RoPE, YaRN, sliding window attention, MLA — enabling models to process longer sequences.</p>
+
+<h3>What Hasn't Changed</h3>
+<p>Interestingly, <strong>the Transformer skeleton hasn't changed in 7 years</strong>: stacked "Attention + FFN + residual" blocks. All improvements are refinements to individual components, without any architectural revolution.</p>
+<p>Candidate disruptors Mamba, RWKV, and RetNet gained research traction, but by the end of 2024 mainstream commercial deployments remain pure Transformer. This shows that Transformer's generality is extremely strong, and the improvement space is far from exhausted.</p>
+
+<div class="part-header"><div class="part-label">PART THREE</div><h2 class="part-title">4.3 Positional Encoding and Long Context</h2><p class="part-desc">Attention itself has no notion of order — positional encoding provides it. Long contexts require positional encoding to "extrapolate."</p></div>
+
+<h2 id="s4-3-1"><span class="num">4.3.1</span>History of Positional Encoding</h2>
+<p class="pos">Position: From sinusoidal absolute encoding, to learned, to relative positional encoding, to RoPE — the evolutionary logic.</p>
+
+<h3>Why Positional Encoding Is Needed</h3>
+<p>Attention is a "set operation" — if you permute the input token order, the attention output for each position permutes accordingly, but <em>semantically</em> each position's representation is unchanged. "The cat sat on the mat" and "mat the on sat cat The" would produce identical intermediate representations. Clearly wrong. So positional information must be injected at each position.</p>
+
+<h3>Sinusoidal Absolute Encoding (Original Transformer)</h3>
+<p>Assign each position a $d$-dimensional vector using sinusoids at different frequencies:</p>
+<div class="formula">$\text{PE}(\text{pos}, 2i) = \sin(\text{pos} / 10000^{2i/d})$</div>
+<div class="formula">$\text{PE}(\text{pos}, 2i+1) = \cos(\text{pos} / 10000^{2i/d})$</div>
+<p>Added to the token embedding. Advantage: no parameters, and has some "guessing" ability when extrapolating beyond training length (because it's a continuous function). Problem: extrapolation is actually terrible in practice — a model trained to position 2048 breaks at position 2049.</p>
+
+<h3>Learned Positional Encoding</h3>
+<p>GPT-2 simplified: give each position a learnable embedding. Supports whatever length it was trained on — exceeding that limit breaks immediately. More expressive within the training window but completely unable to extrapolate.</p>
+
+<h3>Relative Positional Encoding</h3>
+<p>A shift in approach: what truly matters is not the absolute position "word #5" but the relative distance "how many words apart."</p>
+<p>T5's approach: add a bias $b_{i-j}$ to the attention score, where $b$ is learnable. The same bias is used for the same distance. ALiBi (2022) is more aggressive: use a fixed linear decay $-m \cdot |i - j|$ as a bias with no learnable parameters. ALiBi trained to 1024 length can extrapolate to 4096+.</p>
+
+<h3><a href="ch5_partA_preview.html#p09">RoPE</a></h3>
+<p>Proposed by RoFormer (2021). Today almost all mainstream models (LLaMA, Qwen, DeepSeek, Mistral) use it. Deep dive in the next section.</p>
+
+<h3>Comparison</h3>
+<table>
+<tr><th>Method</th><th>Extrapolation</th><th>Parameters</th><th>Representative Models</th></tr>
+<tr><td>Sinusoidal absolute</td><td>Poor</td><td>None</td><td>Original Transformer</td></tr>
+<tr><td>Learned absolute</td><td>None</td><td>L×d</td><td>GPT-2</td></tr>
+<tr><td>T5 bias</td><td>Limited</td><td>Small</td><td>T5</td></tr>
+<tr><td>ALiBi</td><td>Good</td><td>H (one m per head)</td><td>BLOOM, MPT</td></tr>
+<tr><td>RoPE</td><td>Good (+ YaRN etc.)</td><td>None</td><td>LLaMA/Qwen/DeepSeek</td></tr>
+</table>
+
+<h2 id="s4-3-2"><span class="num">4.3.2</span>RoPE Deep Dive</h2>
+<p class="pos">Position: Rotary positional encoding — mathematically elegant, simple to implement, the de facto standard.</p>
+
+<h3>Core Idea</h3>
+<p>RoPE does not add a position vector to the input; instead, it <em>rotates Q and K</em> — so that $\mathbf{q}_m \cdot \mathbf{k}_n$ naturally encodes the relative position $m - n$.</p>
+
+<h3>Two-Dimensional Case</h3>
+<p>Start with the 2D case. Treat each pair of adjacent dimensions of Q and K as a complex number (or 2D plane vector). For position $m$, rotate $\mathbf{q}_m$ by angle $m\theta$:</p>
+<div class="formula">$\begin{pmatrix} q_m^{(1)} \\ q_m^{(2)} \end{pmatrix} \to \begin{pmatrix} \cos m\theta & -\sin m\theta \\ \sin m\theta & \cos m\theta \end{pmatrix} \begin{pmatrix} q_m^{(1)} \\ q_m^{(2)} \end{pmatrix}$</div>
+<p>Similarly rotate $\mathbf{k}_n$ by angle $n\theta$. Then compute the dot product:</p>
+<div class="formula">$\mathbf{q}_m^{\text{RoPE}} \cdot \mathbf{k}_n^{\text{RoPE}} = f(m - n)$</div>
+<p>Depends only on $m - n$! This is exactly the property that relative positional encoding seeks.</p>
+<p>Intuition: treat the vectors as complex numbers $q_m, k_n$. Rotating by $m\theta$ is equivalent to multiplying by $e^{im\theta}$. The dot product becomes $q_m e^{im\theta} \cdot (k_n e^{in\theta})^* = q_m k_n^* e^{i(m-n)\theta}$ — depends only on $m-n$.</p>
+
+<h3>High Dimensions: Pairwise Rotation</h3>
+<p>For $d$-dimensional Q and K vectors, pair up dimensions two-by-two, each pair independently performs a 2D rotation, but with different frequencies:</p>
+<div class="formula">$\theta_i = 10000^{-2(i-1)/d}, \quad i = 1, \ldots, d/2$</div>
+<p>Low-index dimensions use high frequency ($\theta_1 = 1$, rotating 1 radian per step); high-index dimensions use low frequency ($\theta_{d/2} \approx 10000^{-1}$, rotating very little per step). This lets different dimensions capture positional differences at different scales.</p>
+
+<h3>Implementation</h3>
+<pre><code class="language-python">import torch
+
+def build_rope_freqs(d_head, max_seq_len, base=10000):
+    freqs = 1.0 / (base ** (torch.arange(0, d_head, 2).float() / d_head))
+    t = torch.arange(max_seq_len).float()
+    freqs_cis = torch.outer(t, freqs)
+    return torch.polar(torch.ones_like(freqs_cis), freqs_cis)
+
+def apply_rope(x, freqs_cis):
+    x_complex = torch.view_as_complex(x.float().reshape(*x.shape[:-1], -1, 2))
+    x_out = x_complex * freqs_cis[:x.size(-2)]
+    return torch.view_as_real(x_out).flatten(-2).type_as(x)
+
+Q = apply_rope(Q, freqs_cis)
+K = apply_rope(K, freqs_cis)
+</code></pre>
+<p>Some details: RoPE only applies to Q and K, not V — V carries content information and shouldn't carry position; <code>freqs_cis</code> can be precomputed and cached, with zero overhead during inference.</p>
+
+<h3>Three Key Advantages of RoPE</h3>
+<ol>
+<li><strong>Relative position</strong>: naturally encodes distance rather than absolute position</li>
+<li><strong>Decay property</strong>: inner products naturally decay with distance — matching the intuition that "distant words have weaker associations"</li>
+<li><strong>Extrapolation potential</strong>: unseen positions can be extrapolated — continuous trigonometric functions don't suddenly break (though significant extrapolation still needs YaRN and similar techniques)</li>
+</ol>
+
+<h2 id="s4-3-3"><span class="num">4.3.3</span>Long Context Extrapolation</h2>
+<p class="pos">Position: How to use a model trained on 4K context for 128K — PI, NTK-aware, YaRN, LongRoPE.</p>
+
+<h3>The Problem</h3>
+<p>Training seen positions 0 to 4K; at inference a 64K sequence arrives — high-frequency rotation angles have cycled through millions of radians at position 64K, a rotation state the model has never seen, causing performance collapse.</p>
+
+<h3>PI: Position Interpolation</h3>
+<p>Proposed by Meta in 2023. The idea is straightforward: <em>compress</em> inference-time positions back into the training range. If training length is $L_{\text{train}}$ and target length is $L_{\text{new}}$, map position $m$ to $m \cdot L_{\text{train}} / L_{\text{new}}$.</p>
+<p>Mathematically equivalent to reducing RoPE rotation frequencies by a factor of $L_{\text{new}}/L_{\text{train}}$. Downside: high-frequency information becomes blurry; the model needs slight fine-tuning (a few hundred steps) to adapt.</p>
+
+<h3>NTK-aware Scaling</h3>
+<p>PI compresses all dimensions equally. NTK-aware (community-proposed in 2023) observed: <strong>low-frequency dimensions shouldn't be compressed (they haven't completed a single cycle yet)</strong>; only compress high frequencies.</p>
+<p>Concretely: increase RoPE's base from 10000 to a larger value (e.g., 40000). This makes all frequencies smaller, but affects originally-small low frequencies less — precisely preserving large-scale information.</p>
+<p>Benefit: 2-4× extrapolation without fine-tuning, with minimal quality degradation.</p>
+
+<h3>YaRN</h3>
+<p>Proposed by Nous Research in 2023 (Yet another RoPE extensioN). Builds on NTK-aware with finer adjustments: divides dimensions into three tiers by frequency (high-frequency unchanged, mid-frequency NTK scaling, low-frequency PI interpolation); adds temperature scaling to compensate for variance changes from length variation.</p>
+<p>YaRN with minimal fine-tuning (~1B token scale) can extend LLaMA-2 from 4K to 128K with minimal quality loss. The mainstream approach in the open-source community today.</p>
+
+<h3>LongRoPE</h3>
+<p>Proposed by Microsoft in 2024, an upgrade to YaRN. Core innovation: <strong>rather than using the same scaling factor for all RoPE dimensions, search for the optimal per-dimension scaling</strong> — some dimensions compressed more, others less. Significant search cost, but the payoff: feasible on LLaMA-3 at 2M tokens.</p>
+
+<h3>Native Long-Context Training</h3>
+<p>Extrapolation is the easy approach, but training from scratch is better. Major labs increasingly train directly on long documents:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>LLaMA-3</strong>: 8K pretraining, then extended to 128K using 800M tokens</li>
+<li><strong>Qwen2.5-1M</strong>: extended from 32K to 256K/1M using staged long-document training</li>
+<li><strong>Gemini 1.5</strong>: claims 1M or even 10M context; technical details not public</li>
+</ul>
+
+<h3>The Practical Meaning of Context Length</h3>
+<p>A model "supporting" 128K does not mean it "uses" 128K well. The <strong>Lost in the Middle</strong> phenomenon: information in the middle of long contexts tends to be ignored by the model. Evaluation benchmarks: Needle in a Haystack (hide a key sentence in a long document and ask the model to find it); RULER (comprehensive multi-task long-context evaluation); LongBench. Many models claiming 100K context see accuracy plummet beyond 50K. Real-world engineering requires testing before trusting claims.</p>
+
+<div class="part-header"><div class="part-label">PART FOUR</div><h2 class="part-title">4.4 Attention Optimization Variants</h2><p class="part-desc">The quadratic complexity of attention is LLM's greatest bottleneck — the evolution from MHA to MLA to Mamba.</p></div>
+
+<h2 id="s4-4-1"><span class="num">4.4.1</span>MQA / GQA / MLA</h2>
+<p class="pos">Position: Successive generations of solutions for reducing KV Cache — from MQA to DeepSeek's MLA.</p>
+
+<h3>Why KV Cache Is the Bottleneck</h3>
+<p>During inference, generating each new token requires computing the new token's Q, K, V; appending the new K, V to the existing cache; and having the new Q perform attention over all K, V. Recomputing all prior K, V each time costs $O(L^2)$ computation. <strong>KV Cache</strong> caches previously computed K, V so a new token only computes its own share, bringing total computation to $O(L)$.</p>
+<p>But KV Cache consumes GPU memory. Estimate: <code>2 × layers × H × d_head × seq_len × 2 bytes (FP16)</code>. LLaMA-3-70B at L=8K requires KV Cache ≈ 2.5 GB per sample. At batch=10 that's 25GB — more than the model weights. At long contexts, KV Cache is the primary memory killer.</p>
+
+<h3>MHA / MQA / GQA</h3>
+<p>Standard MHA: $H$ heads with independent Q, K, V per head. KV Cache stores $H$ sets of K and $H$ sets of V. This is the baseline.</p>
+<p><strong>MQA</strong> (Noam Shazeer 2019): the extreme — all heads share a single K, V; only Q is independent per head. KV Cache shrinks by $H$×! But quality degrades noticeably — a single K, V lacks expressiveness. Used by PaLM and Falcon.</p>
+<p><strong>GQA</strong>: a compromise between MHA and MQA. $H$ heads divided into $G$ groups, each group sharing one K, V. When $G = H$ it degrades to MHA; when $G = 1$ it degrades to MQA. LLaMA-3-70B uses $G = 8$ (64 heads sharing 8 K, V groups), shrinking KV Cache by 8× with almost no quality loss.</p>
+<p>Today LLaMA, Qwen, and Mistral all use GQA.</p>
+
+<pre><code class="language-python">class GroupedQueryAttention(nn.Module):
+    def __init__(self, d_model, n_heads=64, n_kv_heads=8):
+        super().__init__()
+        self.H = n_heads
+        self.G = n_kv_heads
+        self.d_head = d_model // n_heads
+        self.Wq = nn.Linear(d_model, n_heads * self.d_head, bias=False)
+        self.Wk = nn.Linear(d_model, n_kv_heads * self.d_head, bias=False)
+        self.Wv = nn.Linear(d_model, n_kv_heads * self.d_head, bias=False)
+        self.Wo = nn.Linear(d_model, d_model, bias=False)
+
+    def forward(self, x):
+        B, L, _ = x.shape
+        Q = self.Wq(x).view(B, L, self.H, self.d_head).transpose(1, 2)
+        K = self.Wk(x).view(B, L, self.G, self.d_head).transpose(1, 2)
+        V = self.Wv(x).view(B, L, self.G, self.d_head).transpose(1, 2)
+        K = K.repeat_interleave(self.H // self.G, dim=1)
+        V = V.repeat_interleave(self.H // self.G, dim=1)
+        S = Q @ K.transpose(-2, -1) / self.d_head ** 0.5
+        A = torch.softmax(S, dim=-1)
+        out = (A @ V).transpose(1, 2).reshape(B, L, -1)
+        return self.Wo(out)
+</code></pre>
+
+<h3>MLA: DeepSeek's Innovation</h3>
+<p>DeepSeek-V2 introduced MLA (Multi-head Latent Attention), which further compresses KV Cache.</p>
+<p>Core idea: <strong>instead of storing K and V, only store their low-rank latent representations</strong>. Specifically:</p>
+<div class="formula">$\mathbf{c}_{\text{kv}} = W_{DKV} \mathbf{x} \in \mathbb{R}^{d_c}$</div>
+<p>$d_c \ll d_{model}$. This compressed vector $\mathbf{c}_{\text{kv}}$ is stored in the cache. When K, V are needed, recover them via up-projection:</p>
+<div class="formula">$\mathbf{k} = W_{UK} \mathbf{c}_{\text{kv}}, \quad \mathbf{v} = W_{UV} \mathbf{c}_{\text{kv}}$</div>
+<p>Analogous to <a href="ch5_partB_preview.html#p11">LoRA</a> — using low-rank decomposition to compress matrices. But MLA's elegance is: <strong>the up-projection matrix $W_{UK}$ can be merged with Q's projection, so no actual up-projection is needed during inference</strong>.</p>
+<p>Specifically, the attention score $\mathbf{q}^\top \mathbf{k} = \mathbf{q}^\top W_{UK} \mathbf{c}_{\text{kv}} = (\mathbf{q}^\top W_{UK}) \mathbf{c}_{\text{kv}}$. Absorb $W_{UK}$ into Q's projection upfront; at inference time compute $\tilde{\mathbf{q}}^\top \mathbf{c}_{\text{kv}}$ directly — KV Cache only contains the compressed vectors.</p>
+<p>DeepSeek-V2 uses $d_c = 4 d_{head}$, shrinking KV Cache by 90%+ compared to equivalent MHA, with even better quality (low-rank decomposition acts as a form of regularization).</p>
+
+<h3>MLA's Handling of RoPE</h3>
+<p>MLA has one awkward point: applying RoPE to K breaks the math of "merging matrices." DeepSeek's solution is to split K into two halves — <strong>a portion without positional information</strong> (goes through MLA compression) + <strong>a small portion with RoPE</strong> (not compressed, stored normally). This half/half split is an engineering compromise.</p>
+
+<h3>DSA: DeepSeek Sparse Attention (Introduced in V3.2)</h3>
+<p>DeepSeek's V3.2, released in October 2025, introduced a further innovation — Sparse Attention (DSA). Motivation: in long-context settings, MLA has already compressed KV Cache very small, but attention itself remains $O(L^2)$ computation. DSA adds "fine-grained sparsity" on top of MLA — each Q only attends to an important subset of K, rather than all of them.</p>
+<p>Key innovations:</p>
+<ol>
+<li><strong>Dynamic top-k selection</strong>: for each query, use a lightweight scoring function to find the most relevant small set of K; only perform attention on these K. Different queries select different K.</li>
+<li><strong>Seamless integration with MLA</strong>: sparse + low-rank compression together reduce long-context compute cost by ~50% with almost no quality loss.</li>
+<li><strong>Unified thinking/non-thinking</strong>: V3.2 inherits V3.1's hybrid mode — the same model can answer quickly or reason deeply.</li>
+</ol>
+<p>DSA is the first time, after years of sparse attention research, that "quality matches dense attention with significantly lower cost" has been achieved in a large model. This also shows that the sparse attention direction covered in 4.4.2 hasn't failed — previous approaches just weren't fine-grained enough.</p>
+<p>V3.2 also has a "Speciale" variant that pushes reasoning capability to reportedly near the level of top closed-source models — the open-source benchmark at the end of 2025.</p>
+
+<h2 id="s4-4-2"><span class="num">4.4.2</span>Sparse Attention</h2>
+<p class="pos">Position: Abandoning "every position attends to all positions," attending only to a key subset — replacing $O(L^2)$ with $O(L \log L)$ or even $O(L)$.</p>
+
+<h3>The Idea</h3>
+<p>Most weights in full attention are actually small — most position pairs have weak associations. Sparse attention computes selectively, saving time and memory.</p>
+
+<h3>Sliding Window</h3>
+<p>Simplest approach: each position only attends to neighbors within a window of size $w$. Complexity $O(L w)$; linear when $w$ is fixed. Used by Longformer, BigBird, Mistral (window 4096). Problem: distant information can't reach. Solution: after stacking multiple layers, the receptive field grows (layer $k$ has receptive field $k w$).</p>
+
+<h3>Dilated Attention</h3>
+<p>Strided attention — attend to every $d$-th position. Similar to dilated convolution. After a few layers, covers a large range.</p>
+
+<h3>Global Token</h3>
+<p>Designate a few "global tokens" (e.g., [CLS]) that can attend to all positions and all positions can attend to them. Other positions only attend locally. Global tokens serve as "information aggregation points." BigBird combines Sliding Window + Dilated + Global, providing both local detail and long-range bridging.</p>
+
+<h3>Routing Attention</h3>
+<p>Dynamically select which positions to attend to. Reformer uses LSH (Locality-Sensitive Hashing) to find similar Q, K pairs; Routing Transformer uses clustering. These methods are effective on some tasks but complex to implement.</p>
+
+<h3>Sliding Window + Attention Sink</h3>
+<p>StreamingLLM (2023) observed an interesting phenomenon: the initial few tokens (attention sinks) are crucial for maintaining stable attention distributions — even if semantically unimportant, the model assigns them large attention weights (acting as normalization).</p>
+<p>For streaming scenarios: retain initial few tokens + recent window + discard the middle — the model can handle arbitrarily long inputs without degradation. Practically useful.</p>
+
+<h3>Why Sparse Attention Hasn't Dominated</h3>
+<p>Despite theoretical elegance, sparse attention in practice has <em>not replaced</em> full attention in large models. Reasons:</p>
+<ol>
+<li>FlashAttention optimizes full attention's constants to the extreme; the practical impact of $L^2$ complexity is less severe than theory suggests</li>
+<li>Capability gains from model scaling far exceed efficiency from sparse attention</li>
+<li>Hard-coded sparse patterns impose inductive biases that may not suit all tasks</li>
+</ol>
+<p>The typical hybrid approach in today's open-source models is Mistral's "Sliding Window + full attention" — sliding in shallow layers, full attention in the last few layers — saving memory without sacrificing expressiveness.</p>
+
+<h2 id="s4-4-3"><span class="num">4.4.3</span>Linear Attention and <a href="ch5_partC_supplement.html#p24">Mamba</a></h2>
+<p class="pos">Position: The resurgence of RNNs — replacing KV Cache with "state," $O(L)$ inference, challenging Transformer.</p>
+
+<h3>The Linear Attention Idea</h3>
+<p>Standard attention: $\text{softmax}(QK^\top) V$. If softmax can be removed, this can be rewritten as:</p>
+<div class="formula">$\text{LinAttn}(Q, K, V) = Q (K^\top V)$</div>
+<p>Complexity: $K^\top V$ is $(d \times L)(L \times d) = d \times d$, $O(L d^2)$. Then $Q (K^\top V)$ is $O(L d^2)$. Total $O(L d^2)$ — linear!</p>
+<p>But softmax can't simply be dropped — it ensures weight normalization and stability. Removing it consistently degrades quality. Various linear attention works (Linformer, Performer, Linear Transformer) propose different "softmax approximation" schemes, but none match full attention quality.</p>
+
+<h3>SSM: State Space Models</h3>
+<p>An idea borrowed from control theory. A linear state space system:</p>
+<div class="formula">$\mathbf{h}_t = A \mathbf{h}_{t-1} + B \mathbf{x}_t, \quad \mathbf{y}_t = C \mathbf{h}_t$</div>
+<p>$\mathbf{h}_t$ is the "state" — a fixed-size vector that stores historical information. This is an RNN structure.</p>
+<p>Early SSM work (S4, HiPPO) used carefully designed $A$ matrices (HiPPO matrices) to enable long-term memory in the state. But $A, B, C$ are fixed for every input — no ability to "selectively attend" to different positions. Performs worse than Transformer.</p>
+
+<h3>Mamba's Selectivity</h3>
+<p>Mamba's (2023, Albert Gu) key innovation: <strong>making $B, C, \Delta$ (step size) depend on the input $\mathbf{x}_t$</strong>. The "memory dynamics" at each position differ — the model can selectively "remember" or "forget."</p>
+<div class="formula">$B_t = \text{Linear}_B(\mathbf{x}_t), \quad C_t = \text{Linear}_C(\mathbf{x}_t), \quad \Delta_t = \text{softplus}(\text{Linear}_\Delta(\mathbf{x}_t))$</div>
+<p>This gives the model "dynamic content addressing" capability — similar selectivity to attention, but using $O(L)$ state updates rather than $O(L^2)$ full comparisons.</p>
+
+<h3>Hardware-Aware Scanning</h3>
+<p>Selective SSM has an engineering challenge: input-dependent $B_t, C_t$ means traditional "FFT-accelerated convolution" doesn't work. Mamba uses a "hardware-aware parallel scan" algorithm — based on prefix-sum ideas, maintaining parallelism on GPUs.</p>
+<p>Training: forward pass can use parallel scan, $O(L)$ FLOPs but $O(\log L)$ wall-clock time.</p>
+<p>Inference: pure recurrence, each step $O(1)$ — fixed state size. No KV Cache! Memory usage doesn't grow with sequence length.</p>
+
+<h3>Mamba vs Transformer Comparison</h3>
+<table>
+<tr><th>Dimension</th><th>Transformer</th><th>Mamba</th></tr>
+<tr><td>Training</td><td>Fully parallel</td><td>Parallel scan ($O(L)$)</td></tr>
+<tr><td>Inference</td><td>$O(L)$ attention + $O(L)$ KV Cache</td><td>$O(1)$ state update</td></tr>
+<tr><td>Inference memory</td><td>Grows with L (KV Cache)</td><td>Fixed</td></tr>
+<tr><td>Long sequences</td><td>Limited by KV Cache</td><td>Naturally supported</td></tr>
+<tr><td>Interpretability</td><td>Attention visualization</td><td>State not directly observable</td></tr>
+<tr><td>Precise recall</td><td>Strong (attention precisely points)</td><td>Weak (state compression is lossy)</td></tr>
+</table>
+<p>Mamba's weakness is in "precise recall tasks" — "given the first 1000 tokens, what is position 473?" Mamba tends to forget; Transformer can point precisely.</p>
+
+<h3>Hybrid Architectures</h3>
+<p>Early work like Jamba (AI21) and Zamba explored "Transformer + Mamba hybrid" — most layers use Mamba (fast), a few layers use attention (precise recall). By 2025, this direction became one of the mainstream approaches:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>NVIDIA Nemotron 2</strong>: Mamba2-Transformer hybrid; long-context speed superior to pure Transformer</li>
+<li><strong>IBM Granite 4</strong>: Mamba-Attention hybrid + MoE; enterprise production use</li>
+<li><strong>Qwen3-Next 80B-A3B (2025.9)</strong>: introduces <strong>Gated Delta Networks</strong> (Mamba-like) + sparse MoE; achieves 235B non-hybrid model performance with only 3B active parameters</li>
+<li><strong>Qwen3.5 full lineup</strong>: all adopt a Gated Delta Networks + MoE hybrid architecture</li>
+</ul>
+<p><strong>Mamba-3</strong> (ICLR 2026) further improves: introduces complex-valued state updates and MIMO (multi-input multi-output) architecture; at 1.5B scale, improves average downstream accuracy by 0.6 percentage points over Gated DeltaNet, while achieving comparable perplexity to Mamba-2 with half the state size.</p>
+<p>This trend shows: Mamba is not "replacing Transformer" but serving as a complementary layer for long-context and low-memory scenarios, combining with attention to form a "better architecture."</p>
+<p>There's also a path of continuing innovation within pure Transformer — DeepSeek V3.2's DSA optimizes within attention itself, achieving similar effects without taking the Mamba route. Both technical paths run in parallel through 2025-2026.</p>
+
+<div class="part-header"><div class="part-label">PART FIVE</div><h2 class="part-title">4.5 Tokenizer and Embedding</h2><p class="part-desc">The first gate for text entering the model — tokenizer details affect every aspect of LLM capability.</p></div>
+
+<h2 id="s4-5-1"><span class="num">4.5.1</span>The BPE Family</h2>
+<p class="pos">Position: From BPE to WordPiece to SentencePiece — the three main lines of modern tokenizers.</p>
+
+<h3>Why Not Character-Level, Why Not Word-Level</h3>
+<p>Two extremes:</p>
+<p><strong>Character-level</strong>: small vocabulary (128 ASCII characters in English), one token per character. Problem: long sequences — a 5-letter word becomes 5 tokens, causing $O(L^2)$ explosion in attention.</p>
+<p><strong>Word-level</strong>: natural vocabulary (one token per word). Problem: vocabulary explosion (millions of words in English), OOV (out-of-vocabulary words not seen during training), unable to handle spelling variations. Chinese "word" boundaries are fuzzy, making it more problematic.</p>
+<p>Subword is the compromise: common words are a single token; rare words are split into meaningful subwords. "unbelievable" → ["un", "believ", "able"].</p>
+
+<h3>BPE (Byte-Pair Encoding)</h3>
+<p>Originated as a data compression algorithm in 1994; borrowed for NMT tokenization in 2015.</p>
+<p>Training:</p>
+<ol>
+<li>Initialize vocabulary as all characters</li>
+<li>Count the frequency of adjacent token pairs in the corpus</li>
+<li>Merge the most frequent pair and add it to the vocabulary</li>
+<li>Repeat steps 2-3 until the vocabulary reaches the target size (e.g., 50K)</li>
+</ol>
+<pre><code class="language-python">from collections import Counter
+
+def train_bpe(corpus, vocab_size):
+    words = Counter()
+    for line in corpus:
+        for w in line.split():
+            words[' '.join(list(w)) + ' &lt;/w&gt;'] += 1
+    vocab = set()
+    for w in words: vocab.update(w.split())
+    while len(vocab) &lt; vocab_size:
+        pairs = Counter()
+        for w, freq in words.items():
+            toks = w.split()
+            for i in range(len(toks) - 1):
+                pairs[(toks[i], toks[i+1])] += freq
+        if not pairs: break
+        best = pairs.most_common(1)[0][0]
+        merged = ''.join(best)
+        new_words = {}
+        for w, freq in words.items():
+            new_w = w.replace(' '.join(best), merged)
+            new_words[new_w] = freq
+        words = new_words
+        vocab.add(merged)
+    return vocab
+</code></pre>
+<p>Inference: apply the trained merge rules recursively to new text to get the token sequence.</p>
+
+<h3>WordPiece</h3>
+<p>Google's variant used in BERT. Difference: instead of merging "the most frequent pair," merge "the pair that maximizes language model likelihood." Similar results but theoretically cleaner.</p>
+
+<h3>SentencePiece</h3>
+<p>Open-sourced by Google in 2018. Addresses several pain points:</p>
+<ol>
+<li><strong>No pre-tokenization</strong>: trains directly on raw text, doesn't rely on the concept of "words" — friendly to languages without spaces like Chinese, Japanese, Korean</li>
+<li><strong>Reversible</strong>: tokenization can perfectly restore the original string (including spaces) — via a special ▁ symbol marking word beginnings</li>
+<li><strong>Unigram algorithm</strong>: a different merging strategy from BPE; starts with a large vocabulary and prunes</li>
+</ol>
+<p>LLaMA, T5, mT5, and ChatGLM all use SentencePiece.</p>
+
+<h3>BBPE: Byte-level BPE</h3>
+<p>The variant used by GPT-2. First convert text to UTF-8 byte sequences (256 possible values), then apply BPE on the byte sequence. Benefit: <strong>zero OOV</strong> — any Unicode character can be represented (at least as a byte sequence), no [UNK] token needed. GPT-3/4, LLaMA, Qwen, DeepSeek all use BBPE. It is the de facto standard.</p>
+
+<h2 id="s4-5-2"><span class="num">4.5.2</span>Modern Tokenizer Engineering</h2>
+<p class="pos">Position: Vocabulary size selection, Chinese/multilingual handling, tiktoken vs SentencePiece — engineering details.</p>
+
+<h3>Vocabulary Size</h3>
+<p>Historical typical choices:</p>
+<table>
+<tr><th>Model</th><th>Vocabulary Size</th></tr>
+<tr><td>BERT</td><td>30K</td></tr>
+<tr><td>GPT-2</td><td>50K</td></tr>
+<tr><td>GPT-3</td><td>50K</td></tr>
+<tr><td>LLaMA-2</td><td>32K</td></tr>
+<tr><td>LLaMA-3</td><td>128K</td></tr>
+<tr><td>Qwen 2.5</td><td>152K</td></tr>
+<tr><td>DeepSeek-V2</td><td>100K</td></tr>
+<tr><td>GPT-4o</td><td>200K</td></tr>
+</table>
+<p>The trend toward larger vocabularies is clear. Benefits: shorter sequences, more multilingual-friendly (small vocabularies fragment Chinese characters excessively). Trade-offs: embedding table and LM Head grow larger (both are <code>vocab × d_model</code>); rare tokens are undertrained, resulting in poor embedding quality.</p>
+
+<h3>Chinese Token Rate</h3>
+<p>A common benchmark: token count for the same Chinese text across different tokenizers.</p>
+<table>
+<tr><th>Tokenizer</th><th>Chinese chars per token</th></tr>
+<tr><td>GPT-2 (50K)</td><td>≈ 0.5 (two tokens per Chinese character)</td></tr>
+<tr><td>GPT-3.5/4 (cl100k)</td><td>≈ 1.5</td></tr>
+<tr><td>LLaMA-2 (32K)</td><td>≈ 0.6</td></tr>
+<tr><td>LLaMA-3 (128K)</td><td>≈ 1.3</td></tr>
+<tr><td>Qwen (152K)</td><td>≈ 1.6</td></tr>
+<tr><td>DeepSeek (100K)</td><td>≈ 1.5</td></tr>
+</table>
+<p>Chinese domestic LLMs deliberately optimize Chinese token rates — packing more Chinese content into the same context window, outputting more Chinese characters for the same generation budget.</p>
+
+<h3>tiktoken</h3>
+<p>OpenAI's open-source BPE tokenizer, implemented in Rust, extremely fast. GPT-3.5 and GPT-4 use cl100k_base; GPT-4o uses o200k_base. Differences from SentencePiece: tiktoken is pure BPE; no training support, only encode/decode; peak performance.</p>
+
+<h3>HuggingFace Tokenizers</h3>
+<p>Rust implementation with Python bindings. Supports BPE, WordPiece, Unigram, BBPE, and more. Trainable, serializable, fast. The de facto standard in the open-source ecosystem — nearly all open-source model tokenizers are produced with the Tokenizers library.</p>
+
+<h3>Special Token Design</h3>
+<p>Modern LLMs have a pile of special tokens beyond regular ones: BOS/EOS; conversation roles (system/user/assistant); tool calls (tool_call/tool_response); reasoning delimiters (reasoning_start/end); large reserved pools for future features. Special token design is critical for conversation templates, prompt injection defense, and tool-calling protocols. LLaMA-3 reserves 250 special tokens; Qwen2.5 has 22 — wide variation across vendors.</p>
+
+<h3>Tokenizer Pitfalls</h3>
+<p><strong>Trailing spaces</strong>: <code>"hello"</code> and <code>"hello "</code> tokenize differently; often overlooked, causing prompt template errors.</p>
+<p><strong>Chat template</strong>: different models have different conversation formats. HuggingFace Transformers' <code>apply_chat_template</code> is the standard — don't manually concatenate strings.</p>
+<p><strong>BOS/EOS handling</strong>: some models add BOS before fine-tuning, others don't. Mixing them causes training/inference inconsistency.</p>
+<p><strong>Unicode normalization</strong>: differences between NFC/NFD can cause identically-appearing characters to tokenize differently. Unify during the data cleaning phase.</p>
+
+<h2 id="s4-5-3"><span class="num">4.5.3</span>Embedding Models</h2>
+<p class="pos">Position: From <a href="ch5_partC_supplement.html#p23">Word2Vec</a> to BGE — the model family specialized for text similarity, a key component of RAG.</p>
+
+<h3>From Word Embeddings to Sentence Embeddings</h3>
+<p>Early Word2Vec and GloVe were "word embeddings" — one fixed vector per word. But "bank" means different things in "river bank" and "bank account"; fixed vectors can't handle this.</p>
+<p>The BERT era brought "contextual embeddings" — the same word has different vectors in different contexts. But BERT output is token-level; how do you get a representation for a whole sentence?</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>CLS token</strong>: during BERT pretraining, [CLS] represents the whole sentence, but in practice this representation performs poorly for similarity tasks</li>
+<li><strong>Mean pooling</strong>: average representations over all tokens; simple but loses precision</li>
+<li><strong>Sentence-BERT</strong>: fine-tune specifically with a dual-encoder structure to make "similar sentences have similar representations" — qualitative improvement for similarity tasks</li>
+</ul>
+
+<h3>Modern Embedding Models</h3>
+<table>
+<tr><th>Model</th><th>Dimensions</th><th>Context</th><th>Characteristics</th></tr>
+<tr><td>OpenAI text-embedding-3</td><td>256-3072</td><td>8K</td><td>Commercial; Matryoshka adjustable</td></tr>
+<tr><td>Cohere Embed v3</td><td>1024</td><td>512</td><td>Commercial; strong multilingual</td></tr>
+<tr><td>BGE (BAAI)</td><td>512/768/1024</td><td>512-8K</td><td>Open-source; strong in Chinese and English</td></tr>
+<tr><td>Qwen3-Embedding</td><td>1024/2048/4096</td><td>32K</td><td>Open-source; long context</td></tr>
+<tr><td>NV-Embed</td><td>4096</td><td>32K</td><td>Open-source; top MTEB rankings</td></tr>
+<tr><td>E5</td><td>1024</td><td>512</td><td>Microsoft open-source; multilingual</td></tr>
+</table>
+
+<h3>Training Methods</h3>
+<p>Modern embedding training is multi-stage: weakly supervised pretraining (contrastive learning from web text pairs); supervised fine-tuning (refining with labeled similar pairs); hard negative mining (finding pairs that look similar but aren't).</p>
+
+<h3>Contrastive Learning Loss</h3>
+<p>The core of embedding model training is contrastive loss; the typical InfoNCE loss:</p>
+<div class="formula">$\mathcal{L} = -\log \frac{\exp(\text{sim}(q, p^+) / \tau)}{\exp(\text{sim}(q, p^+) / \tau) + \sum_{p^-} \exp(\text{sim}(q, p^-) / \tau)}$</div>
+<p>$q, p^+$ are positive pairs; $p^-$ are negative samples; $\tau$ is the temperature. Goal: make $q$ more similar to $p^+$ and farther from all $p^-$.</p>
+
+<h3>Matryoshka Embedding</h3>
+<p>A novel idea: train a 1024-dimensional embedding, but also make the <strong>first 64, first 256, and first 512 dimensions</strong> individually valid. Users can truncate as needed — take the full vector for quality, take the first N dimensions for speed.</p>
+<p>OpenAI text-embedding-3 and some open-source models (like Matryoshka-BGE) support this feature. Flexible trade-off between storage and performance.</p>
+
+<h3>Embedding Quality Evaluation</h3>
+<p>MTEB (Massive Text Embedding Benchmark) is the industry standard — 56 tasks evaluating embedding models. Covers classification, clustering, retrieval, STS, and reranking. The leaderboard changes every few weeks, but NV-Embed, BGE-M3, and Qwen3-Embedding are in the first tier. Real-world selection requires testing on your specific use case.</p>
+
+<div class="part-header"><div class="part-label">PART SIX</div><h2 class="part-title">4.6 Mixture of Experts</h2><p class="part-desc">Sparse activation makes "trillion-parameter models" computationally feasible — nearly all the largest open-source models use MoE.</p></div>
+
+<h2 id="s4-6-1"><span class="num">4.6.1</span><a href="ch5_partB_preview.html#p13">MoE</a> Fundamentals</h2>
+<p class="pos">Position: Why MoE, how MoE — core mathematics and basic architecture.</p>
+
+<h3>Motivation</h3>
+<p>Transformer parameters are mainly in FFN (computed in 4.2.1 as 2/3 of the total). FFN applies the same processing to every token — but different tokens may need different processing (nouns need different features than verbs). MoE's idea: replace a single FFN with <strong>multiple "expert" FFNs</strong>, each token activating only 1-2 experts. Effect: total parameters multiply, but compute barely increases.</p>
+
+<h3>Structure</h3>
+<p>A MoE layer:</p>
+<ol>
+<li><strong>Router</strong>: compute a score for each expert given input $\mathbf{x}$: $g_i = \text{softmax}(W_{router} \mathbf{x})_i$</li>
+<li><strong>Top-K selection</strong>: select the K highest-scoring experts (typically K=1 or 2)</li>
+<li><strong>Routing</strong>: send $\mathbf{x}$ only to selected experts; other experts don't compute</li>
+<li><strong>Weighted combination</strong>: $\mathbf{y} = \sum_{i \in \text{top-k}} g_i \cdot \text{Expert}_i(\mathbf{x})$</li>
+</ol>
+
+<h3>Compute-Parameter Trade-off</h3>
+<p>Given $N$ total experts, each with the same parameters as the original FFN, activating K experts:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Total parameters</strong>: approximately $N \times$ original FFN parameters + attention layer parameters</li>
+<li><strong>Active parameters</strong> (actually participating in forward pass): $K \times$ original FFN + attention</li>
+<li><strong>Compute</strong>: proportional to active parameters</li>
+</ul>
+<p>Mixtral 8x7B: 8 experts each ≈ 7B, activating 2. Total parameters 47B (not 56B, because attention is shared); active ≈ 13B — <em>inference like a 13B model, capability close to a 47B dense model</em>. This is MoE's core value proposition.</p>
+
+<h3>Routing Function</h3>
+<pre><code class="language-python">class Router(nn.Module):
+    def __init__(self, d_model, n_experts, top_k=2):
+        super().__init__()
+        self.W = nn.Linear(d_model, n_experts, bias=False)
+        self.top_k = top_k
+
+    def forward(self, x):
+        logits = self.W(x)
+        top_k_logits, top_k_idx = logits.topk(self.top_k, dim=-1)
+        top_k_gates = top_k_logits.softmax(dim=-1)
+        return top_k_idx, top_k_gates
+</code></pre>
+
+<h3>Load Balancing</h3>
+<p>The biggest problem: if training is improper, <strong>routing degenerates — always sending traffic to a few experts</strong>, starving the others.</p>
+<p>Solution: <strong>load balancing loss</strong>. Define $f_i$ = fraction of tokens routed to expert $i$; $P_i$ = average gate value for expert $i$ over all tokens. Add an auxiliary loss:</p>
+<div class="formula">$\mathcal{L}_{\text{aux}} = N \sum_i f_i P_i$</div>
+<p>Ideally $f_i = P_i = 1/N$, $\mathcal{L}_{\text{aux}} = 1$. If an expert is overloaded, both $f_i$ and $P_i$ are large, increasing the loss and pushing gradients to rebalance routing.</p>
+
+<h3>Sparse vs Dense</h3>
+<p>Almost all new MoE models choose the <strong>fine-grained expert</strong> architecture — many small experts (DeepSeek-V3 has 256, each small). Better than "8 large experts": more specialized experts, more diverse combinations, more natural load balancing.</p>
+
+<h3>Shared Experts</h3>
+<p>DeepSeek-V2/V3 uses "shared experts + routed experts": 1-2 shared experts that all tokens pass through, with the other N-2 selected by routing. Intuition: some knowledge (grammar, basic logic) is needed by all tokens and doesn't need to be routed each time.</p>
+
+<h2 id="s4-6-2"><span class="num">4.6.2</span>MoE Engineering Practice</h2>
+<p class="pos">Position: MoE looks good on paper, is hard in engineering — training, deployment, communication, and load balancing all need to be solved.</p>
+
+<h3>Training Challenges</h3>
+<p><strong>Instability</strong>: routing is discrete (top-k selection), making gradients hard to propagate. Early training sees routing thrash around with no expert specialization — requires very long warmup to stabilize.</p>
+<p><strong>Expert parallelism</strong>: 8 experts can be placed on 8 GPUs, but this requires cross-device communication at every layer (tokens distributed by routing, then collected after computation). All-to-all communication becomes a bottleneck.</p>
+<p><strong>Dynamic shape</strong>: different experts receive different numbers of tokens — a small expert might receive only a few, a large one might receive tens of thousands. GPUs prefer regular batch shapes; dynamic shapes make kernel optimization difficult.</p>
+
+<h3>Expert Parallelism</h3>
+<p>MoE's distributed strategy has its own name: Expert Parallelism (EP). Distribute N experts evenly across P GPUs, N/P experts per GPU.</p>
+<p>Forward flow: each GPU's tokens go through attention (normal TP/DP); Router determines which expert each token needs; <strong>All-to-all</strong>: each GPU sends tokens to the GPU holding the corresponding expert; each GPU's active experts process the received tokens; <strong>All-to-all</strong>: send results back to the GPU where the tokens originated.</p>
+<p>Two all-to-all communications with large data volume, but acceptable under high-speed interconnects (NVLink + IB). DeepSpeed-MoE and Megatron-LM both implement this.</p>
+
+<h3>Token Dropping</h3>
+<p>Under load imbalance, an expert may receive more tokens than its capacity (capacity factor). Handling options: Drop (tokens exceeding capacity skip this layer — simple but loses information); Capacity Bias (add capacity penalty during training to encourage uniform routing).</p>
+<p>Real large models set capacity factor to 1.25 (allowing 25% overflow), with minimal dropping.</p>
+
+<h3>MoE Inference Deployment</h3>
+<p>Inference is trickier than training:</p>
+<p><strong>Memory usage</strong>: all experts must be loaded (since routing destination is unknown in advance). Mixtral 8x7B inference requires 80GB+ — not the "feels like 13B" experience.</p>
+<p><strong>Batching efficiency</strong>: under small batch sizes, most experts idle (no tokens routed to them), GPU utilization is extremely low. MoE inference performance only shines at large batch sizes.</p>
+<p><strong>Expert placement</strong>: for single-machine multi-GPU inference, how to assign experts? Heuristic: place high-frequency experts on GPUs with closer communication; cold experts go farther or offload to CPU. vLLM, SGLang, and TGI all have specialized optimizations for MoE inference.</p>
+
+<h3>Representative Models</h3>
+<table>
+<tr><th>Model</th><th>Total Params</th><th>Active Params</th><th>Expert Config</th></tr>
+<tr><td>Switch Transformer (2021)</td><td>1.6T</td><td>-</td><td>Top-1 routing</td></tr>
+<tr><td>Mixtral 8x7B (2023)</td><td>47B</td><td>13B</td><td>8 expert, top-2</td></tr>
+<tr><td>Mixtral 8x22B (2024)</td><td>141B</td><td>39B</td><td>8 expert, top-2</td></tr>
+<tr><td>DeepSeek-V2 (2024)</td><td>236B</td><td>21B</td><td>160 routed + 2 shared, top-6</td></tr>
+<tr><td>DeepSeek-V3 (2024)</td><td>671B</td><td>37B</td><td>256 routed + 1 shared, top-8</td></tr>
+<tr><td>Qwen2 MoE</td><td>57B</td><td>14B</td><td>64 expert, top-8</td></tr>
+<tr><td>Grok-1 (xAI)</td><td>314B</td><td>79B</td><td>8 expert, top-2</td></tr>
+<tr><td>Qwen3-235B-A22B (2025.4)</td><td>235B</td><td>22B</td><td>8 routed, no shared experts</td></tr>
+<tr><td>Qwen3-Next 80B-A3B (2025.9)</td><td>80B</td><td>3B</td><td>High expert count + shared; extreme sparsity</td></tr>
+<tr><td>LLaMA 4 Maverick (2025)</td><td>-</td><td>-</td><td>2 active experts, hidden 8192 (few but large)</td></tr>
+<tr><td>DeepSeek-V3.1 / V3.2 (2025)</td><td>671B</td><td>37B</td><td>Inherits V3 + DSA sparse attention + hybrid thinking</td></tr>
+<tr><td>Kimi K2 (2025)</td><td>Large-scale MoE</td><td>-</td><td>Moonshot; strong reasoning and long context</td></tr>
+<tr><td>GLM-4.5 / 4.6 (Zhipu)</td><td>MoE</td><td>-</td><td>Shared experts (similar to DeepSeek); retains attention bias</td></tr>
+<tr><td>gpt-oss-120b (2025)</td><td>120B</td><td>-</td><td>OpenAI's first open-source MoE; retains attention bias</td></tr>
+</table>
+<p>DeepSeek-V3 is the peak of open-source MoE in 2024; V3.1 unifies reasoning and non-reasoning; V3.2 introduces DSA to further reduce costs, becoming the open-source reasoning benchmark by end of 2025 — 671B total parameters but only 37B activated during inference.</p>
+<p><strong>2025 MoE Architecture Trends</strong>:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Fine-grained experts</strong> mainstream: shifting from 8 large experts to dozens or hundreds of small ones, explosive combination diversity</li>
+<li><strong>Shared experts</strong> diverge: DeepSeek/GLM retain shared experts (all tokens pass through); Qwen3 goes the opposite direction by removing shared experts</li>
+<li><strong>Extreme sparsity</strong>: Qwen3-Next 80B activates only 3B (3.75%); Qwen3.5-35B-A3B activates only 3B (8.6%)</li>
+<li><strong>MoE + Mamba hybrid</strong>: mixed architectures like Qwen3-Next, Granite 4, Nemotron 2</li>
+<li><strong>Engineering optimizations</strong>: DeepSeek-V3's multi-token prediction, FP8 training, and All-to-All communication optimization dramatically improve MoE training economics</li>
+</ul>
+
+<div class="part-header"><div class="part-label">PART SEVEN</div><h2 class="part-title">4.7 Distributed Training</h2><p class="part-desc">Models above the tens-of-billions scale don't fit on a single GPU — must span across GPUs and machines.</p></div>
+
+<h2 id="s4-7-1"><span class="num">4.7.1</span>Data Parallelism (DDP)</h2>
+<p class="pos">Position: The simplest distributed strategy — complete model on each GPU, different batch shards.</p>
+
+<h3>Basic Idea</h3>
+<p>$N$ GPUs, each holding a complete model replica. A large batch $B$ split into $N$ parts, $B/N$ per GPU. Each GPU computes its own forward loss and backward gradients. Gradients are <strong>AllReduced</strong> to aggregate into the full-batch average gradient; each GPU updates parameters with this gradient — parameters stay synchronized.</p>
+
+<h3>AllReduce</h3>
+<p>The core communication primitive of DDP. Given one tensor (gradient) per GPU, compute the sum (or average) of all GPUs' tensors, with each GPU ending up with the same result.</p>
+<p>Multiple implementations exist; the most popular is <strong>Ring AllReduce</strong>: split each GPU's tensor into $N$ chunks; first phase sends rings, each round each GPU adds one chunk to the next, after $N-1$ rounds each GPU has the complete sum of one chunk; second phase broadcasts each GPU's "completed chunk" around the ring, after $N-1$ more rounds all GPUs have all complete chunks.</p>
+<p>Communication volume: each GPU sends and receives $2(N-1)/N \cdot S$ ($S$ = tensor size), nearly independent of $N$ — excellent scalability. NCCL is the de facto standard implementation on GPUs.</p>
+
+<h3>PyTorch DDP</h3>
+<pre><code class="language-python">import torch
+import torch.distributed as dist
+from torch.nn.parallel import DistributedDataParallel as DDP
+
+dist.init_process_group(backend='nccl')
+local_rank = int(os.environ['LOCAL_RANK'])
+torch.cuda.set_device(local_rank)
+
+model = MyModel().cuda()
+model = DDP(model, device_ids=[local_rank])
+
+from torch.utils.data.distributed import DistributedSampler
+sampler = DistributedSampler(dataset)
+loader = DataLoader(dataset, sampler=sampler, batch_size=per_rank_bs)
+
+for batch in loader:
+    loss = model(batch).mean()
+    loss.backward()     # DDP automatically all-reduces gradients
+    optimizer.step()
+</code></pre>
+
+<h3>Gradient Accumulation</h3>
+<p>Sometimes a large batch is desired but a single GPU can't hold the full batch. Gradient accumulation: run multiple forward+backward passes without calling step, accumulating until enough, then step. Combined with DDP to reduce gradient sync frequency (only one all-reduce just before step).</p>
+
+<h3>DDP Limitations</h3>
+<p>DDP's primary limitation: <strong>each GPU must fit the complete model + gradients + optimizer state</strong>.</p>
+<p>Computing single-GPU requirements for a 7B FP16 model: parameters 14GB; gradients 14GB; Adam state (m, v, FP32) 56GB; activations ~10GB. Total ~100GB; A100 80G isn't enough, nor is H100 80G. So training above 7B requires sharding — enter ZeRO.</p>
+
+<h2 id="s4-7-2"><span class="num">4.7.2</span>ZeRO Three Stages</h2>
+<p class="pos">Position: DeepSpeed's flagship technology — sharding optimizer state, gradients, and parameters to achieve linear memory reduction.</p>
+
+<h3>Core Insight</h3>
+<p>In DDP, each GPU stores complete parameters, gradients, and optimizer state — but each GPU actually only needs to process its own portion of parameter updates; the state for other parameters is redundant. ZeRO (Zero Redundancy Optimizer, Microsoft 2020) says: <strong>shard these redundancies across different GPUs</strong>, fetching them via communication when needed.</p>
+
+<h3>Three Stages</h3>
+<p>ZeRO's three stages progressively shard more:</p>
+<table>
+<tr><th>Stage</th><th>What's Sharded</th><th>Communication Overhead</th><th>Memory Savings (N GPUs)</th></tr>
+<tr><td>ZeRO-1</td><td>Optimizer state</td><td>Same as DDP</td><td>Optimizer /N</td></tr>
+<tr><td>ZeRO-2</td><td>+ Gradients</td><td>Slightly more</td><td>Optimizer and gradients /N</td></tr>
+<tr><td>ZeRO-3</td><td>+ Parameters</td><td>Noticeably more</td><td>Everything /N</td></tr>
+</table>
+
+<h3>ZeRO-1</h3>
+<p>Simplest. Each GPU still stores complete parameters and gradients, but only $1/N$ of optimizer state (only responsible for updating $1/N$ of parameters).</p>
+<p>Update flow: all GPUs forward; all GPUs backward, getting complete gradients (AllReduce as in DDP); each GPU only updates its responsible $1/N$ parameters (using its stored optimizer state); AllGather updated parameter shards to synchronize globally.</p>
+<p>Adam state is the biggest component (8 bytes/parameter); ZeRO-1 already saves most of it.</p>
+
+<h3>ZeRO-2</h3>
+<p>Gradients are also not stored in full. During backward, ReduceScatter (reduce and scatter simultaneously), so each GPU ends up with only the gradients for its responsible $1/N$ parameters. Communication volume similar to ZeRO-1 (just different operation names). Further memory savings: no more full gradients.</p>
+
+<h3>ZeRO-3</h3>
+<p>Parameters are also sharded. Each GPU permanently holds only $1/N$ of parameters. Computing a layer during forward: AllGather that layer's complete parameters (all GPUs contribute their shard); immediately release after the layer completes (keep only your own shard); AllGather again for the next layer. Backward is the same — temporarily gather when needed, discard after use.</p>
+<p>Memory reduced to the extreme: 7B model on 8 GPUs requires only ~12-15GB per GPU. Trade-off: forward and backward both require an extra AllGather round, noticeably increasing communication overhead.</p>
+
+<h3>FSDP</h3>
+<p>PyTorch's official ZeRO-3 implementation is called FSDP (Fully Sharded Data Parallel). Simpler interface than DeepSpeed, better integration with the PyTorch ecosystem.</p>
+<pre><code class="language-python">from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
+from torch.distributed.fsdp import MixedPrecision
+
+mp = MixedPrecision(
+    param_dtype=torch.bfloat16,
+    reduce_dtype=torch.bfloat16,
+    buffer_dtype=torch.bfloat16,
+)
+model = FSDP(
+    model,
+    mixed_precision=mp,
+    sharding_strategy=ShardingStrategy.FULL_SHARD,  # ZeRO-3
+    auto_wrap_policy=size_based_auto_wrap_policy,
+    device_id=local_rank,
+)
+</code></pre>
+
+<h3>ZeRO-Offload and Infinity</h3>
+<p>More extreme ZeRO variants:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>ZeRO-Offload</strong>: offload optimizer state and gradients to CPU memory, pulling back when updates are needed. Can train 10B+ models on a single GPU, but 2-3× slower.</li>
+<li><strong>ZeRO-Infinity</strong>: further offload to NVMe SSD. Theoretically enables trillion-parameter training on a single machine; in practice extremely slow. Suitable for research, not production.</li>
+</ul>
+
+<h3>When to Use ZeRO</h3>
+<p>Based on parameter count: &lt; 1B: DDP suffices; 1B-10B: ZeRO-2 for balance; 10B-100B: ZeRO-3 or FSDP; 100B+: ZeRO-3 + tensor parallelism + pipeline parallelism.</p>
+
+<h2 id="s4-7-3"><span class="num">4.7.3</span>Tensor Parallelism and Pipeline Parallelism</h2>
+<p class="pos">Position: Splitting individual layer computations (TP), splitting the layer sequence (PP) — distributing "large models" across multiple GPUs.</p>
+
+<h3>Tensor Parallelism (TP)</h3>
+<p>Split the matrix multiplication within a single layer. Most typical: Linear layer $\mathbf{Y} = \mathbf{X} W$.</p>
+<p><strong>Column-parallel</strong>: split $W$ by columns into $[W_1, W_2, \ldots]$, each GPU holds a portion. After computation, each GPU has different columns of $\mathbf{Y}$; concatenate or AllGather to merge.</p>
+<p><strong>Row-parallel</strong>: split $W$ by rows; input $\mathbf{X}$ is also split by columns correspondingly. Each GPU computes a partial result; AllReduce to sum.</p>
+<p>Megatron-LM's attention and FFN TP combination: in Attention, $W_Q, W_K, W_V$ are column-parallel (each GPU computes partial heads), $W_O$ is row-parallel — no communication inside attention, one AllReduce at the exit; in FFN, $W_1$ is column-parallel, $W_2$ is row-parallel — no communication inside FFN, one AllReduce at the exit.</p>
+<p>This requires only 2 AllReduces per layer. Communication is a bottleneck but manageable.</p>
+<p>TP constraint: requires high-speed interconnect. TP works within a GPU group connected by NVLink (typically 8 GPUs); InfiniBand bandwidth across nodes isn't sufficient to support TP.</p>
+
+<h3>Pipeline Parallelism (PP)</h3>
+<p>Split an $L$-layer model into $P$ segments, one segment per GPU. A batch of data flows sequentially across GPUs.</p>
+<p>The naive implementation has a "bubble" problem — most GPUs idle most of the time. Solution: <strong>split the batch into micro-batches and pipeline execution</strong> (1F1B schedule).</p>
+<p><strong>GPipe</strong> (2018): split batch into $M$ micro-batches, perform $M$ sequential forwards then $M$ backwards. Bubble fraction $(P-1)/(P+M-1)$; small when $M$ is large.</p>
+<p><strong>PipeDream / 1F1B</strong>: interleave forward and backward passes; fewer bubbles.</p>
+<p><strong>Interleaved 1F1B</strong> (Megatron): each GPU holds multiple non-contiguous segments; bubbles further reduced.</p>
+
+<h3>TP vs PP</h3>
+<table>
+<tr><th></th><th>TP</th><th>PP</th></tr>
+<tr><td>What's split</td><td>Inside single layer</td><td>Layer sequence</td></tr>
+<tr><td>Communication</td><td>Multiple times inside each layer</td><td>Small amount between segments (activation transfer)</td></tr>
+<tr><td>Bandwidth requirement</td><td>High (NVLink)</td><td>Medium (IB works)</td></tr>
+<tr><td>Scope</td><td>Typically within 8 GPUs</td><td>Typically cross-node</td></tr>
+<tr><td>Constraints</td><td>Layer must be divisible</td><td>Bubbles; micro-batch scheduling complex</td></tr>
+</table>
+
+<h2 id="s4-7-4"><span class="num">4.7.4</span>3D Parallelism and Training Stack</h2>
+<p class="pos">Position: Combining DP + TP + PP — the standard approach for 100B+ models. Also covering Megatron/DeepSpeed/FSDP.</p>
+
+<h3>3D Parallelism</h3>
+<p>Real large-model training uses all three dimensions together:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>TP</strong>: within node (NVLink 8-GPU group), splits single layers</li>
+<li><strong>PP</strong>: cross-node (IB connected), splits layer sequence</li>
+<li><strong>DP</strong>: the "remaining" dimension beyond the above two, splits data</li>
+</ul>
+<p>Example with 512 GPUs (64 nodes × 8 GPUs): TP=8 (within node), PP=8 (8 groups of nodes), DP=8 (data parallelism dimension). $8 \times 8 \times 8 = 512$.</p>
+<p>Model state per GPU: holds $\frac{1}{8}$ of single-layer parameters (TP); holds $\frac{1}{8}$ of layers (PP); sees $\frac{1}{8}$ of the batch (DP). Actual memory pressure per GPU ≈ model / 64, manageable.</p>
+
+<h3>Adding ZeRO</h3>
+<p>Apply ZeRO on the DP dimension to further save memory: ZeRO-1 (optimizer state sharded along DP dimension); FSDP (parameters, gradients, optimizer all sharded along DP).</p>
+<p>GPT-4-scale training is rumored to use TP=8 + PP=16 + DP=64 + ZeRO-1, across 8192 H100s total.</p>
+
+<h3>Activation Recomputation</h3>
+<p>Backward pass needs intermediate activations from the forward pass. Storing them all consumes significant memory. <strong>Gradient Checkpointing</strong>: only keep activations at a few "checkpoint" positions; recompute from the nearest checkpoint during backward. Typically only keep each Transformer block's input; recompute one forward per block during backward — 30% extra compute in exchange for 3-5× reduction in activation memory. Essential for training 100B+ models.</p>
+
+<h3>Training Stack Comparison</h3>
+<table>
+<tr><th>Framework</th><th>Developer</th><th>Key Features</th></tr>
+<tr><td>DeepSpeed</td><td>Microsoft</td><td>ZeRO origin; complete 3D parallelism</td></tr>
+<tr><td>Megatron-LM</td><td>NVIDIA</td><td>TP/PP originator; extreme GPU optimization</td></tr>
+<tr><td>FSDP</td><td>PyTorch official</td><td>Good integration; active community</td></tr>
+<tr><td>Megatron-DeepSpeed</td><td>Microsoft + NVIDIA</td><td>Fusion of both</td></tr>
+<tr><td>Colossal-AI</td><td>HPC-AI Tech</td><td>Chinese-developed; comprehensive strategies</td></tr>
+<tr><td>torchtitan</td><td>PyTorch official</td><td>Emerged 2024; modern and clean</td></tr>
+</table>
+<p>DeepSpeed and Megatron are industry de facto standards. Meta trains the LLaMA series using their own + FSDP approach. HuggingFace's accelerate library is a higher-level wrapper.</p>
+
+<h3>Training Recipe</h3>
+<p>Typical configuration for one 100B-scale model training run (analogous to LLaMA-3-70B):</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- Hardware: 1024 H100s (128 nodes)</li>
+<li>- Parallelism: TP=8, PP=4, DP=32, ZeRO-1</li>
+<li>- Data: ~15T tokens</li>
+<li>- Duration: ~8 weeks</li>
+<li>- Optimizer: AdamW, bf16 mixed precision</li>
+<li>- LR schedule: linear warmup + cosine decay</li>
+<li>- Batch: global 8192 sequences × 8192 tokens ≈ 67M tokens/step</li>
+</ul>
+<p>Electricity + hardware depreciation: tens of millions of dollars. So large-scale model training is a game for giants — but once trained and open-sourced, everyone benefits.</p>
+
+<div class="part-header"><div class="part-label">PART EIGHT</div><h2 class="part-title">4.8 Inference Engines and Scheduling</h2><p class="part-desc">Training is just the beginning — inference optimization is the key to whether LLMs can be practically deployed.</p></div>
+
+<h2 id="s4-8-1"><span class="num">4.8.1</span>Inference Workload Characteristics</h2>
+<p class="pos">Position: Prefill vs Decode — LLM inference's two phases have fundamentally different bottlenecks.</p>
+
+<h3>Two-Phase Model</h3>
+<p>LLM inference has two phases:</p>
+<p><strong>Prefill</strong>: process the entire input prompt (e.g., 1000 tokens); one forward pass computes the KV Cache for all tokens and predicts the next token.</p>
+<p><strong>Decode</strong>: based on the existing KV Cache, generate one new token per step — each forward pass processes only 1 new token but must read all historical KV Cache to perform attention.</p>
+<p>A typical conversation: 100-token prompt + 500-token response = 1 prefill (100 tokens) + 500 decode steps.</p>
+
+<h3>Compute Characteristic Differences</h3>
+<table>
+<tr><th></th><th>Prefill</th><th>Decode</th></tr>
+<tr><td>Per-forward processing</td><td>Entire prompt (hundreds to thousands of tokens)</td><td>1 token</td></tr>
+<tr><td>Compute</td><td>Large; compute-bound</td><td>Small; memory-bound</td></tr>
+<tr><td>Primary cost</td><td>GEMM</td><td>Reading KV Cache</td></tr>
+<tr><td>Batching benefit</td><td>Small (prompt is already large)</td><td>Large (combining multiple requests)</td></tr>
+</table>
+<p>Decode's bottleneck is <strong>memory bandwidth</strong>. Generating each token requires reading all layers' KV Cache from HBM for attention. Model weights also need a full pass. Compute is minimal but data movement is extensive — GPU compute utilization drops to 5-10%. This characteristic drives the entire inference optimization field.</p>
+
+<h3>Key Metrics</h3>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>TTFT</strong> (Time To First Token): time from request to first token returned. Determined by prefill. User-perceived latency.</li>
+<li><strong>TPOT</strong> (Time Per Output Token): average time between tokens. Determined by decode. Determines generation speed.</li>
+<li><strong>Throughput</strong>: system-wide tokens/s — most important for service providers.</li>
+<li><strong>Concurrency</strong>: how many requests can be served simultaneously.</li>
+</ul>
+<p>Latency and throughput trade off. Large batches increase throughput but lengthen TPOT — how to schedule is the core problem of inference engines.</p>
+
+<h3>Hardware Bottleneck Analysis</h3>
+<p>H100 with LLaMA-3-70B FP16 decode: model weights 140GB; HBM bandwidth 3 TB/s; theoretical limit 3000 / 140 ≈ 21 tokens/s (single request).</p>
+<p>Measured decode 25-40 tokens/s (vLLM data) — essentially approaching the bandwidth ceiling. Improvements only possible via: compressing weights (quantization), compressing KV Cache, or batching multiple requests (sharing bandwidth across requests).</p>
+
+<h2 id="s4-8-2"><span class="num">4.8.2</span>KV Cache</h2>
+<p class="pos">Position: The soul of LLM inference — cutting $O(L^2)$ complexity to $O(L)$, but introducing memory pressure.</p>
+
+<h3>Why It's Needed</h3>
+<p>During decode, generating the $t$-th token requires only the new token's $\mathbf{q}_t$ for attention, but needs <strong>all prior positions' K, V</strong>. If $\mathbf{k}_1, \ldots, \mathbf{k}_{t-1}$ were recomputed each time, that's $O(t)$ extra computation per step — total $O(t^2)$. KV Cache caches all prior K, V — each new token only computes its own $\mathbf{k}_t, \mathbf{v}_t$ and appends to the cache. Total computation $O(t)$.</p>
+
+<h3>Memory Footprint</h3>
+<p>LLaMA-3-70B (80 layers, 64 heads, d_head=128, GQA=8):</p>
+<p>KV per token per layer: $2 \times 8 \times 128 \times 2 = 4$ KB (FP16)</p>
+<p>KV per token total: $80 \times 4$ KB $= 320$ KB</p>
+<p>A 10K token conversation: 3.2 GB per sample</p>
+<p>A single H100 80G can serve only ~20 such conversations simultaneously — memory is the concurrency ceiling.</p>
+
+<h3>Problems with Naive KV Cache</h3>
+<p>Early inference engines (original Transformers, early TGI) allocated each sample's KV Cache as <strong>contiguous, maximum-length</strong> pre-reserved space.</p>
+<p>Problems: wasted memory (reserving max_length=4096 but only using 500, 87.5% wasted); internal fragmentation (different request lengths, poor space utilization); external fragmentation (new requests need large contiguous blocks; small blocks freed by short requests don't suffice); low concurrency ceiling. This is what PagedAttention was designed to solve.</p>
+
+<h2 id="s4-8-3"><span class="num">4.8.3</span><a href="ch5_partB_preview.html#p12">PagedAttention</a> and vLLM</h2>
+<p class="pos">Orientation: OS virtual memory applied to KV Cache — vLLM's core innovation.</p>
+
+<h3>Core Idea</h3>
+<p>PagedAttention's (UC Berkeley 2023) inspiration comes directly from OS virtual memory: <strong>physical memory is divided into fixed-size pages; logical addresses are mapped to physical pages via a page table</strong>.</p>
+<p>Applied to KV Cache: partition GPU memory into fixed-size blocks (e.g., each block holds KV for 16 tokens); each request maintains a block table mapping its logical token positions → physical blocks; blocks are allocated on demand, not pre-reserved; the Attention kernel looks up actual positions via the block table.</p>
+
+<h3>Results</h3>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong>Memory utilization</strong>: from ~40% to ~96% (official data)</li>
+<li>- <strong>Concurrency</strong>: 4-10× more concurrent requests on the same 80G memory</li>
+<li>- <strong>Throughput</strong>: 2-4× improvement over prior approaches</li>
+</ul>
+
+<h3>Attention Kernel Modification</h3>
+<p>Standard attention kernels assume K, V are in contiguous memory. PagedAttention's kernel must look up K, V positions via the block table:</p>
+<pre><code class="language-c">// simplified pseudocode
+for each query q_i:
+    output = 0; max_score = -inf; sum_exp = 0
+    for each logical token j in query's block_table:
+        block_id  = block_table[j / BLOCK_SIZE]
+        inner_idx = j % BLOCK_SIZE
+        k_j = K_pool[block_id * BLOCK_SIZE + inner_idx]
+        v_j = V_pool[block_id * BLOCK_SIZE + inner_idx]
+        score = q_i @ k_j / sqrt(d)
+        // online softmax update
+        new_max = max(max_score, score)
+        sum_exp = sum_exp * exp(max_score - new_max) + exp(score - new_max)
+        output  = output  * exp(max_score - new_max) + exp(score - new_max) * v_j
+        max_score = new_max
+</code></pre>
+<p>The extra indirection has minor overhead, far outweighed by the memory pressure saved.</p>
+
+<h3>Copy-on-Write and Sharing</h3>
+<p>PagedAttention also supports KV Cache sharing — similar to OS fork+COW. Scenario: beam search or parallel sampling where multiple candidates share the same prefix. Naive approach: one KV Cache per candidate; PagedAttention lets multiple sequences' block tables point to the same physical block, copying only on write.</p>
+<p>Also applies to <strong>Prefix Caching</strong>: multiple requests share the same system prompt; the prompt portion's KV Cache can be shared — computed only once. QPS for high-concurrency LLM services increases dramatically.</p>
+
+<h3>vLLM and Others</h3>
+<p>The reference implementation of PagedAttention. vLLM has grown from a research project to the de facto standard open-source inference engine: PagedAttention + continuous batching + speculative decoding; broad HuggingFace model compatibility; TP and multi-GPU support; OpenAI-compatible API; active community with fast updates.</p>
+<p>Not the only option. SGLang has its own <strong>RadixAttention</strong> (prefix sharing organized as a radix tree), faster for complex workflows (multi-turn, multi-candidate). TGI (HuggingFace's Rust implementation) is stable. TensorRT-LLM is extremely optimized on NVIDIA platforms but has a closed ecosystem.</p>
+
+<h2 id="s4-8-4"><span class="num">4.8.4</span>Continuous Batching</h2>
+<p class="pos">Position: The evolution of dynamic batching — efficiently parallelizing requests of different lengths rather than waiting for a full batch.</p>
+
+<h3>Traditional Static Batching</h3>
+<p>Early approach: a batch of requests starts and ends together, padded to the longest length.</p>
+<p>Problems: must wait for a full batch before starting — high latency; when request lengths vary greatly, short requests idle waiting for long ones — low throughput; finished requests wait for others in the same batch, GPU idles.</p>
+
+<h3>Continuous Batching</h3>
+<p>The approach popularized by Orca (2022) and vLLM (2023). Core: <strong>schedule at the iteration (each decode step) granularity, not the whole request</strong>.</p>
+<p>Each decode step: check current active requests, form a batch for one forward; update each request's output; finished requests return immediately and free resources; new requests join the batch in the next iteration.</p>
+<p>GPU utilization rises from 40% to 80%+.</p>
+
+<h3>Prefill/Decode Scheduling</h3>
+<p>A detail: prefill and decode have very different compute characteristics, so mixing them in scheduling isn't always most efficient. Two styles:</p>
+<p><strong>Iteration-level mixing</strong> (early vLLM): each iteration may have both prefill and decode requests. Prefill is compute-bound, decode is memory-bound; mixing complements each other — but iteration time is prolonged by prefill, affecting decode TPOT.</p>
+<p><strong>Chunked Prefill</strong> (supported by vLLM, SGLang): split long-prompt prefill into chunks; each iteration mixes a small amount of prefill with decode — balancing the two.</p>
+<p><strong>Prefill-Decode separation</strong> (SplitWise, DistServe): prefill and decode run on different GPUs/machines — prefill machines are compute-intensive, decode machines are bandwidth-intensive. KV Cache transferred cross-node. Suitable for ultra-large scale.</p>
+
+<h3>Preemption and Swap-Out</h3>
+<p>What to do when GPU memory is full? Preempt some requests — swap their KV Cache to CPU (or simply discard and recompute).</p>
+<p>Policies: First-Come-First-Served (FCFS), priority (premium users first), or swap fairness. vLLM implements these mechanisms; robust in production environments.</p>
+
+<h2 id="s4-8-5"><span class="num">4.8.5</span>Speculative Decoding</h2>
+<p class="pos">Position: A small model guesses, a large model verifies — 2-3× inference speedup with no quality loss.</p>
+
+<h3>Basic Idea</h3>
+<p>The primary bottleneck of decode is that each forward produces only 1 token. Can multiple tokens be produced at once? Standard methods can't — each token depends on the previous one.</p>
+<p>Speculative Decoding (independently proposed by Google and DeepMind): use a <strong>small model (draft)</strong> to quickly generate K candidate tokens; use a <strong>large model (target)</strong> in one forward pass to verify whether these K tokens conform to its distribution; accept conforming tokens (sequentially from the front), reject from the first non-conforming token onward.</p>
+<p>Key insight: the large model's single forward computed logits for K positions, completing "verification + next token generation" in one step.</p>
+
+<h3>Why the Distribution Is Unchanged</h3>
+<p>Speculative decoding's mathematical guarantee: <strong>the output distribution is identical to using the large model directly</strong> (statistically). Derivation:</p>
+<p>Let the small model distribution be $q(x)$, the large model distribution be $p(x)$. The acceptance probability for candidate token $x$:</p>
+<div class="formula">$\min\left(1, \frac{p(x)}{q(x)}\right)$</div>
+<p>On rejection, sample from the <strong>adjusted distribution</strong>:</p>
+<div class="formula">$p'(x) = \frac{\max(0, p(x) - q(x))}{\sum_{x'} \max(0, p(x') - q(x'))}$</div>
+<p>This rejection sampling mechanism guarantees the final sampling distribution is exactly $p(x)$.</p>
+
+<h3>Acceptance Rate</h3>
+<p>Efficiency depends on the "alignment" between the small and large models. Higher alignment → higher acceptance rate → greater speedup.</p>
+<p>Typical pairing: LLaMA-3-70B + LLaMA-3-8B: acceptance rate ~70%, speedup 2-3×; same-family small/large model pairings work best — same family means similar training distributions.</p>
+
+<h3>Medusa and EAGLE</h3>
+<p>Variants: instead of an independent small model, add a few "heads" to the target model to directly predict multiple future tokens.</p>
+<p><strong>Medusa</strong> (2024): add K extra heads on top of the original model, each predicting one position of the next K tokens. Adding a few hundred M parameters; K candidates generated in parallel during inference.</p>
+<p><strong>EAGLE / EAGLE-2</strong>: more advanced — not "multi-head prediction" but a lightweight autoregressive sub-network that generates candidates from the main model's hidden states. Acceptance rate can reach 80%+, speedup 3×+.</p>
+
+<h3>Engineering Trade-offs</h3>
+<p>Speculative decoding trade-offs: extra memory (small model or extra heads); complex implementation with interaction pitfalls with batching/KV Cache; large benefit under small batch; diminishing benefit under large batch (memory-bound pressure reduced).</p>
+<p>vLLM, TGI, and TensorRT-LLM all support speculative decoding. Significant benefit for high-QPS online serving; small benefit for internal tooling services — may not be worth the complexity.</p>
+
+<div class="part-header"><div class="part-label">PART NINE</div><h2 class="part-title">4.9 Inference Compression</h2><p class="part-desc">Quantization is not an "add-on" to inference speedup; it is the prerequisite for running open-source large models at all.</p></div>
+
+<h2 id="s4-9-1"><span class="num">4.9.1</span>AWQ / GPTQ Deep Dive</h2>
+<p class="pos">Position: The two mainstream LLM quantization methods — mathematical principles and engineering differences.</p>
+
+<h3>LLM Quantization Specifics</h3>
+<p>Chapter 3 Section 4.7.2 covered general quantization principles. LLMs are special: enormous weight count (70B × 2B = 140GB); INT4 compression brings this to 35GB — fits on a single A100/H100; activations have extreme outliers — some dimensions have very large values that suffer severe loss with standard quantization; high precision requirements — a single wrong token can derail an entire response.</p>
+
+<h3>GPTQ</h3>
+<p>GPTQ (2022) uses second-order information for column-by-column quantization. Core observation: quantization error introduced by one column of weights can be compensated by adjusting the remaining columns.</p>
+<p>Mathematically, solving:</p>
+<div class="formula">$\arg\min_{\hat{W}} \| \mathbf{X}(W - \hat{W}) \|^2$</div>
+<p>Use a small amount of calibration data to approximate the Hessian; quantize column by column: for each column $j$, find the nearest quantized value $\hat{w}_j$; compute error $\delta = w_j - \hat{w}_j$; "absorb" the error into remaining unquantized columns to minimize total error; continue to the next column.</p>
+<p>Algorithm complexity $O(d^3)$ ($d$ = layer width); quantizing one layer takes a few minutes. INT4 quantization achieves 95%+ of FP16 precision.</p>
+
+<h3>AWQ</h3>
+<p>AWQ (Activation-aware Weight Quantization, MIT 2023) observed: <strong>not all weights are equally important — weights corresponding to large activation magnitudes are more important</strong>.</p>
+<p>Traditional quantization treats all weights equally; quantization error for "important weights" is amplified (large activation × quantization error = large loss). AWQ's fix: <em>pre-scale</em> important channels to reduce their relative quantization error.</p>
+<p>Specifically, for each column of the weight matrix (corresponding to one activation channel):</p>
+<div class="formula">$W' = W \cdot s, \quad \hat{W} = \text{Quantize}(W')$</div>
+<p>During inference, multiply activations by $s$: $\mathbf{x}' = \mathbf{x} / s$. Mathematically equivalent but quantization error distribution changes — important weights have smaller error; unimportant weights have larger error (doesn't matter).</p>
+<p>How to choose $s$? Measure activation magnitudes using calibration data; important channels use $s > 1$ (weight amplified; smaller relative quantization error); unimportant channels use $s \le 1$.</p>
+
+<h3>GPTQ vs AWQ</h3>
+<table>
+<tr><th></th><th>GPTQ</th><th>AWQ</th></tr>
+<tr><td>Approach</td><td>Column-by-column quantization with error compensation</td><td>Channel scaling to distribute error</td></tr>
+<tr><td>Compute</td><td>High (Hessian)</td><td>Medium</td></tr>
+<tr><td>Quality</td><td>Slightly better, especially INT3</td><td>Good; INT4 sufficient</td></tr>
+<tr><td>Inference speed</td><td>Same (both INT4 GEMM)</td><td>Same</td></tr>
+<tr><td>Ecosystem</td><td>AutoGPTQ, ExLlamaV2</td><td>vLLM, TGI native support</td></tr>
+</table>
+<p>In practice AWQ is more commonly chosen — simpler engineering, same inference speed, negligible precision difference.</p>
+
+<h3>GGUF and llama.cpp</h3>
+<p>The quantization format used by llama.cpp is GGUF, with its own quantization schemes (Q4_K_M, Q5_K_S, Q8_0, etc.). Similar to AWQ/GPTQ but optimized to the extreme on both CPU and GPU. First choice for edge deployment (personal computers, phones).</p>
+
+<h3>Ultra-Low Bit</h3>
+<p>The 2024 frontier is <strong>INT2/INT1</strong>. BitNet (Microsoft) trains with ternary (-1, 0, +1) weights but requires training from scratch.</p>
+<p>More practical are <strong>QuIP</strong> and <strong>AQLM</strong> — first apply an orthogonal transform to "smooth" weights, then quantize to 2-3 bits; precision approaches INT4.</p>
+<p>General production deployment remains INT4 mainstream — precision starts degrading noticeably below INT3.</p>
+
+<h3>Practical Quantization Workflow</h3>
+<pre><code class="language-python"># quantize LLaMA-3-70B with AutoAWQ
+from awq import AutoAWQForCausalLM
+from transformers import AutoTokenizer
+
+model_path = "meta-llama/Meta-Llama-3-70B-Instruct"
+quant_path = "Meta-Llama-3-70B-Instruct-AWQ"
+
+model = AutoAWQForCausalLM.from_pretrained(model_path)
+tokenizer = AutoTokenizer.from_pretrained(model_path)
+
+quant_config = {
+    "zero_point": True,
+    "q_group_size": 128,
+    "w_bit": 4,
+    "version": "GEMM",
+}
+model.quantize(tokenizer, quant_config=quant_config, calib_data="pile_calib.jsonl")
+model.save_quantized(quant_path)
+
+# load directly with vLLM:
+# vllm serve Meta-Llama-3-70B-Instruct-AWQ --quantization awq
+</code></pre>
+
+<h2 id="s4-9-2"><span class="num">4.9.2</span>KV Cache Quantization and FP8</h2>
+<p class="pos">Position: Beyond weights — KV Cache and activations also need compression to further free memory.</p>
+
+<h3>KV Cache Quantization</h3>
+<p>INT4 weight quantization is now standard, but KV Cache remains FP16 — at long contexts it can be larger than the model weights.</p>
+<p><strong>INT8 KV Cache</strong>: simple and effective. K, V per token quantized by channel. Memory halved; precision almost unchanged. Supported by vLLM and TensorRT-LLM.</p>
+<p><strong>INT4 KV Cache</strong>: memory halved again, but precision loss starts to become noticeable. Requires careful group quantization (one scale per 64 or 128 tokens) to maintain quality.</p>
+<p><strong>KIVI</strong> (2024): Key quantized by channel, Value quantized by token — because Key and Value have different distribution characteristics. Can maintain precision at INT2.</p>
+<p>KV Cache quantization offers maximum benefit in long-context scenarios. A 100K token conversation's KV Cache drops from 30GB to 7.5GB (INT4), completely changing deployment possibilities.</p>
+
+<h3>FP8 and Hopper</h3>
+<p>NVIDIA H100 Hopper architecture natively supports FP8 — two formats:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>E4M3</strong>: 4-bit exponent, 3-bit mantissa. Smaller dynamic range, relatively higher precision. Stores weights and activations.</li>
+<li><strong>E5M2</strong>: 5-bit exponent, 2-bit mantissa. Larger dynamic range, lower precision. Stores gradients and other quantities where outliers must be preserved.</li>
+</ul>
+<p>FP8 compute doubles compared to FP16 on H100 Tensor Cores. Importantly, FP8 can also be used for training — unlike INT8 which is inference-only.</p>
+
+<p><strong>Next generation: NVIDIA Blackwell</strong>. In 2024, NVIDIA released the Blackwell architecture (B200/GB200), with single-chip FP4 compute reaching 20 PFLOPS and 192GB HBM3e — the next-generation flagship training/inference chip after the H100. Blackwell supports FP4 precision natively, further reducing inference cost; NVLink 5 provides 1.8 TB/s inter-chip bandwidth. From 2025, major cloud providers began deploying GB200 clusters, which have become the new standard for large-scale LLM training.</p>
+
+<h3>FP8 Training</h3>
+<p>DeepSeek-V3, LLaMA-3, and Qwen 2.5 have all tried FP8 training. Key technical points: forward activations use FP8; backward gradients use FP8; weight master copies remain FP32 (for optimizer updates); per-tensor or per-token scaling prevents outlier overflow; some sensitive operations (normalization, softmax) retain FP16/FP32.</p>
+<p>DeepSeek-V3 measured FP8 as 1.5-2× faster than BF16 with almost no precision loss. One of the major 2024 training advances.</p>
+
+<h3>FP8 Inference</h3>
+<p>FP8's compute advantage in inference + smaller memory footprint than FP16. But toolchain maturity currently lags INT4 — the main challenge is <strong>dynamic range</strong>: INT4 relies on group quantize calibration; FP8's per-tensor scale requires more precision.</p>
+<p>TensorRT-LLM has the best FP8 inference support (being NVIDIA's product). vLLM and SGLang are following suit.</p>
+
+<h3>KV Cache + Weight Dual Quantization</h3>
+<p>Extreme compression route: INT4 weights + INT4 KV Cache. LLaMA-3-70B on a single H100 (80G):</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- Weights: 140GB FP16 → 35GB INT4</li>
+<li>- KV Cache: 2.5GB per sample at 8K context → 0.6GB INT4</li>
+<li>- Concurrency: from under 10 to 50+</li>
+</ul>
+<p>This is the key to serving open-source 70B models at scale on a single H100.</p>
+
+<div class="part-header"><div class="part-label">PART TEN</div><h2 class="part-title">4.10 <a href="ch5_partC_supplement.html#p25">RAG</a></h2><p class="part-desc">Giving LLMs access to what they don't know — enterprise knowledge, real-time data, and private documents all flow through this gateway.</p></div>
+
+<h2 id="s4-10-1"><span class="num">4.10.1</span>Basic RAG Pipeline</h2>
+<p class="pos">Orientation: the complete naive RAG workflow — design decisions at every step.</p>
+
+<h3>Why RAG?</h3>
+<p>An LLM's parameters encode knowledge from training time. Three fundamental problems:</p>
+<ol>
+<li><strong>Staleness</strong>: training data has a cutoff; the model knows nothing after that point</li>
+<li><strong>Hallucination</strong>: when the model doesn't know, it fabricates</li>
+<li><strong>Private data</strong>: enterprise-internal documents were never seen during training</li>
+</ol>
+<p>Solution A is fine-tuning — expensive, and must be repeated every time new knowledge arrives. Solution B is RAG (Retrieval-Augmented Generation): <strong>at query time, retrieve relevant documents from a knowledge base, splice them into the prompt, and let the model answer based on the retrieved context</strong>.</p>
+
+<h3>Naive RAG Pipeline</h3>
+<div class="mermaid">
+flowchart LR
+    subgraph Offline
+        DOC[Documents] --> CHUNK[Chunking]
+        CHUNK --> EMB[Embedding]
+        EMB --> VDB[Vector DB]
+    end
+    subgraph Online
+        Q[Query] --> QE[Query Embedding]
+        QE --> SEARCH[ANN Search]
+        VDB --> SEARCH
+        SEARCH --> CTX[Retrieved Chunks]
+        CTX --> PROMPT[Prompt Construction]
+        Q --> PROMPT
+        PROMPT --> LLM[LLM]
+        LLM --> A[Answer]
+    end
+</div>
+
+<h3>Chunking</h3>
+<p>Documents are split into small chunks, each embedded independently. Why? A vector must represent the full chunk content — chunks that are too large can't be captured in a single vector; the LLM's context is limited, so overly large chunks leave room for fewer of them; and retrieval granularity matters — user queries typically match a specific passage, not an entire document.</p>
+<p>Splitting strategies:</p>
+<ol>
+<li><strong>Fixed size</strong>: one chunk per 500 tokens, the simplest approach. Drawback: sentences get cut mid-way.</li>
+<li><strong>Recursive splitting</strong>: prefer paragraph boundaries, fall back to sentence boundaries, then fixed size. This is the default in LangChain's RecursiveCharacterTextSplitter.</li>
+<li><strong>Semantic splitting</strong>: split at points where consecutive sentence similarity drops sharply.</li>
+<li><strong>Structure-aware</strong>: split Markdown at headings, code at function/class boundaries.</li>
+</ol>
+<p>Practical chunk sizes: 512–1024 tokens for technical docs; 256–512 tokens for Q&A/conversational content; by function or class for code. Use <strong>overlap</strong> of 10–20% between adjacent chunks to prevent information loss at boundaries.</p>
+
+<h3>Embedding and Indexing</h3>
+<p>Each chunk passes through an embedding model (Section 4.4.3), yielding 768/1024/4096-dimensional vectors that are stored in a vector database (covered in Section 3.4.4).</p>
+<p>Vector database selection criteria: scale (pgvector/Chroma sufficient for millions; Milvus/Qdrant for hundreds of millions); filtering (Qdrant and Milvus are strong on metadata filtering); deployment (LanceDB/Chroma for embedded; Milvus/Qdrant for server deployments); hybrid search (Weaviate and Qdrant support natively).</p>
+
+<h3>Query and Retrieval</h3>
+<p>The user query passes through the same embedding model and searches the vector store for the top-K (typically 3–10) nearest neighbors. The raw text and metadata are returned.</p>
+
+<h3>Prompt Construction</h3>
+<p>Typical template:</p>
+<pre><code class="language-text">Answer the question based on the reference materials below. If the materials do not contain relevant information, say you don't know.
+
+[Reference Materials]
+[1] {chunk_1 text}
+Source: {chunk_1 source}
+
+[2] {chunk_2 text}
+Source: {chunk_2 source}
+
+...
+
+[Question]
+{user_query}
+
+[Requirements]
+- Cite relevant reference numbers when answering, e.g. [1]
+- Answer only based on the reference materials; do not fabricate
+</code></pre>
+<p>Once assembled, the prompt is sent to the LLM to generate an answer.</p>
+
+<h3>Limitations of Naive RAG</h3>
+<p>It looks simple but there are many pitfalls in practice: low retrieval recall (the gap between query phrasing and document phrasing means vector similarity misses relevant content); poor ranking (the top-K includes relevant chunks but not at the top); lost cross-chunk context (related content spans multiple chunks, each of which is incomplete in isolation); hallucinated citations (the LLM invents references that don't exist); misinterpreted query intent (ambiguous queries and multi-intent queries are handled poorly).</p>
+<p>Advanced RAG in the next section addresses each of these problems.</p>
+
+<h2 id="s4-10-2"><span class="num">4.10.2</span>Advanced RAG Techniques</h2>
+<p class="pos">Orientation: from naive RAG to production RAG — query rewriting, hybrid retrieval, reranking, and context expansion.</p>
+
+<h3>Query-Side Optimization</h3>
+<p><strong>Query Expansion / Rewriting</strong>: use an LLM to first rewrite or expand the user's query into multiple variants, retrieve for each, then merge the results.</p>
+<pre><code class="language-python">def rewrite_query(query, llm):
+    prompt = f"""Rewrite the user's question below into 3 different versions,
+covering possible phrasings and angles. Output only the rewritten questions, one per line.
+
+Original question: {query}
+
+Rewrites:"""
+    return llm(prompt).strip().split('\n')
+
+# retrieve with all variants, merge and deduplicate results
+all_chunks = []
+for q in rewrite_query(user_query, llm):
+    all_chunks.extend(vector_db.search(q, top_k=5))
+</code></pre>
+<p><strong>HyDE</strong> (Hypothetical Document Embedding): have the LLM first <em>fabricate</em> a hypothetical answer, then use that answer for retrieval — this matches more accurately than using the raw question (answers and documents share the same "answer space").</p>
+<p><strong>Query Decomposition</strong>: split a complex, multi-intent query into sub-queries, retrieve for each independently, then synthesize the results.</p>
+
+<h3>Hybrid Retrieval</h3>
+<p>Vector retrieval captures semantic similarity, but struggles with <strong>technical terms, product model numbers, and proper nouns</strong> where exact matching matters. Keyword search (BM25) excels here.</p>
+<p>Hybrid Search: run both retrieval methods simultaneously and merge results with <strong>Reciprocal Rank Fusion (RRF)</strong>:</p>
+<div class="formula">$\text{score}_{\text{RRF}}(d) = \sum_{r \in R} \frac{1}{k + \text{rank}_r(d)}$</div>
+<p>$R$ is the set of rankings from different retrieval methods, $\text{rank}_r(d)$ is document $d$'s rank under method $r$, and $k$ is typically 60. Simple and blunt but empirically effective — no model training required. Weaviate, Qdrant, and Elasticsearch all support hybrid search natively.</p>
+
+<h3>Reranking</h3>
+<p>Stage 1 recalls top-50 (vector + BM25); Stage 2 uses a more precise model to rerank down to top-5.</p>
+<p><strong>Cross-encoder reranker</strong>: unlike the dual-tower design of embedding models, a reranker takes the (query, chunk) pair together and directly outputs a relevance score. 100× slower but far more accurate.</p>
+<p>Open-source rerankers:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>BGE-Reranker-v2</strong> (BAAI): strong in both Chinese and English</li>
+<li><strong>Cohere Rerank</strong>: commercial, API-based</li>
+<li><strong>Jina Reranker</strong>: open-source, long-context</li>
+<li><strong>Qwen3-Reranker</strong>: new in 2024, top of leaderboards</li>
+</ul>
+<p>In production RAG, <strong>reranking is the single most impactful improvement</strong> — adding a reranker typically raises retrieval accuracy from 60% to 85%+. The cost is one extra network round-trip and tens of milliseconds of latency.</p>
+
+<h3>Contextual Compression</h3>
+<p>Retrieved chunks can be large and wasteful to stuff into a prompt. <strong>Contextual Compression</strong>: use a small model or LLM to compress each chunk down to "the parts relevant to the query," discarding irrelevant sentences. LangChain's ContextualCompressionRetriever implements this.</p>
+
+<h3>Parent-Child Document Strategy</h3>
+<p>Embedding-friendly chunks (small, sentence-level) and LLM-friendly chunks (large, paragraph-level) are in tension. The solution is a two-level structure — use small chunks for retrieval, then return the large parent chunk to the LLM once a match is found.</p>
+<pre><code class="language-python">chunks = {}   # chunk_id  → {"text": ..., "parent_id": ...}
+parents = {}  # parent_id → large_chunk_text
+
+# at retrieval time
+top_chunks = vector_db.search(query, top_k=10)
+parent_ids = set(c.parent_id for c in top_chunks)
+context = [parents[pid] for pid in parent_ids]   # parent chunks are sent to the LLM
+</code></pre>
+
+<h3>Sentence Window</h3>
+<p>A variant: index one vector per sentence, but when a sentence is retrieved, return <em>N sentences before and after it</em> together to the LLM. This achieves both retrieval precision and contextual completeness.</p>
+
+<h3>Self-Correction: Corrective RAG</h3>
+<p>CRAG (2024): after retrieval, an evaluator model judges whether the retrieved results are truly relevant. If not → trigger broader retrieval or fall back to the LLM's own knowledge.</p>
+
+<h3>Self-RAG</h3>
+<p>More aggressive: let the LLM itself decide when to retrieve, what to retrieve, and how to use the results — special tokens (Retrieve / Relevant / Support) give the model a form of "metacognition." Requires dedicated fine-tuning.</p>
+
+<h3>Evaluation</h3>
+<p>RAG is hard to evaluate. The popular framework <strong>RAGAS</strong> scores across several dimensions:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Faithfulness</strong>: whether the answer is grounded in the given context (no hallucination)</li>
+<li><strong>Answer Relevancy</strong>: whether the answer actually addresses the question</li>
+<li><strong>Context Precision</strong>: whether the retrieved chunks are relevant</li>
+<li><strong>Context Recall</strong>: whether all the information truly needed is present in the chunks</li>
+</ul>
+<p>Each dimension is evaluated automatically using LLM-as-judge. Not perfectly reliable, but far better than tuning blind.</p>
+
+<h2 id="s4-10-3"><span class="num">4.10.3</span>GraphRAG and Agentic RAG</h2>
+<p class="pos">Orientation: two frontier directions for RAG — knowledge-graph augmentation and agentification.</p>
+
+<h3>GraphRAG</h3>
+<p>Naive RAG retrieves by "semantic similarity" and performs poorly on two query types:</p>
+<ol>
+<li><strong>Multi-hop questions</strong>: "What is the relationship between A and B?" — requires chaining multiple entities</li>
+<li><strong>Global questions</strong>: "What are the core themes in this document set?" — requires synthesis across all documents</li>
+</ol>
+<p>Microsoft's GraphRAG approach (2024):</p>
+<ol>
+<li><strong>Entity extraction</strong>: use an LLM to extract entities and relations from each chunk, building a knowledge graph</li>
+<li><strong>Community detection</strong>: apply a community-discovery algorithm (Leiden) to partition the graph into thematic communities</li>
+<li><strong>Community summarization</strong>: generate a summary for each community (LLM summarizes all entities and relations within it)</li>
+<li><strong>Querying</strong>: depending on question type, retrieve a combination of relevant chunks / entities / community summaries to feed the LLM</li>
+</ol>
+<p>Benefits: multi-hop reasoning, global synthesis, explainability (can point to "reasoning based on this edge in the knowledge graph").</p>
+<p>Cost: high construction overhead — for a document corpus of hundreds of thousands of chunks, entity extraction alone can cost thousands of dollars in LLM calls. Only suitable for scenarios where the document base is relatively stable and queries are high-value (financial research reports, medical literature, legal compliance).</p>
+
+<h3>LightRAG and Variants</h3>
+<p>Microsoft GraphRAG is too heavy. LightRAG (2024) takes a lighter approach: dual-layer indexing (entity-level and relation-level), incremental updates, and graph traversal only at query time. It has gained popularity in the open-source community.</p>
+<p>Neo4j + LlamaIndex also offers a graph RAG integration at a higher level of maturity.</p>
+
+<h3>Agentic RAG</h3>
+<p>Naive RAG is "one retrieval, one answer." Agentic RAG: <strong>the LLM itself decides when, how, and how many times to retrieve</strong>.</p>
+<div class="mermaid">
+flowchart TB
+    Q[Query] --> LLM[LLM Agent]
+    LLM --> DEC{Decide}
+    DEC -->|answer directly| ANS[Answer]
+    DEC -->|retrieve| RET[Retrieve]
+    RET --> CTX[Context]
+    CTX --> LLM
+    DEC -->|multiple subtasks| PLAN[Plan Subtasks]
+    PLAN --> SUB[Subtask]
+    SUB --> LLM
+</div>
+<p>Typical patterns:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>ReAct RAG</strong>: the ReAct loop from Section 4.11.1 applied to RAG — the LLM outputs "Search: xxx", executes it, gets the results, and continues</li>
+<li><strong>Self-Ask</strong>: the LLM breaks a complex question into sub-questions, retrieves and answers each independently, then synthesizes</li>
+<li><strong>Adaptive RAG</strong>: answer simple questions directly; use multi-round retrieval for complex ones</li>
+</ul>
+
+<h3>Combining HyDE + Agentic</h3>
+<p>Advanced production RAG systems typically blend multiple techniques: query rewriting → multi-path recall (vector + BM25) → reranking → if confidence is low, the LLM triggers a second retrieval → final generation. LangChain and LlamaIndex provide composable tooling, or you can wire it yourself.</p>
+
+<h3>When Not to Use RAG</h3>
+<p>RAG is not a universal key. These scenarios see limited benefit or outright degradation:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong>Reasoning tasks</strong> (math, code): knowledge is not the bottleneck — reasoning is</li>
+<li>- <strong>Creative tasks</strong>: free expression is required; retrieval constraints actually hinder it</li>
+<li>- <strong>Highly dynamic / personalized</strong>: a knowledge base is irrelevant; fine-tuning is more appropriate</li>
+<li>- <strong>Short factual Q&A</strong> where precise sourcing is unnecessary: the model's own knowledge is usually sufficient</li>
+</ul>
+
+<div class="part-header"><div class="part-label">PART ELEVEN</div><h2 class="part-title">4.11 Agent</h2><p class="part-desc">LLMs calling external tools and planning autonomously — the shift from "generating text" to "getting things done."</p></div>
+
+<h2 id="s4-11-1"><span class="num">4.11.1</span>From Prompt to <a href="ch5_partC_supplement.html#p26">ReAct</a></h2>
+<p class="pos">Orientation: the intellectual roots of agents — from <a href="ch5_partB_preview.html#p16">CoT</a> to ReAct to the modern agent loop.</p>
+
+<h3>Chain-of-Thought</h3>
+<p>CoT (Wei et al. 2022) is the first step toward the agent paradigm. The core finding: prompting LLMs to "think step by step" (adding "Let's think step by step") improves accuracy over directly giving answers, especially on math and logical reasoning tasks.</p>
+<p>The intuition: each token generation in an LLM is a fixed-cost forward pass. Complex problems require multi-step reasoning; asking for a direct answer means completing that reasoning in a single forward pass — insufficient compute. Letting the model output its reasoning process means one forward pass per step, with total compute scaling linearly with reasoning length.</p>
+<p>CoT provides little benefit in small models — the model must be large enough (~60B+) for significant gains. This is part of the emergence phenomenon.</p>
+
+<h3>Self-Consistency</h3>
+<p>CoT + sample multiple reasoning chains + majority vote. The model generates several reasoning paths for the same question; the most consistent answer wins. This corrects errors in individual chains. The cost is N× inference.</p>
+
+<h3>Tree of Thoughts / Graph of Thoughts</h3>
+<p>A step further — instead of a linear reasoning chain, reasoning is expanded as a tree or graph, with each node as an intermediate reasoning state, explored via search algorithms (BFS, DFS, beam search).</p>
+<p>Suitable for planning problems (Game of 24, word puzzles). High engineering cost, rarely used in industry — CoT + self-consistency is usually sufficient.</p>
+
+<h3>ReAct</h3>
+<p>Reasoning + Acting (Yao et al. 2022). The key insight: make the LLM's "reasoning" more than just text — have it <strong>alternate between thinking and acting</strong>, where actions are calls to external tools.</p>
+<p>The ReAct loop:</p>
+<div class="mermaid">
+flowchart LR
+    T[Thought: What information do I need?] --> A[Action: call tool]
+    A --> O[Observation: tool result]
+    O --> T2[Thought: next step based on result]
+    T2 --> A2[Action: ...]
+    A2 --> FIN[Action: finish + Answer]
+</div>
+<p>Example prompt format:</p>
+<pre><code class="language-text">Question: Who won the 2024 F1 World Championship? How old is he?
+
+Thought: I need to find the 2024 F1 World Champion.
+Action: search("2024 F1 world champion")
+Observation: Max Verstappen won the 2024 F1 World Championship.
+
+Thought: Now I need to find Max Verstappen's birth date.
+Action: search("Max Verstappen birth date")
+Observation: Max Verstappen was born on 30 September 1997.
+
+Thought: He was 27 in 2024. I have my answer.
+Action: finish("Max Verstappen, age 27")
+</code></pre>
+
+<h3>ReAct Implementation</h3>
+<pre><code class="language-python">def run_react(question, tools, llm, max_steps=10):
+    transcript = f"Question: {question}\n\n"
+    for step in range(max_steps):
+        # prompt the LLM to generate the next Thought and Action
+        response = llm(transcript + "Thought:", stop=["Observation:"])
+        transcript += "Thought:" + response
+        # parse the Action
+        action = parse_action(response)   # e.g. "search('xxx')"
+        if action.name == "finish":
+            return action.args
+        # execute the tool
+        result = tools[action.name](*action.args)
+        transcript += f"Observation: {result}\n"
+    return "Max steps reached"
+</code></pre>
+
+<h3>Limitations of ReAct</h3>
+<p>ReAct is a classic early agent framework, but it has problems: fragile prompt formatting (the model occasionally produces output that doesn't match the format, causing parse failures); every step requires re-sending the full transcript (high token cost, slow); error accumulation (a single mistake in a long loop corrupts all subsequent steps); no structured tool interface (tools described in plain text are error-prone).</p>
+
+<h3>Modern Agents</h3>
+<p>ReAct has been largely superseded by <strong>Function Calling</strong> (covered in the next section) — once models natively support structured tool calls, prompt-convention workarounds are no longer needed.</p>
+<p>However, ReAct's core idea (Thought → Action → Observation → loop) lives on — the modern agent loop is essentially this, just with an upgraded mechanism for expressing tool calls.</p>
+
+<h2 id="s4-11-2"><span class="num">4.11.2</span>Function Calling / MCP / Multi-Agent</h2>
+<p class="pos">Orientation: modern agent infrastructure — native tool calling, standard protocols, and multi-agent collaboration.</p>
+
+<h3>Function Calling</h3>
+<p>OpenAI introduced Function Calling in June 2023 (later unified as the Tools API): models are trained to output structured JSON function calls as part of their native format. No more relying on prompt conventions — this is API-level support.</p>
+<p>Developers declare available tools to the model using JSON Schema:</p>
+<pre><code class="language-json">{
+  "type": "function",
+  "function": {
+    "name": "get_weather",
+    "description": "Get current weather for a location",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "location": {"type": "string", "description": "City name"},
+        "unit":     {"type": "string", "enum": ["celsius", "fahrenheit"]}
+      },
+      "required": ["location"]
+    }
+  }
+}
+</code></pre>
+<p>The model's output may be ordinary text, or it may be:</p>
+<pre><code class="language-json">{
+  "tool_calls": [{
+    "id": "call_123",
+    "type": "function",
+    "function": {
+      "name": "get_weather",
+      "arguments": "{\"location\": \"Paris\", \"unit\": \"celsius\"}"
+    }
+  }]
+}
+</code></pre>
+<p>The application executes the function and returns the result to the model as a <code>tool_message</code>, continuing the loop.</p>
+
+<h3>Function Calling in Open-Source Models</h3>
+<p>Closed-source models (OpenAI, Anthropic) led early on. After 2024, open-source models caught up — LLaMA-3.1, Qwen2.5, DeepSeek, and Mistral all support function calling natively.</p>
+<p>Training approach: large amounts of function-calling data (human-annotated or synthetic) are added during SFT, teaching the model to recognize when to call a tool and how to fill in parameters.</p>
+<p>Benchmark: the Berkeley Function Calling Leaderboard (BFCL) is the standard — a set of tool-calling tasks that evaluates different models. Qwen2.5-72B, DeepSeek-V3, and others approach GPT-4o on BFCL.</p>
+
+<h3>Structured Output</h3>
+<p>Function Calling is fundamentally structured output. In recent years, <strong>Constrained Decoding</strong> has matured — enforcing compliance with a JSON Schema / regex / CFG directly at generation time.</p>
+<p>Notable implementations:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Outlines</strong>: Python library enforcing JSON / regex / Pydantic schema</li>
+<li><strong>xgrammar</strong>: C++, integrated with vLLM/SGLang, fast</li>
+<li><strong>LMQL</strong>: query-language-style prompting</li>
+<li><strong>OpenAI Structured Output</strong>: API-level support</li>
+</ul>
+<p>How it works: at each token position, the schema is used to dynamically compute the set of "valid next tokens," which are masked before the softmax. This guarantees 100% format compliance with almost no performance overhead.</p>
+
+<h3>MCP</h3>
+<p>Model Context Protocol (proposed by Anthropic in November 2024). The problem it solves: every AI application has to write its own tool-integration code — duplicated effort, hard to reuse.</p>
+<p>MCP defines a standard protocol (JSON-RPC based), split into server and client:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>MCP Server</strong>: a process that exposes tools, resources, and prompt templates. Can represent a file system, database, GitHub, Slack, and more</li>
+<li><strong>MCP Client</strong>: an LLM application (Claude Desktop, Cursor, etc.) that connects to one or more MCP servers and automatically gains access to their tools</li>
+</ul>
+<p>Benefit: a standardized tool ecosystem — write an MCP server once, and every MCP-compatible LLM application can use it.</p>
+<p>In 2025, the MCP ecosystem expanded explosively — from a single-vendor proposal by Anthropic to a de facto industry standard. Claude Desktop, Cursor, VS Code LLM plugins, Cline, Windsurf, Continue, and Zed all integrated. Open-source models like Qwen3 and DeepSeek V3.1 support the MCP format natively at the tokenizer level. Major SaaS platforms including GitHub, Slack, Notion, and Linear launched official MCP servers. From mid-2025 onward, "MCP-ready" became a baseline requirement for AI developer tools.</p>
+<p>This is one of the rare "standardization success stories" in the LLM ecosystem — its impact runs deeper than OpenAI's plugins (now discontinued) or ChatGPT's GPT marketplace, because MCP is a model-agnostic protocol not tied to any single vendor.</p>
+
+<h3>Multi-Agent Systems</h3>
+<p>A single LLM doing everything vs. multiple LLMs dividing the work. Several patterns:</p>
+<p><strong>Supervisor-Worker</strong>: a primary LLM delegates subtasks to specialized worker LLMs (one for research, one for coding, one for writing) and aggregates the results. LangGraph and CrewAI champion this pattern.</p>
+<p><strong>Conversational Multi-Agent</strong>: multiple agents collaborate through dialogue. AutoGen (Microsoft) is the representative, where two or more agents exchange messages to complete a task (one writes code, one reviews, one tests).</p>
+<p><strong>Agent Mesh</strong>: loosely coupled, each agent has independent capabilities and collaborates on demand.</p>
+
+<h3>Multi-Agent Pitfalls</h3>
+<p>Lessons from building these in practice:</p>
+<ol>
+<li><strong>Cost explosion</strong>: N agents communicating with each other multiplies token consumption</li>
+<li><strong>Error amplification</strong>: one agent's error flows to the next, causing cascading failures</li>
+<li><strong>Hard to debug</strong>: fault isolation requires tracing messages back and forth across agents</li>
+<li><strong>Not necessarily better than a single powerful LLM</strong>: giving a single LLM more time to "think" (test-time compute) often outperforms multi-agent collaboration</li>
+</ol>
+<p>Most production agent systems are <strong>Supervisor + a small number of specialized tools</strong>, not dozens of conversing agents. OpenAI Swarm and LangGraph's StateGraph both favor simple state-machine patterns.</p>
+
+<h3>Memory and Planning</h3>
+<p>Agents in long-running conversations need memory. Typical architecture:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Short-term</strong>: current conversation history (within the context window)</li>
+<li><strong>Mid-term</strong>: session summaries (long conversations are rolled and compressed into summaries)</li>
+<li><strong>Long-term</strong>: important facts stored in a vector store (fused with RAG)</li>
+</ul>
+<p>On the planning side, ReAct is "reactive" — it decides at each step based on current state. <strong>Plan-then-Execute</strong> produces a complete plan first, then executes it — better suited for tasks with clear structure.</p>
+
+<h3>The Limits of Agents</h3>
+<p>Agents are heavily hyped, but as of early 2026, reliably deployable commercial agent scenarios remain relatively narrow:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Coding assistance</strong>: Cursor, Windsurf, Claude Code, Cline, OpenCode (open-source Claude Code alternative, 2025) — the most mature agent category</li>
+<li><strong>Data analysis</strong>: OpenAI's Data Analysis and Code Interpreter</li>
+<li><strong>Browser / screen operation</strong>: Anthropic Computer Use, Claude for Chrome (released late 2025) — giving LLMs real control over graphical interfaces marks a qualitative shift in agent capability</li>
+<li><strong>Vertical automation</strong>: financial analysis, legal compliance, customer service ticketing</li>
+</ul>
+<p>"General-purpose agents" (personal assistants, all-purpose secretaries) remain far from practical in 2025–2026 — the main obstacles are error accumulation in long-horizon tasks and insufficient self-correction. In the second half of 2025, investment in this area accelerated rapidly: Google launched the Gemini Agent + Antigravity environment, and Anthropic continued polishing Claude's agent reliability. Reasoning models (R1, V3.2, Claude 4.5) offer strong long-horizon planning, forming the foundation for agent reliability.</p>
+<p>A parallel trend is the flourishing of <strong>agent programming frameworks</strong>: LangChain and LlamaIndex keep evolving, and 2025 saw more "code-first" frameworks emerge (DSPy, Pydantic AI, Mastra, smolagents), turning agent orchestration into a more explicit engineering problem rather than relying solely on prompt conventions.</p>
+
+<div class="part-header"><div class="part-label">PART TWELVE</div><h2 class="part-title">4.12 Multimodal</h2><p class="part-desc">LLMs that see and hear — the expansion from "language model" to "foundation model."</p></div>
+
+<h2 id="s4-12-1"><span class="num">4.12.1</span>VLM Architecture</h2>
+<p class="pos">Orientation: Vision-Language Models — the main architectural approaches for connecting images to LLMs.</p>
+
+<h3>Three Architectural Approaches</h3>
+<p>The core problem in VLMs (Vision-Language Models): how do you feed image input to an LLM? Three main approaches:</p>
+
+<p><strong>1. Projection Adapter</strong>: the image passes through a standalone visual encoder (e.g., CLIP ViT) to produce image feature vectors, which are then mapped into the LLM's token space via a lightweight projection layer (MLP or Q-Former) and fed in alongside text tokens. Representatives: LLaVA, MiniGPT, BLIP-2. Advantage: cheap to train (the LLM is frozen; only the projection is trained). Disadvantage: information loss from compressing visual features.</p>
+
+<p><strong>2. Cross-Attention</strong>: visual features are not converted into tokens; instead they serve as the K and V of additional cross-attention layers added at each LLM layer, letting text tokens "look at" the image via cross-attention. Representatives: Flamingo, IDEFICS. Advantage: visual features retain high resolution. Disadvantage: modifies the LLM architecture, making training more complex.</p>
+
+<p><strong>3. Unified Transformer</strong>: image patches and text tokens are mixed together from the start and processed jointly by a single Transformer with self-attention throughout — no separate "visual encoder." Representatives: Fuyu (Adept), native multimodal Gemini, Chameleon (Meta). Advantage: no information loss, scales well. Disadvantage: requires training from scratch with large data and compute.</p>
+
+<h3>LLaVA Architecture in Detail</h3>
+<p>LLaVA (Haotian Liu 2023) is the canonical open-source multimodal model, with a clean, simple architecture:</p>
+<div class="mermaid">
+flowchart LR
+    IMG[Image 336x336] --> VE[CLIP ViT-L/14]
+    VE --> IF[Image Features 576 tokens]
+    IF --> PROJ[MLP Projector]
+    PROJ --> VT[Visual Tokens]
+    TXT[Text tokens] --> LLM[LLaMA / Vicuna]
+    VT --> LLM
+    LLM --> OUT[Text output]
+</div>
+<p>Training has two stages:</p>
+<ol>
+<li><strong>Feature alignment</strong>: freeze the ViT and the LLM; train only the projector. Uses image-text pair data (image + caption). The goal is to teach the projector to map visual features into a space the LLM can "understand."</li>
+<li><strong>Instruction fine-tuning</strong>: unfreeze the LLM and train the full pipeline on multimodal instruction data (image + question + answer).</li>
+</ol>
+<p>Total training cost is only a few thousand dollars — far cheaper than training a vision model from scratch.</p>
+
+<h3>Improved Variants</h3>
+<p><strong>LLaVA-1.5</strong>: better data, MLP replacing the single linear layer. Significant improvement.</p>
+<p><strong>LLaVA-NeXT</strong>: the image is split into multiple 336×336 patches that are encoded separately, enabling high-resolution support.</p>
+<p><strong>Qwen-VL / Qwen2-VL</strong>: dynamic resolution (no need to scale to a fixed size), with video support. Qwen2-VL topped the open-source VLM leaderboards in 2024.</p>
+<p><strong>InternVL2</strong>: open-sourced by SenseTime, strong capabilities, available in multiple sizes.</p>
+
+<h3>High-Resolution Challenges</h3>
+<p>At low resolution (336×336), VLMs cannot read text or see fine details. Two approaches to high resolution:</p>
+<ol>
+<li><strong>Patch splitting</strong>: slice the large image into sub-images, encode each independently, then concatenate the features. LLaVA-NeXT's approach.</li>
+<li><strong>Dynamic resolution</strong>: the visual encoder accepts arbitrary input sizes. Qwen2-VL's Naive Dynamic Resolution achieves this.</li>
+</ol>
+<p>Cost: more visual tokens (a 2K image can produce 2000+ tokens) crowds the context window and slows inference.</p>
+
+<h3>What VLMs Can Do</h3>
+<table>
+<tr><th>Task</th><th>Examples</th></tr>
+<tr><td>Image description</td><td>Captioning, VQA (visual question answering)</td></tr>
+<tr><td>Document understanding</td><td>PDF extraction, table recognition, chart parsing</td></tr>
+<tr><td>OCR integration</td><td>Directly reading text within images</td></tr>
+<tr><td>UI understanding</td><td>Screenshot-based operation (WebAgent, Anthropic Computer Use)</td></tr>
+<tr><td>Multi-image reasoning</td><td>Comparing differences between two images</td></tr>
+<tr><td>Video understanding</td><td>Key-frame extraction + per-frame analysis</td></tr>
+</table>
+
+<h3>Closed-Source Frontier</h3>
+<p>At the commercial API level: GPT-4o, Claude 3.5/3.7 Sonnet, and Gemini 2.0 all have strong multimodal capabilities. GPT-4o excels at real-time image + voice conversation; Claude is strong at UI operation and document understanding; Gemini leads on video (1.5 Pro can process a one-hour video).</p>
+<p>Open-source is catching up fast — Qwen2-VL-72B, InternVL2-Pro, and LLaVA-OneVision approach closed-source performance on many tasks.</p>
+
+<h2 id="s4-12-2"><span class="num">4.12.2</span>Audio, Video, and Unified Multimodal</h2>
+<p class="pos">Orientation: beyond images and text — speech, video, and the trend toward "one model for all modalities."</p>
+
+<h3>Speech Understanding</h3>
+<p>Traditional ASR (automatic speech recognition) is a standalone task: a dedicated model (Whisper is the canonical example) converts speech to text, which is then sent to the LLM. This "cascade" has two problems: ASR errors propagate downstream; and information like emotion and tone in the speech is lost.</p>
+<p>The new approach is to <strong>connect audio directly to the LLM</strong>. Similar to the VLM architecture:</p>
+<ol>
+<li>Audio passes through an acoustic encoder (e.g., Whisper encoder) to produce features</li>
+<li>A projection layer maps features to the LLM's token space</li>
+<li>Features are fed into the LLM alongside text tokens</li>
+</ol>
+<p>Notable open-source implementations: <strong>Qwen2-Audio</strong>, <strong>LLaMA-Omni</strong>, <strong>SALMONN</strong>, <strong>Whisper + Vicuna</strong> combinations.</p>
+
+<h3>Speech Synthesis and Full-Duplex</h3>
+<p>Traditional speech <em>generation</em> (TTS) is also a standalone task (Tacotron, VITS, XTTS). The emerging trend: LLMs that directly output audio tokens.</p>
+<p>Neural audio codecs like SNAC, EnCodec, and SoundStream compress audio into discrete token sequences (roughly 50–100 tokens per second). An LLM can generate these tokens just as it generates text, and a decoder reconstructs the waveform.</p>
+<p>Representatives: <strong>OpenAI GPT-4o</strong> (voice mode, claimed to be end-to-end), <strong>Fish Speech</strong>, <strong>LLaMA-Omni</strong>, <strong>Moshi</strong> (Kyutai, open-source end-to-end voice conversation).</p>
+<p>The critical metric is <strong>latency</strong> — the traditional ASR + LLM + TTS cascade introduces 1–3 seconds of delay; end-to-end LLMs can achieve under 300ms, which is what natural conversation actually requires.</p>
+
+<h3>Video Understanding</h3>
+<p>Video = image sequence + audio. The challenge is the temporal dimension — a 1-minute video at 30fps has 1800 frames; sending all of them is prohibitively expensive.</p>
+<p>Mainstream strategies:</p>
+<ol>
+<li><strong>Uniform sampling</strong>: take one frame every N frames. Crude but sufficient for most scenarios.</li>
+<li><strong>Key-frame extraction</strong>: use traditional CV (scene-cut detection) or an LLM to select frames with "high information density."</li>
+<li><strong>Spatiotemporal modeling</strong>: dedicated video encoders (VideoMAE, Video-LLaMA) encode adjacent frames together.</li>
+<li><strong>Long context windows</strong>: Gemini 1.5's 1M-token window can accommodate large numbers of frames.</li>
+</ol>
+<p>Open-source representatives: Video-LLaMA, VideoChat, LLaVA-Video, Qwen2-VL (with video input support).</p>
+
+<h3>Image Generation</h3>
+<p>Strictly speaking this is outside the "LLM" category, but it is routinely discussed alongside LLMs in modern multimodal frameworks. Mainstream image generation architectures:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Diffusion models</strong> (dominant): Stable Diffusion, SDXL, SD3, FLUX, DALL-E 3. See Chapter 3, Section 4.4.4.</li>
+<li><strong>Autoregressive</strong>: images are split into patch tokens and generated like text. Parti, LLaMA-Gen, Emu3, and Chameleon are examples. Naturally integrates with LLMs, but quality currently lags behind diffusion.</li>
+<li><strong>Hybrid</strong>: an LLM generates a latent; a diffusion decoder renders it. The approach taken by Transfusion (Meta) and Janus (DeepSeek).</li>
+</ul>
+<p>A clear trend: <strong>understanding and generation unified</strong> — a single model that can both read images and draw them. DeepSeek Janus-Pro and OmniGen are the open-source representatives.</p>
+
+<h3>Video Generation</h3>
+<p>Major breakthrough in 2024: OpenAI Sora, Google Veo, Runway Gen-3, Kling — capable of generating high-quality videos several minutes long. The underlying technology remains diffusion models + DiT (Diffusion Transformer) architecture, treating video as spatiotemporal patches.</p>
+<p>Open-source is catching up: <strong>CogVideoX</strong> (Tsinghua + Zhipu), <strong>Open-Sora</strong> (version 2.0 reached commercial-grade quality at just $200K training cost), <strong>HunyuanVideo</strong> (Tencent), <strong>Mochi</strong>, <strong>LTX-Video</strong>. Quality is approaching closed-source, but the compute barrier remains high (a single training run takes hundreds of GPU-days).</p>
+<p><strong>A significant pivot</strong>: on 2026.3.24, OpenAI announced the shutdown of the entire Sora product line, redirecting resources toward robotic world simulation. Sora 2 (released 2025.12) had supported 25-second generation and native audio sync, but commercial adoption fell short of expectations. The torch passed to <strong>Kling 3.0</strong> (native 4K 60fps broadcast-grade quality), <strong>Google Veo 3.1</strong>, and <strong>Seedance 1.5 Pro</strong> as the leading video generation platforms.</p>
+
+<h3>Unified Multimodal</h3>
+<p>The frontier direction: <strong>Any-to-Any</strong> — a single model that supports understanding and generation across text, images, audio, and video.</p>
+<p>Representatives:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Gemini 2.0</strong> (closed-source): claims native multimodality</li>
+<li><strong>GPT-4o</strong> (closed-source): unified text / speech / image</li>
+<li><strong>Chameleon</strong> (Meta, open-source): unified text + image token space</li>
+<li><strong>Emu3</strong> (BAAI, open-source): a single model for multimodal generation</li>
+<li><strong>AnyGPT</strong>: four modalities (text, image, audio, video) end-to-end</li>
+</ul>
+<p>The technical core is "converting all modalities into discrete tokens" — images use VQ-VAE, audio uses neural codecs, video uses quantized spatiotemporal patches. A single Transformer then models all of them together.</p>
+
+<h3>Evaluating Multimodal Models</h3>
+<p>Multimodal evaluation is harder than single-modality — there are no standard labels. Common benchmarks:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>MMBench, MMMU, MMLU-Pro</strong>: overall multimodal capability</li>
+<li><strong>ChartQA, DocVQA</strong>: document and chart understanding</li>
+<li><strong>MVBench, VideoMME</strong>: video understanding</li>
+<li><strong>GenEval, T2I-CompBench</strong>: image generation</li>
+<li><strong>VBench</strong>: video generation</li>
+</ul>
+<p>These benchmarks are also evolving rapidly — model capabilities grow so fast that old benchmarks saturate within months.</p>
+
+<h3>The Future of Multimodal</h3>
+<p>Three directions worth watching:</p>
+<ol>
+<li><strong>Real-time performance</strong>: end-to-end voice interaction, real-time visual understanding (AR glasses on phones) — latency must drop to the 100ms range</li>
+<li><strong>Long video</strong>: understanding full-length films, hours-long meetings — requires efficient video encoding and long context</li>
+<li><strong>Embodied intelligence</strong>: multimodal + physical-world action — robotics, autonomous driving. VLA (Vision-Language-Action) models are the new paradigm</li>
+</ol>
+<p>From 2025 onward, the boundaries of "LLM" are increasingly blurred as these models become the core of "foundation models" — with language as just one modality among many.</p>
+
+<hr style="margin-top:60px;border:none;border-top:1px dashed var(--rule);">
+
+<p style="color:var(--muted);font-size:14px;font-style:italic;text-align:center;margin-top:40px;">
+— End of Chapter 4 Part B —<br>
+Part B contains 7 sections · 36 sections total when merged with the full chapter · read alongside Part A (4.1–4.9)
+</p>
+
+<hr style="margin-top:60px;border:none;border-top:1px dashed var(--rule);">
+
+<p style="color:var(--muted);font-size:14px;font-style:italic;text-align:center;margin-top:40px;">
+— End of Chapter 4 —<br>
+37 sections total · Chapters 2–5 are now complete
+</p>
+
+</main>
+<script>
+hljs.highlightAll();
+mermaid.initialize({startOnLoad:true,theme:'neutral',fontFamily:'Inter,sans-serif'});
+</script>
+</body>
+</html>

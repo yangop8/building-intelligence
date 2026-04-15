@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>论文精读 — 从 ResNet 到 DeepSeek</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+:root{--bg:#fbfaf7;--fg:#1d1d1b;--muted:#6b6b68;--accent:#5a3a7a;--accent-soft:#ece6f2;--rule:#e3dfd6;--code-bg:#282c34;--sidebar-bg:#f4f1ea;--mono:"SFMono-Regular","JetBrains Mono",Consolas,Menlo,monospace;--serif:"Source Serif Pro","Songti SC","STSong",Georgia,serif;--sans:"Inter",-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;}
+*{box-sizing:border-box;}html,body{margin:0;padding:0;}
+body{font-family:var(--serif);font-size:16px;line-height:1.75;color:var(--fg);background:var(--bg);display:flex;}
+aside.toc{position:sticky;top:0;width:310px;height:100vh;overflow-y:auto;background:var(--sidebar-bg);border-right:1px solid var(--rule);padding:24px 20px;font-family:var(--sans);font-size:13px;flex-shrink:0;}
+aside.toc h1{font-family:var(--serif);font-size:18px;margin:0 0 4px 0;color:var(--accent);}
+aside.toc .sub{color:var(--muted);font-size:12px;margin-bottom:20px;font-style:italic;}
+aside.toc .group{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin-top:14px;margin-bottom:4px;padding-bottom:3px;border-bottom:1px solid var(--rule);}
+aside.toc ol{list-style:none;padding:0;margin:0;}aside.toc ol li{margin-bottom:2px;}
+aside.toc a{color:var(--fg);text-decoration:none;display:block;padding:3px 6px;border-radius:3px;}
+aside.toc a:hover{background:var(--accent-soft);color:var(--accent);}
+aside.toc .num{color:var(--muted);font-family:var(--mono);margin-right:6px;font-size:11px;}
+main{flex:1;max-width:880px;padding:60px 72px 120px 72px;min-width:0;}
+header.cover{border-bottom:2px solid var(--fg);padding-bottom:32px;margin-bottom:48px;}
+header.cover h1{font-size:42px;line-height:1.15;margin:0 0 12px 0;font-weight:700;}
+header.cover .subtitle{font-size:20px;color:var(--muted);font-style:italic;margin-bottom:20px;}
+header.cover .meta{font-family:var(--sans);font-size:13px;color:var(--muted);}
+h2{font-size:26px;margin-top:72px;margin-bottom:6px;padding-bottom:8px;border-bottom:1px solid var(--rule);scroll-margin-top:20px;}
+h2 .num{color:var(--accent);font-family:var(--mono);font-weight:400;margin-right:10px;font-size:20px;}
+.pos{font-family:var(--sans);font-size:13px;color:var(--muted);font-style:italic;margin-top:0;margin-bottom:16px;padding:6px 12px;background:var(--accent-soft);border-left:2px solid var(--accent);}
+h3{font-size:18px;margin-top:28px;margin-bottom:8px;font-weight:600;}
+h4{font-size:15px;margin-top:18px;margin-bottom:4px;font-weight:600;color:var(--accent);}
+p{margin:0 0 14px 0;text-align:justify;}
+code{font-family:var(--mono);font-size:14px;background:var(--accent-soft);color:var(--accent);padding:1px 5px;border-radius:3px;}
+pre{background:var(--code-bg);border-radius:6px;padding:14px 18px;overflow-x:auto;font-size:13px;line-height:1.55;margin:16px 0;}
+pre code{background:transparent;color:inherit;padding:0;font-size:inherit;}
+.formula{font-family:var(--serif);padding:10px 18px;background:#f6f0fa;border-left:2px solid var(--muted);margin:12px 0;font-size:16px;overflow-x:auto;}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;font-family:var(--sans);}
+th,td{border-bottom:1px solid var(--rule);padding:7px 10px;text-align:left;vertical-align:top;}
+th{background:var(--sidebar-bg);font-weight:600;}
+.paper-meta{font-family:var(--sans);font-size:13px;margin:12px 0 24px 0;padding:14px 18px;background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:4px;}
+.paper-meta .title-en{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--accent);margin-bottom:6px;}
+.paper-meta .row{margin:2px 0;}
+.paper-meta .label{font-weight:600;display:inline-block;min-width:70px;color:var(--muted);}
+.part-header{margin-top:100px;margin-bottom:24px;padding:24px 28px;background:linear-gradient(to right,var(--accent-soft),transparent);border-left:4px solid var(--accent);}
+.part-header .part-label{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:0.15em;color:var(--accent);}
+.part-header h2.part-title{font-size:32px;margin:4px 0 8px 0;padding:0;border:none;}
+.part-header .part-desc{font-size:15px;color:var(--muted);font-style:italic;margin:0;}
+.mermaid{margin:20px 0;text-align:center;}
+.refback{font-family:var(--sans);font-size:13px;color:var(--muted);margin-top:20px;padding-top:10px;border-top:1px dashed var(--rule);}
+.refback strong{color:var(--accent);}
+@media (max-width:1100px){aside.toc{display:none;}main{padding:40px 32px;}}
+</style>
+</head>
+<body>
+
+<aside class="toc">
+<h1>论文精读</h1>
+<div class="sub">Chapter 5 · 17 篇核心论文</div>
+
+<div class="group">第 3 章相关 (AI 模型)</div>
+<ol>
+<li><a href="#p01"><span class="num">1</span>ResNet</a></li>
+<li><a href="#p02"><span class="num">2</span>LSTM</a></li>
+<li><a href="#p03"><span class="num">3</span>BatchNorm</a></li>
+<li><a href="#p04"><span class="num">4</span>Adam</a></li>
+<li><a href="#p05"><span class="num">5</span>XGBoost</a></li>
+</ol>
+
+<div class="group">第 4 章 · Transformer 与预训练</div>
+<ol>
+<li><a href="#p06"><span class="num">6</span>Attention Is All You Need</a></li>
+<li><a href="#p07"><span class="num">7</span>BERT 与 GPT</a></li>
+<li><a href="#p08"><span class="num">8</span>Scaling Law / Chinchilla</a></li>
+<li><a href="#p09"><span class="num">9</span>RoPE</a></li>
+</ol>
+
+<div class="group">第 4 章 · 高效化与推理</div>
+<ol>
+<li><a href="#p10"><span class="num">10</span>FlashAttention</a></li>
+<li><a href="#p11"><span class="num">11</span>LoRA / QLoRA</a></li>
+<li><a href="#p12"><span class="num">12</span>PagedAttention / vLLM</a></li>
+<li><a href="#p13"><span class="num">13</span>Switch Transformer / Mixtral</a></li>
+</ol>
+
+<div class="group">第 4 章 · 对齐与应用</div>
+<ol>
+<li><a href="#p14"><span class="num">14</span>InstructGPT / RLHF</a></li>
+<li><a href="#p15"><span class="num">15</span>DPO</a></li>
+<li><a href="#p16"><span class="num">16</span>Chain-of-Thought</a></li>
+<li><a href="#p17"><span class="num">17</span>DeepSeek-V3</a></li>
+</ol>
+</aside>
+
+<main>
+
+<header class="cover">
+<h1>论文精读</h1>
+<div class="subtitle">从 ResNet 到 DeepSeek —— 17 篇塑造当代 AI 的核心论文</div>
+<div class="meta">Chapter 5 · 内部学习材料 · 2026 年初版</div>
+</header>
+
+<p>前几章是<strong>系统化的技术图谱</strong>——告诉你现代 AI 栈长什么样、每一块怎么工作。这一章是<strong>论文级别的回看</strong>——对那些真正塑造了这个栈的关键工作,做一次细读。为什么要做这一章?工程师看清技术,研究者看清<em>思想演化的脉络</em>。"为什么大家都用 ReLU 而不用 Sigmoid?""GPT-3 的 few-shot 能力是怎么来的?""LoRA 和全量微调的数学关系是什么?"——这些问题答案都在论文里,不在文档里。</p>
+
+<p>选篇原则:<strong>一定要读过原文才能称作懂的论文</strong>。17 篇不是 17 个最"重要"的工作——而是读完后对前几章理解提升最大的 17 个节点。偏重 4-5 章(AI 模型 + LLM),数学(梯度下降的经典论文等)和系统(vLLM 等)各取一部分。</p>
+
+<p>每篇的结构:论文元信息卡 → 问题背景 → 核心方法(公式/图/代码)→ 实验结论 → 影响与批判 → 对应本书章节。标杆性工作(Attention、ResNet、BERT/GPT)篇幅更长;其它 1 页左右。</p>
+
+<!-- ============================ PART 1: 第3章 ============================ -->
+<div class="part-header">
+<div class="part-label">PART ONE</div>
+<h2 class="part-title">第 3 章相关 · AI 模型基础</h2>
+<p class="part-desc">深度学习得以 scale 的几个支柱——残差、门控、归一化、自适应优化、提升树。</p>
+</div>
+
+<!-- ============================ P01 ResNet ============================ -->
+<h2 id="p01"><span class="num">P01</span>ResNet:让网络能真的"深"起来</h2>
+<p class="pos">对应主书:第 3 章 4.4.1 CNN · 第 4 章 5.2.4(残差连接思想)</p>
+
+<div class="paper-meta">
+<div class="title-en">Deep Residual Learning for Image Recognition</div>
+<div class="row"><span class="label">作者</span>Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun</div>
+<div class="row"><span class="label">机构</span>Microsoft Research Asia</div>
+<div class="row"><span class="label">发表</span>CVPR 2016(最佳论文奖)</div>
+<div class="row"><span class="label">被引</span>250,000+(CS 领域历史第一)</div>
+<div class="row"><span class="label">链接</span>arXiv:1512.03385</div>
+</div>
+
+<h3>问题:深度的悖论</h3>
+<p>2014 年 VGG-19 证明 19 层 CNN 比 8 层 AlexNet 强很多。直觉上,继续加深应该继续涨点。但实验发现:20 层网络比 56 层网络训练集 loss 更低——不是过拟合(过拟合是训练好测试差),是<strong>训练都训不下去</strong>。梯度消失/爆炸只是表面原因,更深层的原因是:多层非线性叠加后,优化器难以找到好参数。</p>
+
+<p>直观反驳:理论上深网络不应该比浅网络差——只要让多余的层学成恒等映射 $f(x)=x$ 就行。但实际 SGD 很难训出"恒等映射"的层(需要精确地学到特定权重)。这就是何恺明团队抓住的点。</p>
+
+<h3>核心方法:残差块</h3>
+<p>不学 $H(x)$,学 $F(x) = H(x) - x$,输出 $H(x) = F(x) + x$。</p>
+
+<div class="mermaid">
+flowchart TB
+    X[x] --> C1[Conv 3x3 + BN]
+    C1 --> R1[ReLU]
+    R1 --> C2[Conv 3x3 + BN]
+    X -. identity .-> ADD((+))
+    C2 --> ADD
+    ADD --> R2[ReLU]
+    R2 --> OUT[output]
+</div>
+
+<p>如果"什么都不学"是最优的,让 $F \to 0$ 比让整个复合函数 $H \to$ 恒等容易得多。这是最朴素但最关键的 reframing。</p>
+
+<h3>关键公式与初始化</h3>
+<p>一个残差块:</p>
+<div class="formula">$\mathbf{y} = \mathcal{F}(\mathbf{x}, \{W_i\}) + \mathbf{x}$</div>
+<p>反向传播时,损失 $L$ 对输入 $\mathbf{x}$ 的梯度:</p>
+<div class="formula">$\frac{\partial L}{\partial \mathbf{x}} = \frac{\partial L}{\partial \mathbf{y}} \cdot \left(1 + \frac{\partial \mathcal{F}}{\partial \mathbf{x}}\right)$</div>
+<p>那个 "+1" 是关键——它保证梯度<em>不会衰减到 0</em>,即便 $\partial \mathcal{F} / \partial \mathbf{x}$ 很小。这直接缓解了梯度消失。</p>
+
+<p>另一个重要细节是<strong>He 初始化</strong>(同作者 2015 年另一篇)。ReLU 下权重按 $\mathcal{N}(0, 2/n_{in})$ 初始化,让前向激活方差保持稳定。没有这个初始化,残差网络也训不了。</p>
+
+<h3>PyTorch 实现</h3>
+<pre><code class="language-python">import torch.nn as nn
+
+class BasicBlock(nn.Module):
+    def __init__(self, in_ch, out_ch, stride=1):
+        super().__init__()
+        self.conv1 = nn.Conv2d(in_ch, out_ch, 3, stride, 1, bias=False)
+        self.bn1 = nn.BatchNorm2d(out_ch)
+        self.conv2 = nn.Conv2d(out_ch, out_ch, 3, 1, 1, bias=False)
+        self.bn2 = nn.BatchNorm2d(out_ch)
+        # 下采样或通道数变化时, 需要 1x1 conv 调整维度
+        self.shortcut = nn.Sequential()
+        if stride != 1 or in_ch != out_ch:
+            self.shortcut = nn.Sequential(
+                nn.Conv2d(in_ch, out_ch, 1, stride, bias=False),
+                nn.BatchNorm2d(out_ch),
+            )
+
+    def forward(self, x):
+        out = torch.relu(self.bn1(self.conv1(x)))
+        out = self.bn2(self.conv2(out))
+        out = out + self.shortcut(x)   # 残差连接
+        return torch.relu(out)
+</code></pre>
+
+<h3>Bottleneck 变种</h3>
+<p>深的 ResNet(50、101、152 层)用 "bottleneck" 块降计算:1×1 conv 降维 → 3×3 conv → 1×1 conv 升维。3 层替代 2 层,但总参数和计算量更少。ResNet-50 用这个,之后所有 CNN 几乎都跟进。</p>
+
+<h3>实验结果</h3>
+<ul style="list-style:none;padding-left:0;">
+<li>- ImageNet:34 层 ResNet top-5 错误率 7.5%,VGG-19 是 8.4%,且快得多</li>
+<li>- 152 层 ResNet 达到 5.7%——第一个超越人类级别 5.1% 的模型</li>
+<li>- CIFAR-10 上训练了 <strong>1202 层</strong>网络(就是为了证明"真能深"),虽然过拟合但训练 loss 仍在下降——证明残差思想不受深度限制</li>
+</ul>
+
+<h3>影响</h3>
+<p>ResNet 的残差思想已经不只是 CNN 的特性——它成为<strong>所有深度网络的基础组件</strong>:</p>
+<ol>
+<li><strong>Transformer</strong>:每个 attention 和 FFN 模块外都包残差(主书 5.2.1)。没有残差,BERT/GPT 深度训练不可能。</li>
+<li><strong>DenseNet、U-Net</strong>:残差思想的变种——密集连接、跳跃连接</li>
+<li><strong>ControlNet、LoRA</strong>:都隐含"旁路 + 残差"的架构哲学</li>
+<li><strong>Neural ODE</strong>:把残差网络看作 ODE 的离散形式 $\mathbf{y} = \mathbf{x} + \mathcal{F}(\mathbf{x}, t)$</li>
+</ol>
+
+<h3>批判视角</h3>
+<p>2020 年后有研究质疑:ResNet 的成功<em>可能</em>主要来自"集成效应"——残差路径让网络行为像 $2^N$ 个不同深度子网络的集成,而不是真正的"学习残差"。但无论解释是什么,这个架构决策的价值毋庸置疑。</p>
+
+<div class="refback"><strong>为什么必读:</strong>不读 ResNet,你不会真正理解为什么 Transformer 的每个 sublayer 都包一层残差——这不是装饰,是深度网络能训起来的前提。何恺明凭这一篇论文基本定义了"工程上能训的深度网络"的标准样式。</div>
+
+<!-- ============================ P02 LSTM ============================ -->
+<h2 id="p02"><span class="num">P02</span>LSTM:序列建模的经典守门人</h2>
+<p class="pos">对应主书:第 3 章 4.4.2 RNN/LSTM/GRU</p>
+
+<div class="paper-meta">
+<div class="title-en">Long Short-Term Memory</div>
+<div class="row"><span class="label">作者</span>Sepp Hochreiter, Jürgen Schmidhuber</div>
+<div class="row"><span class="label">机构</span>IDSIA / TU Munich</div>
+<div class="row"><span class="label">发表</span>Neural Computation 1997</div>
+<div class="row"><span class="label">被引</span>90,000+</div>
+<div class="row"><span class="label">链接</span>doi:10.1162/neco.1997.9.8.1735</div>
+</div>
+
+<h3>问题:普通 RNN 的梯度消失</h3>
+<p>Hochreiter 1991 年的硕士论文已经定量证明:标准 RNN 的梯度通过时间反传时,每步乘一个权重 $W$。如果 $W$ 的谱半径 < 1,梯度指数衰减;> 1 则爆炸。两种情况下 RNN 都无法学到"10 步之前"的依赖。6 年后他和 Schmidhuber 提出 LSTM 作为解法。</p>
+
+<h3>核心方法:三门控 + 细胞状态</h3>
+<p>引入一条"高速通道"——细胞状态 $\mathbf{c}_t$,通过三个门控制信息流:</p>
+
+<div class="formula">$\mathbf{f}_t = \sigma(W_f \cdot [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_f) \quad \text{(遗忘门)}$</div>
+<div class="formula">$\mathbf{i}_t = \sigma(W_i \cdot [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_i) \quad \text{(输入门)}$</div>
+<div class="formula">$\tilde{\mathbf{c}}_t = \tanh(W_c \cdot [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_c) \quad \text{(候选)}$</div>
+<div class="formula">$\mathbf{c}_t = \mathbf{f}_t \odot \mathbf{c}_{t-1} + \mathbf{i}_t \odot \tilde{\mathbf{c}}_t$</div>
+<div class="formula">$\mathbf{o}_t = \sigma(W_o \cdot [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_o) \quad \text{(输出门)}$</div>
+<div class="formula">$\mathbf{h}_t = \mathbf{o}_t \odot \tanh(\mathbf{c}_t)$</div>
+
+<p><strong>梯度通道的关键</strong>:$\mathbf{c}_t = \mathbf{f}_t \odot \mathbf{c}_{t-1} + \ldots$ 是加法(不是矩阵乘)。如果遗忘门 $\mathbf{f}_t \approx 1$,$\mathbf{c}_t$ 保留所有历史,梯度几乎无衰减地穿过时间。这是 LSTM 能学长依赖的数学原因。</p>
+
+<h3>代码</h3>
+<pre><code class="language-python">class LSTMCell(nn.Module):
+    def __init__(self, input_size, hidden_size):
+        super().__init__()
+        # 4 个门合成一个大矩阵, 提高计算效率
+        self.W = nn.Linear(input_size + hidden_size, 4 * hidden_size)
+        self.hidden_size = hidden_size
+
+    def forward(self, x, state):
+        h_prev, c_prev = state
+        gates = self.W(torch.cat([h_prev, x], dim=-1))
+        i, f, g, o = gates.chunk(4, dim=-1)
+        i, f, g, o = torch.sigmoid(i), torch.sigmoid(f), torch.tanh(g), torch.sigmoid(o)
+        c = f * c_prev + i * g
+        h = o * torch.tanh(c)
+        return h, (h, c)
+</code></pre>
+
+<h3>影响与让位</h3>
+<p>LSTM 统治了 1997-2017 这 20 年的序列建模:语音识别(Graves 的 deep LSTM,2013)、机器翻译(Google NMT 2016)、图像描述(Show-and-Tell 2014)全部基于 LSTM。<em>"attention"机制最早(Bahdanau 2014)就是为 encoder-decoder LSTM 设计的</em>——只是后来人们发现 attention 自己就够,不需要 LSTM 做底。</p>
+
+<p>2017 年 Transformer 让 LSTM 从主流退居到"小模型场景"——但在嵌入式时序、某些专用任务里,LSTM 仍是首选。2023-2024 Mamba 等 SSM 模型的复兴,某种意义上也是 LSTM 精神的现代重生。</p>
+
+<h3>有趣的历史</h3>
+<p>Hochreiter 和 Schmidhuber 的 1997 原论文实际有一些现在看来"次优"的细节——比如没有遗忘门(是 Gers 1999 年补的)。我们今天说的 LSTM 是"Gers-LSTM"而非原版。这对想读原论文的人是个提醒:主流工具往往是累积演化的,不是单篇论文定型的。</p>
+
+<div class="refback"><strong>为什么必读:</strong>理解"门控 + 加性记忆通道"是现代所有"选择性记忆"机制(Mamba 的 selective state、Transformer 的 attention gating)的思想源头。</div>
+
+<!-- ============================ P03 BatchNorm ============================ -->
+<h2 id="p03"><span class="num">P03</span>BatchNorm:让深网络训练变简单</h2>
+<p class="pos">对应主书:第 3 章 4.3.5 归一化</p>
+
+<div class="paper-meta">
+<div class="title-en">Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift</div>
+<div class="row"><span class="label">作者</span>Sergey Ioffe, Christian Szegedy</div>
+<div class="row"><span class="label">机构</span>Google</div>
+<div class="row"><span class="label">发表</span>ICML 2015</div>
+<div class="row"><span class="label">被引</span>60,000+</div>
+<div class="row"><span class="label">链接</span>arXiv:1502.03167</div>
+</div>
+
+<h3>问题:为什么深网络训练对学习率极其敏感</h3>
+<p>Ioffe 观察到:每层的输入分布随着前面层参数更新而剧烈变化。这叫"internal covariate shift"。结果就是下一层必须不断"追赶"分布变化,训练不稳定;而且不同层最优学习率差几个数量级,全局 lr 调起来痛苦。</p>
+
+<h3>核心方法</h3>
+<p>对 mini-batch 内每个特征通道,做标准化:</p>
+
+<div class="formula">$\hat{x}_i = \frac{x_i - \mu_B}{\sqrt{\sigma_B^2 + \epsilon}}, \quad y_i = \gamma \hat{x}_i + \beta$</div>
+
+<p>$\mu_B, \sigma_B^2$ 是 batch 统计,$\gamma, \beta$ 是可学习缩放和平移——允许网络"恢复"到标准化前的分布,只是不再需要前面层的参数被约束。</p>
+
+<p><strong>训练 vs 推理</strong>:训练用 batch 统计;推理用"运行均值/方差"(训练时指数平均维护)。这个区别导致了 BN 的 subtle bug 温床——训练集好、推理集差的一个常见原因。</p>
+
+<h3>BN 的"效果解释"争议</h3>
+<p>原论文归因于"减少内部协变量漂移"。但 2018 年 MIT 的 Santurkar 等人的论文"How Does Batch Normalization Help Optimization?"实验证明:<em>covariate shift 和 BN 的效果关系很弱</em>。真正原因更可能是 BN 让损失曲面更平滑,大的学习率也不会让梯度爆炸。</p>
+
+<p>这是深度学习研究一个典型现象:<strong>一个方法被证明有效,但后来才发现它有效的原因跟作者说的不一样</strong>。</p>
+
+<h3>影响</h3>
+<p>BN 是 2015 年之后 CNN 的标配。让 100+ 层网络训练成为可能,和 ResNet 一起支撑了 CV 的深度时代。</p>
+<p>但 BN 对 RNN、Transformer 不好使——batch 维度的统计量对序列任务意义不大。Transformer 全用 LayerNorm,后来又演化出 RMSNorm。所以在主书 5.2.4 里你看到 "Pre-Norm + RMSNorm" 是 LLM 标配。BN 的故事基本结束在 CV 领域。</p>
+
+<div class="refback"><strong>为什么必读:</strong>理解"归一化不是数据预处理,是深度网络的结构组件"——这个观念转变是 BatchNorm 的真正贡献。读这篇论文能让你对主书里 LayerNorm、RMSNorm、GroupNorm 的意义有根子上的理解。</div>
+
+<!-- ============================ P04 Adam ============================ -->
+<h2 id="p04"><span class="num">P04</span>Adam:深度学习默认优化器</h2>
+<p class="pos">对应主书:第 1 章 2.8.4 · 第 3 章 4.5.1</p>
+
+<div class="paper-meta">
+<div class="title-en">Adam: A Method for Stochastic Optimization</div>
+<div class="row"><span class="label">作者</span>Diederik P. Kingma, Jimmy Ba</div>
+<div class="row"><span class="label">机构</span>University of Amsterdam, University of Toronto</div>
+<div class="row"><span class="label">发表</span>ICLR 2015</div>
+<div class="row"><span class="label">被引</span>200,000+</div>
+<div class="row"><span class="label">链接</span>arXiv:1412.6980</div>
+</div>
+
+<h3>问题:SGD 的学习率调节难</h3>
+<p>纯 SGD 需要精细的学习率调度——每个参数、每个阶段用不同 lr。<strong>AdaGrad</strong>(Duchi 2011)按参数历史梯度的累积平方自适应调节——学过的参数 lr 自动小,新参数 lr 大。问题:累积只增不减,训练后期所有参数 lr 都趋近 0,训练停止。<strong>RMSProp</strong>(Hinton 2012 课程讲义)用指数平均替代累积,解决"永久衰减"。</p>
+
+<p>Adam = RMSProp + momentum,再加个偏差修正。</p>
+
+<h3>核心算法</h3>
+<p>维护两个状态:一阶矩估计(动量)$\mathbf{m}_t$ 和二阶矩估计(梯度平方的指数平均)$\mathbf{v}_t$。</p>
+
+<div class="formula">$\mathbf{m}_t = \beta_1 \mathbf{m}_{t-1} + (1 - \beta_1) \mathbf{g}_t$</div>
+<div class="formula">$\mathbf{v}_t = \beta_2 \mathbf{v}_{t-1} + (1 - \beta_2) \mathbf{g}_t^2$</div>
+
+<p>偏差修正——初期 $\mathbf{m}_0 = \mathbf{v}_0 = 0$,指数平均会偏低,除以 $(1 - \beta^t)$ 补偿:</p>
+
+<div class="formula">$\hat{\mathbf{m}}_t = \frac{\mathbf{m}_t}{1 - \beta_1^t}, \quad \hat{\mathbf{v}}_t = \frac{\mathbf{v}_t}{1 - \beta_2^t}$</div>
+
+<p>最终更新:</p>
+
+<div class="formula">$\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \frac{\alpha}{\sqrt{\hat{\mathbf{v}}_t} + \epsilon} \hat{\mathbf{m}}_t$</div>
+
+<p>典型超参:$\beta_1 = 0.9, \beta_2 = 0.999, \epsilon = 10^{-8}, \alpha = 10^{-3}$。这些数字几乎所有 PyTorch/TensorFlow 代码默认都是它们。</p>
+
+<h3>AdamW</h3>
+<p>Loshchilov 2017 指出:Adam 里的"weight decay"(权重衰减正则化)和学习率耦合不正确。<strong>AdamW</strong> 解耦,现在是 LLM 训练的默认选择。主书 5.7.4 里 LLaMA 训练配方的 "AdamW" 就是它。</p>
+
+<h3>影响与争议</h3>
+<p>Adam 是深度学习最广使用的优化器——像空气一样默认。但也有争议:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong>收敛性</strong>:Reddi 2018 "On the Convergence of Adam"证明原版 Adam 在某些简单凸问题上不收敛。提出 AMSGrad 修复(但实用中很少用)</li>
+<li>- <strong>泛化</strong>:在 CV 任务上 SGD+Momentum 常常泛化更好。但在 Transformer 训练上 Adam/AdamW 无替代</li>
+<li>- <strong>内存</strong>:Adam 需要存 $\mathbf{m}, \mathbf{v}$ 各一份——是参数的 2 倍。大模型时代这是显存杀手。ZeRO(主书 5.7.2)就是为了分片这个状态而生</li>
+</ul>
+
+<div class="refback"><strong>为什么必读:</strong>每个 LLM 训练背后都在用 AdamW。这是"默认值"的力量——但知道默认值背后的数学,你才能在遇到训练不稳定时对症下药。</div>
+
+<!-- ============================ P05 XGBoost ============================ -->
+<h2 id="p05"><span class="num">P05</span>XGBoost:表格数据的事实标准</h2>
+<p class="pos">对应主书:第 3 章 4.2.2 树模型</p>
+
+<div class="paper-meta">
+<div class="title-en">XGBoost: A Scalable Tree Boosting System</div>
+<div class="row"><span class="label">作者</span>Tianqi Chen, Carlos Guestrin</div>
+<div class="row"><span class="label">机构</span>University of Washington</div>
+<div class="row"><span class="label">发表</span>KDD 2016</div>
+<div class="row"><span class="label">被引</span>30,000+</div>
+<div class="row"><span class="label">链接</span>arXiv:1603.02754</div>
+</div>
+
+<h3>问题:GBDT 的两个瓶颈</h3>
+<p>传统 GBDT(Friedman 2001)每棵树拟合上一步的残差(对平方损失等价于负梯度)。两个问题:</p>
+<ol>
+<li><strong>只用一阶梯度</strong>:优化方向信息不够,收敛慢</li>
+<li><strong>工程层面慢</strong>:大数据集下单机训练几小时起,分布式实现缺失</li>
+</ol>
+
+<h3>核心方法:二阶泰勒 + 正则化 + 并行化</h3>
+<p>陈天奇把目标函数在当前模型处做二阶泰勒展开:</p>
+
+<div class="formula">$\mathcal{L}^{(t)} \approx \sum_i \left[ g_i f_t(\mathbf{x}_i) + \frac{1}{2} h_i f_t(\mathbf{x}_i)^2 \right] + \Omega(f_t)$</div>
+
+<p>其中 $g_i = \partial L / \partial F$(一阶),$h_i = \partial^2 L / \partial F^2$(二阶),$\Omega(f) = \gamma T + \frac{1}{2} \lambda \sum_j w_j^2$ 是正则(T 是叶子数,$w_j$ 是叶子权重)。</p>
+
+<p>对一棵确定结构的树,闭式解出每个叶子的最优权重:</p>
+
+<div class="formula">$w_j^* = -\frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}$</div>
+
+<p>分裂增益的闭式:</p>
+
+<div class="formula">$\text{Gain} = \frac{1}{2}\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R + \lambda} - \frac{(G_L+G_R)^2}{H_L+H_R+\lambda}\right] - \gamma$</div>
+
+<p>有了这个公式,贪心选最大 Gain 的分裂,直到 Gain < 0(或其他停止条件)。详细推导见主书 4.2.2。</p>
+
+<h3>工程创新</h3>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>近似分裂算法</strong>:大数据时不枚举所有分裂点,按分位数离散化(LightGBM 后来把这推到极致——直方图算法)</li>
+<li><strong>稀疏感知</strong>:缺失值自动被分到"默认方向",无需手工填充</li>
+<li><strong>列块存储</strong>:按特征列压缩存储,排序一次复用多轮</li>
+<li><strong>并行</strong>:特征级并行(不同特征各自找分裂点)</li>
+<li><strong>Cache-aware 访问</strong>:预取到 CPU cache 提升命中率</li>
+</ul>
+
+<h3>Python 使用</h3>
+<pre><code class="language-python">import xgboost as xgb
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+
+X, y = load_breast_cancer(return_X_y=True)
+Xt, Xv, yt, yv = train_test_split(X, y, test_size=0.2)
+
+model = xgb.XGBClassifier(
+    n_estimators=500, max_depth=6, learning_rate=0.05,
+    reg_lambda=1.0, reg_alpha=0.1,
+    early_stopping_rounds=50, eval_metric='logloss',
+)
+model.fit(Xt, yt, eval_set=[(Xv, yv)])
+print("Accuracy:", model.score(Xv, yv))
+</code></pre>
+
+<h3>影响</h3>
+<p>2015-2020 Kaggle 表格竞赛冠军解决方案 <strong>90%+ 含 XGBoost/LightGBM/CatBoost</strong> 之一。这三个工具本质都是 XGBoost 思想的变种:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>LightGBM</strong>(微软 2017):直方图加速、leaf-wise 生长替代 level-wise</li>
+<li><strong>CatBoost</strong>(Yandex 2018):原生类别特征处理、有序提升</li>
+</ul>
+
+<p>在工业界,<strong>XGBoost 至今仍是表格数据的首选</strong>。原因:训练推理都快(百万样本分钟级)、不用 GPU、不需要特征归一化、特征重要性天然可解释。深度学习对表格数据长期没有优势——TabNet、TabTransformer 都没成为主流。</p>
+
+<div class="refback"><strong>为什么必读:</strong>LLM 时代这篇经典仍然重要——因为金融风控、医疗、推荐、网络流量分类等领域,XGBoost 在延迟和可解释性上全面胜过深度学习。知道何时该用它、何时不该用它,是 AI 工程师的基本判断力。</div>
+
+<!-- ============================ PART 2: 第4章前半 ============================ -->
+<div class="part-header">
+<div class="part-label">PART TWO</div>
+<h2 class="part-title">第 4 章 · Transformer 与预训练</h2>
+<p class="part-desc">LLM 时代的几块奠基石——Attention、BERT/GPT、Scaling Law、RoPE。</p>
+</div>
+
+<!-- ============================ P06 Attention ============================ -->
+<h2 id="p06"><span class="num">P06</span>Attention Is All You Need:Transformer 的诞生</h2>
+<p class="pos">对应主书:第 4 章 5.2 全节</p>
+
+<div class="paper-meta">
+<div class="title-en">Attention Is All You Need</div>
+<div class="row"><span class="label">作者</span>Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser, Illia Polosukhin</div>
+<div class="row"><span class="label">机构</span>Google Brain, Google Research, University of Toronto</div>
+<div class="row"><span class="label">发表</span>NeurIPS 2017</div>
+<div class="row"><span class="label">被引</span>140,000+(CS 历史第二)</div>
+<div class="row"><span class="label">链接</span>arXiv:1706.03762</div>
+</div>
+
+<h3>问题:RNN 的根本限制</h3>
+<p>2017 年机器翻译主流是 seq2seq + attention(Bahdanau 2014, Luong 2015)——encoder 用 LSTM 把源句编码成向量序列,decoder 用 LSTM 自回归生成,通过 attention 查看 encoder 输出。效果好,但 <strong>LSTM 的时间步串行性让训练无法并行</strong>——GPU 的优势发挥不出来,模型规模受限。</p>
+
+<p>Vaswani 等人的问题:能不能完全去掉循环,只用 attention?</p>
+
+<h3>核心方法:Scaled Dot-Product Attention</h3>
+<p>把序列每个位置表示成 Query、Key、Value 三个向量,通过 Q 和所有 K 的相似度加权 V:</p>
+
+<div class="formula">$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right) V$</div>
+
+<p>关键细节 <strong>$\sqrt{d_k}$</strong> 缩放:$d$ 维向量点积方差是 $d$,除以 $\sqrt{d}$ 让方差归一,防止 softmax 过饱和(主书 5.2.2 有详细推导)。</p>
+
+<h3>Multi-Head Attention</h3>
+<p>把 Q、K、V 投到 $H$ 个子空间,每个子空间独立做 attention,结果拼接后再投影:</p>
+
+<div class="formula">$\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, \ldots, \text{head}_H) W^O$</div>
+<div class="formula">$\text{head}_i = \text{Attention}(Q W_i^Q, K W_i^K, V W_i^V)$</div>
+
+<p>多头让模型同时学多种"注意模式"——某些头关注语法邻近,某些关注指代关系,某些关注全局主题。</p>
+
+<h3>完整 Transformer Block</h3>
+<div class="mermaid">
+flowchart TB
+    X[Input x] --> N1[LayerNorm]
+    N1 --> MHA[Multi-Head<br/>Attention]
+    MHA --> A1((+))
+    X --> A1
+    A1 --> N2[LayerNorm]
+    N2 --> FFN[FFN<br/>d_model to 4d to d_model]
+    FFN --> A2((+))
+    A1 --> A2
+    A2 --> OUT[Output]
+</div>
+
+<p>(图中是 Pre-Norm 版本,原论文用 Post-Norm,现代实现大多切换到 Pre-Norm;详见主书 5.2.4。)</p>
+
+<h3>位置编码</h3>
+<p>Attention 本身是"集合运算"——打乱输入顺序输出不变。要给模型位置感,加位置编码:</p>
+
+<div class="formula">$\text{PE}(\text{pos}, 2i) = \sin(\text{pos}/10000^{2i/d})$</div>
+<div class="formula">$\text{PE}(\text{pos}, 2i+1) = \cos(\text{pos}/10000^{2i/d})$</div>
+
+<p>不同频率正弦余弦编码位置信息。后来被 RoPE 替代(见 P09)。</p>
+
+<h3>完整 PyTorch 实现</h3>
+<pre><code class="language-python">import torch
+import torch.nn as nn
+import math
+
+class MultiHeadAttention(nn.Module):
+    def __init__(self, d_model, n_heads):
+        super().__init__()
+        assert d_model % n_heads == 0
+        self.H = n_heads
+        self.d_head = d_model // n_heads
+        self.Wq = nn.Linear(d_model, d_model, bias=False)
+        self.Wk = nn.Linear(d_model, d_model, bias=False)
+        self.Wv = nn.Linear(d_model, d_model, bias=False)
+        self.Wo = nn.Linear(d_model, d_model, bias=False)
+
+    def forward(self, x, mask=None):
+        B, L, D = x.shape
+        Q = self.Wq(x).view(B, L, self.H, self.d_head).transpose(1, 2)
+        K = self.Wk(x).view(B, L, self.H, self.d_head).transpose(1, 2)
+        V = self.Wv(x).view(B, L, self.H, self.d_head).transpose(1, 2)
+
+        scores = Q @ K.transpose(-2, -1) / math.sqrt(self.d_head)  # [B, H, L, L]
+        if mask is not None:
+            scores = scores.masked_fill(mask, float('-inf'))
+        attn = torch.softmax(scores, dim=-1)
+        out = attn @ V                              # [B, H, L, d_head]
+        out = out.transpose(1, 2).reshape(B, L, D)
+        return self.Wo(out)
+
+
+class FFN(nn.Module):
+    def __init__(self, d_model, d_ff=None):
+        super().__init__()
+        d_ff = d_ff or 4 * d_model
+        self.fc1 = nn.Linear(d_model, d_ff)
+        self.fc2 = nn.Linear(d_ff, d_model)
+
+    def forward(self, x):
+        return self.fc2(torch.relu(self.fc1(x)))
+
+
+class TransformerBlock(nn.Module):
+    """Pre-Norm 版本 - 现代 LLM 标准"""
+    def __init__(self, d_model, n_heads):
+        super().__init__()
+        self.ln1 = nn.LayerNorm(d_model)
+        self.attn = MultiHeadAttention(d_model, n_heads)
+        self.ln2 = nn.LayerNorm(d_model)
+        self.ffn = FFN(d_model)
+
+    def forward(self, x, mask=None):
+        x = x + self.attn(self.ln1(x), mask)
+        x = x + self.ffn(self.ln2(x))
+        return x
+
+
+class Transformer(nn.Module):
+    def __init__(self, vocab_size, d_model=512, n_heads=8, n_layers=6, max_len=5000):
+        super().__init__()
+        self.tok_emb = nn.Embedding(vocab_size, d_model)
+        self.pos_emb = self._build_pos_enc(max_len, d_model)
+        self.blocks = nn.ModuleList([
+            TransformerBlock(d_model, n_heads) for _ in range(n_layers)
+        ])
+        self.ln_f = nn.LayerNorm(d_model)
+        self.lm_head = nn.Linear(d_model, vocab_size, bias=False)
+
+    def _build_pos_enc(self, max_len, d):
+        pe = torch.zeros(max_len, d)
+        pos = torch.arange(max_len).unsqueeze(1).float()
+        div = torch.exp(torch.arange(0, d, 2).float() * -(math.log(10000.0)/d))
+        pe[:, 0::2] = torch.sin(pos * div)
+        pe[:, 1::2] = torch.cos(pos * div)
+        return nn.Parameter(pe.unsqueeze(0), requires_grad=False)
+
+    def forward(self, idx):
+        B, L = idx.shape
+        x = self.tok_emb(idx) + self.pos_emb[:, :L]
+        # Causal mask: 上三角屏蔽
+        mask = torch.triu(torch.ones(L, L, dtype=torch.bool, device=idx.device),
+                          diagonal=1)
+        for block in self.blocks:
+            x = block(x, mask)
+        x = self.ln_f(x)
+        return self.lm_head(x)                      # [B, L, vocab]
+
+# 使用
+model = Transformer(vocab_size=10000)
+x = torch.randint(0, 10000, (2, 50))   # batch 2, seq 50
+logits = model(x)                       # [2, 50, 10000]
+</code></pre>
+
+<p>这大约 70 行就实现了 Transformer 的核心。真正的生产实现(LLaMA、Qwen)在此基础上有十几个工程优化:RoPE 替代正弦位置编码、RMSNorm 替代 LayerNorm、SwiGLU 替代 ReLU FFN、GQA 替代 MHA 等,但<strong>骨架 7 年没变</strong>。</p>
+
+<h3>实验结果</h3>
+<p>原论文在 WMT 2014 英-德翻译上:BLEU 28.4,比 Google NMT(基于 LSTM)27.3 提升 1.1 点,<em>且训练时间只要 1/10</em>。这是关键——不是效果好一点,是<em>快到能训更大模型</em>。</p>
+
+<h3>影响</h3>
+<p>Attention Is All You Need 是 AI 历史最重要的几篇论文之一。7 年后(2024)CS 领域只有 ResNet 的引用数超过它。</p>
+
+<p>但它的<em>直接</em>贡献只是机器翻译 1.1 BLEU 的提升——真正改变世界的是它<em>解锁的可能性</em>:</p>
+<ol>
+<li><strong>BERT</strong>(2018)和 <strong>GPT</strong>(2018):用 Transformer 做预训练</li>
+<li><strong>GPT-3</strong>(2020):证明 Transformer 能 scale 到百亿参数并产生涌现能力</li>
+<li><strong>ViT</strong>(2020):Transformer 搬到 CV</li>
+<li><strong>ChatGPT</strong>(2022):Transformer + RLHF 变产品</li>
+<li><strong>一切现代 LLM</strong>(2023+):LLaMA、Claude、Qwen、DeepSeek 全是 Transformer 变种</li>
+</ol>
+
+<h3>一个工程细节的有趣后话</h3>
+<p>原论文 3.2.2 有一句话:"We found that the Transformer with sinusoidal position encodings performs similarly to learned position embeddings"。后来证明这句话过于乐观——学习式位置编码在超出训练长度时完全失效,正弦位置编码外推也差。这个细节被 RoPE(P09)真正解决,5 年之后。</p>
+
+<p>这也是论文阅读的价值:原作者也会错。了解这些 subtlety 让你对领域演化有更清晰的认识。</p>
+
+<div class="refback"><strong>为什么是 3 页不是 1 页:</strong>如果只读一篇论文来理解现代 AI,就是这一篇。搞懂 attention 机制是所有后续工作的入场券。建议配合 The Annotated Transformer(Harvard NLP)和 Andrej Karpathy 的"Let's build GPT"视频一起吃透。</div>
+
+<!-- ============================ P07 BERT / GPT ============================ -->
+<h2 id="p07"><span class="num">P07</span>BERT 与 GPT:预训练时代的双子星</h2>
+<p class="pos">对应主书:第 4 章 5.2.5(Encoder/Decoder 分野)· 4.5.2(自监督预训练)</p>
+
+<div class="paper-meta">
+<div class="title-en">BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding</div>
+<div class="row"><span class="label">作者</span>Jacob Devlin, Ming-Wei Chang, Kenton Lee, Kristina Toutanova(Google)</div>
+<div class="row"><span class="label">发表</span>NAACL 2019 · arXiv:1810.04805 · 被引 110,000+</div>
+</div>
+
+<div class="paper-meta">
+<div class="title-en">Language Models are Few-Shot Learners(GPT-3)</div>
+<div class="row"><span class="label">作者</span>Tom Brown 等(OpenAI)</div>
+<div class="row"><span class="label">发表</span>NeurIPS 2020 · arXiv:2005.14165 · 被引 35,000+</div>
+</div>
+
+<p><em>BERT 和 GPT-3 分属不同技术路线,但一起定义了"预训练时代"。放在一起比较最清晰。</em></p>
+
+<h3>BERT:双向 Encoder + MLM</h3>
+
+<p><strong>核心创新</strong>:掩码语言模型(Masked Language Modeling)。</p>
+<p>传统语言模型是单向的(从左到右预测下一个词)。BERT 随机遮住 15% 的 token,让模型基于<em>双向</em>上下文预测被遮的内容。每个位置的表示都能"看到"整个句子。</p>
+
+<div class="mermaid">
+flowchart LR
+    I["The [MASK] sat on the mat"] --> ENC[Transformer Encoder<br/>双向 self-attention]
+    ENC --> P["[MASK] = cat (prediction)"]
+</div>
+
+<p><strong>第二个训练目标 NSP</strong>(Next Sentence Prediction):预测两句话是否连续。后续工作(RoBERTa 2019)证明 NSP 其实没用,但 MLM 留下来了。</p>
+
+<h3>BERT 的范式</h3>
+<p>BERT 开启"预训练 + 微调"模式:</p>
+<ol>
+<li>在海量无标注文本(Wikipedia + BookCorpus,~3.3B tokens)做 MLM 预训练</li>
+<li>下游任务微调:分类、问答、NER 等,只要加一层输出头</li>
+</ol>
+
+<p>这个范式把各种 NLP 任务的 SOTA 一次性刷新。BERT-Base(110M 参数)、BERT-Large(340M)——当时看是"大模型",和今天比是小模型。</p>
+
+<h3>GPT-3:单向 Decoder + 只看 few-shot</h3>
+
+<p>GPT-3 走的是相反路线:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- 只用 Decoder(因果语言模型,从左到右预测下一个 token)</li>
+<li>- <strong>不微调</strong>——把任务说明和几个例子写在 prompt 里,模型在"上下文中学习"</li>
+<li>- 规模暴涨:175B 参数,是 BERT-Large 的 500 倍</li>
+</ul>
+
+<h3>GPT-3 的关键发现:In-Context Learning</h3>
+<p>GPT-3 论文的真正贡献不是架构创新——架构和 GPT-2 几乎一样。贡献是证明了:<strong>模型 scale 到一定程度,会涌现出"从几个例子学新任务"的能力</strong>。</p>
+
+<p>例子:</p>
+<pre><code class="language-text">Translate English to French:
+sea otter =&gt; loutre de mer
+plush giraffe =&gt; girafe peluche
+cheese =&gt; ???
+</code></pre>
+
+<p>GPT-3 在看过 2 个例子后,正确输出 "fromage"——而且能推广到数学、推理、代码等任务。<em>这是 LLM 从"语言模型"变成"通用推理器"的起点</em>。</p>
+
+<h3>两条路线的对比</h3>
+<table>
+<tr><th></th><th>BERT (Encoder)</th><th>GPT (Decoder)</th></tr>
+<tr><td>方向</td><td>双向 attention</td><td>单向 causal</td></tr>
+<tr><td>训练目标</td><td>MLM + NSP</td><td>下一 token 预测</td></tr>
+<tr><td>任务适配</td><td>预训练 + 微调</td><td>Prompting / in-context</td></tr>
+<tr><td>典型任务</td><td>分类、NER、QA、句嵌入</td><td>文本生成、对话、代码</td></tr>
+<tr><td>代表规模</td><td>BERT-Large 340M</td><td>GPT-3 175B</td></tr>
+<tr><td>2024 后续</td><td>RoBERTa, DeBERTa, 仍用作 embedding</td><td>LLaMA, Claude, Qwen, DeepSeek 主流</td></tr>
+</table>
+
+<h3>为什么 Decoder-only 最终赢了</h3>
+<p>主书 5.2.5 分析过,主要因素:</p>
+<ol>
+<li>Decoder-only 训练更简单——单一目标,所有文本都是训练数据</li>
+<li>In-context learning 让"一个模型做所有任务"成为现实</li>
+<li>Scaling 性质对 decoder-only 更友好——GPT-3 以后这是共识</li>
+<li>生成能力天然包含理解能力(能写好回答,就得先看懂问题)</li>
+</ol>
+
+<p>BERT 系的 encoder 模型今天主要用作"文本编码器"——embedding 模型(BGE、E5)、reranker 等。RAG 的检索阶段大多还是 encoder 模型。</p>
+
+<h3>影响</h3>
+<p>BERT 开启了<strong>预训练范式</strong>——今天所有 LLM 都继承这个思想。GPT-3 证明了<strong>scaling 的威力</strong>——直接导向 ChatGPT、GPT-4。这两篇是 LLM 历史的双子星。</p>
+
+<div class="refback"><strong>为什么必读:</strong>BERT 让你理解"预训练-微调"范式。GPT-3 让你理解"涌现能力"和"in-context learning"——这两个概念是后续整个 LLM 时代的核心假设。</div>
+
+<!-- ============================ P08 Scaling Law ============================ -->
+<h2 id="p08"><span class="num">P08</span>Scaling Law 与 Chinchilla:训练大模型的经济学</h2>
+<p class="pos">对应主书:第 4 章 5.1.1 · 4.5.2</p>
+
+<div class="paper-meta">
+<div class="title-en">Scaling Laws for Neural Language Models</div>
+<div class="row"><span class="label">作者</span>Jared Kaplan 等(OpenAI)</div>
+<div class="row"><span class="label">发表</span>arXiv:2001.08361(2020)</div>
+</div>
+
+<div class="paper-meta">
+<div class="title-en">Training Compute-Optimal Large Language Models(Chinchilla)</div>
+<div class="row"><span class="label">作者</span>Jordan Hoffmann 等(DeepMind)</div>
+<div class="row"><span class="label">发表</span>NeurIPS 2022 · arXiv:2203.15556</div>
+</div>
+
+<h3>问题:给定算力预算,怎么分配到参数和数据?</h3>
+<p>训练一个大模型,总算力 $C \approx 6 \cdot N \cdot D$($N$ 参数数,$D$ 训练 token 数)。假设你有固定的 $C$(比如 1e25 FLOPs),是该训大模型小数据,还是小模型大数据?</p>
+
+<h3>Kaplan(2020):Loss 是幂律</h3>
+<p>OpenAI 跑了上百个不同大小的模型,发现 loss 随参数和数据都是幂律下降:</p>
+
+<div class="formula">$L(N, D) \approx E + \frac{A}{N^\alpha} + \frac{B}{D^\beta}$</div>
+
+<p>$E$ 是不可约熵,$\alpha \approx 0.07, \beta \approx 0.28$。</p>
+
+<p><strong>Kaplan 的关键结论(后来被证明错误)</strong>:在固定算力下,最优分配是参数 $N$ 增长远快于数据 $D$。这启发了 GPT-3 175B 的设计——只训 300B tokens(按 Kaplan 预测已经接近最优)。</p>
+
+<h3>Chinchilla(2022):Kaplan 错了</h3>
+<p>DeepMind 重做实验,用更广的 $N, D$ 组合。新拟合公式:</p>
+
+<div class="formula">$L(N, D) = E + \frac{A}{N^{0.34}} + \frac{B}{D^{0.28}}$</div>
+
+<p><strong>关键:$\alpha$ 从 0.07 变成 0.34</strong>——这意味着参数和数据应该<strong>大致等比例</strong>增长。</p>
+
+<p>具体结论:最优点 <em>tokens-to-parameters 比约 20:1</em>。</p>
+
+<table>
+<tr><th>模型</th><th>参数</th><th>训练 tokens</th><th>实际比例</th><th>是否 Chinchilla 最优</th></tr>
+<tr><td>GPT-3</td><td>175B</td><td>300B</td><td>1.7:1</td><td>❌ 数据严重不足</td></tr>
+<tr><td>Chinchilla</td><td>70B</td><td>1.4T</td><td>20:1</td><td>✅ 最优</td></tr>
+<tr><td>LLaMA-1 65B</td><td>65B</td><td>1.4T</td><td>21.5:1</td><td>✅ 接近最优</td></tr>
+<tr><td>LLaMA-3 70B</td><td>70B</td><td>15T</td><td>214:1</td><td>推理效率过度,超 Chinchilla 多训</td></tr>
+</table>
+
+<h3>Chinchilla 的实验证明</h3>
+<p>Chinchilla(70B 参数、1.4T tokens 训练)和 Gopher(280B 参数、300B tokens)——同等算力下,Chinchilla 在 MMLU 等基准上全面超越 4 倍大的 Gopher。<strong>"小而精"击败"大而少"</strong>,是 Scaling Law 研究的重要修正。</p>
+
+<h3>训练最优 vs 推理最优</h3>
+<p>Chinchilla 算的是"训练时 loss 最低"。但实际部署时,模型要推理千万次,<em>推理效率</em>也是优化目标。</p>
+<p>LLaMA-2/3 系列意识到这点:刻意训练<em>超过</em>Chinchilla 最优——LLaMA-3-70B 训 15T tokens(214:1),虽然训练超"最优",但得到一个"参数少、能力强"的模型,推理更便宜。这叫"over-training for inference"。</p>
+
+<h3>影响</h3>
+<p>这两篇论文从根本上改变了 LLM 训练决策:</p>
+<ol>
+<li>GPT-3 之后"只堆参数"的路线被纠正</li>
+<li>数据收集和清洗成为和模型架构同等重要的问题</li>
+<li>LLaMA 系列的数据量(1.4T → 2T → 15T)直接源于这里的洞察</li>
+</ol>
+
+<div class="refback"><strong>为什么必读:</strong>如果你要理解 2022 年后每次大模型发布时"参数 vs 数据"的讨论,必须读这两篇。也是理解"为什么现在数据这么贵"的起点——Chinchilla 的结论让所有公司都在抢数据。</div>
+
+<!-- ============================ P09 RoPE ============================ -->
+<h2 id="p09"><span class="num">P09</span>RoPE:旋转位置编码</h2>
+<p class="pos">对应主书:第 4 章 5.3.2 RoPE 深挖</p>
+
+<div class="paper-meta">
+<div class="title-en">RoFormer: Enhanced Transformer with Rotary Position Embedding</div>
+<div class="row"><span class="label">作者</span>Jianlin Su, Yu Lu, Shengfeng Pan, Ahmed Murtadha, Bo Wen, Yunfeng Liu</div>
+<div class="row"><span class="label">机构</span>追一科技</div>
+<div class="row"><span class="label">发表</span>Neurocomputing 2024 · arXiv:2104.09864(2021)</div>
+<div class="row"><span class="label">被引</span>4,500+(快速增长中)</div>
+</div>
+
+<h3>问题:绝对位置编码不能外推</h3>
+<p>原始 Transformer 用正弦绝对位置编码,GPT-2 用学习式绝对位置编码。两者都有同一问题——<strong>训练时见过 0-2047 位置,推理时见 2048+ 就失效</strong>。学习式更糟(超范围直接爆),正弦好一点但也不 work。相对位置编码(T5 bias、ALiBi)有所改善,但表达力有限。</p>
+
+<h3>核心思想:旋转而非相加</h3>
+<p>RoPE 不给输入加位置向量,而是对 Q 和 K 做<em>旋转</em>。核心洞察:两个向量先分别旋转再做点积,结果只依赖于它们之间的<em>相对角度</em>。</p>
+
+<div class="formula">$\mathbf{q}_m^\top \mathbf{k}_n = (R_m \mathbf{q})^\top (R_n \mathbf{k}) = \mathbf{q}^\top R_m^\top R_n \mathbf{k} = \mathbf{q}^\top R_{n-m} \mathbf{k}$</div>
+
+<p>(因为旋转矩阵 $R$ 有 $R_m^\top R_n = R_{n-m}$)</p>
+
+<p>所以 attention 分数自然只依赖相对位置 $n - m$。这正是相对位置编码想要的性质,且实现更优雅。</p>
+
+<h3>2D 旋转矩阵</h3>
+<p>对每对相邻维度做 2D 旋转:</p>
+
+<div class="formula">$R_m^{(i)} = \begin{pmatrix} \cos m\theta_i & -\sin m\theta_i \\ \sin m\theta_i & \cos m\theta_i \end{pmatrix}, \quad \theta_i = 10000^{-2(i-1)/d}$</div>
+
+<p>不同维度用不同频率 $\theta_i$:低维高频、高维低频——每个维度捕捉不同尺度的位置差异。</p>
+
+<h3>复数视角(更优雅)</h3>
+<p>把 2D 向量看作复数 $q = q_1 + iq_2$。旋转 $m\theta$ 等于乘 $e^{im\theta}$:</p>
+
+<div class="formula">$q_m = q \cdot e^{im\theta}, \quad k_n = k \cdot e^{in\theta}$</div>
+<div class="formula">$\langle q_m, k_n \rangle = \text{Re}(q \cdot e^{im\theta} \cdot \overline{k \cdot e^{in\theta}}) = \text{Re}(q \bar{k} \cdot e^{i(m-n)\theta})$</div>
+
+<p>只依赖 $m - n$。这是 RoPE 数学上最优雅的表达。</p>
+
+<h3>实现</h3>
+<pre><code class="language-python">def build_rope_cache(d_head, max_len, base=10000, device='cuda'):
+    theta = 1.0 / (base ** (torch.arange(0, d_head, 2).float() / d_head))
+    t = torch.arange(max_len, device=device).float()
+    freqs = torch.outer(t, theta.to(device))            # [max_len, d_head/2]
+    return torch.polar(torch.ones_like(freqs), freqs)   # 复数形式
+
+def apply_rope(x, freqs_cis):
+    # x: [B, H, L, d_head]
+    x_complex = torch.view_as_complex(
+        x.float().reshape(*x.shape[:-1], -1, 2)
+    )
+    x_rotated = x_complex * freqs_cis[:x.shape[-2]]
+    return torch.view_as_real(x_rotated).flatten(-2).type_as(x)
+
+# 用法: 在 attention 里应用到 Q, K (不作用 V)
+Q = apply_rope(Q, freqs_cis)
+K = apply_rope(K, freqs_cis)
+# V 不做 RoPE — 它携带内容, 不应带位置
+</code></pre>
+
+<h3>RoPE 的衍生技术</h3>
+<p>RoPE 的连续三角函数性质让它有"外推潜力"——下面几项技术把 RoPE 训练的模型扩展到远超训练长度:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>PI</strong>(Position Interpolation, Meta 2023):压缩位置到训练范围内,2-4× 外推</li>
+<li><strong>NTK-aware</strong>:只压缩高频维度,保留低频——无需微调就能外推</li>
+<li><strong>YaRN</strong>(2023):分频段精细化 + 注意力温度调节,1B token 微调可 32× 外推</li>
+<li><strong>LongRoPE</strong>(2024):每维度独立搜索最优缩放,2M token 可行</li>
+</ul>
+
+<h3>影响</h3>
+<p>RoPE 今天是开源 LLM 的事实标准:LLaMA、Qwen、DeepSeek、Mistral、ChatGLM 全部用 RoPE。原因:</p>
+<ol>
+<li>相对位置的数学性质天然</li>
+<li>零额外参数</li>
+<li>外推友好(配合 YaRN 等)</li>
+<li>实现简单(< 30 行代码)</li>
+</ol>
+
+<p>有意思的是,RoPE 作者苏剑林(追一科技)不是大公司研究员,这篇论文最初在他个人博客发表。这是开源社区影响力的一个缩影——好的想法不一定来自大公司。</p>
+
+<div class="refback"><strong>为什么必读:</strong>长上下文(128K、1M)是 2024-2026 LLM 的主战场之一,RoPE + YaRN 是这条路的底层技术。读懂 RoPE 才能理解为什么今天的模型能支持这么长的上下文。</div>
+
+</main>
+<script>
+hljs.highlightAll();
+mermaid.initialize({startOnLoad:true,theme:'neutral',fontFamily:'Inter,sans-serif'});
+</script>
+</body>
+</html>

@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paper Deep Dives B — Building Intelligence</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+:root{--bg:#fbfaf7;--fg:#1d1d1b;--muted:#6b6b68;--accent:#5a3a7a;--accent-soft:#ece6f2;--rule:#e3dfd6;--code-bg:#282c34;--sidebar-bg:#f4f1ea;--mono:"SFMono-Regular","JetBrains Mono",Consolas,Menlo,monospace;--serif:"Source Serif Pro","Songti SC","STSong",Georgia,serif;--sans:"Inter",-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;}
+*{box-sizing:border-box;}html,body{margin:0;padding:0;}
+body{font-family:var(--serif);font-size:16px;line-height:1.75;color:var(--fg);background:var(--bg);display:flex;}
+aside.toc{position:sticky;top:0;width:310px;height:100vh;overflow-y:auto;background:var(--sidebar-bg);border-right:1px solid var(--rule);padding:24px 20px;font-family:var(--sans);font-size:13px;flex-shrink:0;}
+aside.toc h1{font-family:var(--serif);font-size:18px;margin:0 0 4px 0;color:var(--accent);}
+aside.toc .sub{color:var(--muted);font-size:12px;margin-bottom:20px;font-style:italic;}
+aside.toc .group{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin-top:14px;margin-bottom:4px;padding-bottom:3px;border-bottom:1px solid var(--rule);}
+aside.toc ol{list-style:none;padding:0;margin:0;}aside.toc ol li{margin-bottom:2px;}
+aside.toc a{color:var(--fg);text-decoration:none;display:block;padding:3px 6px;border-radius:3px;}
+aside.toc a:hover{background:var(--accent-soft);color:var(--accent);}
+aside.toc .num{color:var(--muted);font-family:var(--mono);margin-right:6px;font-size:11px;}
+main{flex:1;max-width:880px;padding:60px 72px 120px 72px;min-width:0;}
+header.cover{border-bottom:2px solid var(--fg);padding-bottom:32px;margin-bottom:48px;}
+header.cover h1{font-size:42px;line-height:1.15;margin:0 0 12px 0;font-weight:700;}
+header.cover .subtitle{font-size:20px;color:var(--muted);font-style:italic;margin-bottom:20px;}
+header.cover .meta{font-family:var(--sans);font-size:13px;color:var(--muted);}
+h2{font-size:26px;margin-top:72px;margin-bottom:6px;padding-bottom:8px;border-bottom:1px solid var(--rule);scroll-margin-top:20px;}
+h2 .num{color:var(--accent);font-family:var(--mono);font-weight:400;margin-right:10px;font-size:20px;}
+.pos{font-family:var(--sans);font-size:13px;color:var(--muted);font-style:italic;margin-top:0;margin-bottom:16px;padding:6px 12px;background:var(--accent-soft);border-left:2px solid var(--accent);}
+h3{font-size:18px;margin-top:28px;margin-bottom:8px;font-weight:600;}
+h4{font-size:15px;margin-top:18px;margin-bottom:4px;font-weight:600;color:var(--accent);}
+p{margin:0 0 14px 0;text-align:justify;}
+code{font-family:var(--mono);font-size:14px;background:var(--accent-soft);color:var(--accent);padding:1px 5px;border-radius:3px;}
+pre{background:var(--code-bg);border-radius:6px;padding:14px 18px;overflow-x:auto;font-size:13px;line-height:1.55;margin:16px 0;}
+pre code{background:transparent;color:inherit;padding:0;font-size:inherit;}
+.formula{font-family:var(--serif);padding:10px 18px;background:#f6f0fa;border-left:2px solid var(--muted);margin:12px 0;font-size:16px;overflow-x:auto;}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;font-family:var(--sans);}
+th,td{border-bottom:1px solid var(--rule);padding:7px 10px;text-align:left;vertical-align:top;}
+th{background:var(--sidebar-bg);font-weight:600;}
+.paper-meta{font-family:var(--sans);font-size:13px;margin:12px 0 24px 0;padding:14px 18px;background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:4px;}
+.paper-meta .title-en{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--accent);margin-bottom:6px;}
+.paper-meta .row{margin:2px 0;}
+.paper-meta .label{font-weight:600;display:inline-block;min-width:70px;color:var(--muted);}
+.part-header{margin-top:100px;margin-bottom:24px;padding:24px 28px;background:linear-gradient(to right,var(--accent-soft),transparent);border-left:4px solid var(--accent);}
+.part-header .part-label{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:0.15em;color:var(--accent);}
+.part-header h2.part-title{font-size:32px;margin:4px 0 8px 0;padding:0;border:none;}
+.part-header .part-desc{font-size:15px;color:var(--muted);font-style:italic;margin:0;}
+.mermaid{margin:20px 0;text-align:center;}
+.refback{font-family:var(--sans);font-size:13px;color:var(--muted);margin-top:20px;padding-top:10px;border-top:1px dashed var(--rule);}
+.refback strong{color:var(--accent);}
+@media (max-width:1100px){aside.toc{display:none;}main{padding:40px 32px;}}
+</style>
+</head>
+<body>
+
+<aside class="toc">
+<h1>Paper Deep Dives</h1>
+<div class="sub">Ch 5B · Efficiency &amp; Alignment</div>
+<div class="group">Efficiency &amp; Inference</div>
+<ol>
+<li><a href="#p10"><span class="num">10</span>FlashAttention</a></li>
+<li><a href="#p11"><span class="num">11</span>LoRA / QLoRA</a></li>
+<li><a href="#p12"><span class="num">12</span>PagedAttention / vLLM</a></li>
+<li><a href="#p13"><span class="num">13</span>Switch / Mixtral</a></li>
+</ol>
+<div class="group">Alignment &amp; Applications</div>
+<ol>
+<li><a href="#p14"><span class="num">14</span>InstructGPT / RLHF</a></li>
+<li><a href="#p15"><span class="num">15</span>DPO</a></li>
+<li><a href="#p16"><span class="num">16</span>Chain-of-Thought</a></li>
+<li><a href="#p17"><span class="num">17</span>DeepSeek-V3</a></li>
+</ol>
+</aside>
+
+<main>
+
+<header class="cover">
+<h1>Paper Deep Dives</h1>
+<div class="subtitle">Efficiency &amp; Alignment</div>
+<div class="meta">Chapter 5 · Part B · P10–P17</div>
+</header>
+
+<p>Part A covered <strong>architecture and pretraining</strong> (ResNet, Attention, BERT/GPT, Scaling Laws, RoPE, and more). Part B shifts focus to the 8 papers that made LLMs <strong>actually usable</strong> — how inference gets faster, how models get smaller, how to fine-tune, how to align, and how to make them "reason." If Part A is the model itself, Part B is the engineering and algorithms that bring models into the real world.</p>
+
+<!-- ============================ PART 3: Efficiency & Inference ============================ -->
+<div class="part-header">
+<div class="part-label">PART THREE</div>
+<h2 class="part-title">Chapter 4 · Efficiency &amp; Inference</h2>
+<p class="part-desc">FlashAttention, LoRA, PagedAttention, MoE — 4 key works that made large models affordable to run.</p>
+</div>
+
+<!-- ============================ P10 FlashAttention ============================ -->
+<h2 id="p10"><span class="num">P10</span>FlashAttention: IO-Aware Exact Attention</h2>
+<p class="pos">Main text reference: Chapter 3, §4.7.3 Operator Optimization · Chapter 4, §4.2.2 / §5.8</p>
+
+<div class="paper-meta">
+<div class="title-en">FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness</div>
+<div class="row"><span class="label">Authors</span>Tri Dao, Daniel Y. Fu, Stefano Ermon, Atri Rudra, Christopher Ré</div>
+<div class="row"><span class="label">Affiliation</span>Stanford University</div>
+<div class="row"><span class="label">Published</span>NeurIPS 2022 · arXiv:2205.14135 · 5,000+ citations</div>
+<div class="row"><span class="label">Follow-up</span>FlashAttention-2 (2023), FlashAttention-3 (2024, FP8 + H100 optimizations)</div>
+</div>
+
+<h3>The Problem: Attention's Real Bottleneck Is Not FLOPs</h3>
+<p>Self-attention has time complexity $O(L^2 d)$ for long sequences, often labeled the "compute bottleneck." But Tri Dao observed that <strong>on GPUs, attention is actually a memory-bandwidth bottleneck, not a compute bottleneck</strong>.</p>
+<p>The numbers: an A100 GPU delivers 312 TFLOPs for FP16 GEMM, but its HBM bandwidth is only 1.5 TB/s. The ratio (arithmetic intensity) needs to reach ~208 FLOP/byte to saturate compute — and standard attention falls far below this. Most of the time, the GPU is stalled waiting for data to move from HBM.</p>
+
+<h3>The Problem with Standard Attention</h3>
+<p>A standard PyTorch implementation does four things:</p>
+<ol>
+<li>Compute $S = QK^\top \in \mathbb{R}^{L \times L}$, write it to HBM</li>
+<li>Read $S$ from HBM, compute $P = \text{softmax}(S)$, write it back to HBM</li>
+<li>Read $P$ from HBM, multiply by $V$ to get $O$, write it back to HBM</li>
+<li>(Possible dropout and masking operations add further read/write passes)</li>
+</ol>
+
+<p>At $L = 4096$, the $S$ matrix alone is 64 MB. Each read/write is a 128 MB round-trip to HBM. As $L$ grows, this cost scales linearly while compute utilization stays extremely low.</p>
+
+<h3>Core Method: Tiling + Online Softmax</h3>
+<p>FlashAttention splits Q, K, V into tiles sized to fit in the GPU's on-chip SRAM. The outer loop iterates over Q tiles $Q_i$; the inner loop iterates over K, V tiles $(K_j, V_j)$. <strong>The full $S$ or $P$ matrix is never materialized</strong> — all intermediate results stay in SRAM.</p>
+
+<div class="mermaid">
+flowchart TB
+    HBM["HBM — large, slow"] -. "read Q_i, K_j, V_j" .-> SRAM
+    SRAM["SRAM — small, fast<br/>tile-level computation"] -. "write O_i" .-> HBM
+    SRAM --> S["S_ij = Q_i K_j^T (in SRAM)"]
+    S --> SM["online softmax: update m, l, O"]
+    SM --> NEXT["next K_j, V_j tile"]
+</div>
+
+<h3>The Key Challenge: Online Softmax</h3>
+<p>Softmax requires normalization — $\text{softmax}(x_i) = \exp(x_i) / \sum_j \exp(x_j)$. It seems like you must see all $x_j$ before computing the denominator. FlashAttention uses an <strong>incremental update</strong> instead: each time a new $S_{ij}$ tile arrives, it maintains a running max and running sum, producing a result that is mathematically equivalent to the full softmax.</p>
+
+<p>Say we have processed up to tile $j-1$, with state $(m_{j-1}, l_{j-1}, O_{j-1})$ — the current running max $m$, running denominator $l$, and current weighted output $O$. A new tile $(K_j, V_j)$ arrives:</p>
+
+<p>Compute $S_{ij} = Q_i K_j^\top$. Let $\tilde{m}_j = \max(S_{ij})$. New max:</p>
+<div class="formula">$m_j = \max(m_{j-1}, \tilde{m}_j)$</div>
+
+<p>Rescale both the new and old exponential terms using the new max:</p>
+<div class="formula">$l_j = e^{m_{j-1} - m_j} \cdot l_{j-1} + \sum_k e^{S_{ij,k} - m_j}$</div>
+
+<p>New output (old contribution is rescaled to the new max):</p>
+<div class="formula">$O_j = \frac{1}{l_j}\left[ l_{j-1} e^{m_{j-1} - m_j} O_{j-1} + \sum_k e^{S_{ij,k} - m_j} V_{j,k} \right]$</div>
+
+<p>After scanning all K/V tiles, $O_J$ is exactly equivalent to the full softmax result. It is numerically identical to standard attention — this is not an approximation.</p>
+
+<h3>Pseudocode</h3>
+<pre><code class="language-python">def flash_attention(Q, K, V, block_size=64):
+    """Q, K, V: [L, d].  Returns O: [L, d], never materializing the LxL matrix S"""
+    L, d = Q.shape
+    O = torch.zeros_like(Q)
+    m = torch.full((L, 1), -float('inf'))  # running max per row
+    l = torch.zeros((L, 1))                 # running sum per row
+
+    for j in range(0, L, block_size):
+        K_j = K[j:j+block_size]              # load tile into SRAM
+        V_j = V[j:j+block_size]
+        S_ij = Q @ K_j.T / math.sqrt(d)      # computed in SRAM, [L, block]
+
+        # Causal mask (if needed)
+        mask = torch.arange(j, j+K_j.shape[0]).unsqueeze(0) > \
+               torch.arange(L).unsqueeze(1)
+        S_ij = S_ij.masked_fill(mask, -float('inf'))
+
+        m_new = torch.maximum(m, S_ij.max(dim=-1, keepdim=True).values)
+        P_ij = torch.exp(S_ij - m_new)
+        l_new = torch.exp(m - m_new) * l + P_ij.sum(dim=-1, keepdim=True)
+
+        # Rescale old O to new max, add current tile's contribution
+        O = (l / l_new) * torch.exp(m - m_new) * O + (P_ij @ V_j) / l_new
+        m, l = m_new, l_new
+
+    return O
+</code></pre>
+
+<p>The actual CUDA implementation involves substantial engineering — warp-level shuffling, register reuse, pipelining — but the core algorithm is exactly what is shown above.</p>
+
+<h3>Performance Gains</h3>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong>HBM accesses</strong>: reduced from $O(L^2 d)$ to $O(L^2 d^2 / M)$ ($M$ = SRAM size) — several orders of magnitude fewer</li>
+<li>- <strong>Speed</strong>: 2–4× faster than standard attention on A100, with greater gains at longer sequences</li>
+<li>- <strong>Memory</strong>: intermediate $S$ and $P$ are never materialized, reducing peak memory from $O(L^2)$ to $O(L)$ — this is what makes 128K+ context windows feasible</li>
+</ul>
+
+<h3>FlashAttention-2 and -3</h3>
+<p><strong>FlashAttention-2 (2023)</strong>: Refined outer loop ordering, reduced non-matmul operations, improved warp partitioning. Another 2× speedup, totaling 4–8× over standard attention.</p>
+<p><strong>FlashAttention-3 (2024)</strong>: Targets the H100 Hopper architecture, leveraging FP8 Tensor Cores, asynchronous execution, and more granular pipelining. Achieves ~75% of peak throughput on H100.</p>
+<p>These three generations represent the most important attention optimization work from 2022 to 2024, and directly influenced the implementations of PyTorch SDPA, vLLM, xFormers, and TensorRT-LLM. Modern LLM training and inference almost universally defaults to FlashAttention.</p>
+
+<h3>Key Insight</h3>
+<p>FlashAttention's impact extends well beyond attention itself — it is the exemplar of <strong>IO-aware algorithm design</strong>. Many GPU kernels can be restructured similarly: keep intermediate results in SRAM, and use mathematically equivalent incremental forms to avoid large intermediate buffers. FlashDecoding and RingAttention are direct successors of this idea.</p>
+
+<div class="refback"><strong>Why You Must Read This:</strong> The online softmax algorithm is something you need to work through by hand to truly understand. Once you grasp it, you will recognize the same technique appearing in many other places — PagedAttention, StreamingLLM, and FlashDecoding all rely on the same mathematical structure.</div>
+
+<!-- ============================ P11 LoRA ============================ -->
+<h2 id="p11"><span class="num">P11</span>LoRA / QLoRA: Making Fine-Tuning Affordable</h2>
+<p class="pos">Main text reference: Chapter 3, §4.5.3 Fine-Tuning · Chapter 4, §4.4.1 Low-Rank Ideas</p>
+
+<div class="paper-meta">
+<div class="title-en">LoRA: Low-Rank Adaptation of Large Language Models</div>
+<div class="row"><span class="label">Authors</span>Edward Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang, Lu Wang, Weizhu Chen</div>
+<div class="row"><span class="label">Affiliation</span>Microsoft</div>
+<div class="row"><span class="label">Published</span>ICLR 2022 · arXiv:2106.09685 · 8,000+ citations</div>
+</div>
+
+<div class="paper-meta">
+<div class="title-en">QLoRA: Efficient Finetuning of Quantized LLMs</div>
+<div class="row"><span class="label">Authors</span>Tim Dettmers et al. (University of Washington)</div>
+<div class="row"><span class="label">Published</span>NeurIPS 2023 · arXiv:2305.14314</div>
+</div>
+
+<h3>The Problem: Full Fine-Tuning a Large Model Is Too Expensive</h3>
+<p>Fine-tuning a 70B model requires storing: parameters at 140 GB (FP16) + gradients at 140 GB + Adam optimizer state at 560 GB ≈ 840 GB total, plus activations. Even a multi-GPU single node isn't enough — you need ZeRO-3-level distributed training.</p>
+<p>Yet many use cases only need light customization — adding a domain-specific style, or making the model follow a particular output format. Is it really necessary to update every parameter?</p>
+
+<h3>LoRA's Core Hypothesis</h3>
+<p>Hu et al. hypothesize that <strong>when a model adapts to a downstream task, the weight update $\Delta W$ has a low-rank structure</strong>.</p>
+<p>That is, $\Delta W \in \mathbb{R}^{d \times k}$ can be decomposed as $\Delta W = BA$, where $B \in \mathbb{R}^{d \times r}, A \in \mathbb{R}^{r \times k}$, and $r \ll \min(d, k)$.</p>
+
+<p>During training, the original weights $W_0$ are frozen; only $A$ and $B$ are trained:</p>
+<div class="formula">$W = W_0 + \Delta W = W_0 + BA, \quad h = W_0 x + BA x$</div>
+
+<div class="mermaid">
+flowchart LR
+    X[x] --> W0["W_0 (frozen, d x k)"]
+    W0 --> Y1[W_0 x]
+    X --> A["A (r x k, trainable)"]
+    A --> B["B (d x r, trainable)"]
+    B --> Y2["BA x"]
+    Y1 --> ADD((+))
+    Y2 --> ADD
+    ADD --> H[h]
+</div>
+
+<p>Initialization: $A$ is initialized with Gaussian noise; $B$ is initialized to zero — so the starting point $BA = 0$, matching full fine-tuning's initial state.</p>
+
+<h3>Parameter Count Comparison</h3>
+<p>For GPT-3 175B, consider a layer where $W \in \mathbb{R}^{12288 \times 12288}$, with 150M parameters. With $r = 8$: LoRA introduces $A \in \mathbb{R}^{8 \times 12288}$ and $B \in \mathbb{R}^{12288 \times 8}$, for a total of 200K parameters — a <strong>750× reduction</strong>.</p>
+
+<p>Across the full model, LoRA trains approximately 0.01% of parameters. Memory requirements are dramatically reduced: frozen weights require no Adam state or gradient storage — only $A$ and $B$ need gradients — yielding <em>10–20× memory savings over full fine-tuning</em>.</p>
+
+<h3>Implementation (PEFT)</h3>
+<pre><code class="language-python">from peft import LoraConfig, get_peft_model
+from transformers import AutoModelForCausalLM
+
+base = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-3-8B")
+
+config = LoraConfig(
+    r=16,                          # rank
+    lora_alpha=32,                 # scaling factor; effective W += (alpha/r) BA
+    target_modules=["q_proj", "v_proj"],  # apply LoRA only to Q and V projections
+    lora_dropout=0.05,
+    task_type="CAUSAL_LM",
+)
+model = get_peft_model(base, config)
+model.print_trainable_parameters()
+# trainable params: 4,194,304 || all params: 8,034,455,552 || trainable%: 0.05%
+</code></pre>
+
+<h3>Merging at Inference Time</h3>
+<p>At inference, $BA$ can be merged back into $W_0$: $W_{\text{new}} = W_0 + BA$, producing a standard weight matrix. <strong>Zero additional inference overhead</strong> — this is a major advantage over Adapters, which insert small modules between layers and increase latency at inference time.</p>
+
+<h3>QLoRA: Another 4× Memory Reduction</h3>
+<p>QLoRA (2023) quantizes the base model to 4-bit while keeping the LoRA parameters in FP16. Memory breakdown:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- Frozen weights: 140 GB (FP16) → 35 GB (INT4), 4× saving</li>
+<li>- LoRA parameters and gradients: tens of MB, negligible</li>
+<li>- Total: <strong>a 65B model fits on a single 48 GB GPU</strong></li>
+</ul>
+
+<p>QLoRA introduces several technical innovations:</p>
+<ol>
+<li><strong>NF4</strong> (NormalFloat 4-bit): a 4-bit data type designed for normally distributed weights, achieving higher precision than standard INT4</li>
+<li><strong>Double quantization</strong>: quantizes the quantization scales themselves, further reducing memory</li>
+<li><strong>Paged optimizers</strong>: uses NVIDIA Unified Memory to swap optimizer state to CPU when GPU memory is insufficient</li>
+</ol>
+
+<p>QLoRA made "fine-tuning a 65B model on a consumer GPU" a reality — it was the inflection point that opened large-scale fine-tuning to the open-source community. Projects like Alpaca and Vicuna all relied on LoRA/QLoRA.</p>
+
+<h3>Variants</h3>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>LoRA+</strong>: uses different learning rates for $A$ and $B$ (B should be larger), a small change that yields 1–2% quality improvement</li>
+<li><strong>DoRA</strong> (Weight-Decomposed LoRA): decomposes weights into magnitude and direction, adapting each separately</li>
+<li><strong>AdaLoRA</strong>: dynamically allocates rank per layer</li>
+<li><strong>rsLoRA</strong>: improved scaling rules to stabilize training at larger ranks</li>
+</ul>
+
+<h3>Impact</h3>
+<p>LoRA is <strong>the most important fine-tuning work since 2022</strong>. Nearly every open-source LLM fine-tune today uses LoRA or one of its variants — HuggingFace's PEFT library was built around it. LoRA also inspired architectural thinking: DeepSeek's MLA uses low-rank decomposition to compress the KV Cache (main text §4.4.1), a direct conceptual descendant.</p>
+
+<div class="refback"><strong>Why You Must Read This:</strong> LoRA is the most important "lever" in the open-source community — it lets individuals and small teams participate in frontier LLM adaptation. QLoRA's NF4 design is worth reading carefully; it offers excellent intuition about data type design tailored to a distribution.</div>
+
+<!-- ============================ P12 PagedAttention ============================ -->
+<h2 id="p12"><span class="num">P12</span>PagedAttention / vLLM: Treating KV Cache Like Virtual Memory</h2>
+<p class="pos">Main text reference: Chapter 4, §4.8.3</p>
+
+<div class="paper-meta">
+<div class="title-en">Efficient Memory Management for Large Language Model Serving with PagedAttention</div>
+<div class="row"><span class="label">Authors</span>Woosuk Kwon, Zhuohan Li, Siyuan Zhuang, Ying Sheng, Lianmin Zheng, Cody Hao Yu, Joseph E. Gonzalez, Hao Zhang, Ion Stoica</div>
+<div class="row"><span class="label">Affiliation</span>UC Berkeley, Stanford, UCSD, CMU</div>
+<div class="row"><span class="label">Published</span>SOSP 2023 · arXiv:2309.06180</div>
+</div>
+
+<h3>The Problem: Memory Fragmentation in KV Cache</h3>
+<p>LLM inference requires contiguous KV Cache space per request. A naive implementation pre-allocates by <code>max_seq_len</code>: a request reserving space for 4096 tokens might only use 500, <em>wasting 87%</em>. There are four categories of waste at the system level:</p>
+<ol>
+<li><strong>Reservation waste</strong>: space reserved for sequences that might grow longer</li>
+<li><strong>Internal fragmentation</strong>: each request has a different actual length, so reserved space goes unused</li>
+<li><strong>External fragmentation</strong>: small gaps left by completed short requests can't fit new larger ones</li>
+<li><strong>No sharing</strong>: requests with identical prefixes each store their own copy (pure waste)</li>
+</ol>
+
+<h3>Core Method: Bringing OS Virtual Memory to KV Cache</h3>
+<p>PagedAttention directly mirrors OS virtual memory:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>GPU memory is divided into fixed-size blocks (KV data for 16 tokens per block)</li>
+<li>Each request maintains a block table mapping logical token positions to physical blocks</li>
+<li>Blocks are allocated on demand and grow dynamically with token generation — no pre-reservation</li>
+<li>The attention kernel accesses KV data indirectly via the block table</li>
+</ul>
+
+<div class="mermaid">
+flowchart TB
+    subgraph GPU["GPU Memory Pool (blocks of 16 tokens KV)"]
+        B0[Block 0: free]
+        B3[Block 3: R1 tokens 16-19]
+        B5[Block 5: R2 tokens 0-14]
+        B7[Block 7: R1 tokens 0-15]
+        B8[Block 8: free]
+    end
+    R1["Request 1 (20 tokens)<br/>block_table: [7, 3]"] --> B7
+    R1 --> B3
+    R2["Request 2 (15 tokens)<br/>block_table: [5]"] --> B5
+</div>
+
+<h3>Modified Attention Kernel</h3>
+<p>The standard kernel assumes K and V are contiguous. PagedAttention's kernel uses the block table for indirect lookup:</p>
+<pre><code class="language-c">// Simplified pseudocode
+for each query q_i:
+    output = 0
+    max_score = -inf; sum_exp = 0
+    for each logical token j in query's block_table:
+        block_id  = block_table[j / BLOCK_SIZE]
+        inner_idx = j % BLOCK_SIZE
+        k_j = K_pool[block_id * BLOCK_SIZE + inner_idx]
+        v_j = V_pool[block_id * BLOCK_SIZE + inner_idx]
+        score = q_i @ k_j / sqrt(d)
+        // online softmax update (same as FlashAttention)
+        ...
+</code></pre>
+
+<p>The one extra indirection (<code>block_table[...]</code>) adds a small overhead, but the memory savings far outweigh this cost.</p>
+
+<h3>Sharing and Copy-on-Write</h3>
+<p>When multiple requests share the same prefix (e.g., a system prompt or few-shot examples), their block tables can point to the same physical blocks. A copy is made only when divergence occurs — when a request starts generating different tokens. This makes <strong>prefix caching</strong> a natural optimization, directly benefiting high-concurrency LLM serving.</p>
+
+<p>Beam search and parallel sampling benefit similarly: multiple candidates share the prefix KV Cache.</p>
+
+<h3>Measured Gains</h3>
+<p>Paper results (LLaMA-13B):</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- Memory utilization: ~40% → ~96%</li>
+<li>- Concurrent requests per GPU: 4–10×</li>
+<li>- Throughput: 2–4× improvement</li>
+</ul>
+
+<h3>vLLM</h3>
+<p>The paper authors simultaneously open-sourced vLLM — a production-grade inference engine combining PagedAttention, continuous batching, and speculative decoding. Since its mid-2023 release:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- It became the de facto standard for open-source LLM serving</li>
+<li>- In 2024, it ranked alongside SGLang as one of the top two inference frameworks by OpenRank</li>
+<li>- A major v1 architectural overhaul shipped in 2025</li>
+<li>- Adopted by virtually every major cloud provider and LLM service</li>
+</ul>
+
+<p>vLLM's success exceeds the citation value of the PagedAttention paper itself — it is a textbook example of "research result becoming industrial infrastructure."</p>
+
+<h3>Key Insight</h3>
+<p>This is a classic example of cross-domain borrowing. The virtual memory concept was mature by 1961 (the Atlas computer) — over 60 years later, it was transplanted into LLM inference to solve a new problem. A programmer who studied operating systems can read this paper and understand it almost instantly. That is the power of foundational knowledge.</p>
+
+<div class="refback"><strong>Why You Must Read This:</strong> Without this paper, you won't understand why vLLM can be 5–10× faster than a naive implementation. For systems engineers, it is also an excellent model of cross-domain knowledge transfer.</div>
+
+<!-- ============================ P13 MoE ============================ -->
+<h2 id="p13"><span class="num">P13</span>Switch Transformer &amp; Mixtral: Making MoE Practical</h2>
+<p class="pos">Main text reference: Chapter 4, §5.6</p>
+
+<div class="paper-meta">
+<div class="title-en">Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity</div>
+<div class="row"><span class="label">Authors</span>William Fedus, Barret Zoph, Noam Shazeer (Google)</div>
+<div class="row"><span class="label">Published</span>JMLR 2022 · arXiv:2101.03961</div>
+</div>
+
+<div class="paper-meta">
+<div class="title-en">Mixtral of Experts</div>
+<div class="row"><span class="label">Authors</span>Mistral AI team</div>
+<div class="row"><span class="label">Published</span>arXiv:2401.04088 (2024)</div>
+</div>
+
+<h3>MoE Is an Old Idea</h3>
+<p>The MoE concept traces back to Jacobs et al.'s 1991 "Adaptive Mixtures of Local Experts." Shazeer et al. first applied it to deep learning in 2017 (Sparsely-Gated MoE). But it was Switch Transformer and Mixtral that truly demonstrated MoE's practical value.</p>
+
+<h3>Switch Transformer: Top-1 Routing</h3>
+<p>Switch's core simplification: <strong>each token is routed to exactly 1 expert</strong> (prior work typically used top-2). This drastically simplifies the gating mechanism and reduces communication complexity.</p>
+
+<div class="formula">$\text{expert}(x) = \arg\max_i g_i(x), \quad g(x) = \text{softmax}(W_r x)$</div>
+
+<p>If expert $i$ is selected, the output is:</p>
+<div class="formula">$y = g_i(x) \cdot \text{Expert}_i(x)$</div>
+
+<p>The key engineering challenge is <strong>load balancing</strong>. If routing is uneven — some experts overloaded, others idle — GPU utilization suffers. Switch adds an auxiliary loss:</p>
+<div class="formula">$\mathcal{L}_{\text{aux}} = \alpha \cdot N \sum_{i=1}^N f_i \cdot P_i$</div>
+
+<p>Here $f_i$ is the fraction of tokens routed to expert $i$, and $P_i$ is the average gate probability for expert $i$ across all tokens. At the optimum, $f_i = P_i = 1/N$ and $\mathcal{L}_{\text{aux}} = 1$.</p>
+
+<p>Switch Transformer trained a <strong>1.6 trillion parameter</strong> model — the first publicly disclosed "trillion-parameter LLM." It shocked the field at the time. However, its quality advantage over dense models of the same compute budget was modest, and the community remained skeptical about whether MoE was truly worthwhile.</p>
+
+<h3>Mixtral 8x7B: MoE Proves Itself</h3>
+<p>Mistral AI's late-2023 release of Mixtral 8x7B changed the status of MoE entirely:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- 8 experts, each roughly the size of a 7B parameter model</li>
+<li>- Top-2 routing (rather than Switch's Top-1)</li>
+<li>- Total parameters: 47B (with shared attention); activated parameters per token: ~13B</li>
+<li>- Quality comparable to LLaMA-2 70B (dense), at the inference speed of a 13B model</li>
+</ul>
+
+<div class="mermaid">
+flowchart TB
+    X[Token x] --> R[Router: softmax W_r x]
+    R -->|top-2 gate| G["g_i=0.6<br/>g_j=0.4"]
+    G --> E1[Expert 1 FFN]
+    G --> E2[Expert 2 FFN]
+    E1 -->|w=0.6| SUM((+))
+    E2 -->|w=0.4| SUM
+    SUM --> Y[Output]
+    E3[Expert 3 FFN] -.-> SUM
+    E4[Expert 4 FFN] -.-> SUM
+    E5[...] -.-> SUM
+</div>
+
+<p>Mixtral matched LLaMA-2 70B on MMLU, math, and coding benchmarks, while being significantly faster to run. This was the first clear demonstration that <strong>"MoE achieves the same capability at lower cost."</strong></p>
+
+<h3>Engineering Challenges of MoE</h3>
+<p>MoE looks appealing on paper but is difficult in practice. Key engineering challenges:</p>
+<ol>
+<li><strong>Memory footprint</strong>: all experts must be loaded at inference time (you don't know routing in advance). Mixtral 8x7B requires 80 GB+ of GPU memory — it is not as lean as the "13B activated" framing suggests</li>
+<li><strong>Load imbalance</strong>: even with auxiliary loss, some experts still get overloaded. A "capacity factor" of 1.25 (allowing 25% overflow) reduces token dropping</li>
+<li><strong>Small-batch inefficiency</strong>: with small batches, each expert receives very few tokens, and GPU utilization is low. MoE works best at large batch sizes</li>
+<li><strong>All-to-all communication</strong>: in distributed MoE, tokens must be routed to different devices per layer — two all-to-all operations per layer, with significant communication overhead</li>
+</ol>
+
+<h3>Subsequent Evolution</h3>
+<p>DeepSeek-V2/V3 (2024) pushed MoE further:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Fine-grained experts</strong>: moved from 8 large experts to 256 small experts, enabling far more diverse combinations</li>
+<li><strong>Shared experts</strong>: 1–2 experts that every token passes through (handling general knowledge), with other experts gated</li>
+<li><strong>Multi-token prediction</strong>, <strong>MLA attention compression</strong>, and <strong>FP8 training</strong> combined with MoE to further improve efficiency</li>
+</ul>
+
+<p>Qwen3-Next, Kimi K2, GLM-4.5, and LLaMA 4 all follow the fine-grained MoE path. By late 2025, nearly every frontier open-source model is a MoE.</p>
+
+<div class="refback"><strong>Why You Must Read This:</strong> MoE is the core technology enabling large-scale model scaling. Reading both Switch and Mixtral gives you a full picture of "sparse activation" as an engineering principle — one idea (compute only part of the parameters) reshaped the entire open-source LLM landscape from 2024 to 2026.</div>
+
+<!-- ============================ PART 4: Alignment & Applications ============================ -->
+<div class="part-header">
+<div class="part-label">PART FOUR</div>
+<h2 class="part-title">Chapter 4 · Alignment &amp; Applications</h2>
+<p class="part-desc">RLHF, DPO, CoT, DeepSeek-V3 — 4 key papers that took LLMs from "can talk" to "can do things."</p>
+</div>
+
+<!-- ============================ P14 InstructGPT ============================ -->
+<h2 id="p14"><span class="num">P14</span>InstructGPT / RLHF: The Starting Point of Alignment</h2>
+<p class="pos">Main text reference: Chapter 3, §4.5.3 Fine-Tuning &amp; Alignment · Chapter 4, §4.1.1</p>
+
+<div class="paper-meta">
+<div class="title-en">Training language models to follow instructions with human feedback</div>
+<div class="row"><span class="label">Authors</span>Long Ouyang, Jeff Wu, Xu Jiang, et al. (20+ authors)</div>
+<div class="row"><span class="label">Affiliation</span>OpenAI</div>
+<div class="row"><span class="label">Published</span>NeurIPS 2022 · arXiv:2203.02155 · 12,000+ citations</div>
+</div>
+
+<h3>The Problem: The Gap Between a Pretrained Model and a "Helpful Assistant"</h3>
+<p>GPT-3's pretraining objective is "predict the next token" — the model can continue text, but doesn't necessarily <em>answer</em>. Ask it "How do I make a cake?" and it might continue with "? This is a common question..." rather than actually teaching you how to bake.</p>
+<p>InstructGPT addresses the problem of teaching a pretrained model to respond "as humans expect." It is the direct predecessor of ChatGPT, and the foundational work of the entire alignment field.</p>
+
+<h3>Three-Stage Pipeline</h3>
+
+<div class="mermaid">
+flowchart LR
+    PT[Pretrained GPT-3] --> SFT[Stage 1 SFT<br/>human instruction–response pairs]
+    SFT --> RM[Stage 2 RM<br/>human preference data]
+    RM --> PPO[Stage 3 PPO<br/>RL optimization]
+    PPO --> FINAL[InstructGPT]
+</div>
+
+<h4>Stage 1: SFT (Supervised Fine-Tuning)</h4>
+<p>Human annotators write 13K "prompt + ideal response" pairs, and GPT-3 is fine-tuned on these with standard supervised learning. Goal: teach the model the basic format of "respond to instructions."</p>
+
+<h4>Stage 2: Reward Model</h4>
+<p>For each prompt, the SFT model generates multiple candidate responses, and human annotators rank them. A scoring model $r_\phi(x, y)$ is trained on this preference data:</p>
+<div class="formula">$\mathcal{L}_{\text{RM}} = -\log \sigma(r_\phi(x, y_{\text{win}}) - r_\phi(x, y_{\text{lose}}))$</div>
+
+<p>This is maximum likelihood estimation under the Bradley-Terry preference model — the RM learns to assign higher scores to responses humans prefer.</p>
+
+<h4>Stage 3: PPO Reinforcement Learning</h4>
+<p>The reward model serves as the reward function; PPO trains the policy model to generate responses with higher RM scores. A KL penalty prevents the policy from drifting too far from the SFT model (preventing reward hacking):</p>
+<div class="formula">$\mathcal{L}_{\text{PPO}} = -\mathbb{E}[r_\phi(x, y) - \beta \cdot D_{\text{KL}}(\pi_\theta(y|x) \| \pi_{\text{SFT}}(y|x))]$</div>
+
+<p>Training requires four models loaded simultaneously: the policy (being trained), the reference (frozen SFT, for KL computation), the reward model, and the critic (value function). This is memory-intensive and training is unstable.</p>
+
+<h3>Results</h3>
+<p>InstructGPT at 1.3B parameters <strong>outperforms GPT-3 at 175B</strong> on human preference evaluations. 100× smaller, yet better — the value of alignment was quantified for the first time.</p>
+
+<p>ChatGPT launched a few months later, essentially the productized version of InstructGPT.</p>
+
+<h3>InstructGPT's Legacy</h3>
+<ol>
+<li>The three-stage pipeline (SFT → RM → RLHF) became the <strong>standard alignment recipe</strong>, adopted by Claude, Gemini, LLaMA, Qwen, and virtually every major LLM</li>
+<li>Preference data became the new "gold" — expensive to label, but immensely valuable</li>
+<li>KL penalty as the standard "alignment tax" mechanism</li>
+<li>The Bradley-Terry preference model was widely adopted</li>
+</ol>
+
+<h3>Critical Perspectives</h3>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong>Reward hacking</strong>: the policy can learn to fool the RM rather than genuinely improve</li>
+<li>- <strong>RM bias</strong>: annotator preferences don't represent all users</li>
+<li>- <strong>"Alignment tax"</strong>: RLHF can cause regression on certain capabilities (particularly on factual benchmarks)</li>
+<li>- <strong>Engineering complexity</strong>: four models, unstable PPO training</li>
+</ul>
+
+<p>These problems motivated a wave of alternatives after 2023 — DPO (next paper), KTO, ORPO, RLAIF, and others — all attempting to simplify or improve upon RLHF.</p>
+
+<div class="refback"><strong>Why You Must Read This:</strong> Why is ChatGPT an "assistant" rather than a text completion engine? The answer is in this paper. The details of the three-stage RLHF pipeline must be read in the original to be truly understood.</div>
+
+<!-- ============================ P15 DPO ============================ -->
+<h2 id="p15"><span class="num">P15</span>DPO: Turning RLHF into a Classification Loss</h2>
+<p class="pos">Main text reference: Chapter 3, §4.5.3</p>
+
+<div class="paper-meta">
+<div class="title-en">Direct Preference Optimization: Your Language Model is Secretly a Reward Model</div>
+<div class="row"><span class="label">Authors</span>Rafael Rafailov, Archit Sharma, Eric Mitchell, Stefano Ermon, Christopher D. Manning, Chelsea Finn</div>
+<div class="row"><span class="label">Affiliation</span>Stanford University</div>
+<div class="row"><span class="label">Published</span>NeurIPS 2023 (Outstanding Paper Award) · arXiv:2305.18290</div>
+</div>
+
+<h3>The Problem: RLHF's Engineering Complexity Is Too High</h3>
+<p>RLHF requires training two models (RM + policy), running PPO reinforcement learning, loading four model copies simultaneously, tuning a large number of hyperparameters, and worrying about reward hacking. A full RLHF pipeline is practically infeasible for most small and medium teams.</p>
+<p>DPO's contribution is showing that <em>the entire process can be reduced to a single supervised learning loss</em>.</p>
+
+<h3>Core Mathematical Derivation</h3>
+<p>RLHF's objective is reward maximization with a KL constraint:</p>
+<div class="formula">$\max_{\pi} \mathbb{E}_{x, y \sim \pi}[r(x,y)] - \beta D_{\text{KL}}(\pi(y|x) \| \pi_{\text{ref}}(y|x))$</div>
+
+<p>This problem has a closed-form optimal solution:</p>
+<div class="formula">$\pi^*(y|x) = \frac{1}{Z(x)} \pi_{\text{ref}}(y|x) \exp\left(\frac{1}{\beta} r(x, y)\right)$</div>
+
+<p>$Z(x)$ is the normalization constant. Inverting for $r$:</p>
+<div class="formula">$r(x, y) = \beta \log \frac{\pi^*(y|x)}{\pi_{\text{ref}}(y|x)} + \beta \log Z(x)$</div>
+
+<p>Key observation: when this $r$ is substituted into the Bradley-Terry loss, $\beta \log Z(x)$ cancels out (since the loss takes $r(y_w) - r(y_l)$, the two $\log Z(x)$ terms subtract to zero). This yields:</p>
+
+<div class="formula">$\mathcal{L}_{\text{DPO}} = -\log \sigma\left( \beta \log \frac{\pi_\theta(y_w|x)}{\pi_{\text{ref}}(y_w|x)} - \beta \log \frac{\pi_\theta(y_l|x)}{\pi_{\text{ref}}(y_l|x)} \right)$</div>
+
+<p><strong>This is an ordinary binary classification loss.</strong></p>
+
+<h3>Result: No RM Needed, No RL Needed</h3>
+<ul style="list-style:none;padding-left:0;">
+<li>- No reward model to train</li>
+<li>- No PPO, no critic</li>
+<li>- Only 2 models loaded (policy + frozen reference)</li>
+<li>- Standard SGD, no reward hacking</li>
+</ul>
+
+<h3>Implementation</h3>
+<pre><code class="language-python">def dpo_loss(policy, ref, batch, beta=0.1):
+    """batch contains (prompt, chosen, rejected) triples"""
+    # compute log-probabilities of chosen / rejected under policy and reference
+    pi_logps_chosen = compute_logps(policy,  batch.chosen, batch.prompt)
+    pi_logps_reject = compute_logps(policy,  batch.rejected, batch.prompt)
+    ref_logps_chosen = compute_logps(ref,    batch.chosen, batch.prompt)
+    ref_logps_reject = compute_logps(ref,    batch.rejected, batch.prompt)
+
+    pi_logratio  = pi_logps_chosen  - pi_logps_reject
+    ref_logratio = ref_logps_chosen - ref_logps_reject
+
+    loss = -F.logsigmoid(beta * (pi_logratio - ref_logratio)).mean()
+    return loss
+</code></pre>
+
+<p>An entire DPO training run looks just like a standard fine-tuning job — an order of magnitude simpler than PPO.</p>
+
+<h3>Impact</h3>
+<p>DPO rapidly became the dominant alignment method in late 2023 and throughout 2024. Open-source models including Zephyr (HuggingFace), Tulu (AI2), Nous-Hermes, Qwen, and DeepSeek all use DPO or variants.</p>
+
+<p>But DPO is not a silver bullet:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- Sensitive to noisy preference data — IPO (2024) improves on this</li>
+<li>- Requires paired data — KTO (2024) enables single-point feedback</li>
+<li>- Variants merging SFT and DPO — ORPO and SimPO continue to evolve</li>
+</ul>
+
+<p>The alignment field saw explosive diversity in 2024–2025, but the theoretical underpinnings all trace back to DPO. Recent reasoning model training (DeepSeek R1's GRPO) returned to RL-based methods — alignment techniques have not settled, and they continue to evolve.</p>
+
+<div class="refback"><strong>Why You Must Read This:</strong> "PPO + RM + KL = one classification loss" is one of the most elegant reframings in the alignment field. Reading this will show you why everyone was "escaping RL" — when a problem can be solved with supervised learning, why introduce RL at all.</div>
+
+<!-- ============================ P16 CoT ============================ -->
+<h2 id="p16"><span class="num">P16</span>Chain-of-Thought: Letting the Model "Think" Before Answering</h2>
+<p class="pos">Main text reference: Chapter 4, §4.11.1 · §4.1.1 Test-Time Compute</p>
+
+<div class="paper-meta">
+<div class="title-en">Chain-of-Thought Prompting Elicits Reasoning in Large Language Models</div>
+<div class="row"><span class="label">Authors</span>Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Brian Ichter, Fei Xia, Ed Chi, Quoc Le, Denny Zhou</div>
+<div class="row"><span class="label">Affiliation</span>Google Research</div>
+<div class="row"><span class="label">Published</span>NeurIPS 2022 · arXiv:2201.11903 · 10,000+ citations</div>
+</div>
+
+<h3>The Problem: LLMs Are Badly Wrong on Multi-Step Reasoning</h3>
+<p>In 2021, GPT-3 was strong at many tasks, but had a high error rate on math word problems at the elementary school level. A typical example:</p>
+<pre><code class="language-text">Q: Roger has 5 tennis balls. He buys 2 more cans of tennis balls.
+   Each can has 3 tennis balls. How many tennis balls does he have now?
+Model answers directly: 27  (wrong)
+</code></pre>
+
+<p>The model has the "computational ability" (can compute 5 + 2×3 = 11), but when asked to answer directly, it skips steps and gets it wrong.</p>
+
+<h3>Core Finding: Let the Model "Write Out Its Reasoning"</h3>
+<p>What Wei et al. did sounds almost trivially simple: change the few-shot examples from "question + answer" to "question + reasoning steps + answer."</p>
+
+<pre><code class="language-text">Q: Roger has 5 tennis balls. He buys 2 more cans. Each can has 3.
+   How many balls does he have now?
+A: Roger started with 5 balls. 2 cans of 3 balls each is 6 balls.
+   5 + 6 = 11. The answer is 11.
+
+Q: The cafeteria had 23 apples. If they used 20 to make lunch and
+   bought 6 more, how many apples do they have?
+A: [let the model continue]
+</code></pre>
+
+<p>The model now outputs something like: "The cafeteria had 23 apples. They used 20, so they had 23 - 20 = 3. Then they bought 6 more, so 3 + 6 = 9. The answer is 9." — correct.</p>
+
+<h3>An Emergent Phenomenon</h3>
+<p>CoT has a key characteristic: <strong>it has little or no effect on small models, but produces dramatic improvements on large ones</strong>. Experimental data from Wei et al. (GSM8K math benchmark):</p>
+
+<table>
+<tr><th>Model</th><th>Direct Answer</th><th>CoT</th></tr>
+<tr><td>GPT-3 0.4B</td><td>4.5%</td><td>5.6%</td></tr>
+<tr><td>GPT-3 5.7B</td><td>5.1%</td><td>11.6%</td></tr>
+<tr><td>GPT-3 175B</td><td>15.6%</td><td>46.9% (3×)</td></tr>
+<tr><td>PaLM 540B</td><td>17.9%</td><td>56.9% (3×)</td></tr>
+</table>
+
+<p>This phenomenon — <em>a capability appearing suddenly once a model reaches sufficient scale</em> — is called "emergence." CoT is one of the earliest clearly documented emergent abilities.</p>
+
+<h3>Why CoT Works: A Compute Perspective</h3>
+<p>Each LLM forward pass has a fixed compute budget ($O(N)$, where $N$ is the number of parameters). Direct answering = completing multi-step reasoning in one forward pass, which is compute-insufficient. CoT = one forward pass per reasoning step, with total compute scaling linearly with reasoning length — effectively <strong>trading token count for compute</strong>.</p>
+
+<p>This framing opened the door to "test-time compute" — OpenAI o1 and DeepSeek R1's extended reasoning are essentially CoT taken to its logical extreme.</p>
+
+<h3>Zero-Shot CoT</h3>
+<p>Kojima et al. (2022) ("Let's think step by step") found that even without few-shot examples, simply appending "Let's think step by step" to a prompt causes large models to produce CoT output automatically. This absurdly simple prompt briefly became a sensation in the field.</p>
+
+<h3>CoT's Subsequent Evolution</h3>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Self-Consistency</strong> (2022): CoT + multiple samples + majority voting — improves error correction</li>
+<li><strong>Tree of Thoughts</strong> (2023): non-linear reasoning via a search over multiple reasoning paths</li>
+<li><strong>ReAct</strong> (2022): CoT interleaved with "reasoning" and "tool calling" — the foundation of agents</li>
+<li><strong>o1 / R1</strong> (2024): uses RL to push CoT length to extremes, generating tens of thousands of reasoning tokens before producing an answer</li>
+</ul>
+
+<h3>Impact</h3>
+<p>CoT is a key unlock for LLM capability — it transformed "reasoning tasks" from "nearly impossible" to "doable." Today all math, coding, and reasoning benchmarks default to CoT evaluation. The "thinking mode" in modern LLMs (DeepSeek V3.1, Qwen3, Claude thinking, Gemini Deep Think) are all productized forms of CoT.</p>
+
+<div class="refback"><strong>Why You Must Read This:</strong> CoT is the starting point for understanding "test-time scaling." The progression from CoT → Self-Consistency → ToT → o1 is one of the two major threads of LLM capability improvement from 2022 to 2026 (running in parallel with scaling laws).</div>
+
+<!-- ============================ P17 DeepSeek V3 ============================ -->
+<h2 id="p17"><span class="num">P17</span>DeepSeek-V3: The Culmination of Open-Source MoE</h2>
+<p class="pos">Main text reference: Chapter 4, §4.4.1 MLA · §5.6 MoE · §4.9.2 FP8</p>
+
+<div class="paper-meta">
+<div class="title-en">DeepSeek-V3 Technical Report</div>
+<div class="row"><span class="label">Authors</span>DeepSeek-AI team</div>
+<div class="row"><span class="label">Published</span>arXiv:2412.19437 (2024.12)</div>
+<div class="row"><span class="label">Follow-up</span>DeepSeek-V3.1 (2025.8, hybrid thinking) · V3.2 (2025.10, DSA sparse attention)</div>
+</div>
+
+<h3>Why This Paper Is the Capstone</h3>
+<p>DeepSeek-V3 is not the first MoE, the first FP8 training run, or the first hybrid reasoning model — but it is the first open-source model to <em>integrate all of these techniques together and execute each to its limits</em>. 671B total parameters, 37B activated per token, trained in just 2.788M H800 GPU-hours (approximately $5.6M), reaching GPT-4o-level capability.</p>
+<p>It is a case study in "engineering integration" winning over "single-point breakthroughs," and a decisive moment in open-source catching up to closed-source.</p>
+
+<h3>Architecture Overview</h3>
+
+<div class="mermaid">
+flowchart TB
+    IN[Input] --> EMB[Embedding]
+    EMB --> L1[Layer 1 to 61]
+    L1 --> ATT["MLA Attention<br/>low-rank KV compression"]
+    ATT --> MOE["Fine-grained MoE<br/>256 routed + 1 shared<br/>top-8 activated"]
+    MOE --> MTP["Multi-Token Prediction<br/>auxiliary prediction of future tokens"]
+    MTP --> NEXT[Next Layer]
+    L1 --> LM[LM Head]
+</div>
+
+<h3>Innovation 1: MLA (Multi-head Latent Attention)</h3>
+<p>Covered in depth in main text §4.4.1. Core idea: use low-rank decomposition to compress the KV Cache.</p>
+<div class="formula">$\mathbf{c}_{\text{kv}} = W_{DKV} \mathbf{x}, \quad \mathbf{k} = W_{UK} \mathbf{c}_{\text{kv}}, \quad \mathbf{v} = W_{UV} \mathbf{c}_{\text{kv}}$</div>
+
+<p>With $d_c \ll d_{model}$, the KV Cache stores only $\mathbf{c}_{\text{kv}}$. At inference, $W_{UK}$ can be absorbed into the Q projection, adding zero extra computation.</p>
+<p>Compared to equivalent MHA, KV Cache is <strong>reduced by 90%+</strong> — the core advantage enabling long-context inference.</p>
+
+<h3>Innovation 2: Fine-Grained MoE + Shared Expert</h3>
+<p>Each layer in V3 has 256 routed experts + 1 shared expert, with top-8 routing:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong>Fine-grained</strong>: 256 small experts yield $C_{256}^8 = 4 \times 10^{14}$ possible combinations — vastly more diverse than Mixtral's 28</li>
+<li>- <strong>Shared expert</strong>: handles general knowledge; every token passes through it</li>
+<li>- <strong>Load balancing without auxiliary loss</strong>: V3 innovates by adding learnable bias terms to routing scores, dynamically adjusting to equalize expert load — eliminating the traditional auxiliary loss</li>
+</ul>
+
+<h3>Innovation 3: Multi-Token Prediction (MTP)</h3>
+<p>During training, V3 predicts not just the next token but also the next $D$ tokens ($D = 1$ in V3, i.e., one extra token predicted). Each prediction position has a dedicated MTP module (with its own Transformer layer). Benefits:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- Denser training signal: the model learns more from the same number of tokens</li>
+<li>- At inference, the MTP module can directly serve as a speculative decoding draft head, eliminating the need for a separate draft model</li>
+</ul>
+
+<h3>Innovation 4: FP8 Training at Scale</h3>
+<p>V3 is the first model at the 671B scale to train fully in FP8. Core techniques:</p>
+<ol>
+<li><strong>Fine-grained quantization</strong>: per-tensor granularity is insufficient; V3 uses per-block (groups of 1×128 elements share a scale)</li>
+<li><strong>High-precision accumulation</strong>: FP8 × FP8 → BF16 accumulation, reducing numerical error</li>
+<li><strong>Selective FP8</strong>: numerically sensitive operations (softmax in attention, layer normalization) retain BF16</li>
+<li><strong>Pipeline optimization</strong>: overlapping all-to-all communication with computation, hiding cross-node latency</li>
+</ol>
+
+<p>In practice, FP8 achieves 1.5–2× training speedup over BF16, with negligible loss degradation.</p>
+
+<h3>Training Economics</h3>
+<table>
+<tr><th>Metric</th><th>Value</th></tr>
+<tr><td>Total parameters / Activated</td><td>671B / 37B</td></tr>
+<tr><td>Training tokens</td><td>14.8T</td></tr>
+<tr><td>Pretraining GPU-hours</td><td>2.664M H800 (~$5.3M)</td></tr>
+<tr><td>Total training GPU-hours (incl. SFT + RLHF)</td><td>2.788M</td></tr>
+<tr><td>Estimated comparison: GPT-4</td><td>~50–100M GPU-hours</td></tr>
+<tr><td>Capability level</td><td>Comparable to GPT-4o / Claude 3.5 Sonnet</td></tr>
+</table>
+
+<p>Approximately $5.6M to train a GPT-4-level model — over 10× cheaper than closed-source estimates. This is the economic foundation of the "DeepSeek moment" (February 2025) — a cost low enough to shock the global industry.</p>
+
+<h3>Subsequent Evolution</h3>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>DeepSeek-R1</strong> (2025.1): built on V3, trained as a reasoning model using pure RL (GRPO algorithm). No human-labeled CoT data needed — reasoning ability emerged from RL alone</li>
+<li><strong>V3-0324</strong> (2025.3): post-training improvements incorporating lessons from R1's RL, with major reasoning gains</li>
+<li><strong>R1-0528</strong> (2025.5): upgraded R1, surpassing GPT-4o on the AIME math benchmark at that time</li>
+<li><strong>V3.1</strong> (2025.8): hybrid thinking mode — a single model supporting switchable thinking / non-thinking, merging V3 and R1</li>
+<li><strong>V3.2</strong> (2025.10): introduces DSA (DeepSeek Sparse Attention), reducing long-context inference cost by another 50%</li>
+</ul>
+
+<h3>Significance</h3>
+<p>V3 proved three things:</p>
+<ol>
+<li><strong>Open-source can match closed-source</strong>: not in 6 months, but on competitive terms</li>
+<li><strong>Compounding returns from architectural innovation</strong>: MLA + MoE + MTP + FP8 combined yield efficiency far beyond any single component</li>
+<li><strong>Engineering excellence from Chinese AI labs</strong>: V3's training efficiency and architectural details received broad international recognition</li>
+</ol>
+
+<p>The open-source ecosystem moved quickly to follow in 2025 — Qwen3, Kimi K2, GLM-4.5, and LLaMA 4 all adopt similar architectural philosophy (fine-grained MoE + long-context optimization + FP8 training).</p>
+
+<h3>Critical Perspectives</h3>
+<ul style="list-style:none;padding-left:0;">
+<li>- The training cost figures are debated — $5.6M may count only GPU time, excluding data, infrastructure, and labor</li>
+<li>- "GPT-4 level" varies across benchmarks — V3 leads on some and trails on others</li>
+<li>- MLA's engineering complexity is high; small teams may find it difficult to reproduce</li>
+</ul>
+
+<p>Whatever the caveats, V3 is one of the most important milestones in the history of open-source LLMs.</p>
+
+<div class="refback"><strong>Why You Must Read This:</strong> The V3 technical report is the most worthwhile LLM engineering paper of 2024 — it brings together all the technologies covered in P06–P13 (Transformer, MoE, LoRA ideas, FP8, inference optimization) and shows what they can achieve in combination. After reading this paper, the relationships among the previous 16 papers will become strikingly clear.</div>
+
+<hr style="margin-top:60px;border:none;border-top:1px dashed var(--rule);">
+
+<p style="color:var(--muted);font-size:14px;font-style:italic;text-align:center;margin-top:40px;">
+— Chapter 4 Part B End —<br>
+Part B: 8 papers · Combined chapter total: 17 papers
+</p>
+
+</main>
+<script>
+hljs.highlightAll();
+mermaid.initialize({startOnLoad:true,theme:'neutral',fontFamily:'Inter,sans-serif'});
+</script>
+</body>
+</html>

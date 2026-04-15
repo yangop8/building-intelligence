@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paper Deep Dives A — Building Intelligence</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+:root{--bg:#fbfaf7;--fg:#1d1d1b;--muted:#6b6b68;--accent:#5a3a7a;--accent-soft:#ece6f2;--rule:#e3dfd6;--code-bg:#282c34;--sidebar-bg:#f4f1ea;--mono:"SFMono-Regular","JetBrains Mono",Consolas,Menlo,monospace;--serif:"Source Serif Pro","Songti SC","STSong",Georgia,serif;--sans:"Inter",-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;}
+*{box-sizing:border-box;}html,body{margin:0;padding:0;}
+body{font-family:var(--serif);font-size:16px;line-height:1.75;color:var(--fg);background:var(--bg);display:flex;}
+aside.toc{position:sticky;top:0;width:310px;height:100vh;overflow-y:auto;background:var(--sidebar-bg);border-right:1px solid var(--rule);padding:24px 20px;font-family:var(--sans);font-size:13px;flex-shrink:0;}
+aside.toc h1{font-family:var(--serif);font-size:18px;margin:0 0 4px 0;color:var(--accent);}
+aside.toc .sub{color:var(--muted);font-size:12px;margin-bottom:20px;font-style:italic;}
+aside.toc .group{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin-top:14px;margin-bottom:4px;padding-bottom:3px;border-bottom:1px solid var(--rule);}
+aside.toc ol{list-style:none;padding:0;margin:0;}aside.toc ol li{margin-bottom:2px;}
+aside.toc a{color:var(--fg);text-decoration:none;display:block;padding:3px 6px;border-radius:3px;}
+aside.toc a:hover{background:var(--accent-soft);color:var(--accent);}
+aside.toc .num{color:var(--muted);font-family:var(--mono);margin-right:6px;font-size:11px;}
+main{flex:1;max-width:880px;padding:60px 72px 120px 72px;min-width:0;}
+header.cover{border-bottom:2px solid var(--fg);padding-bottom:32px;margin-bottom:48px;}
+header.cover h1{font-size:42px;line-height:1.15;margin:0 0 12px 0;font-weight:700;}
+header.cover .subtitle{font-size:20px;color:var(--muted);font-style:italic;margin-bottom:20px;}
+header.cover .meta{font-family:var(--sans);font-size:13px;color:var(--muted);}
+h2{font-size:26px;margin-top:72px;margin-bottom:6px;padding-bottom:8px;border-bottom:1px solid var(--rule);scroll-margin-top:20px;}
+h2 .num{color:var(--accent);font-family:var(--mono);font-weight:400;margin-right:10px;font-size:20px;}
+.pos{font-family:var(--sans);font-size:13px;color:var(--muted);font-style:italic;margin-top:0;margin-bottom:16px;padding:6px 12px;background:var(--accent-soft);border-left:2px solid var(--accent);}
+h3{font-size:18px;margin-top:28px;margin-bottom:8px;font-weight:600;}
+h4{font-size:15px;margin-top:18px;margin-bottom:4px;font-weight:600;color:var(--accent);}
+p{margin:0 0 14px 0;text-align:justify;}
+code{font-family:var(--mono);font-size:14px;background:var(--accent-soft);color:var(--accent);padding:1px 5px;border-radius:3px;}
+pre{background:var(--code-bg);border-radius:6px;padding:14px 18px;overflow-x:auto;font-size:13px;line-height:1.55;margin:16px 0;}
+pre code{background:transparent;color:inherit;padding:0;font-size:inherit;}
+.formula{font-family:var(--serif);padding:10px 18px;background:#f6f0fa;border-left:2px solid var(--muted);margin:12px 0;font-size:16px;overflow-x:auto;}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;font-family:var(--sans);}
+th,td{border-bottom:1px solid var(--rule);padding:7px 10px;text-align:left;vertical-align:top;}
+th{background:var(--sidebar-bg);font-weight:600;}
+.paper-meta{font-family:var(--sans);font-size:13px;margin:12px 0 24px 0;padding:14px 18px;background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:4px;}
+.paper-meta .title-en{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--accent);margin-bottom:6px;}
+.paper-meta .row{margin:2px 0;}
+.paper-meta .label{font-weight:600;display:inline-block;min-width:70px;color:var(--muted);}
+.part-header{margin-top:100px;margin-bottom:24px;padding:24px 28px;background:linear-gradient(to right,var(--accent-soft),transparent);border-left:4px solid var(--accent);}
+.part-header .part-label{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:0.15em;color:var(--accent);}
+.part-header h2.part-title{font-size:32px;margin:4px 0 8px 0;padding:0;border:none;}
+.part-header .part-desc{font-size:15px;color:var(--muted);font-style:italic;margin:0;}
+.mermaid{margin:20px 0;text-align:center;}
+.refback{font-family:var(--sans);font-size:13px;color:var(--muted);margin-top:20px;padding-top:10px;border-top:1px dashed var(--rule);}
+.refback strong{color:var(--accent);}
+@media (max-width:1100px){aside.toc{display:none;}main{padding:40px 32px;}}
+</style>
+</head>
+<body>
+
+<aside class="toc">
+<h1>Paper Deep Dives</h1>
+<div class="sub">Ch 5A · Classics &amp; Transformer</div>
+
+<div class="group">Ch. 3 Related (AI Models)</div>
+<ol>
+<li><a href="#p01"><span class="num">1</span>ResNet</a></li>
+<li><a href="#p02"><span class="num">2</span>LSTM</a></li>
+<li><a href="#p03"><span class="num">3</span>BatchNorm</a></li>
+<li><a href="#p04"><span class="num">4</span>Adam</a></li>
+<li><a href="#p05"><span class="num">5</span>XGBoost</a></li>
+</ol>
+
+<div class="group">Ch. 4 · Transformer &amp; Pretraining</div>
+<ol>
+<li><a href="#p06"><span class="num">6</span>Attention Is All You Need</a></li>
+<li><a href="#p07"><span class="num">7</span>BERT &amp; GPT</a></li>
+<li><a href="#p08"><span class="num">8</span>Scaling Law / Chinchilla</a></li>
+<li><a href="#p09"><span class="num">9</span>RoPE</a></li>
+</ol>
+
+<div class="group">Ch. 4 · Efficiency &amp; Inference</div>
+<ol>
+<li><a href="#p10"><span class="num">10</span>FlashAttention</a></li>
+<li><a href="#p11"><span class="num">11</span>LoRA / QLoRA</a></li>
+<li><a href="#p12"><span class="num">12</span>PagedAttention / vLLM</a></li>
+<li><a href="#p13"><span class="num">13</span>Switch Transformer / Mixtral</a></li>
+</ol>
+
+<div class="group">Ch. 4 · Alignment &amp; Applications</div>
+<ol>
+<li><a href="#p14"><span class="num">14</span>InstructGPT / RLHF</a></li>
+<li><a href="#p15"><span class="num">15</span>DPO</a></li>
+<li><a href="#p16"><span class="num">16</span>Chain-of-Thought</a></li>
+<li><a href="#p17"><span class="num">17</span>DeepSeek-V3</a></li>
+</ol>
+</aside>
+
+<main>
+
+<header class="cover">
+<h1>Paper Deep Dives</h1>
+<div class="subtitle">Classic Models &amp; Transformer — Papers P01–P09</div>
+<div class="meta">Chapter 5A · Internal Study Material · First Edition 2026</div>
+</header>
+
+<p>The earlier chapters provided a <strong>systematic technical map</strong>—showing you what the modern AI stack looks like and how each piece works. This chapter is a <strong>paper-level retrospective</strong>—a close reading of the key works that truly shaped that stack. Why this chapter? Engineers see the technology clearly; researchers see <em>the arc of how ideas evolved</em>. "Why does everyone use ReLU instead of Sigmoid?" "Where does GPT-3's few-shot ability come from?" "What is the mathematical relationship between LoRA and full fine-tuning?"—the answers to these questions are in the papers, not in the documentation.</p>
+
+<p>Selection principle: <strong>papers you can only claim to truly understand after reading the original</strong>. These 17 papers are not the 17 most "important" works—they are the 17 nodes that, once read, most effectively deepen your understanding of the preceding chapters. The emphasis is on Chapters 4–5 (AI models + LLMs), with a portion drawn from mathematics (classic gradient descent papers, etc.) and systems (vLLM, etc.).</p>
+
+<p>Structure of each entry: paper metadata card → problem background → core method (formulas/diagrams/code) → experimental findings → impact and critique → corresponding book chapter. Landmark works (Attention, ResNet, BERT/GPT) receive more space; others are roughly one page.</p>
+
+<!-- ============================ PART 1: Ch.3 ============================ -->
+<div class="part-header">
+<div class="part-label">PART ONE</div>
+<h2 class="part-title">Ch. 3 Related · AI Model Foundations</h2>
+<p class="part-desc">The pillars that enabled deep learning to scale — residual connections, gating, normalization, adaptive optimization, and boosted trees.</p>
+</div>
+
+<!-- ============================ P01 ResNet ============================ -->
+<h2 id="p01"><span class="num">P01</span>ResNet: Making Networks Truly "Deep"</h2>
+<p class="pos">Corresponds to main text: Chapter 3, §4.4.1 CNN · Chapter 4, §4.2.4 (residual connection concept)</p>
+
+<div class="paper-meta">
+<div class="title-en">Deep Residual Learning for Image Recognition</div>
+<div class="row"><span class="label">Authors</span>Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun</div>
+<div class="row"><span class="label">Affiliation</span>Microsoft Research Asia</div>
+<div class="row"><span class="label">Published</span>CVPR 2016 (Best Paper Award)</div>
+<div class="row"><span class="label">Citations</span>250,000+ (all-time highest in CS)</div>
+<div class="row"><span class="label">Link</span>arXiv:1512.03385</div>
+</div>
+
+<h3>The Problem: The Depth Paradox</h3>
+<p>In 2014, VGG-19 demonstrated that a 19-layer CNN was substantially better than the 8-layer AlexNet. Intuitively, going even deeper should yield further gains. But experiments revealed a striking anomaly: a 20-layer network had a lower training loss than a 56-layer network—not due to overfitting (overfitting means good training performance but poor test performance), but because the <strong>training itself could not converge</strong>. Vanishing/exploding gradients are a surface-level explanation; the deeper cause is that stacking many nonlinearities makes it very difficult for the optimizer to find good parameters.</p>
+
+<p>An intuitive counterargument: theoretically, a deep network should never perform worse than a shallower one—it only needs to learn identity mappings $f(x)=x$ in the extra layers. But in practice, SGD struggles to learn a true "identity mapping" layer (it requires learning exactly the right weights). This is precisely the insight that Kaiming He's team seized upon.</p>
+
+<h3>Core Method: The Residual Block</h3>
+<p>Instead of learning $H(x)$, learn $F(x) = H(x) - x$, and output $H(x) = F(x) + x$.</p>
+
+<div class="mermaid">
+flowchart TB
+    X[x] --> C1[Conv 3x3 + BN]
+    C1 --> R1[ReLU]
+    R1 --> C2[Conv 3x3 + BN]
+    X -. identity .-> ADD((+))
+    C2 --> ADD
+    ADD --> R2[ReLU]
+    R2 --> OUT[output]
+</div>
+
+<p>If "learning nothing" is optimal, driving $F \to 0$ is far easier than coaxing the entire composite function $H$ toward the identity. This is the simplest yet most crucial reframing.</p>
+
+<h3>Key Formula and Initialization</h3>
+<p>A single residual block:</p>
+<div class="formula">$\mathbf{y} = \mathcal{F}(\mathbf{x}, \{W_i\}) + \mathbf{x}$</div>
+<p>During backpropagation, the gradient of loss $L$ with respect to input $\mathbf{x}$:</p>
+<div class="formula">$\frac{\partial L}{\partial \mathbf{x}} = \frac{\partial L}{\partial \mathbf{y}} \cdot \left(1 + \frac{\partial \mathcal{F}}{\partial \mathbf{x}}\right)$</div>
+<p>The "+1" is the key—it guarantees that the gradient <em>cannot decay to zero</em>, even when $\partial \mathcal{F} / \partial \mathbf{x}$ is very small. This directly alleviates the vanishing gradient problem.</p>
+
+<p>Another important detail is <strong>He initialization</strong> (from the same first author, a 2015 companion paper). Under ReLU, weights are initialized as $\mathcal{N}(0, 2/n_{in})$, keeping forward-pass activation variance stable. Without this initialization, residual networks cannot be trained either.</p>
+
+<h3>PyTorch Implementation</h3>
+<pre><code class="language-python">import torch.nn as nn
+
+class BasicBlock(nn.Module):
+    def __init__(self, in_ch, out_ch, stride=1):
+        super().__init__()
+        self.conv1 = nn.Conv2d(in_ch, out_ch, 3, stride, 1, bias=False)
+        self.bn1 = nn.BatchNorm2d(out_ch)
+        self.conv2 = nn.Conv2d(out_ch, out_ch, 3, 1, 1, bias=False)
+        self.bn2 = nn.BatchNorm2d(out_ch)
+        # When stride != 1 or channels change, use 1x1 conv to adjust dimensions
+        self.shortcut = nn.Sequential()
+        if stride != 1 or in_ch != out_ch:
+            self.shortcut = nn.Sequential(
+                nn.Conv2d(in_ch, out_ch, 1, stride, bias=False),
+                nn.BatchNorm2d(out_ch),
+            )
+
+    def forward(self, x):
+        out = torch.relu(self.bn1(self.conv1(x)))
+        out = self.bn2(self.conv2(out))
+        out = out + self.shortcut(x)   # residual connection
+        return torch.relu(out)
+</code></pre>
+
+<h3>The Bottleneck Variant</h3>
+<p>Deep ResNets (50, 101, 152 layers) use a "bottleneck" block to reduce computation: a 1×1 conv to reduce dimensionality → a 3×3 conv → a 1×1 conv to restore dimensionality. Three layers replace two, but with fewer total parameters and less computation. ResNet-50 uses this design, and virtually all subsequent CNNs followed suit.</p>
+
+<h3>Experimental Results</h3>
+<ul style="list-style:none;padding-left:0;">
+<li>- ImageNet: the 34-layer ResNet achieved 7.5% top-5 error rate, vs. 8.4% for VGG-19, and was significantly faster</li>
+<li>- The 152-layer ResNet reached 5.7%—the first model to surpass the human-level benchmark of 5.1%</li>
+<li>- On CIFAR-10, a <strong>1202-layer</strong> network was trained (purely to prove "it can really go that deep"); although it overfit, training loss continued to decrease—demonstrating that the residual idea is not bounded by depth</li>
+</ul>
+
+<h3>Impact</h3>
+<p>ResNet's residual concept has long transcended CNNs—it has become a <strong>foundational component of all deep networks</strong>:</p>
+<ol>
+<li><strong>Transformer</strong>: every attention and FFN module is wrapped with a residual connection (main text §4.2.1). Without residuals, deep training of BERT/GPT would not be possible.</li>
+<li><strong>DenseNet, U-Net</strong>: variants of the residual idea—dense connections, skip connections</li>
+<li><strong>ControlNet, LoRA</strong>: both embody the architectural philosophy of "bypass + residual"</li>
+<li><strong>Neural ODE</strong>: treats the residual network as a discrete approximation of an ODE: $\mathbf{y} = \mathbf{x} + \mathcal{F}(\mathbf{x}, t)$</li>
+</ol>
+
+<h3>Critical Perspective</h3>
+<p>After 2020, some researchers questioned whether ResNet's success <em>might</em> be primarily due to an "ensemble effect"—residual paths cause the network to behave like an ensemble of $2^N$ sub-networks of varying depths, rather than truly "learning residuals." But regardless of the explanation, the value of this architectural decision is beyond doubt.</p>
+
+<div class="refback"><strong>Why You Must Read This:</strong> Without reading ResNet, you will never truly understand why every sublayer in the Transformer is wrapped in a residual connection—it is not decorative; it is a prerequisite for deep networks to train at all. With this single paper, He Kaiming essentially defined the canonical form of a "trainable deep network" in practice.</div>
+
+<!-- ============================ P02 LSTM ============================ -->
+<h2 id="p02"><span class="num">P02</span>LSTM: The Classic Gatekeeper of Sequence Modeling</h2>
+<p class="pos">Corresponds to main text: Chapter 3, §4.4.2 RNN/LSTM/GRU</p>
+
+<div class="paper-meta">
+<div class="title-en">Long Short-Term Memory</div>
+<div class="row"><span class="label">Authors</span>Sepp Hochreiter, Jürgen Schmidhuber</div>
+<div class="row"><span class="label">Affiliation</span>IDSIA / TU Munich</div>
+<div class="row"><span class="label">Published</span>Neural Computation 1997</div>
+<div class="row"><span class="label">Citations</span>90,000+</div>
+<div class="row"><span class="label">Link</span>doi:10.1162/neco.1997.9.8.1735</div>
+</div>
+
+<h3>The Problem: Vanishing Gradients in Vanilla RNNs</h3>
+<p>Hochreiter's 1991 master's thesis had already quantitatively proven that in a standard RNN, the gradient multiplies by a weight matrix $W$ at each timestep during backpropagation through time. If the spectral radius of $W$ is less than 1, the gradient decays exponentially; if greater than 1, it explodes. In either case, the RNN cannot learn dependencies "10 steps back." Six years later, he and Schmidhuber proposed LSTM as the solution.</p>
+
+<h3>Core Method: Three Gates + Cell State</h3>
+<p>A "highway"—the cell state $\mathbf{c}_t$—is introduced, with three gates controlling information flow:</p>
+
+<div class="formula">$\mathbf{f}_t = \sigma(W_f \cdot [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_f) \quad \text{(forget gate)}$</div>
+<div class="formula">$\mathbf{i}_t = \sigma(W_i \cdot [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_i) \quad \text{(input gate)}$</div>
+<div class="formula">$\tilde{\mathbf{c}}_t = \tanh(W_c \cdot [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_c) \quad \text{(candidate)}$</div>
+<div class="formula">$\mathbf{c}_t = \mathbf{f}_t \odot \mathbf{c}_{t-1} + \mathbf{i}_t \odot \tilde{\mathbf{c}}_t$</div>
+<div class="formula">$\mathbf{o}_t = \sigma(W_o \cdot [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_o) \quad \text{(output gate)}$</div>
+<div class="formula">$\mathbf{h}_t = \mathbf{o}_t \odot \tanh(\mathbf{c}_t)$</div>
+
+<p><strong>The key to the gradient pathway</strong>: $\mathbf{c}_t = \mathbf{f}_t \odot \mathbf{c}_{t-1} + \ldots$ is an addition (not a matrix multiply). When the forget gate $\mathbf{f}_t \approx 1$, $\mathbf{c}_t$ retains all history and gradients pass through time with virtually no decay. This is the mathematical reason LSTM can learn long-range dependencies.</p>
+
+<h3>Code</h3>
+<pre><code class="language-python">class LSTMCell(nn.Module):
+    def __init__(self, input_size, hidden_size):
+        super().__init__()
+        # Merge all 4 gates into one large matrix for compute efficiency
+        self.W = nn.Linear(input_size + hidden_size, 4 * hidden_size)
+        self.hidden_size = hidden_size
+
+    def forward(self, x, state):
+        h_prev, c_prev = state
+        gates = self.W(torch.cat([h_prev, x], dim=-1))
+        i, f, g, o = gates.chunk(4, dim=-1)
+        i, f, g, o = torch.sigmoid(i), torch.sigmoid(f), torch.tanh(g), torch.sigmoid(o)
+        c = f * c_prev + i * g
+        h = o * torch.tanh(c)
+        return h, (h, c)
+</code></pre>
+
+<h3>Impact and Succession</h3>
+<p>LSTM dominated sequence modeling for the 20-year span of 1997–2017: speech recognition (Graves's deep LSTM, 2013), machine translation (Google NMT 2016), and image captioning (Show-and-Tell 2014) were all built on LSTMs. <em>The "attention" mechanism (Bahdanau 2014) was originally designed for encoder-decoder LSTMs</em>—it was only later discovered that attention alone sufficed, without LSTM as the foundation.</p>
+
+<p>In 2017, the Transformer displaced LSTM from the mainstream, relegating it to "small-model scenarios." But in embedded time-series and certain specialized tasks, LSTM remains a first choice. The resurgence of SSMs like Mamba in 2023–2024 is, in a sense, a modern revival of LSTM's core ideas.</p>
+
+<h3>An Interesting Historical Note</h3>
+<p>The 1997 original paper by Hochreiter and Schmidhuber actually contains a few details that are now considered "suboptimal"—for instance, it lacks the forget gate (which was added by Gers in 1999). What we call "LSTM" today is the "Gers-LSTM," not the original version. This is a reminder for anyone reading the original paper: widely-used tools are often the product of accumulated evolution, not something finalized in a single paper.</p>
+
+<div class="refback"><strong>Why You Must Read This:</strong> Understanding "gating + additive memory channel" is the conceptual origin of all modern "selective memory" mechanisms—Mamba's selective state, Transformer's attention gating. This is the root from which they grew.</div>
+
+<!-- ============================ P03 BatchNorm ============================ -->
+<h2 id="p03"><span class="num">P03</span>BatchNorm: Making Deep Network Training Simple</h2>
+<p class="pos">Corresponds to main text: Chapter 3, §4.3.5 Normalization</p>
+
+<div class="paper-meta">
+<div class="title-en">Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift</div>
+<div class="row"><span class="label">Authors</span>Sergey Ioffe, Christian Szegedy</div>
+<div class="row"><span class="label">Affiliation</span>Google</div>
+<div class="row"><span class="label">Published</span>ICML 2015</div>
+<div class="row"><span class="label">Citations</span>60,000+</div>
+<div class="row"><span class="label">Link</span>arXiv:1502.03167</div>
+</div>
+
+<h3>The Problem: Why Deep Network Training Is Exquisitely Sensitive to Learning Rate</h3>
+<p>Ioffe observed that the input distribution of each layer shifts dramatically as the parameters of earlier layers are updated. This is called "internal covariate shift." The consequence is that the next layer must constantly "chase" the shifting distribution, making training unstable; moreover, different layers have optimal learning rates differing by orders of magnitude, making a single global learning rate a painful choice.</p>
+
+<h3>Core Method</h3>
+<p>For each feature channel within a mini-batch, apply standardization:</p>
+
+<div class="formula">$\hat{x}_i = \frac{x_i - \mu_B}{\sqrt{\sigma_B^2 + \epsilon}}, \quad y_i = \gamma \hat{x}_i + \beta$</div>
+
+<p>$\mu_B, \sigma_B^2$ are the batch statistics; $\gamma, \beta$ are learnable scale and shift parameters—allowing the network to "restore" the pre-normalization distribution, but without constraining the upstream layers' parameters.</p>
+
+<p><strong>Training vs. Inference</strong>: during training, batch statistics are used; during inference, "running mean/variance" (maintained via exponential averaging during training) is used. This distinction is a common source of subtle BN bugs—it is a common reason why a model performs well on the training set but poorly at inference.</p>
+
+<h3>The Debate Over "Why BN Works"</h3>
+<p>The original paper attributed the effect to "reducing internal covariate shift." But a 2018 paper from MIT by Santurkar et al., "How Does Batch Normalization Help Optimization?", experimentally demonstrated that <em>covariate shift has little to do with BN's effectiveness</em>. The true reason is more likely that BN smooths the loss landscape, preventing gradient explosion even with large learning rates.</p>
+
+<p>This is a classic pattern in deep learning research: <strong>a method is shown to work, but the reason it works turns out to be different from what the authors claimed</strong>.</p>
+
+<h3>Impact</h3>
+<p>BN became standard equipment for CNNs after 2015. It made training 100+ layer networks possible and, together with ResNet, supported the deep era of computer vision.</p>
+<p>However, BN does not work well for RNNs or Transformers—batch-dimension statistics carry little meaning for sequential tasks. Transformers use LayerNorm throughout, which later evolved into RMSNorm. This is why, in main text §4.2.4, you see "Pre-Norm + RMSNorm" as the standard for LLMs. BN's story is largely confined to the CV domain.</p>
+
+<div class="refback"><strong>Why You Must Read This:</strong> Understanding that "normalization is not data preprocessing—it is a structural component of deep networks"—this shift in perspective is BatchNorm's true contribution. Reading this paper will give you a foundational understanding of why LayerNorm, RMSNorm, and GroupNorm exist in the main text.</div>
+
+<!-- ============================ P04 Adam ============================ -->
+<h2 id="p04"><span class="num">P04</span>Adam: The Default Optimizer for Deep Learning</h2>
+<p class="pos">Corresponds to main text: Chapter 1, §2.8.4 · Chapter 3, §4.5.1</p>
+
+<div class="paper-meta">
+<div class="title-en">Adam: A Method for Stochastic Optimization</div>
+<div class="row"><span class="label">Authors</span>Diederik P. Kingma, Jimmy Ba</div>
+<div class="row"><span class="label">Affiliation</span>University of Amsterdam, University of Toronto</div>
+<div class="row"><span class="label">Published</span>ICLR 2015</div>
+<div class="row"><span class="label">Citations</span>200,000+</div>
+<div class="row"><span class="label">Link</span>arXiv:1412.6980</div>
+</div>
+
+<h3>The Problem: SGD's Learning Rate Is Hard to Tune</h3>
+<p>Pure SGD requires careful learning rate scheduling—different learning rates for different parameters and different training phases. <strong>AdaGrad</strong> (Duchi 2011) adaptively adjusts the learning rate per parameter based on the accumulated sum of squared gradients—parameters seen frequently get a smaller lr, new parameters get a larger lr. Problem: the accumulation only grows, so in the later stages of training all learning rates converge to zero and training stops. <strong>RMSProp</strong> (Hinton 2012 course notes) replaces accumulation with an exponential moving average, solving the "permanent decay" problem.</p>
+
+<p>Adam = RMSProp + momentum, plus a bias correction.</p>
+
+<h3>Core Algorithm</h3>
+<p>Two states are maintained: a first-moment estimate (momentum) $\mathbf{m}_t$ and a second-moment estimate (exponential moving average of squared gradients) $\mathbf{v}_t$.</p>
+
+<div class="formula">$\mathbf{m}_t = \beta_1 \mathbf{m}_{t-1} + (1 - \beta_1) \mathbf{g}_t$</div>
+<div class="formula">$\mathbf{v}_t = \beta_2 \mathbf{v}_{t-1} + (1 - \beta_2) \mathbf{g}_t^2$</div>
+
+<p>Bias correction—initially $\mathbf{m}_0 = \mathbf{v}_0 = 0$, so the exponential average is biased low; dividing by $(1 - \beta^t)$ compensates:</p>
+
+<div class="formula">$\hat{\mathbf{m}}_t = \frac{\mathbf{m}_t}{1 - \beta_1^t}, \quad \hat{\mathbf{v}}_t = \frac{\mathbf{v}_t}{1 - \beta_2^t}$</div>
+
+<p>Final parameter update:</p>
+
+<div class="formula">$\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \frac{\alpha}{\sqrt{\hat{\mathbf{v}}_t} + \epsilon} \hat{\mathbf{m}}_t$</div>
+
+<p>Typical hyperparameters: $\beta_1 = 0.9, \beta_2 = 0.999, \epsilon = 10^{-8}, \alpha = 10^{-3}$. These numbers are the defaults in virtually every PyTorch/TensorFlow codebase.</p>
+
+<h3>AdamW</h3>
+<p>Loshchilov (2017) pointed out that "weight decay" regularization in Adam is incorrectly coupled with the learning rate. <strong>AdamW</strong> decouples them and is now the default choice for LLM training. The "AdamW" in LLaMA's training recipe in main text §4.7.4 refers to this.</p>
+
+<h3>Impact and Controversy</h3>
+<p>Adam is the most widely used optimizer in deep learning—present by default like air. But it has not been without controversy:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- <strong>Convergence</strong>: Reddi et al. (2018), "On the Convergence of Adam," proved that the original Adam can fail to converge on certain simple convex problems. AMSGrad was proposed as a fix (but is rarely used in practice)</li>
+<li>- <strong>Generalization</strong>: On CV tasks, SGD+Momentum often generalizes better. But for Transformer training, Adam/AdamW has no viable alternative</li>
+<li>- <strong>Memory</strong>: Adam requires storing $\mathbf{m}$ and $\mathbf{v}$—twice the parameter footprint. In the era of large models, this is a GPU memory killer. ZeRO (main text §4.7.2) was created specifically to shard this state</li>
+</ul>
+
+<div class="refback"><strong>Why You Must Read This:</strong> Every LLM training run uses AdamW under the hood. This is the power of defaults—but knowing the math behind the defaults lets you diagnose training instabilities when they arise.</div>
+
+<!-- ============================ P05 XGBoost ============================ -->
+<h2 id="p05"><span class="num">P05</span>XGBoost: The De Facto Standard for Tabular Data</h2>
+<p class="pos">Corresponds to main text: Chapter 3, §4.2.2 Tree Models</p>
+
+<div class="paper-meta">
+<div class="title-en">XGBoost: A Scalable Tree Boosting System</div>
+<div class="row"><span class="label">Authors</span>Tianqi Chen, Carlos Guestrin</div>
+<div class="row"><span class="label">Affiliation</span>University of Washington</div>
+<div class="row"><span class="label">Published</span>KDD 2016</div>
+<div class="row"><span class="label">Citations</span>30,000+</div>
+<div class="row"><span class="label">Link</span>arXiv:1603.02754</div>
+</div>
+
+<h3>The Problem: Two Bottlenecks of Traditional GBDT</h3>
+<p>Traditional GBDT (Friedman 2001) fits each tree to the residuals from the previous step (equivalent to the negative gradient for squared loss). Two problems:</p>
+<ol>
+<li><strong>Only first-order gradients</strong>: limited optimization direction information, slow convergence</li>
+<li><strong>Engineering-level slowness</strong>: single-machine training on large datasets takes hours or more; distributed implementations were absent</li>
+</ol>
+
+<h3>Core Method: Second-Order Taylor Expansion + Regularization + Parallelism</h3>
+<p>Tianqi Chen applied a second-order Taylor expansion of the objective function at the current model:</p>
+
+<div class="formula">$\mathcal{L}^{(t)} \approx \sum_i \left[ g_i f_t(\mathbf{x}_i) + \frac{1}{2} h_i f_t(\mathbf{x}_i)^2 \right] + \Omega(f_t)$</div>
+
+<p>where $g_i = \partial L / \partial F$ (first-order), $h_i = \partial^2 L / \partial F^2$ (second-order), and $\Omega(f) = \gamma T + \frac{1}{2} \lambda \sum_j w_j^2$ is the regularization term ($T$ is the number of leaves, $w_j$ are leaf weights).</p>
+
+<p>For a tree with a fixed structure, the optimal weight of each leaf has a closed-form solution:</p>
+
+<div class="formula">$w_j^* = -\frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}$</div>
+
+<p>The split gain also has a closed form:</p>
+
+<div class="formula">$\text{Gain} = \frac{1}{2}\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R + \lambda} - \frac{(G_L+G_R)^2}{H_L+H_R+\lambda}\right] - \gamma$</div>
+
+<p>With this formula, a greedy search picks the split with the highest gain until gain &lt; 0 (or another stopping criterion). A detailed derivation is in main text §4.2.2.</p>
+
+<h3>Engineering Innovations</h3>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>Approximate split algorithm</strong>: for large datasets, rather than enumerating all split points, discretize by quantiles (LightGBM later pushed this to the extreme with its histogram algorithm)</li>
+<li><strong>Sparsity-aware</strong>: missing values are automatically routed to a "default direction," requiring no manual imputation</li>
+<li><strong>Column-block storage</strong>: features are stored in compressed column format, sorted once and reused across rounds</li>
+<li><strong>Parallelism</strong>: feature-level parallelism (each feature independently searches for its split point)</li>
+<li><strong>Cache-aware access</strong>: prefetching data into CPU cache to improve hit rates</li>
+</ul>
+
+<h3>Python Usage</h3>
+<pre><code class="language-python">import xgboost as xgb
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+
+X, y = load_breast_cancer(return_X_y=True)
+Xt, Xv, yt, yv = train_test_split(X, y, test_size=0.2)
+
+model = xgb.XGBClassifier(
+    n_estimators=500, max_depth=6, learning_rate=0.05,
+    reg_lambda=1.0, reg_alpha=0.1,
+    early_stopping_rounds=50, eval_metric='logloss',
+)
+model.fit(Xt, yt, eval_set=[(Xv, yv)])
+print("Accuracy:", model.score(Xv, yv))
+</code></pre>
+
+<h3>Impact</h3>
+<p>From 2015 to 2020, <strong>90%+ of winning Kaggle tabular competition solutions</strong> included XGBoost, LightGBM, or CatBoost. These three tools are all essentially variants of the XGBoost approach:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>LightGBM</strong> (Microsoft 2017): histogram-based acceleration, leaf-wise growth instead of level-wise</li>
+<li><strong>CatBoost</strong> (Yandex 2018): native categorical feature handling, ordered boosting</li>
+</ul>
+
+<p>In industry, <strong>XGBoost remains the first choice for tabular data</strong>. The reasons: fast training and inference (millions of samples in minutes), no GPU required, no feature normalization needed, and naturally interpretable feature importance. Deep learning has long had no advantage on tabular data—TabNet and TabTransformer never became mainstream.</p>
+
+<div class="refback"><strong>Why You Must Read This:</strong> Even in the LLM era, this classic paper remains important—because in financial risk management, healthcare, recommendation systems, and network traffic classification, XGBoost comprehensively outperforms deep learning on latency and interpretability. Knowing when to use it and when not to is a basic judgment call for any AI engineer.</div>
+
+<!-- ============================ PART 2: Ch.4 first half ============================ -->
+<div class="part-header">
+<div class="part-label">PART TWO</div>
+<h2 class="part-title">Ch. 4 · Transformer &amp; Pretraining</h2>
+<p class="part-desc">The foundational pillars of the LLM era — Attention, BERT/GPT, Scaling Laws, and RoPE.</p>
+</div>
+
+<!-- ============================ P06 Attention ============================ -->
+<h2 id="p06"><span class="num">P06</span>Attention Is All You Need: The Birth of the Transformer</h2>
+<p class="pos">Corresponds to main text: Chapter 4, §5.2 (entire section)</p>
+
+<div class="paper-meta">
+<div class="title-en">Attention Is All You Need</div>
+<div class="row"><span class="label">Authors</span>Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser, Illia Polosukhin</div>
+<div class="row"><span class="label">Affiliation</span>Google Brain, Google Research, University of Toronto</div>
+<div class="row"><span class="label">Published</span>NeurIPS 2017</div>
+<div class="row"><span class="label">Citations</span>140,000+ (second highest in CS history)</div>
+<div class="row"><span class="label">Link</span>arXiv:1706.03762</div>
+</div>
+
+<h3>The Problem: The Fundamental Limitation of RNNs</h3>
+<p>In 2017, the mainstream approach to machine translation was seq2seq + attention (Bahdanau 2014, Luong 2015)—the encoder used an LSTM to encode the source sentence into a sequence of vectors, the decoder used an LSTM to autoregressively generate output, and attention was used to consult the encoder's output. The results were good, but <strong>LSTM's sequential nature across timesteps made training impossible to parallelize</strong>—the advantages of GPU acceleration could not be exploited, limiting model scale.</p>
+
+<p>Vaswani et al.'s question: can we remove recurrence entirely and rely on attention alone?</p>
+
+<h3>Core Method: Scaled Dot-Product Attention</h3>
+<p>Each position in the sequence is represented as three vectors—Query, Key, and Value—and the output is computed by weighting V according to the similarity between Q and all Ks:</p>
+
+<div class="formula">$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right) V$</div>
+
+<p>Key detail: the <strong>$\sqrt{d_k}$</strong> scaling. The variance of the dot product of $d$-dimensional vectors is $d$; dividing by $\sqrt{d}$ normalizes the variance and prevents the softmax from becoming oversaturated (main text §4.2.2 contains a detailed derivation).</p>
+
+<h3>Multi-Head Attention</h3>
+<p>Q, K, and V are projected into $H$ subspaces; attention is computed independently in each subspace, and the results are concatenated and projected:</p>
+
+<div class="formula">$\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, \ldots, \text{head}_H) W^O$</div>
+<div class="formula">$\text{head}_i = \text{Attention}(Q W_i^Q, K W_i^K, V W_i^V)$</div>
+
+<p>Multiple heads let the model simultaneously learn multiple "attention patterns"—some heads focus on syntactic proximity, others on coreference, others on global topic.</p>
+
+<h3>Complete Transformer Block</h3>
+<div class="mermaid">
+flowchart TB
+    X[Input x] --> N1[LayerNorm]
+    N1 --> MHA[Multi-Head<br/>Attention]
+    MHA --> A1((+))
+    X --> A1
+    A1 --> N2[LayerNorm]
+    N2 --> FFN[FFN<br/>d_model to 4d to d_model]
+    FFN --> A2((+))
+    A1 --> A2
+    A2 --> OUT[Output]
+</div>
+
+<p>(The diagram shows the Pre-Norm version; the original paper used Post-Norm, but most modern implementations have switched to Pre-Norm. See main text §4.2.4.)</p>
+
+<h3>Positional Encoding</h3>
+<p>Attention itself is a "set operation"—permuting the input order leaves the output unchanged. To give the model a sense of position, positional encodings are added:</p>
+
+<div class="formula">$\text{PE}(\text{pos}, 2i) = \sin(\text{pos}/10000^{2i/d})$</div>
+<div class="formula">$\text{PE}(\text{pos}, 2i+1) = \cos(\text{pos}/10000^{2i/d})$</div>
+
+<p>Position information is encoded using sinusoids of different frequencies. This was later superseded by RoPE (see P09).</p>
+
+<h3>Complete PyTorch Implementation</h3>
+<pre><code class="language-python">import torch
+import torch.nn as nn
+import math
+
+class MultiHeadAttention(nn.Module):
+    def __init__(self, d_model, n_heads):
+        super().__init__()
+        assert d_model % n_heads == 0
+        self.H = n_heads
+        self.d_head = d_model // n_heads
+        self.Wq = nn.Linear(d_model, d_model, bias=False)
+        self.Wk = nn.Linear(d_model, d_model, bias=False)
+        self.Wv = nn.Linear(d_model, d_model, bias=False)
+        self.Wo = nn.Linear(d_model, d_model, bias=False)
+
+    def forward(self, x, mask=None):
+        B, L, D = x.shape
+        Q = self.Wq(x).view(B, L, self.H, self.d_head).transpose(1, 2)
+        K = self.Wk(x).view(B, L, self.H, self.d_head).transpose(1, 2)
+        V = self.Wv(x).view(B, L, self.H, self.d_head).transpose(1, 2)
+
+        scores = Q @ K.transpose(-2, -1) / math.sqrt(self.d_head)  # [B, H, L, L]
+        if mask is not None:
+            scores = scores.masked_fill(mask, float('-inf'))
+        attn = torch.softmax(scores, dim=-1)
+        out = attn @ V                              # [B, H, L, d_head]
+        out = out.transpose(1, 2).reshape(B, L, D)
+        return self.Wo(out)
+
+
+class FFN(nn.Module):
+    def __init__(self, d_model, d_ff=None):
+        super().__init__()
+        d_ff = d_ff or 4 * d_model
+        self.fc1 = nn.Linear(d_model, d_ff)
+        self.fc2 = nn.Linear(d_ff, d_model)
+
+    def forward(self, x):
+        return self.fc2(torch.relu(self.fc1(x)))
+
+
+class TransformerBlock(nn.Module):
+    """Pre-Norm version — standard for modern LLMs"""
+    def __init__(self, d_model, n_heads):
+        super().__init__()
+        self.ln1 = nn.LayerNorm(d_model)
+        self.attn = MultiHeadAttention(d_model, n_heads)
+        self.ln2 = nn.LayerNorm(d_model)
+        self.ffn = FFN(d_model)
+
+    def forward(self, x, mask=None):
+        x = x + self.attn(self.ln1(x), mask)
+        x = x + self.ffn(self.ln2(x))
+        return x
+
+
+class Transformer(nn.Module):
+    def __init__(self, vocab_size, d_model=512, n_heads=8, n_layers=6, max_len=5000):
+        super().__init__()
+        self.tok_emb = nn.Embedding(vocab_size, d_model)
+        self.pos_emb = self._build_pos_enc(max_len, d_model)
+        self.blocks = nn.ModuleList([
+            TransformerBlock(d_model, n_heads) for _ in range(n_layers)
+        ])
+        self.ln_f = nn.LayerNorm(d_model)
+        self.lm_head = nn.Linear(d_model, vocab_size, bias=False)
+
+    def _build_pos_enc(self, max_len, d):
+        pe = torch.zeros(max_len, d)
+        pos = torch.arange(max_len).unsqueeze(1).float()
+        div = torch.exp(torch.arange(0, d, 2).float() * -(math.log(10000.0)/d))
+        pe[:, 0::2] = torch.sin(pos * div)
+        pe[:, 1::2] = torch.cos(pos * div)
+        return nn.Parameter(pe.unsqueeze(0), requires_grad=False)
+
+    def forward(self, idx):
+        B, L = idx.shape
+        x = self.tok_emb(idx) + self.pos_emb[:, :L]
+        # Causal mask: upper triangular masking
+        mask = torch.triu(torch.ones(L, L, dtype=torch.bool, device=idx.device),
+                          diagonal=1)
+        for block in self.blocks:
+            x = block(x, mask)
+        x = self.ln_f(x)
+        return self.lm_head(x)                      # [B, L, vocab]
+
+# Usage
+model = Transformer(vocab_size=10000)
+x = torch.randint(0, 10000, (2, 50))   # batch 2, seq 50
+logits = model(x)                       # [2, 50, 10000]
+</code></pre>
+
+<p>These roughly 70 lines implement the core of the Transformer. Real production implementations (LLaMA, Qwen) add a dozen engineering refinements on top: RoPE replacing sinusoidal positional encoding, RMSNorm replacing LayerNorm, SwiGLU replacing the ReLU FFN, GQA replacing MHA, and so on—but the <strong>skeleton has not changed in 7 years</strong>.</p>
+
+<h3>Experimental Results</h3>
+<p>In the original paper on WMT 2014 English-to-German translation: BLEU 28.4, surpassing Google NMT (LSTM-based) at 27.3 by 1.1 points, <em>while requiring only 1/10 of the training time</em>. That is the key—it wasn't just a marginal improvement in quality; it was <em>fast enough to train much larger models</em>.</p>
+
+<h3>Impact</h3>
+<p>"Attention Is All You Need" is one of the most important papers in the history of AI. Seven years later (2024), only ResNet surpasses it in citation count in the CS field.</p>
+
+<p>Yet its <em>direct</em> contribution was only a 1.1 BLEU improvement in machine translation—what truly changed the world was the <em>possibilities it unlocked</em>:</p>
+<ol>
+<li><strong>BERT</strong> (2018) and <strong>GPT</strong> (2018): using the Transformer for pretraining</li>
+<li><strong>GPT-3</strong> (2020): proving that the Transformer can scale to tens of billions of parameters and produce emergent capabilities</li>
+<li><strong>ViT</strong> (2020): bringing the Transformer to computer vision</li>
+<li><strong>ChatGPT</strong> (2022): Transformer + RLHF as a product</li>
+<li><strong>All modern LLMs</strong> (2023+): LLaMA, Claude, Qwen, DeepSeek are all Transformer variants</li>
+</ol>
+
+<h3>An Interesting Footnote on an Engineering Detail</h3>
+<p>Section 3.2.2 of the original paper contains the statement: "We found that the Transformer with sinusoidal position encodings performs similarly to learned position embeddings." This claim later proved overly optimistic—learned positional embeddings fail completely when the sequence length exceeds training length, and sinusoidal encodings also extrapolate poorly. This detail was truly resolved by RoPE (P09), five years later.</p>
+
+<p>This is also the value of reading papers: even original authors can be wrong. Understanding these subtleties gives you a clearer picture of how the field evolves.</p>
+
+<div class="refback"><strong>Why 3 pages instead of 1:</strong> If only one paper could be read to understand modern AI, this is it. Mastering the attention mechanism is the entry ticket to all subsequent work. Recommended companion resources: The Annotated Transformer (Harvard NLP) and Andrej Karpathy's "Let's build GPT" video.</div>
+
+<!-- ============================ P07 BERT / GPT ============================ -->
+<h2 id="p07"><span class="num">P07</span>BERT and GPT: The Twin Stars of the Pretraining Era</h2>
+<p class="pos">Corresponds to main text: Chapter 4, §4.2.5 (Encoder/Decoder divide) · §4.5.2 (self-supervised pretraining)</p>
+
+<div class="paper-meta">
+<div class="title-en">BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding</div>
+<div class="row"><span class="label">Authors</span>Jacob Devlin, Ming-Wei Chang, Kenton Lee, Kristina Toutanova (Google)</div>
+<div class="row"><span class="label">Published</span>NAACL 2019 · arXiv:1810.04805 · 110,000+ citations</div>
+</div>
+
+<div class="paper-meta">
+<div class="title-en">Language Models are Few-Shot Learners (GPT-3)</div>
+<div class="row"><span class="label">Authors</span>Tom Brown et al. (OpenAI)</div>
+<div class="row"><span class="label">Published</span>NeurIPS 2020 · arXiv:2005.14165 · 35,000+ citations</div>
+</div>
+
+<p><em>BERT and GPT-3 belong to different technical lineages, but together they defined the "pretraining era." Comparing them side by side is the clearest way to understand both.</em></p>
+
+<h3>BERT: Bidirectional Encoder + MLM</h3>
+
+<p><strong>Core innovation</strong>: Masked Language Modeling (MLM).</p>
+<p>Traditional language models are unidirectional (predicting the next word from left to right). BERT randomly masks 15% of tokens and trains the model to predict the masked content based on <em>bidirectional</em> context. Every position's representation can "see" the entire sentence.</p>
+
+<div class="mermaid">
+flowchart LR
+    I["The [MASK] sat on the mat"] --> ENC[Transformer Encoder<br/>bidirectional self-attention]
+    ENC --> P["[MASK] = cat (prediction)"]
+</div>
+
+<p><strong>Second training objective: NSP</strong> (Next Sentence Prediction): predicting whether two sentences are consecutive. Subsequent work (RoBERTa 2019) showed that NSP was actually not useful, but MLM has persisted.</p>
+
+<h3>The BERT Paradigm</h3>
+<p>BERT inaugurated the "pretrain + fine-tune" pattern:</p>
+<ol>
+<li>Perform MLM pretraining on massive unlabeled text (Wikipedia + BookCorpus, ~3.3B tokens)</li>
+<li>Fine-tune for downstream tasks: classification, QA, NER, etc.—only an output head needs to be added</li>
+</ol>
+
+<p>This paradigm reset the state of the art across virtually all NLP tasks in one sweep. BERT-Base (110M parameters), BERT-Large (340M)—large models by the standards of the time, small by today's.</p>
+
+<h3>GPT-3: Unidirectional Decoder + Pure Few-Shot</h3>
+
+<p>GPT-3 took the opposite approach:</p>
+<ul style="list-style:none;padding-left:0;">
+<li>- Only uses a Decoder (causal language model, predicting the next token left to right)</li>
+<li>- <strong>No fine-tuning</strong>—task instructions and a few examples are written into the prompt, and the model learns "in context"</li>
+<li>- Dramatic scale increase: 175B parameters, 500× the size of BERT-Large</li>
+</ul>
+
+<h3>GPT-3's Key Discovery: In-Context Learning</h3>
+<p>The true contribution of the GPT-3 paper is not architectural innovation—the architecture is nearly identical to GPT-2. The contribution is demonstrating that: <strong>when a model scales to a sufficient size, the ability to "learn a new task from a few examples" emerges</strong>.</p>
+
+<p>Example:</p>
+<pre><code class="language-text">Translate English to French:
+sea otter =&gt; loutre de mer
+plush giraffe =&gt; girafe peluche
+cheese =&gt; ???
+</code></pre>
+
+<p>After seeing just 2 examples, GPT-3 correctly outputs "fromage"—and can generalize to math, reasoning, and coding tasks. <em>This is the starting point at which LLMs transformed from "language models" into "general-purpose reasoning engines."</em></p>
+
+<h3>Comparison of the Two Lineages</h3>
+<table>
+<tr><th></th><th>BERT (Encoder)</th><th>GPT (Decoder)</th></tr>
+<tr><td>Attention direction</td><td>Bidirectional attention</td><td>Unidirectional causal</td></tr>
+<tr><td>Training objective</td><td>MLM + NSP</td><td>Next-token prediction</td></tr>
+<tr><td>Task adaptation</td><td>Pretrain + fine-tune</td><td>Prompting / in-context learning</td></tr>
+<tr><td>Typical tasks</td><td>Classification, NER, QA, sentence embeddings</td><td>Text generation, dialogue, code</td></tr>
+<tr><td>Representative scale</td><td>BERT-Large 340M</td><td>GPT-3 175B</td></tr>
+<tr><td>Post-2024 descendants</td><td>RoBERTa, DeBERTa, still used for embeddings</td><td>LLaMA, Claude, Qwen, DeepSeek — mainstream</td></tr>
+</table>
+
+<h3>Why Decoder-Only Won in the End</h3>
+<p>Main text §4.2.5 analyzes the key factors:</p>
+<ol>
+<li>Decoder-only training is simpler—a single objective, and all text is training data</li>
+<li>In-context learning makes "one model for all tasks" a reality</li>
+<li>Scaling properties are more favorable for decoder-only—this became consensus after GPT-3</li>
+<li>Generation capability naturally encompasses understanding (to write a good answer, you must first understand the question)</li>
+</ol>
+
+<p>Today, BERT-family encoder models are primarily used as "text encoders"—embedding models (BGE, E5), rerankers, and so on. The retrieval stage in most RAG systems still uses encoder models.</p>
+
+<h3>Impact</h3>
+<p>BERT inaugurated the <strong>pretraining paradigm</strong>—all LLMs today inherit this idea. GPT-3 demonstrated <strong>the power of scaling</strong>—directly leading to ChatGPT and GPT-4. These two papers are the twin stars of LLM history.</p>
+
+<div class="refback"><strong>Why You Must Read This:</strong> BERT helps you understand the "pretrain-then-fine-tune" paradigm. GPT-3 helps you understand "emergent capabilities" and "in-context learning"—two concepts that are the core assumptions underlying the entire LLM era that followed.</div>
+
+<!-- ============================ P08 Scaling Law ============================ -->
+<h2 id="p08"><span class="num">P08</span>Scaling Laws and Chinchilla: The Economics of Training Large Models</h2>
+<p class="pos">Corresponds to main text: Chapter 4, §4.1.1 · §4.5.2</p>
+
+<div class="paper-meta">
+<div class="title-en">Scaling Laws for Neural Language Models</div>
+<div class="row"><span class="label">Authors</span>Jared Kaplan et al. (OpenAI)</div>
+<div class="row"><span class="label">Published</span>arXiv:2001.08361 (2020)</div>
+</div>
+
+<div class="paper-meta">
+<div class="title-en">Training Compute-Optimal Large Language Models (Chinchilla)</div>
+<div class="row"><span class="label">Authors</span>Jordan Hoffmann et al. (DeepMind)</div>
+<div class="row"><span class="label">Published</span>NeurIPS 2022 · arXiv:2203.15556</div>
+</div>
+
+<h3>The Question: Given a Fixed Compute Budget, How Should It Be Split Between Parameters and Data?</h3>
+<p>Training a large model incurs a total compute cost of roughly $C \approx 6 \cdot N \cdot D$ ($N$ = number of parameters, $D$ = number of training tokens). Suppose you have a fixed $C$ (say, 1e25 FLOPs): is it better to train a large model on a small dataset, or a smaller model on a large dataset?</p>
+
+<h3>Kaplan (2020): Loss Follows a Power Law</h3>
+<p>OpenAI ran hundreds of models of varying sizes and found that loss decreases as a power law with both parameters and data:</p>
+
+<div class="formula">$L(N, D) \approx E + \frac{A}{N^\alpha} + \frac{B}{D^\beta}$</div>
+
+<p>$E$ is the irreducible entropy, $\alpha \approx 0.07$, $\beta \approx 0.28$.</p>
+
+<p><strong>Kaplan's key conclusion (later proven incorrect)</strong>: under a fixed compute budget, the optimal allocation grows the parameter count $N$ much faster than the data $D$. This inspired the design of GPT-3 at 175B—trained on only 300B tokens (near-optimal by Kaplan's prediction).</p>
+
+<h3>Chinchilla (2022): Kaplan Was Wrong</h3>
+<p>DeepMind redid the experiments with a wider range of $N, D$ combinations. New fitted formula:</p>
+
+<div class="formula">$L(N, D) = E + \frac{A}{N^{0.34}} + \frac{B}{D^{0.28}}$</div>
+
+<p><strong>Key: $\alpha$ changed from 0.07 to 0.34</strong>—this means parameters and data should scale in <strong>roughly equal proportion</strong>.</p>
+
+<p>Specific conclusion: the optimal <em>tokens-to-parameters ratio is approximately 20:1</em>.</p>
+
+<table>
+<tr><th>Model</th><th>Parameters</th><th>Training tokens</th><th>Actual ratio</th><th>Chinchilla-optimal?</th></tr>
+<tr><td>GPT-3</td><td>175B</td><td>300B</td><td>1.7:1</td><td>❌ Severely data-starved</td></tr>
+<tr><td>Chinchilla</td><td>70B</td><td>1.4T</td><td>20:1</td><td>✅ Optimal</td></tr>
+<tr><td>LLaMA-1 65B</td><td>65B</td><td>1.4T</td><td>21.5:1</td><td>✅ Near-optimal</td></tr>
+<tr><td>LLaMA-3 70B</td><td>70B</td><td>15T</td><td>214:1</td><td>Inference-optimized, far exceeds Chinchilla</td></tr>
+</table>
+
+<h3>Experimental Proof of Chinchilla</h3>
+<p>Chinchilla (70B parameters, 1.4T training tokens) vs. Gopher (280B parameters, 300B tokens)—under equivalent compute, Chinchilla comprehensively outperformed the 4× larger Gopher on benchmarks like MMLU. <strong>"Smaller but better-trained" beats "larger but data-starved"</strong>—a significant correction in Scaling Law research.</p>
+
+<h3>Training-Optimal vs. Inference-Optimal</h3>
+<p>Chinchilla optimizes for "lowest training loss." But in practice, models must be run for inference millions of times, so <em>inference efficiency</em> is also an optimization target.</p>
+<p>The LLaMA-2/3 series recognized this: deliberately training <em>beyond</em> Chinchilla-optimal—LLaMA-3-70B was trained on 15T tokens (214:1), far past "optimal" in training terms, but yielding a model that is "smaller in parameters yet stronger in capability," making inference cheaper. This is known as "over-training for inference."</p>
+
+<h3>Impact</h3>
+<p>These two papers fundamentally changed decision-making in LLM training:</p>
+<ol>
+<li>The "just pile on parameters" approach after GPT-3 was corrected</li>
+<li>Data collection and cleaning became equally important as model architecture</li>
+<li>The LLaMA series' training data volumes (1.4T → 2T → 15T) stem directly from these insights</li>
+</ol>
+
+<div class="refback"><strong>Why You Must Read This:</strong> If you want to understand the "parameters vs. data" discussion that accompanies every major model release since 2022, these two papers are required reading. They are also the starting point for understanding "why data is so expensive now"—Chinchilla's conclusions set off a data arms race among all major AI companies.</div>
+
+<!-- ============================ P09 RoPE ============================ -->
+<h2 id="p09"><span class="num">P09</span>RoPE: Rotary Position Embedding</h2>
+<p class="pos">Corresponds to main text: Chapter 4, §4.3.2 Deep Dive on RoPE</p>
+
+<div class="paper-meta">
+<div class="title-en">RoFormer: Enhanced Transformer with Rotary Position Embedding</div>
+<div class="row"><span class="label">Authors</span>Jianlin Su, Yu Lu, Shengfeng Pan, Ahmed Murtadha, Bo Wen, Yunfeng Liu</div>
+<div class="row"><span class="label">Affiliation</span>Zhuiyi Technology</div>
+<div class="row"><span class="label">Published</span>Neurocomputing 2024 · arXiv:2104.09864 (2021)</div>
+<div class="row"><span class="label">Citations</span>4,500+ (rapidly growing)</div>
+</div>
+
+<h3>The Problem: Absolute Positional Encodings Cannot Extrapolate</h3>
+<p>The original Transformer used sinusoidal absolute positional encodings; GPT-2 used learned absolute positional encodings. Both share the same problem—<strong>if positions 0–2047 were seen during training, the model fails for positions 2048+</strong>. Learned encodings are worse (they break entirely out of range); sinusoidal encodings are slightly better but still don't work. Relative positional encodings (T5 bias, ALiBi) improved matters but had limited expressiveness.</p>
+
+<h3>Core Idea: Rotation Instead of Addition</h3>
+<p>RoPE does not add a positional vector to the input; instead, it <em>rotates</em> Q and K. The key insight: when two vectors are each rotated independently and then dot-producted, the result depends only on their <em>relative angle</em>.</p>
+
+<div class="formula">$\mathbf{q}_m^\top \mathbf{k}_n = (R_m \mathbf{q})^\top (R_n \mathbf{k}) = \mathbf{q}^\top R_m^\top R_n \mathbf{k} = \mathbf{q}^\top R_{n-m} \mathbf{k}$</div>
+
+<p>(Because rotation matrices satisfy $R_m^\top R_n = R_{n-m}$)</p>
+
+<p>So the attention score naturally depends only on the relative position $n - m$. This is exactly the property that relative positional encodings aim for, achieved here in a more elegant way.</p>
+
+<h3>2D Rotation Matrix</h3>
+<p>A 2D rotation is applied to each pair of adjacent dimensions:</p>
+
+<div class="formula">$R_m^{(i)} = \begin{pmatrix} \cos m\theta_i & -\sin m\theta_i \\ \sin m\theta_i & \cos m\theta_i \end{pmatrix}, \quad \theta_i = 10000^{-2(i-1)/d}$</div>
+
+<p>Different dimensions use different frequencies $\theta_i$: low dimensions use high frequencies, high dimensions use low frequencies—each dimension captures positional differences at a different scale.</p>
+
+<h3>Complex Number Perspective (More Elegant)</h3>
+<p>Treating a 2D vector as a complex number $q = q_1 + iq_2$, rotation by $m\theta$ is equivalent to multiplying by $e^{im\theta}$:</p>
+
+<div class="formula">$q_m = q \cdot e^{im\theta}, \quad k_n = k \cdot e^{in\theta}$</div>
+<div class="formula">$\langle q_m, k_n \rangle = \text{Re}(q \cdot e^{im\theta} \cdot \overline{k \cdot e^{in\theta}}) = \text{Re}(q \bar{k} \cdot e^{i(m-n)\theta})$</div>
+
+<p>This depends only on $m - n$. This is the most mathematically elegant expression of RoPE.</p>
+
+<h3>Implementation</h3>
+<pre><code class="language-python">def build_rope_cache(d_head, max_len, base=10000, device='cuda'):
+    theta = 1.0 / (base ** (torch.arange(0, d_head, 2).float() / d_head))
+    t = torch.arange(max_len, device=device).float()
+    freqs = torch.outer(t, theta.to(device))            # [max_len, d_head/2]
+    return torch.polar(torch.ones_like(freqs), freqs)   # complex form
+
+def apply_rope(x, freqs_cis):
+    # x: [B, H, L, d_head]
+    x_complex = torch.view_as_complex(
+        x.float().reshape(*x.shape[:-1], -1, 2)
+    )
+    x_rotated = x_complex * freqs_cis[:x.shape[-2]]
+    return torch.view_as_real(x_rotated).flatten(-2).type_as(x)
+
+# Usage: apply to Q and K inside attention (not V)
+Q = apply_rope(Q, freqs_cis)
+K = apply_rope(K, freqs_cis)
+# V does not get RoPE — it carries content, not position
+</code></pre>
+
+<h3>Derivative Techniques Built on RoPE</h3>
+<p>RoPE's continuous trigonometric nature gives it "extrapolation potential"—the following techniques extend RoPE-trained models far beyond their training length:</p>
+<ul style="list-style:none;padding-left:0;">
+<li><strong>PI</strong> (Position Interpolation, Meta 2023): compress positions into the training range, enabling 2–4× extrapolation</li>
+<li><strong>NTK-aware</strong>: compress only high-frequency dimensions while preserving low-frequency ones—enables extrapolation without any fine-tuning</li>
+<li><strong>YaRN</strong> (2023): per-frequency-band refinement + attention temperature adjustment; 1B tokens of fine-tuning enables 32× extrapolation</li>
+<li><strong>LongRoPE</strong> (2024): independently searches for the optimal scaling factor per dimension; feasible up to 2M token contexts</li>
+</ul>
+
+<h3>Impact</h3>
+<p>RoPE is today the de facto standard for open-source LLMs: LLaMA, Qwen, DeepSeek, Mistral, and ChatGLM all use RoPE. The reasons:</p>
+<ol>
+<li>Relative position property emerges naturally from the math</li>
+<li>Zero additional parameters</li>
+<li>Extrapolation-friendly (in combination with YaRN, etc.)</li>
+<li>Simple implementation (&lt;30 lines of code)</li>
+</ol>
+
+<p>Interestingly, RoPE's author Jianlin Su (Zhuiyi Technology) was not a researcher at a major lab; the paper was originally published on his personal blog. This is a microcosm of the open-source community's influence—good ideas don't have to come from big companies.</p>
+
+<div class="refback"><strong>Why You Must Read This:</strong> Long context (128K, 1M tokens) is one of the main battlegrounds for LLMs in 2024–2026, and RoPE + YaRN is the underlying technology for that direction. Understanding RoPE is what lets you understand why today's models can support such long contexts.</div>
+
+</main>
+<script>
+hljs.highlightAll();
+mermaid.initialize({startOnLoad:true,theme:'neutral',fontFamily:'Inter,sans-serif'});
+</script>
+</body>
+</html>

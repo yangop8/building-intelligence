@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Foundations — Building Intelligence</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+:root {
+  --bg: #fbfaf7;
+  --fg: #1d1d1b;
+  --muted: #6b6b68;
+  --accent: #2d5a7a;
+  --accent-soft: #e6edf2;
+  --rule: #e3dfd6;
+  --code-bg: #282c34;
+  --sidebar-bg: #f4f1ea;
+  --mono: "SFMono-Regular", "JetBrains Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --serif: "Source Serif Pro", "Songti SC", "STSong", Georgia, "Times New Roman", serif;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--fg);
+  background: var(--bg);
+  display: flex;
+}
+aside.toc {
+  position: sticky;
+  top: 0;
+  width: 300px;
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--rule);
+  padding: 24px 20px;
+  font-family: var(--sans);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+aside.toc h1 {
+  font-family: var(--serif);
+  font-size: 18px;
+  margin: 0 0 4px 0;
+  color: var(--accent);
+}
+aside.toc .sub {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+aside.toc .group {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 14px;
+  margin-bottom: 4px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--rule);
+}
+aside.toc ol { list-style: none; padding: 0; margin: 0; }
+aside.toc ol li { margin-bottom: 2px; }
+aside.toc a {
+  color: var(--fg);
+  text-decoration: none;
+  display: block;
+  padding: 3px 6px;
+  border-radius: 3px;
+  transition: all 0.15s;
+}
+aside.toc a:hover { background: var(--accent-soft); color: var(--accent); }
+aside.toc .num { color: var(--muted); font-family: var(--mono); margin-right: 6px; font-size: 11px; }
+
+main {
+  flex: 1;
+  max-width: 880px;
+  padding: 60px 72px 120px 72px;
+  min-width: 0;
+}
+header.cover {
+  border-bottom: 2px solid var(--fg);
+  padding-bottom: 32px;
+  margin-bottom: 48px;
+}
+header.cover h1 {
+  font-size: 42px;
+  line-height: 1.15;
+  margin: 0 0 12px 0;
+  font-weight: 700;
+}
+header.cover .subtitle {
+  font-size: 20px;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 20px;
+}
+header.cover .meta {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+h2 {
+  font-size: 26px;
+  margin-top: 72px;
+  margin-bottom: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+  scroll-margin-top: 20px;
+}
+h2 .num {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-weight: 400;
+  margin-right: 10px;
+  font-size: 20px;
+}
+.pos {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: 0;
+  margin-bottom: 16px;
+  padding: 6px 12px;
+  background: var(--accent-soft);
+  border-left: 2px solid var(--accent);
+}
+h3 {
+  font-size: 18px;
+  margin-top: 28px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+h4 {
+  font-size: 15px;
+  margin-top: 18px;
+  margin-bottom: 4px;
+  font-weight: 600;
+  color: var(--accent);
+}
+p { margin: 0 0 14px 0; text-align: justify; }
+
+code {
+  font-family: var(--mono);
+  font-size: 14px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+pre {
+  background: var(--code-bg);
+  border-radius: 6px;
+  padding: 14px 18px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 16px 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+
+.callout {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  padding: 10px 16px;
+  margin: 16px 0;
+  font-size: 15px;
+}
+.callout .tag {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.formula {
+  font-family: var(--serif);
+  padding: 10px 18px;
+  background: #faf7f0;
+  border-left: 2px solid var(--muted);
+  margin: 12px 0;
+  font-size: 16px;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+  font-family: var(--sans);
+}
+th, td {
+  border-bottom: 1px solid var(--rule);
+  padding: 7px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+th { background: var(--sidebar-bg); font-weight: 600; }
+
+.part-header {
+  margin-top: 100px;
+  margin-bottom: 24px;
+  padding: 24px 28px;
+  background: linear-gradient(to right, var(--accent-soft), transparent);
+  border-left: 4px solid var(--accent);
+}
+.part-header .part-label {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+}
+.part-header h2.part-title {
+  font-size: 32px;
+  margin: 4px 0 8px 0;
+  padding: 0;
+  border: none;
+}
+.part-header .part-desc {
+  font-size: 15px;
+  color: var(--muted);
+  font-style: italic;
+  margin: 0;
+}
+
+.mermaid {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.footnote {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+@media (max-width: 1100px) {
+  aside.toc { display: none; }
+  main { padding: 40px 32px; }
+}
+</style>
+</head>
+<body>
+
+<aside class="toc">
+  <h1>Math Foundations</h1>
+  <div class="sub">Ch 1 · Review for AI Engineers</div>
+
+  <div class="group">1.1 Calculus</div>
+  <ol>
+    <li><a href="#s1-1-1"><span class="num">1</span>Multivariable Calculus Overview</a></li>
+    <li><a href="#s1-1-2"><span class="num">2</span>Function Analysis Techniques</a></li>
+    <li><a href="#s1-1-3"><span class="num">3</span>Function Approximation Techniques</a></li>
+    <li><a href="#s1-1-4"><span class="num">4</span>Function Extrema Computation</a></li>
+    <li><a href="#s1-1-5"><span class="num">5</span>Real Extension: Invertibility</a></li>
+    <li><a href="#s1-1-6"><span class="num">6</span>Riemannian Extension: Manifold Optimization</a></li>
+  </ol>
+
+  <div class="group">1.2 Linear Algebra</div>
+  <ol>
+    <li><a href="#s1-2-1"><span class="num">1</span>Vector Spaces and Matrices</a></li>
+    <li><a href="#s1-2-2"><span class="num">2</span>Linear Transformations and Matrix Operations</a></li>
+    <li><a href="#s1-2-3"><span class="num">3</span>Solution Spaces, Inverses, and Pseudoinverses</a></li>
+    <li><a href="#s1-2-4"><span class="num">4</span>Eigendecomposition and Diagonalization</a></li>
+    <li><a href="#s1-2-5"><span class="num">5</span>Singular Value Decomposition</a></li>
+    <li><a href="#s1-2-6"><span class="num">6</span>Inner Product Spaces and Distance</a></li>
+  </ol>
+
+  <div class="group">1.3 Probability</div>
+  <ol>
+    <li><a href="#s1-3-1"><span class="num">1</span>Probability Fundamentals (POTC)</a></li>
+    <li><a href="#s1-3-2"><span class="num">2</span>Common Distributions and Core Theorems</a></li>
+  </ol>
+
+  <div class="group">1.4 Statistics</div>
+  <ol>
+    <li><a href="#s1-4-1"><span class="num">1</span>Parameter Estimation</a></li>
+    <li><a href="#s1-4-2"><span class="num">2</span>Hypothesis Testing</a></li>
+  </ol>
+
+  <div class="group">1.5 Stochastic Processes</div>
+  <ol>
+    <li><a href="#s1-5-1"><span class="num">1</span>Stochastic Process Fundamentals</a></li>
+    <li><a href="#s1-5-2"><span class="num">2</span>Tree of Thoughts Modeling</a></li>
+  </ol>
+
+  <div class="group">1.6 Information Theory</div>
+  <ol>
+    <li><a href="#s1-6-1"><span class="num">1</span>Core Problems</a></li>
+    <li><a href="#s1-6-2"><span class="num">2</span>Measuring Information</a></li>
+    <li><a href="#s1-6-3"><span class="num">3</span>Compressing Information</a></li>
+    <li><a href="#s1-6-4"><span class="num">4</span>Transmitting Information</a></li>
+    <li><a href="#s1-6-5"><span class="num">5</span>Bounds and Security</a></li>
+    <li><a href="#s1-6-6"><span class="num">6</span>Future Directions</a></li>
+  </ol>
+
+  <div class="group">1.7 Numerical Computing</div>
+  <ol>
+    <li><a href="#s1-7-1"><span class="num">1</span>Error Analysis</a></li>
+    <li><a href="#s1-7-2"><span class="num">2</span>Classical Numerical Analysis</a></li>
+    <li><a href="#s1-7-3"><span class="num">3</span>Interpolation and Curve Fitting</a></li>
+    <li><a href="#s1-7-4"><span class="num">4</span>ML Optimization Algorithms</a></li>
+    <li><a href="#s1-7-5"><span class="num">5</span>Integration, Differentiation, and Root-Finding</a></li>
+  </ol>
+</aside>
+
+<main>
+
+<header class="cover">
+  <h1>Mathematical Foundations</h1>
+  <div class="subtitle">A Review for AI Engineers — Conceptual Intuition, Minimal Derivation, Engineering Application</div>
+  <div class="meta">Chapter 1 · 29 sections</div>
+</header>
+
+<p>The goal of this chapter is not to produce mathematicians. The assumed reader has studied undergraduate mathematics at some point but has forgotten most of it. Day-to-day work involves reading AI papers or calling library APIs, and the aim is to look at a formula without flinching, diagnose numerical errors when they arise, and draw on theory for guidance when designing algorithms.</p>
+
+<p>These requirements shape three writing principles. First, <strong>every formula is preceded by the problem it solves</strong>, followed by its formal statement, and then connected to a concrete AI application — no purely symbolic derivations. Second, <strong>coverage is deliberately asymmetric</strong>. Gradient descent, eigendecomposition, the law of large numbers, information entropy, and floating-point error — concepts that come up in AI almost daily — are treated in depth. Manifold optimization, queueing theory, and channel coding theory are touched on lightly. Third, <strong>code is treated as a second language</strong>. When a formula resists intuition, a runnable Python snippet often beats a page of proof.</p>
+
+<p>One more note: the mathematical topics in this chapter are not equally important for AI. A rough priority ordering is <em>numerical computing ≈ linear algebra &gt; calculus &gt; probability and statistics &gt; information theory &gt; stochastic processes</em>. That does not mean the lower-ranked topics are unimportant — it means that if you want to allocate your time first, start with numerical stability and matrix decompositions, where the return on investment is highest.</p>
+
+<!-- ==================== 1.1 Calculus ==================== -->
+<div class="part-header">
+  <div class="part-label">PART ONE</div>
+  <h2 class="part-title">1.1 Calculus</h2>
+  <p class="part-desc">Functions, differentiation, integration — the mathematical foundation of all "optimization" in AI lives here.</p>
+</div>
+
+<!-- 1.1.1 -->
+<h2 id="s1-1-1"><span class="num">1.1.1</span>Overview of Multivariable Calculus</h2>
+<p class="pos">Orientation: from single-variable review to multiple variables, clarifying three core objects — the gradient, the Jacobian, and the Hessian.</p>
+
+<h3>A Quick Review of Single-Variable Calculus</h3>
+
+<p>The derivative of a function $f: \mathbb{R} \to \mathbb{R}$ at a point $x_0$ is defined as the limiting slope:</p>
+<div class="formula">$f'(x_0) = \lim_{h \to 0} \frac{f(x_0 + h) - f(x_0)}{h}$</div>
+<p>Intuition: zoom in on $f$ over a sufficiently small neighborhood and it looks like a straight line; the slope of that line is the derivative. This idea of "locally looks like a line" generalizes to "locally looks like a hyperplane" in the multivariable setting. Integration is the inverse of differentiation — given a slope distribution, recover the change in the original function's value. The Fundamental Theorem of Calculus ties the two together: $\int_a^b f'(x)\,dx = f(b) - f(a)$.</p>
+
+<h3>Multiple Variables: From Scalar Fields to Vector Fields</h3>
+
+<p>Switching to $f: \mathbb{R}^n \to \mathbb{R}$, the input is an $n$-dimensional vector and the output is still a scalar. We can differentiate with respect to each dimension separately to obtain the <strong>partial derivatives</strong> $\frac{\partial f}{\partial x_i}$. Stacking all partial derivatives into a vector gives the <strong>gradient</strong>:</p>
+<div class="formula">$\nabla f(\mathbf{x}) = \left(\frac{\partial f}{\partial x_1}, \frac{\partial f}{\partial x_2}, \ldots, \frac{\partial f}{\partial x_n}\right)^\top$</div>
+<p>The gradient has one crucial geometric meaning: <strong>it points in the direction of steepest ascent of $f$, with magnitude equal to the rate of increase in that direction</strong>. The negative gradient is the direction of steepest descent — and that is the entire rationale for gradient descent.</p>
+
+<p>Going further, the derivative of $f: \mathbb{R}^n \to \mathbb{R}^m$ (input $n$-dimensional, output $m$-dimensional) is an $m \times n$ matrix called the <strong>Jacobian matrix</strong> $\mathbf{J}$, whose $(i,j)$ entry is $\frac{\partial f_i}{\partial x_j}$. Backpropagation in neural networks is essentially a chain of Jacobian matrix products.</p>
+
+<p>The $n \times n$ matrix formed by the second-order partial derivatives of $f$ is called the <strong>Hessian matrix</strong> $\mathbf{H}$, with $(i,j)$ entry $\frac{\partial^2 f}{\partial x_i \partial x_j}$. The Hessian describes the local curvature of a function: positive definite means it is a bowl (local minimum), negative definite means it is a hilltop (local maximum), and indefinite means it is a saddle point.</p>
+
+<h3>In AI</h3>
+<p>The loss function $L(\boldsymbol{\theta})$ of a neural network maps from a million-dimensional parameter space to a scalar. What we need is $\nabla_\boldsymbol{\theta} L$ — a million-dimensional vector pointing in the direction of fastest loss increase. Each step $\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \eta \nabla L$ is gradient descent. The Hessian matrix is far too large to store ($10^6 \times 10^6$), so optimizers like Adam <em>approximate</em> Hessian information using the second moment of the gradient — this is the dividing line between first-order and second-order optimization.</p>
+
+<!-- 1.1.2 -->
+<h2 id="s1-1-2"><span class="num">1.1.2</span>Function Analysis Techniques</h2>
+<p class="pos">Orientation: a set of repeatedly encountered operators — convexity/concavity, gradient, divergence, curl, moments, convolution. Emphasis on convexity and convolution.</p>
+
+<h3>Convexity and Concavity</h3>
+
+<p>A function $f$ is <strong>convex</strong> on an interval if, for any $x_1, x_2$ and $t \in [0,1]$:</p>
+<div class="formula">$f(t x_1 + (1-t) x_2) \le t f(x_1) + (1-t) f(x_2)$</div>
+<p>Geometric interpretation: the line segment connecting any two points does not fall below the function's graph. The greatest advantage of convex functions is that <strong>every local minimum is a global minimum</strong> — a paradise for optimization algorithms. The squared loss in linear regression and the cross-entropy loss in logistic regression are both convex, which is why these classical algorithms are guaranteed to converge to the global optimum.</p>
+
+<p>Neural networks are not convex. The loss surface assembled from millions of parameters is highly non-convex, riddled with local minima and saddle points. An important finding in modern optimization theory: <em>in high-dimensional non-convex problems, what truly stalls algorithms is not local minima but saddle points</em>, because random initialization makes escaping saddle points likely. This has reshaped the conventional belief that "non-convex problems are hard to optimize."</p>
+
+<h3>Gradient, Divergence, and Curl</h3>
+
+<p>The gradient was covered above. Divergence $\nabla \cdot \mathbf{F}$ acts on a vector field and outputs a scalar, measuring the net outward flux; curl $\nabla \times \mathbf{F}$ also acts on a vector field but outputs a vector, measuring local rotation. These two appear rarely in everyday AI work — typically only in contexts involving continuous normalizing flows (CNF) or the Fokker-Planck equation in diffusion models. A passing familiarity is sufficient.</p>
+
+<h3>Moments</h3>
+
+<p>The $k$-th moment of a probability density $p(x)$ is $\mathbb{E}[X^k] = \int x^k p(x)\,dx$. The first moment is the mean; the second central moment is the variance. The "m" and "v" in the <a href="ch5_partA_preview.html#p04">Adam optimizer</a> are the first-moment estimate and second-moment estimate of the gradient, respectively — the names come directly from statistics.</p>
+
+<h3>Convolution</h3>
+
+<p>This deserves emphasis, as it appears in CNNs, signal processing, and probability distribution convolution formulas. Continuous case:</p>
+<div class="formula">$(f * g)(t) = \int_{-\infty}^{+\infty} f(\tau) g(t - \tau)\,d\tau$</div>
+<p>Discrete case: $(f * g)[n] = \sum_m f[m] g[n-m]$.</p>
+
+<p>The intuition is "flip $g$, slide it, and at each position compute a weighted sum with $f$." The "convolution" in CNNs is strictly speaking <em>cross-correlation</em> (no flipping), but the term convolution has persisted in engineering usage. Convolution has two remarkable properties that underpin its importance in AI:</p>
+
+<p><strong>Property 1: The Convolution Theorem</strong>. Under the Fourier transform, $\mathcal{F}(f * g) = \mathcal{F}(f) \cdot \mathcal{F}(g)$ — convolution in the spatial domain equals pointwise multiplication in the frequency domain. This is the theoretical basis for FFT-accelerated convolution and explains why frequency-domain signal analysis is so natural.</p>
+
+<p><strong>Property 2: Translation Equivariance</strong>. Shifting the input by some amount shifts the output by the same amount. A CNN's ability to recognize a cat anywhere in an image rests on this property.</p>
+
+<pre><code class="language-python">import numpy as np
+
+def conv1d(x, k):
+    """Naive 1D convolution (cross-correlation), no padding"""
+    n, m = len(x), len(k)
+    y = np.zeros(n - m + 1)
+    for i in range(n - m + 1):
+        y[i] = np.sum(x[i:i+m] * k)
+    return y
+
+x = np.array([1, 2, 3, 4, 5], dtype=float)
+k = np.array([1, 0, -1], dtype=float)   # edge detection kernel
+print(conv1d(x, k))   # [-2, -2, -2]
+</code></pre>
+
+<p>The kernel <code>[1, 0, -1]</code> is a first-order difference operator; each output value is the "left minus right" of the input — it detects signal transitions. Extending this observation from 1D to 2D yields Sobel edge detection; replacing the hand-crafted kernel weights with learned ones gives you a CNN.</p>
+
+<!-- 1.1.3 -->
+<h2 id="s1-1-3"><span class="num">1.1.3</span>Function Approximation Techniques</h2>
+<p class="pos">Orientation: Taylor expansion, trigonometric series, splines — three fundamental tools for approximating complex functions with simpler ones.</p>
+
+<h3>Taylor Expansion</h3>
+
+<p>Any sufficiently smooth function $f$ can be expanded around $x_0$ as:</p>
+<div class="formula">$f(x) = f(x_0) + f'(x_0)(x - x_0) + \frac{f''(x_0)}{2!}(x-x_0)^2 + \ldots + \frac{f^{(n)}(x_0)}{n!}(x-x_0)^n + R_n$</div>
+<p>Intuition: approximate $f$ locally with a degree-$n$ polynomial. Higher order means a closer fit, but the approximation is only valid near $x_0$ and may diverge farther away.</p>
+
+<p>Two typical uses in AI. First, <strong>deriving the convergence of optimization algorithms</strong>. Expand the loss to second order around the current point: $L(\boldsymbol{\theta} + \Delta) \approx L(\boldsymbol{\theta}) + \nabla L^\top \Delta + \frac{1}{2}\Delta^\top \mathbf{H} \Delta$, then minimize over $\Delta$ to obtain $\Delta = -\mathbf{H}^{-1} \nabla L$ — this is Newton's method. First-order expansion corresponds to gradient descent, second-order to Newton's method, and all mainstream optimizers are variations of this formula.</p>
+
+<p>Second, <strong>explaining universal approximation theorems for neural networks</strong>. The claim that "any continuous function can be approximated arbitrarily well by a sufficiently wide single-hidden-layer network" shares the same origin as Taylor expansion — both are different realizations of "approximate a complex function by a linear combination of simple basis functions."</p>
+
+<h3>Trigonometric Series (Fourier Series)</h3>
+
+<p>A periodic function can be expanded as an infinite sum of sines and cosines:</p>
+<div class="formula">$f(x) = \frac{a_0}{2} + \sum_{n=1}^\infty \left[a_n \cos(nx) + b_n \sin(nx)\right]$</div>
+<p>This is a completely different basis from Taylor — Taylor uses polynomials $1, x, x^2, \ldots$ while Fourier uses trigonometric functions. Both bases are orthogonal, allowing coefficients to be computed by "projection."</p>
+
+<p>In AI, the Fourier transform is the foundation of signal processing and also appears in <strong>positional encodings</strong> — the sinusoidal positional encoding in the original Transformer paper assigns each position an encoding using sines and cosines of different frequencies. RoPE also uses the rotational representation of trigonometric functions in the complex-number sense.</p>
+
+<h3>Spline Approximation</h3>
+
+<p>A spline is a piecewise polynomial where adjacent pieces are required to join smoothly (with continuous derivatives of successive orders). The cubic spline uses a degree-3 polynomial on each piece with second-order derivative continuity, making it the most widely used interpolation tool in engineering. The distinction from Taylor/Fourier: Taylor is accurate near a single point but diverges farther away; splines guarantee global smoothness through piecewise construction, keeping each piece simple.</p>
+
+<p>Splines are not mainstream in deep learning, but in recent years <strong>Kolmogorov-Arnold Networks (KAN)</strong> have replaced the activation functions inside neural networks with learnable B-splines, offering an alternative to MLPs. Although scaling remains challenging, this is a signal that splines and neural networks can be meaningfully combined.</p>
+
+<!-- 1.1.4 -->
+<h2 id="s1-1-4"><span class="num">1.1.4</span>Computing Function Extrema: From Gradient Descent to Backpropagation</h2>
+<p class="pos">Orientation: the most critical section of this chapter — the mathematical skeleton of neural network training.</p>
+
+<h3>Starting with One-Dimensional Gradient Descent</h3>
+
+<p>To find the minimum of $f(x)$, the algorithm is:</p>
+<div class="formula">$x_{k+1} = x_k - \eta f'(x_k)$</div>
+<p>$\eta$ is the learning rate. The intuition is immediate: the derivative tells us which direction is uphill, so subtracting it moves downhill. Generalizing to multiple dimensions:</p>
+<div class="formula">$\boldsymbol{\theta}_{k+1} = \boldsymbol{\theta}_k - \eta \nabla L(\boldsymbol{\theta}_k)$</div>
+<p>At this point nothing specific to AI is visible — the real challenge is: $\boldsymbol{\theta}$ has hundreds of millions of dimensions, so how do we compute $\nabla L$?</p>
+
+<h3>The Chain Rule Is All of Backpropagation</h3>
+
+<p>The chain rule: $\frac{d}{dx} f(g(x)) = f'(g(x)) \cdot g'(x)$. High-school mathematics. But the output of a neural network is a chain of nested functions $y = f_L(f_{L-1}(\ldots f_1(x)))$, so computing the partial derivative with respect to some intermediate parameter $w_i$ means a long chain of multiplications. The key engineering observation is: <strong>many intermediate quantities in this chain are shared</strong>. If each parameter independently computes a full chain, the total work is $O(L \cdot N)$ ($N$ being the number of parameters); if the computation proceeds in "output-to-input" order and is done in a single pass, the total work is $O(L + N)$. This orders-of-magnitude difference is the reason backpropagation exists.</p>
+
+<h3>Backpropagation Through a Two-Layer Network</h3>
+
+<p>Consider the simplest network:</p>
+<div class="formula">$\mathbf{z} = \mathbf{W}_1 \mathbf{x}, \quad \mathbf{a} = \sigma(\mathbf{z}), \quad \hat{y} = \mathbf{w}_2^\top \mathbf{a}, \quad L = \frac{1}{2}(\hat{y} - y)^2$</div>
+<p>We want the gradient of $L$ with respect to $\mathbf{W}_1$. Applying the chain rule from the outside in:</p>
+<div class="formula">$\frac{\partial L}{\partial \hat{y}} = \hat{y} - y$</div>
+<div class="formula">$\frac{\partial L}{\partial \mathbf{a}} = (\hat{y} - y) \cdot \mathbf{w}_2$</div>
+<div class="formula">$\frac{\partial L}{\partial \mathbf{z}} = \frac{\partial L}{\partial \mathbf{a}} \odot \sigma'(\mathbf{z})$</div>
+<div class="formula">$\frac{\partial L}{\partial \mathbf{W}_1} = \frac{\partial L}{\partial \mathbf{z}} \mathbf{x}^\top$</div>
+
+<p>Notice the last few steps: the "input-side gradient" at each layer equals the "output-side gradient times the layer's Jacobian." The algorithm is therefore: <em>run a forward pass and cache all intermediate values; then starting from the loss at the final layer, propagate gradients one layer at a time back toward the input, performing a single matrix multiplication per layer</em>.</p>
+
+<pre><code class="language-python">import numpy as np
+
+def sigmoid(z): return 1 / (1 + np.exp(-z))
+def sigmoid_prime(z):
+    s = sigmoid(z); return s * (1 - s)
+
+# Forward + backward pass for a two-layer network
+np.random.seed(0)
+x = np.array([[0.5], [0.2]])        # input
+y = np.array([[1.0]])               # target
+W1 = np.random.randn(3, 2) * 0.1    # hidden layer
+w2 = np.random.randn(1, 3) * 0.1    # output layer
+
+# Forward
+z  = W1 @ x
+a  = sigmoid(z)
+y_hat = w2 @ a
+L  = 0.5 * (y_hat - y) ** 2
+
+# Backward
+dL_dyhat = y_hat - y                   # scalar gradient
+dL_dw2   = dL_dyhat @ a.T              # [1,3]
+dL_da    = w2.T @ dL_dyhat             # [3,1]
+dL_dz    = dL_da * sigmoid_prime(z)    # elementwise
+dL_dW1   = dL_dz @ x.T                 # [3,2]
+
+print("loss =", L.item())
+print("dL/dW1 =\n", dL_dW1)
+</code></pre>
+
+<p>These 20 lines of code are the conceptual core of the automatic differentiation engines in modern deep learning frameworks (PyTorch, TensorFlow). What the frameworks do is generate these hand-written chain-rule steps automatically: each operator registers a forward function and a corresponding backward function (a Jacobian-vector product), and at runtime a computation graph is constructed and traversed in reverse.</p>
+
+<h3>Why Deep Networks Are Hard to Train</h3>
+
+<p>Look at the term $\sigma'(z)$. The maximum value of the sigmoid derivative is $0.25$; multiplied $L$ times it becomes $0.25^L$ — as depth increases, the gradient decays exponentially, and the early layers learn nothing. This is the classic <strong>vanishing gradient</strong> problem. ReLU, whose derivative is 1 on the positive half-axis, solved this problem. The way to understand vanishing gradients is to examine each factor in this chain product and ask what it actually is.</p>
+
+<!-- 1.1.5 -->
+<h2 id="s1-1-5"><span class="num">1.1.5</span>Real Analysis Extension: The Invertibility Problem in LLMs</h2>
+<p class="pos">Orientation: an open theoretical question — given the output distribution of an LLM, can the input be recovered? Introduced briefly.</p>
+
+<p>One of the central objects in real analysis is "measure" — an abstraction of length, area, and volume. A concrete application in AI is the <strong>invertibility of generative models</strong>: normalizing flows require each transformation layer to be a bijection with a computable Jacobian determinant, so that likelihoods can be computed exactly. Diffusion models, by contrast, abandon strict invertibility in favor of learning the score function $\nabla_\mathbf{x} \log p(\mathbf{x})$.</p>
+
+<p>For LLMs as autoregressive generative models, "invertibility" is raised at a different level: <em>given a piece of output, can the prompt be uniquely recovered?</em> The answer is no — the sampling process injects randomness, and many prompts can produce the same output. Nonetheless, studying "approximate invertibility" has practical significance: for example, determining whether a piece of text was generated by a specific model (watermark detection), or inferring training data leakage. This is an active but nascent research direction with no established engineering tools yet. It is enough simply to be aware that this problem exists.</p>
+
+<!-- 1.1.6 -->
+<h2 id="s1-1-6"><span class="num">1.1.6</span>Riemannian Extension: Optimization on Manifolds</h2>
+<p class="pos">Orientation: how to optimize when the parameter space is not a flat Euclidean space but a curved surface (manifold). A brief introduction.</p>
+
+<p>Standard gradient descent assumes parameters live in the flat space $\mathbb{R}^n$. But in some problems parameters are naturally subject to geometric constraints: orthogonal matrices ($\mathbf{Q}^\top \mathbf{Q} = \mathbf{I}$), positive definite matrices, unit-norm vectors, low-rank matrices. The sets formed by these objects are not flat $\mathbb{R}^n$ but <strong>manifolds</strong> — structures that look locally Euclidean but are globally curved.</p>
+
+<p>Performing gradient descent on a manifold requires two modifications. First, the gradient must be projected onto the <strong>tangent space</strong> at the current point (taking a straight step would leave the manifold); this is called the Riemannian gradient. Second, after taking a step along a tangent vector, the result must be pulled back onto the manifold via a <strong>retraction</strong> (for example, re-orthogonalizing a matrix). The full framework is implemented in libraries such as <code>geoopt</code> for PyTorch.</p>
+
+<p>Concrete applications in AI: orthogonal weight initialization in Transformers, certain LoRA variants that optimize on the unit sphere, and constraints on covariance matrices when training diffusion models. This is not something most working engineers encounter daily. It is enough to take away the impression that "when parameters carry hard constraints, manifold optimization may be needed."</p>
+
+<!-- ==================== 1.2 线性代数 ==================== -->
+<div class="part-header">
+  <div class="part-label">PART TWO</div>
+  <h2 class="part-title">1.2 Linear Algebra</h2>
+  <p class="part-desc">Deep learning is countless nested layers of matrix multiplication — misunderstand this and much of the field becomes opaque.</p>
+</div>
+
+<!-- 1.1.0 -->
+<h2 id="s1-2-1"><span class="num">1.2.1</span>Linear Spaces and Matrices</h2>
+<p class="pos">Orientation: definitions and axioms of vectors, matrices, and tensors; clarifying the meaning of "dimension".</p>
+
+<h3>Vectors, Matrices, and Tensors</h3>
+
+<p>A vector $\mathbf{v} \in \mathbb{R}^n$ is an ordered arrangement of $n$ real numbers. What matters is that it supports two operations: addition $\mathbf{u} + \mathbf{v}$ and scalar multiplication $\alpha \mathbf{v}$, and that these operations satisfy 8 axioms (associativity, distributivity, etc.). Any set satisfying these axioms is called a <strong>linear space</strong> (or vector space). $\mathbb{R}^n$ is the most fundamental linear space, but abstractly it can be a space of continuous functions, a space of probability distributions, and so on — this is the power of "linear" thinking.</p>
+
+<p>A matrix $\mathbf{A} \in \mathbb{R}^{m \times n}$ arranges $m \times n$ real numbers in a two-dimensional grid. A tensor is a higher-dimensional generalization: a three-dimensional tensor can be thought of as a stack of matrices, and a four-dimensional tensor as a stack of three-dimensional tensors. In deep learning, "tensor" is used more loosely than its strict mathematical definition — in PyTorch, any multi-dimensional array is called a tensor.</p>
+
+<h3>Dimension and Rank</h3>
+
+<p>A set of vectors $\{\mathbf{v}_1, \ldots, \mathbf{v}_k\}$ is called <strong>linearly independent</strong> if $\sum \alpha_i \mathbf{v}_i = \mathbf{0}$ has only the solution $\alpha_i = 0$. The <strong>dimension</strong> of a linear space is the size of the largest linearly independent set that can be found.</p>
+
+<p>The <strong>rank</strong> $\text{rank}(\mathbf{A})$ of a matrix $\mathbf{A}$ is the maximum number of linearly independent columns (or rows) in the matrix. $\text{rank}(\mathbf{A}) \le \min(m, n)$. Rank directly reflects "information redundancy": a low-rank matrix can be compressed into a lower-dimensional representation. This is the starting point for SVD and LoRA later on.</p>
+
+<h3>In AI</h3>
+
+<p>Each layer's weight in a neural network is a matrix $\mathbf{W} \in \mathbb{R}^{d_{\text{out}} \times d_{\text{in}}}$, and an input vector $\mathbf{x}$ is transformed into an output vector via $\mathbf{W}\mathbf{x}$. The semantics of the entire network can be understood as "performing transformations between a series of linear spaces, with nonlinear activations in between." An LLM's embedding maps discrete tokens into a continuous linear space, after which all operations are geometric transformations within that linear space — the intuition that "semantically similar words are close together in embedding space" has its mathematical foundation right here.</p>
+
+<!-- 1.1.1 -->
+<h2 id="s1-2-2"><span class="num">1.2.2</span>Linear Transformations and Matrix Operations</h2>
+<p class="pos">Orientation: a matrix is not just a grid of numbers — it is a "linear transformation." Connecting geometry with algebra.</p>
+
+<h3>Matrices as Transformations</h3>
+
+<p>$\mathbf{A} \in \mathbb{R}^{m \times n}$ can be viewed as a function: it sends a vector $\mathbf{x}$ in $\mathbb{R}^n$ to $\mathbf{y} = \mathbf{A}\mathbf{x}$ in $\mathbb{R}^m$. This function has two properties: $\mathbf{A}(\mathbf{x}+\mathbf{y}) = \mathbf{A}\mathbf{x} + \mathbf{A}\mathbf{y}$ (additivity) and $\mathbf{A}(\alpha \mathbf{x}) = \alpha \mathbf{A}\mathbf{x}$ (homogeneity), together called a <strong>linear transformation</strong>.</p>
+
+<p>A few common 2D examples help build geometric intuition:</p>
+<ul style="list-style:none; padding-left:0;">
+<li><strong>Rotation</strong> (by angle $\theta$): $\begin{pmatrix}\cos\theta & -\sin\theta \\ \sin\theta & \cos\theta\end{pmatrix}$</li>
+<li><strong>Scaling</strong> (by $s_x, s_y$): $\begin{pmatrix}s_x & 0 \\ 0 & s_y\end{pmatrix}$</li>
+<li><strong>Shear</strong> (horizontal shear): $\begin{pmatrix}1 & k \\ 0 & 1\end{pmatrix}$</li>
+<li><strong>Projection onto the x-axis</strong>: $\begin{pmatrix}1 & 0 \\ 0 & 0\end{pmatrix}$</li>
+</ul>
+
+<p>Key insight: a complex transformation = a composition of simple transformations = matrix multiplication. Rotation followed by scaling = the product of two matrices. This is why matrix multiplication matters — it is the "composition operation" for transformations.</p>
+
+<h3>Three Ways to Understand Matrix Multiplication</h3>
+
+<p>$\mathbf{C} = \mathbf{A}\mathbf{B}$ has three complementary perspectives, all commonly used in practice.</p>
+
+<p><strong>Perspective 1: Inner product.</strong> $C_{ij} = \sum_k A_{ik} B_{kj}$ — row $i$ dotted with column $j$. The textbook definition.</p>
+
+<p><strong>Perspective 2: Column combination.</strong> Treat the columns of $\mathbf{B}$ as vectors; each column of $\mathbf{A}\mathbf{B}$ is the result of applying $\mathbf{A}$ to the corresponding column of $\mathbf{B}$. This helps you understand scenarios like "$\mathbf{A}$ transforming a batch of data $\mathbf{B}$."</p>
+
+<p><strong>Perspective 3: Sum of outer products.</strong> $\mathbf{A}\mathbf{B} = \sum_k \mathbf{a}_k \mathbf{b}_k^\top$ — the outer product of the $k$-th column of $\mathbf{A}$ and the $k$-th row of $\mathbf{B}$, summed over $k$. This perspective is particularly important for understanding SVD and LoRA decomposition.</p>
+
+<h3>In AI</h3>
+
+<p>Matrix multiplication is the most computationally expensive operation in deep learning. The Q/K/V projections in Transformers, feed-forward layers, $QK^\top$ in attention, $(QK^\top) V$ — all of these are matrix multiplications. This is also why GPU Tensor Cores and NPU Cube units are specifically optimized for matrix multiplication — when matrix multiplication is fast, all of deep learning is fast. Low-precision formats like BF16/FP8 are first applied to matrix multiplication precisely because it accounts for 90%+ of total compute.</p>
+
+<!-- 1.1.2 -->
+<h2 id="s1-2-3"><span class="num">1.2.3</span>Solution Spaces, Inverses, and Pseudoinverses</h2>
+<p class="pos">Orientation: all cases for solving $\mathbf{A}\mathbf{x} = \mathbf{b}$ — unique solution, no solution, infinitely many solutions. The mathematical basis of least squares lives here.</p>
+
+<h3>Three Cases</h3>
+
+<p>For the linear system $\mathbf{A}\mathbf{x} = \mathbf{b}$ with $\mathbf{A} \in \mathbb{R}^{m \times n}$:</p>
+
+<table>
+<tr><th>Case</th><th>Condition</th><th>Result</th></tr>
+<tr><td>Square, full rank ($m = n, \text{rank} = n$)</td><td>$\det(\mathbf{A}) \ne 0$</td><td>Unique solution $\mathbf{x} = \mathbf{A}^{-1}\mathbf{b}$</td></tr>
+<tr><td>Overdetermined ($m > n$)</td><td>Usually no exact solution</td><td>Least squares solution</td></tr>
+<tr><td>Underdetermined ($m < n$)</td><td>Usually infinitely many solutions</td><td>Minimum-norm solution</td></tr>
+</table>
+
+<h3>Gaussian Elimination</h3>
+
+<p>The classic algorithm for solving linear systems: apply row operations to $[\mathbf{A} | \mathbf{b}]$ to reduce it to row echelon form, then back-substitute. Time complexity $O(n^3)$. In practice, explicitly computing matrix inverses is almost never done — solving via LU decomposition is more numerically stable and faster.</p>
+
+<h3>Generalized Inverse (Moore-Penrose Pseudoinverse)</h3>
+
+<p>When $\mathbf{A}$ is not square, or is square but not invertible, the traditional $\mathbf{A}^{-1}$ does not exist. The <strong>pseudoinverse</strong> $\mathbf{A}^+$ is the generalization:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- If $\mathbf{A}$ has full column rank ($m \ge n$, $\text{rank} = n$): $\mathbf{A}^+ = (\mathbf{A}^\top \mathbf{A})^{-1} \mathbf{A}^\top$</li>
+<li>- If $\mathbf{A}$ has full row rank ($m \le n$, $\text{rank} = m$): $\mathbf{A}^+ = \mathbf{A}^\top (\mathbf{A} \mathbf{A}^\top)^{-1}$</li>
+<li>- General case: construct via SVD</li>
+</ul>
+
+<p>$\mathbf{x} = \mathbf{A}^+ \mathbf{b}$ gives the least squares solution (minimizing the residual norm) in the overdetermined case, and the minimum-norm solution in the underdetermined case. These two results are unified into a single formula — elegantly clean.</p>
+
+<h3>In AI</h3>
+
+<p><strong>Linear regression</strong>: given $n$ samples $(\mathbf{x}_i, y_i)$, fitting $y = \mathbf{w}^\top \mathbf{x}$ in matrix form as $\mathbf{X}\mathbf{w} = \mathbf{y}$ (where $\mathbf{X}$ is $n \times d$ with $n > d$, overdetermined), the least squares solution is $\mathbf{w} = \mathbf{X}^+ \mathbf{y} = (\mathbf{X}^\top \mathbf{X})^{-1} \mathbf{X}^\top \mathbf{y}$ — this is the mathematical form of the earliest machine learning algorithm.</p>
+
+<p><strong>Never compute the inverse directly in practice.</strong> $(\mathbf{X}^\top \mathbf{X})^{-1}$ is numerically unstable — when columns are highly correlated, $\mathbf{X}^\top \mathbf{X}$ approaches singularity. The engineering approach is to apply QR decomposition or SVD directly to $\mathbf{X}$, which is far more stable. This is also how <code>numpy.linalg.lstsq</code> is implemented.</p>
+
+<!-- 1.1.3 -->
+<h2 id="s1-2-4"><span class="num">1.2.4</span>Eigendecomposition and Matrix Diagonalization</h2>
+<p class="pos">Orientation: finding the "intrinsic" transformation directions of a matrix — the mathematical foundation of PCA, spectral methods, and graph neural networks.</p>
+
+<h3>Eigenvalues and Eigenvectors</h3>
+
+<p>For a square matrix $\mathbf{A}$, if there exists a nonzero vector $\mathbf{v}$ and a scalar $\lambda$ such that:</p>
+<div class="formula">$\mathbf{A}\mathbf{v} = \lambda \mathbf{v}$</div>
+<p>then $\mathbf{v}$ is called an <strong>eigenvector</strong> and $\lambda$ the corresponding <strong>eigenvalue</strong>. Geometric meaning: $\mathbf{A}$ acting on $\mathbf{v}$ <em>only changes its length, not its direction</em> (when $\lambda < 0$, the direction is reversed). These are the "intrinsic" directions of the matrix — the simplest directions under its action.</p>
+
+<h3>Diagonalization</h3>
+
+<p>If $\mathbf{A}$ has $n$ linearly independent eigenvectors $\mathbf{v}_1, \ldots, \mathbf{v}_n$, arrange them as columns to form matrix $\mathbf{V}$ and let $\boldsymbol{\Lambda}$ be the diagonal matrix of corresponding eigenvalues; then:</p>
+<div class="formula">$\mathbf{A} = \mathbf{V}\boldsymbol{\Lambda}\mathbf{V}^{-1}$</div>
+<p>This is the <strong>eigendecomposition</strong>. Intuition: applying $\mathbf{A}$ to any vector is equivalent to "first expressing the vector as a linear combination of eigenvectors ($\mathbf{V}^{-1}$), stretching each component by its corresponding eigenvalue ($\boldsymbol{\Lambda}$), then converting back to the original coordinate system ($\mathbf{V}$)."</p>
+
+<p>Symmetric matrices are a special case: <em>a symmetric matrix is always diagonalizable, and its eigenvectors are mutually orthogonal</em> — that is, $\mathbf{A} = \mathbf{Q}\boldsymbol{\Lambda}\mathbf{Q}^\top$ where $\mathbf{Q}^\top\mathbf{Q} = \mathbf{I}$. This is called the <strong>spectral theorem</strong>, the ideal case for numerical stability and geometric clarity. Covariance matrices, Laplacian matrices, and Hessians are all symmetric, so the spectral theorem appears repeatedly in AI.</p>
+
+<h3>PCA: A Classic Application of Eigendecomposition</h3>
+
+<p>The goal of principal component analysis: reduce high-dimensional data $\mathbf{X} \in \mathbb{R}^{n \times d}$ to $k$ dimensions ($k \ll d$) while preserving as much variance as possible.</p>
+
+<p>Steps: center the data → compute the covariance matrix $\mathbf{C} = \frac{1}{n}\mathbf{X}^\top \mathbf{X}$ ($\mathbf{C}$ is symmetric) → eigendecompose $\mathbf{C}$ → take the eigenvectors corresponding to the top $k$ eigenvalues as the new basis.</p>
+
+<p>Why does this preserve the maximum variance? Because <em>the variance of the data along a given direction equals the quadratic form of the covariance matrix in that direction, which equals the corresponding eigenvalue</em> (when the direction is an eigenvector). So choosing the $k$ largest eigenvalues is equivalent to choosing the $k$ directions of greatest variance.</p>
+
+<pre><code class="language-python">import numpy as np
+
+np.random.seed(0)
+X = np.random.randn(1000, 5)
+# Artificially make dimensions 1 and 2 have much larger variance
+X[:, 0] *= 5; X[:, 1] *= 3
+
+X_c = X - X.mean(axis=0)                    # Center
+C = X_c.T @ X_c / len(X)                    # Covariance
+eigvals, eigvecs = np.linalg.eigh(C)        # eigh handles symmetric matrices
+order = np.argsort(eigvals)[::-1]
+eigvals, eigvecs = eigvals[order], eigvecs[:, order]
+print("Variance explained by each principal component:", eigvals / eigvals.sum())
+
+# Take top 2 principal components, reduce to 2D
+X_pca = X_c @ eigvecs[:, :2]
+print("Variance after dimensionality reduction:", X_pca.var(axis=0))
+</code></pre>
+
+<h3>In AI</h3>
+
+<p>Although PCA has largely given way to learnable dimensionality reduction in the deep learning era (autoencoders, embeddings), the idea of spectral decomposition never left. <strong>Spectral methods in graph neural networks</strong> (GCN) diagonalize the Laplacian matrix to define convolution in the spectral domain; <strong>Hessian analysis</strong> uses eigenvalues to describe the curvature distribution of the loss surface; <strong>low-rank matrix approximation</strong> retaining only the components corresponding to large eigenvalues is the foundation of compressing model weights.</p>
+
+<!-- 1.1.4 -->
+<h2 id="s1-2-5"><span class="num">1.2.5</span>Singular Value Decomposition (SVD)</h2>
+<p class="pos">Orientation: the crown jewel of linear algebra — the most universal matrix decomposition, and the direct theoretical basis for LoRA.</p>
+
+<h3>The Form of SVD</h3>
+
+<p>Any matrix $\mathbf{A} \in \mathbb{R}^{m \times n}$ can be decomposed as:</p>
+<div class="formula">$\mathbf{A} = \mathbf{U} \boldsymbol{\Sigma} \mathbf{V}^\top$</div>
+<p>where $\mathbf{U} \in \mathbb{R}^{m \times m}$ and $\mathbf{V} \in \mathbb{R}^{n \times n}$ are both orthogonal matrices, and $\boldsymbol{\Sigma} \in \mathbb{R}^{m \times n}$ is a diagonal matrix (all off-diagonal entries are zero when it is not square), with diagonal entries $\sigma_1 \ge \sigma_2 \ge \ldots \ge 0$ called the <strong>singular values</strong>.</p>
+
+<p>Relationship to eigendecomposition: if $\mathbf{A}$ is a symmetric positive definite square matrix, SVD and eigendecomposition coincide and the singular values are the eigenvalues. But SVD exists for <strong>any matrix</strong> (non-square, non-invertible, non-symmetric) — this is what makes it more general than eigendecomposition.</p>
+
+<h3>Geometric Meaning</h3>
+
+<p>Break down $\mathbf{A}\mathbf{x}$ into three steps: <strong>$\mathbf{V}^\top$ rotates the coordinate system → $\boldsymbol{\Sigma}$ scales along each axis → $\mathbf{U}$ rotates again into the output space</strong>. Therefore any linear transformation is a combination of "rotation + scaling + rotation." This conclusion is remarkably powerful.</p>
+
+<h3>Low-Rank Approximation</h3>
+
+<p>SVD can be written as a sum of outer products:</p>
+<div class="formula">$\mathbf{A} = \sum_{i=1}^r \sigma_i \mathbf{u}_i \mathbf{v}_i^\top$</div>
+<p>where $r = \text{rank}(\mathbf{A})$. The <strong>Eckart-Young theorem</strong> tells us: retaining only the largest $k$ terms ($k < r$), the result $\mathbf{A}_k = \sum_{i=1}^k \sigma_i \mathbf{u}_i \mathbf{v}_i^\top$ is the <em>optimal rank-$k$ approximation</em> to $\mathbf{A}$ under either the Frobenius norm or the spectral norm. No other rank-$k$ matrix is closer to $\mathbf{A}$.</p>
+
+<p>This is the unified mathematical foundation for compression, dimensionality reduction, and denoising. Image compression, matrix completion in recommendation systems, model weight compression — all rely on this theorem.</p>
+
+<h3>In AI: LoRA</h3>
+
+<p>LoRA's hypothesis is that the weight change $\Delta \mathbf{W}$ induced by fine-tuning an LLM is <em>low-rank</em>. Mathematically: $\Delta \mathbf{W} \approx \mathbf{B}\mathbf{A}$, where $\mathbf{A} \in \mathbb{R}^{r \times d}$ and $\mathbf{B} \in \mathbb{R}^{d \times r}$ with $r \ll d$. The parameter count drops from $d^2$ to $2rd$ — for a 7B model with $d \approx 4096$ and $r = 16$, that is a 128× compression.</p>
+
+<p>Why does this work? Empirical observation: the "effective information dimensionality" of each layer in a neural network is far lower than its parameter dimensionality, and truncating SVD to retain the top $r$ components loses almost no performance. This is not a mathematically proven result but an empirical regularity — yet SVD provides the theoretical language for it.</p>
+
+<pre><code class="language-python">import numpy as np
+
+np.random.seed(0)
+# Simulate a 512×512 weight matrix that is essentially rank-10 plus noise
+rank_true = 10
+U_true = np.random.randn(512, rank_true)
+V_true = np.random.randn(rank_true, 512)
+W = U_true @ V_true + 0.01 * np.random.randn(512, 512)
+
+U, S, Vt = np.linalg.svd(W, full_matrices=False)
+# Reconstruct with different ranks and observe the error
+for r in [5, 10, 20, 50, 100]:
+    W_r = U[:, :r] @ np.diag(S[:r]) @ Vt[:r, :]
+    err = np.linalg.norm(W - W_r) / np.linalg.norm(W)
+    print(f"rank {r:3d}: relative error {err:.4f}")
+</code></pre>
+
+<p>Running this reveals that the error drops sharply around rank=10 and then flattens — confirming that "low-rank approximation can reconstruct with high fidelity." This is the mathematical evidence that justifies trusting LoRA.</p>
+
+<!-- 1.1.5 -->
+<h2 id="s1-2-6"><span class="num">1.2.6</span>Inner Product Spaces and Distance Metrics</h2>
+<p class="pos">Orientation: defining "angle" and "distance" in a vector space — the mathematical foundation of embedding retrieval.</p>
+
+<h3>Inner Products and Norms</h3>
+
+<p>The inner product maps two vectors to a scalar: $\langle \mathbf{u}, \mathbf{v} \rangle = \mathbf{u}^\top \mathbf{v} = \sum u_i v_i$. It satisfies three axioms: symmetry, linearity, and positive definiteness. The norm is derived from the inner product:</p>
+<div class="formula">$\|\mathbf{v}\|_2 = \sqrt{\langle \mathbf{v}, \mathbf{v} \rangle}$</div>
+<p>This is the <strong>L2 norm</strong> (Euclidean length). The more general L$p$ norm is: $\|\mathbf{v}\|_p = (\sum |v_i|^p)^{1/p}$; $p=1$ gives the Manhattan norm and $p=\infty$ gives the maximum norm.</p>
+
+<h3>Angle: Cosine Similarity</h3>
+
+<p>From $\langle \mathbf{u}, \mathbf{v} \rangle = \|\mathbf{u}\| \|\mathbf{v}\| \cos\theta$, we obtain:</p>
+<div class="formula">$\cos\theta = \frac{\mathbf{u}^\top \mathbf{v}}{\|\mathbf{u}\| \|\mathbf{v}\|}$</div>
+<p>This is <strong>cosine similarity</strong>. It cares only about direction, not magnitude — two vectors pointing in the same direction have cosine similarity 1, orthogonal vectors 0, and opposite directions $-1$. In embedding-based semantic retrieval this is the most commonly used similarity measure: <em>the closer the directions of the query vector and document vector, the more semantically related they are, and magnitude differences do not matter</em>.</p>
+
+<h3>Common Distance Metrics</h3>
+
+<table>
+<tr><th>Distance</th><th>Formula</th><th>Use case</th></tr>
+<tr><td>Euclidean distance (L2)</td><td>$\sqrt{\sum (u_i - v_i)^2}$</td><td>Position, pixel values, physical quantities</td></tr>
+<tr><td>Manhattan distance (L1)</td><td>$\sum |u_i - v_i|$</td><td>More robust to outliers</td></tr>
+<tr><td>Cosine distance</td><td>$1 - \cos\theta$</td><td>Embedding semantic matching</td></tr>
+<tr><td>Hamming distance</td><td>Number of differing bits</td><td>Binary vectors, hashing</td></tr>
+<tr><td>KL divergence</td><td>$\sum p_i \log(p_i / q_i)$</td><td>Between probability distributions</td></tr>
+</table>
+
+<p>Strictly speaking, KL divergence is not a distance (it is asymmetric), but it is used extensively in AI — knowledge distillation, variational inference, and RLHF all rely on KL constraints to keep two distributions from drifting too far apart.</p>
+
+<h3>In AI</h3>
+
+<p><strong>KNN and KMeans</strong>: finding nearest neighbors based on Euclidean distance. <strong>Vector databases</strong> (e.g., FAISS, Milvus): approximate nearest neighbor (ANN) search using cosine or inner product similarity as the core operation. <strong>Contrastive learning</strong> (CLIP, SimCLR): maximizing cosine similarity for positive pairs and minimizing it for negative pairs. <strong>RAG retrieval</strong>: embedding both query and documents, ranking by cosine similarity, and returning the top-$k$ results.</p>
+
+<!-- ==================== 1.3 概率 ==================== -->
+<div class="part-header">
+  <div class="part-label">PART THREE</div>
+  <h2 class="part-title">1.3 Probability</h2>
+  <p class="part-desc">The mathematical language of uncertainty — running through machine learning from loss functions to sampling-based inference.</p>
+</div>
+
+<!-- 1.3.1 -->
+<h2 id="s1-3-1"><span class="num">1.3.1</span>Basic Probability: POTC and Balls and Bins</h2>
+<p class="pos">Orientation: Use the concrete problem of "two-choice load balancing" to clearly explain the thinking behind probabilistic modeling.</p>
+
+<h3>Definition of Probability</h3>
+
+<p>The sample space $\Omega$ is the set of all possible outcomes, and an event is a subset of $\Omega$. Probability $P$ is a function mapping events to $[0, 1]$, satisfying $P(\Omega) = 1$ and countable additivity $P(\cup_i A_i) = \sum_i P(A_i)$ (when $A_i$ are pairwise disjoint). Conditional probability is $P(A|B) = P(A \cap B) / P(B)$, and independence means $P(A \cap B) = P(A) P(B)$.</p>
+
+<p>Bayes' theorem is the most important corollary:</p>
+<div class="formula">$P(A|B) = \frac{P(B|A) P(A)}{P(B)}$</div>
+
+<h3>Random Variables</h3>
+
+<p>A random variable $X$ is a function from $\Omega$ to $\mathbb{R}$ — it maps "outcomes" to numerical values. A discrete RV is described by a probability mass function $p(x) = P(X=x)$; a continuous RV is described by a probability density function $f(x)$, where $P(a \le X \le b) = \int_a^b f(x)\,dx$. Expectation is $\mathbb{E}[X] = \sum x p(x)$ or $\int x f(x) dx$, and variance is $\text{Var}(X) = \mathbb{E}[(X - \mathbb{E}[X])^2]$.</p>
+
+<h3>Balls and Bins Model</h3>
+
+<p>Throw $n$ balls randomly into $n$ bins. The question: how many balls are in the fullest bin? This is the mathematical abstraction of <strong>load balancing</strong>.</p>
+
+<p>Each ball independently picks a bin uniformly at random, so the number of balls each bin receives is approximately $\text{Poisson}(1)$. By analyzing tail probabilities, one can show: <em>the maximum load is with high probability approximately $\Theta(\log n / \log\log n)$</em>. For $n = 1000$, the fullest bin holds about 5 balls — not terrible, but already 5 times the average.</p>
+
+<h3>POTC: Power of Two Choices</h3>
+
+<p>Improved strategy: each ball independently picks <em>two</em> bins at random and goes into the less loaded one. This seemingly minor change produces a dramatic effect — <em>the maximum load is with high probability approximately $\Theta(\log\log n)$</em> — an exponential improvement. For $n = 1000$, the maximum drops from 5 balls to 2.</p>
+
+<p>This is one of the most striking results in probability theory: "looking at one extra option" yields an exponential improvement. The intuition: worse bins are less likely to be chosen, pushing the distribution toward uniformity.</p>
+
+<pre><code class="language-python">import numpy as np
+import random
+
+def simulate_balls_bins(n, strategy='random'):
+    bins = [0] * n
+    for _ in range(n):
+        if strategy == 'random':
+            bins[random.randrange(n)] += 1
+        elif strategy == 'potc':
+            i, j = random.randrange(n), random.randrange(n)
+            bins[i if bins[i] <= bins[j] else j] += 1
+    return max(bins)
+
+n = 10000
+print("Random   max load:", np.mean([simulate_balls_bins(n, 'random') for _ in range(50)]))
+print("POTC     max load:", np.mean([simulate_balls_bins(n, 'potc')   for _ in range(50)]))
+# Typical output: random ~6.5, POTC ~3.1
+</code></pre>
+
+<h3>In AI</h3>
+
+<p>Balls and Bins is a fundamental tool for analyzing <strong>hash collisions</strong>, <strong>parameter server load in distributed training</strong>, and <strong>expert routing in MoE models</strong>. A common phenomenon in MoE is "routing collapse" — the majority of tokens are routed to a small number of experts, resulting in low utilization. This is essentially the non-independent ball version of balls-and-bins, and requires an auxiliary loss to enforce uniformity.</p>
+
+<!-- 1.3.2 -->
+<h2 id="s1-3-2"><span class="num">1.3.2</span>Common Probability Distributions and Fundamental Theorems</h2>
+<p class="pos">Orientation: Three families of distributions — discrete, light-tailed, and heavy-tailed — plus the Law of Large Numbers and the Central Limit Theorem: the intuitive foundation for feature engineering.</p>
+
+<h3>Discrete Distributions</h3>
+
+<table>
+<tr><th>Distribution</th><th>Meaning</th><th>PMF</th><th>Mean / Variance</th></tr>
+<tr><td>Bernoulli Ber(p)</td><td>One coin flip</td><td>$P(X=1) = p$</td><td>$p, p(1-p)$</td></tr>
+<tr><td>Binomial Bin(n, p)</td><td>Sum of n Bernoullis</td><td>$\binom{n}{k} p^k (1-p)^{n-k}$</td><td>$np, np(1-p)$</td></tr>
+<tr><td>Poisson Poi(λ)</td><td>Count of rare events</td><td>$\frac{\lambda^k e^{-\lambda}}{k!}$</td><td>$\lambda, \lambda$</td></tr>
+<tr><td>Geometric Geo(p)</td><td>Number of trials until success</td><td>$(1-p)^{k-1} p$</td><td>$1/p, (1-p)/p^2$</td></tr>
+</table>
+
+<p>Poisson is the limit of Binomial as $n \to \infty, p \to 0, np = \lambda$. It describes "a large number of independent rare events" — user traffic, system crashes, genetic mutations.</p>
+
+<h3>Light-Tailed Distributions</h3>
+
+<p>The <strong>normal distribution</strong> $\mathcal{N}(\mu, \sigma^2)$ is the most fundamental continuous distribution. Its density is:</p>
+<div class="formula">$f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)$</div>
+
+<p>The "68-95-99.7" rule for the standard normal $\mathcal{N}(0,1)$: $\pm 1\sigma$ contains 68% of probability, $\pm 2\sigma$ contains 95%, and $\pm 3\sigma$ contains 99.7%.</p>
+
+<p>The <strong>exponential distribution</strong> $\text{Exp}(\lambda)$: $f(x) = \lambda e^{-\lambda x}$, describes "waiting time between events." Memoryless property: the probability of waiting an additional $t$ units after already waiting $s$ units is the same as the probability of waiting $t$ units from scratch.</p>
+
+<p><strong>Log-normal</strong>: the logarithm of the variable is normally distributed. Suitable for size variables (e.g., file sizes, incomes) — always positive and right-skewed.</p>
+
+<h3>Heavy-Tailed Distributions</h3>
+
+<p>The technical definition of heavy-tailed is "the tail decays more slowly than an exponential function." The consequence is that <strong>extreme values are no longer rare</strong>.</p>
+
+<p><strong>Pareto distribution</strong>: $P(X > x) \propto x^{-\alpha}$. The classic "80/20 rule." Internet traffic and file access frequencies are both heavy-tailed.</p>
+
+<p><strong>Power law</strong>: another way of expressing the same idea as Pareto — characterized by a straight line on a log-log plot.</p>
+
+<p>In heavy-tailed distributions, <em>the sample mean is a poor estimator of the population mean</em> — a single extreme value can pull the mean far off. Working with heavy-tailed data requires: log transformation, using the median instead of the mean, or winsorizing with quantile truncation.</p>
+
+<h3>Law of Large Numbers and Central Limit Theorem</h3>
+
+<p>The <strong>Law of Large Numbers</strong>: the sample mean $\bar{X}_n$ of $n$ i.i.d. samples converges with probability 1 to the true mean $\mu$ (given finite variance). This is the foundation of all statistical methods based on "estimating the population from a sample" — and the reason SGD works (using mini-batch gradients to estimate the full-dataset gradient).</p>
+
+<p>The <strong>Central Limit Theorem</strong>: the sample mean of $n$ i.i.d. samples from any distribution converges in distribution to a normal as $n \to \infty$:</p>
+<div class="formula">$\sqrt{n}(\bar{X}_n - \mu) \xrightarrow{d} \mathcal{N}(0, \sigma^2)$</div>
+<p>This is why the normal distribution is everywhere — <em>"summing/averaging" smooths out the shape of the original distribution</em>, leaving only the normal. But note: the CLT requires <strong>finite variance</strong>. Heavy-tailed distributions (e.g., Pareto with $\alpha \le 2$) do not satisfy this and the CLT does not apply.</p>
+
+<h3>In AI</h3>
+
+<p>Identifying the type of distribution is a basic skill in feature engineering: light-tailed data can be standardized, while heavy-tailed data must be log-transformed first. Token frequencies in training data classically follow a Zipf (power law) distribution, which directly affects tokenizer design. MoE expert loads are naturally heavy-tailed, which is why an auxiliary loss must be used to enforce balance.</p>
+
+<!-- ==================== 1.4 Statistics ==================== -->
+<div class="part-header">
+  <div class="part-label">PART FOUR</div>
+  <h2 class="part-title">1.4 Statistics</h2>
+  <p class="part-desc">Inferring the unknown from data — the philosophical core of model training.</p>
+</div>
+
+<!-- 1.4.1 -->
+<h2 id="s1-4-1"><span class="num">1.4.1</span>Parameter Estimation</h2>
+<p class="pos">Orientation: Maximum likelihood estimation is the mathematical identity of cross-entropy loss.</p>
+
+<h3>Problem Setup</h3>
+
+<p>Suppose data $x_1, \ldots, x_n$ are independently sampled from some distribution $p(x; \theta)$, where $\theta$ is unknown. The task: estimate $\theta$ from data. There are two estimation paradigms: frequentist ($\theta$ is an unknown constant, estimated from data) and Bayesian ($\theta$ has a prior distribution, updated with data). Deep learning is predominantly frequentist.</p>
+
+<h3>Maximum Likelihood Estimation (MLE)</h3>
+
+<p>The likelihood function: the probability of observing the current data given parameter $\theta$:</p>
+<div class="formula">$L(\theta) = \prod_{i=1}^n p(x_i; \theta)$</div>
+<p>MLE finds the $\theta$ that maximizes $L(\theta)$. In practice we take the logarithm (turning products into sums, which is numerically more stable):</p>
+<div class="formula">$\hat{\theta}_{\text{MLE}} = \arg\max_\theta \sum_{i=1}^n \log p(x_i; \theta)$</div>
+
+<h3>MLE = Minimizing Cross-Entropy</h3>
+
+<p>This equivalence is key to understanding deep learning loss functions. Consider a classification task where the model $p(y|x; \theta)$ outputs a class distribution for each sample. MLE maximizes:</p>
+<div class="formula">$\sum_i \log p(y_i | x_i; \theta)$</div>
+<p>Negating this gives minimizing the negative log-likelihood. And the <strong>cross-entropy loss</strong> $\text{CE} = -\sum_c y_c \log \hat{y}_c$ (cross-entropy between one-hot label $y$ and predicted distribution $\hat{y}$), when summed over all samples, is exactly the negative log-likelihood.</p>
+
+<p>Therefore: <em>using cross-entropy loss for classification = performing maximum likelihood estimation</em>. These are not two different things — they are two ways of saying the same thing.</p>
+
+<h3>MAP (Maximum A Posteriori)</h3>
+
+<p>Add a prior $p(\theta)$ on $\theta$, and find the $\theta$ that maximizes the posterior $p(\theta | \text{data}) \propto L(\theta) p(\theta)$. Taking the logarithm:</p>
+<div class="formula">$\hat{\theta}_{\text{MAP}} = \arg\max_\theta \left[\log L(\theta) + \log p(\theta)\right]$</div>
+<p>If the prior $p(\theta)$ is Gaussian $\mathcal{N}(0, \sigma^2)$, then $\log p(\theta)$ contributes a $-\|\theta\|^2 / (2\sigma^2)$ term — this is <strong>L2 regularization</strong>. A Laplace prior corresponds to L1 regularization. This is the Bayesian interpretation of regularization.</p>
+
+<h3>Confidence Intervals</h3>
+
+<p>A point estimate $\hat{\theta}$ is a single number that tells you nothing about certainty. A confidence interval $[\hat{\theta} - c, \hat{\theta} + c]$ means "if we repeated the sampling 100 times, 95% of the resulting confidence intervals would contain the true value" — note this is the probability that the interval contains the true value, not the probability that the true value falls within the interval (in the frequentist framework, $\theta$ is a constant, so there is no probability of it "falling" anywhere).</p>
+
+<h3>In AI</h3>
+
+<p>Model training is essentially MLE. When evaluating model performance, reporting a single accuracy number is not enough — you need bootstrap confidence intervals and standard deviations across multiple runs. The statement "our model beats the baseline by 0.3%" means very little without a confidence interval; it is very likely just sampling noise.</p>
+
+<!-- 1.4.2 -->
+<h2 id="s1-4-2"><span class="num">1.4.2</span>Hypothesis Testing</h2>
+<p class="pos">Orientation: Quantitatively determining whether two models differ significantly — the foundation of A/B testing and ablation studies.</p>
+
+<h3>Core Concepts</h3>
+
+<p><strong>Null hypothesis $H_0$</strong>: the default position we wish to disprove ("the new model is no different from the old one"). <strong>Alternative hypothesis $H_1$</strong>: the claim we wish to establish ("the new model is better").</p>
+
+<p><strong>Test statistic</strong>: a number computed from the data that has a known distribution under $H_0$. <strong>p-value</strong>: the probability of observing "the current statistic or a more extreme value" under $H_0$. A small p-value means "if $H_0$ were true, the current data would be unlikely," and we therefore reject $H_0$.</p>
+
+<p>Common p-value thresholds are 0.05 or 0.01. These thresholds are historical conventions, not mathematical laws — in recent years many fields have recommended 0.005 or even abandoning p-values altogether in favor of Bayesian approaches, due to widespread "p-value abuse."</p>
+
+<h3>Two Types of Errors</h3>
+
+<table>
+<tr><th></th><th>Truth: $H_0$ is true</th><th>Truth: $H_1$ is true</th></tr>
+<tr><td>Accept $H_0$</td><td>Correct</td><td>Type II error (false negative, β)</td></tr>
+<tr><td>Reject $H_0$</td><td>Type I error (false positive, α)</td><td>Correct (power 1-β)</td></tr>
+</table>
+
+<p>$\alpha$ and $\beta$ cannot both be reduced simultaneously — only increasing the sample size can reduce both at once. Before running an experiment you should perform a <strong>power analysis</strong>: target effect size + desired $\alpha$ and $\beta$ → required sample size. Many AI experiments have too few samples, insufficient power, and cannot detect a real difference even when one exists.</p>
+
+<h3>t-Test</h3>
+
+<p>The most commonly used test. It compares whether the means of two groups are significantly different. Assuming both groups are normally distributed with equal variances, the test statistic is:</p>
+<div class="formula">$t = \frac{\bar{X}_1 - \bar{X}_2}{s_p \sqrt{1/n_1 + 1/n_2}}$</div>
+<p>$s_p$ is the pooled standard deviation. Under $H_0$, $t$ follows a t-distribution.</p>
+
+<h3>Chi-Squared Test</h3>
+
+<p>Tests categorical data. Given a frequency table with $k$ categories, it tests whether "observed frequencies vs. expected frequencies" are consistent. The test statistic is:</p>
+<div class="formula">$\chi^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}$</div>
+<p>Used for data distribution tests, tokenizer language coverage testing, MoE expert activation uniformity tests, and similar applications.</p>
+
+<h3>In AI</h3>
+
+<p>Model A achieves 85.3% on a benchmark and model B achieves 85.7% — is that 0.4% difference real? Two approaches:</p>
+<ol>
+<li><strong>Run each model with multiple random seeds</strong> and perform a t-test;</li>
+<li><strong>Run a paired test on the same test set</strong> (McNemar's test), because the two models are being compared on the same set of samples — this is paired data and has higher statistical power than an independent-samples test.</li>
+</ol>
+
+<p>The minimum standard for a paper's reported results: mean ± standard deviation across multiple seeds, ideally accompanied by a p-value from a significance test.</p>
+
+<!-- ==================== 1.5 Stochastic Processes ==================== -->
+<div class="part-header">
+  <div class="part-label">PART FIVE</div>
+  <h2 class="part-title">1.5 Stochastic Processes</h2>
+  <p class="part-desc">Randomness evolving over time — LLM inference is fundamentally a Markov decision process.</p>
+</div>
+
+<!-- 1.5.1 -->
+<h2 id="s1-5-1"><span class="num">1.5.1</span>Basic Stochastic Processes</h2>
+<p class="pos">Orientation: Discrete and continuous stochastic processes, Poisson processes, Markov processes, stationarity — covered at a high level.</p>
+
+<h3>Definition</h3>
+
+<p>A stochastic process $\{X_t\}_{t \in T}$ is a family of random variables indexed by time (or space). If $T$ is discrete (e.g., $\{0, 1, 2, \ldots\}$), it is a discrete-time process; if $T$ is continuous (e.g., $[0, \infty)$), it is a continuous-time process.</p>
+
+<h3>Poisson Process</h3>
+
+<p>A stochastic process counting the "number of occurrences of rare events." Properties:</p>
+<ol>
+<li>$N(0) = 0$;</li>
+<li>Event counts in non-overlapping time intervals are independent;</li>
+<li>The number of events in the interval $[s, s+t]$ follows $\text{Poisson}(\lambda t)$.</li>
+</ol>
+<p>The inter-event times follow $\text{Exp}(\lambda)$. This is the foundation of queueing theory and server request modeling.</p>
+
+<h3>Markov Process</h3>
+
+<p>Core property: <strong>given the present, the future is independent of the past</strong> — $P(X_{t+1} | X_t, X_{t-1}, \ldots) = P(X_{t+1} | X_t)$. A discrete-time Markov chain is described by a transition matrix $\mathbf{P}$, where $P_{ij} = P(X_{t+1}=j | X_t=i)$.</p>
+
+<p>The key question: what does the distribution look like after a long time? The answer: if the chain is ergodic and aperiodic, it converges to a <strong>stationary distribution</strong> $\boldsymbol{\pi}$ satisfying $\boldsymbol{\pi}^\top \mathbf{P} = \boldsymbol{\pi}^\top$. The stationary distribution is the left eigenvector of the transition matrix (with eigenvalue 1) — linear algebra once again.</p>
+
+<h3>Stationarity</h3>
+
+<p><strong>Strict stationarity</strong>: all finite-dimensional distributions are invariant under time shifts. Too strong a requirement, rarely used in practice. <strong>Wide-sense stationarity</strong>: the mean and covariance do not vary with time — $\mathbb{E}[X_t] = \mu$ holds for all $t$, and $\text{Cov}(X_t, X_{t+h})$ depends only on $h$ and not on $t$. Many time-series methods (ARIMA) are based on the wide-sense stationarity assumption.</p>
+
+<h3>In AI</h3>
+
+<p><strong>LLM autoregressive sampling</strong> is fundamentally a Markov process: the next token depends only on the current hidden state (although through the KV Cache it indirectly depends on all history, the "state" at each step is just the KV). <strong>Reinforcement learning</strong>'s MDP is a Markov process augmented with actions. The denoising process in <strong>diffusion models</strong> is a Markov chain. <strong>MCMC sampling</strong> constructs a Markov chain with a specific stationary distribution for inference. The field of stochastic processes itself need not be studied in depth, but the Markov idea is everywhere.</p>
+
+<!-- 1.5.2 -->
+<h2 id="s1-5-2"><span class="num">1.5.2</span>Stochastic Process Modeling of Tree of Thoughts</h2>
+<p class="pos">Orientation: Viewing LLM reasoning as a tree-structured stochastic process — a concrete application of stochastic processes.</p>
+
+<h3>From <a href="ch5_partB_preview.html#p16">Chain of Thought</a> to Tree of Thoughts</h3>
+
+<p>Chain of Thought (CoT): prompting the LLM to "think step by step" before answering, generating an intermediate chain of reasoning. Mathematically, this is a sequential generation process: each step depends on all previous steps (via KV Cache), and the strategy is single-path sampling.</p>
+
+<p>Tree of Thoughts (ToT): at each reasoning node, multiple branches are expanded, forming a tree-shaped search space, and some strategy (DFS, BFS, beam search) is used to find the best leaf-node answer.</p>
+
+<h3>Stochastic Process Perspective</h3>
+
+<p>Model ToT as a stochastic decision process with evaluation:</p>
+<ul style="list-style:none; padding-left:0;">
+<li>- <strong>State</strong>: the reasoning prefix generated so far;</li>
+<li>- <strong>Action</strong>: the next reasoning step generated by the LLM;</li>
+<li>- <strong>Transition</strong>: the next state obtained by sampling (stochastic, because LLM sampling uses temperature);</li>
+<li>- <strong>Evaluation</strong>: scoring each intermediate state using the LLM itself or a separate evaluator;</li>
+<li>- <strong>Policy</strong>: how to select the next branch to expand (greedy / Monte Carlo tree search / beam).</li>
+</ul>
+
+<p>This is a perfect analogy to AlphaGo's MCTS — the only difference is that the action space changes from board positions to natural language. The randomness comes from two layers: the temperature of LLM sampling itself, and the exploration randomization in the tree search strategy.</p>
+
+<h3>Why This Modeling Is Useful</h3>
+
+<p>Single-path CoT propagates errors — once a step goes wrong, there is no way to correct it downstream. ToT provides a backtracking capability: branches with low scores are pruned, and the tree is re-expanded from an earlier node. Mathematically, this trades computational cost for reliability — one inference becomes dozens, but with a higher accuracy rate.</p>
+
+<p>In terms of stochastic process theory, this is a <strong>selective Markov process</strong>: rather than passively observing the evolution of states, we make decisions at each step based on an evaluation function. This is also precisely the basic setup of RL.</p>
+
+<p class="footnote">ToT raises GPT-4's accuracy on the Game of 24 task from 4% to 74% (<em>Tree of Thoughts</em>, Yao et al. 2023). The cost is a 5–100× increase in token consumption.</p>
+
+<!-- ==================== 1.6 Information Theory ==================== -->
+<div class="part-header">
+  <div class="part-label">PART SIX</div>
+  <h2 class="part-title">1.6 Information Theory</h2>
+  <p class="part-desc">The mathematics of "information" established by Shannon — from entropy to mutual information, the home of cross-entropy loss.</p>
+</div>
+
+<!-- 1.6.1 -->
+<h2 id="s1-6-1"><span class="num">1.6.1</span>The Core Questions of Information Theory</h2>
+<p class="pos">Orientation: Information theory studies two fundamental questions — how small can data be compressed? How fast can a channel reliably transmit?</p>
+
+<p>Shannon's 1948 paper defined the entire field. He posed two mathematically precise questions:</p>
+
+<p><strong>Compression</strong>: How much randomness does a data source have? Can it be represented losslessly with fewer bits? Answer: <em>no fewer than entropy $H(X)$ bits per symbol</em>. This is the information-theoretic lower bound on data compression.</p>
+
+<p><strong>Transmission</strong>: How much information can a noisy channel reliably convey per unit time? Answer: <em>no more than channel capacity $C$</em>. Below this limit, encoding schemes exist that make the error rate arbitrarily small; above it, errors are unavoidable.</p>
+
+<p>These two results are almost unreasonably clean — both are sharp "achievable but not exceedable" limits. They do not tell you how to achieve them (existence proofs), but they tell you "no further optimization is possible beyond this point." In engineering, information theory is a mirror: any real-world compression algorithm or communication system is measured against these limits.</p>
+
+<!-- 1.6.2 -->
+<h2 id="s1-6-2"><span class="num">1.6.2</span>Measuring Information</h2>
+<p class="pos">Orientation: Entropy, conditional entropy, mutual information, KL divergence — the direct ancestors of deep learning loss functions.</p>
+
+<h3>Entropy</h3>
+
+<p>The entropy of a random variable $X$:</p>
+<div class="formula">$H(X) = -\sum_x p(x) \log p(x)$</div>
+<p>The base of the logarithm determines the unit: $\log_2$ gives bits, $\ln$ gives nats. Two layers of intuition:</p>
+<ol>
+<li><strong>Uncertainty</strong>: How hard it is to predict the outcome of $X$. A uniform distribution has maximum entropy; a degenerate distribution (one value with probability 1) has entropy 0.</li>
+<li><strong>Minimum encoding length</strong>: Using an optimal prefix code to encode $X$, on average $H(X)$ bits are needed per symbol.</li>
+</ol>
+
+<p>Flipping a fair coin gives $H = 1$ bit; rolling a fair die gives $H = \log_2 6 \approx 2.58$ bits — indeed, about 2.58 bits are needed to encode a single die outcome.</p>
+
+<h3>Cross-Entropy and KL Divergence</h3>
+
+<p>The <strong>cross-entropy</strong> between two distributions $p, q$:</p>
+<div class="formula">$H(p, q) = -\sum_x p(x) \log q(x)$</div>
+<p>Interpretation: Using the optimal code designed for distribution $q$ to encode data actually drawn from distribution $p$, the average number of bits required per symbol. Clearly $H(p,q) \ge H(p)$, and the excess is the <strong>KL divergence</strong>:</p>
+<div class="formula">$D_{\text{KL}}(p \parallel q) = H(p, q) - H(p) = \sum_x p(x) \log \frac{p(x)}{q(x)}$</div>
+
+<p>$D_{\text{KL}} \ge 0$, with equality if and only if $p = q$. <strong>Asymmetry</strong>: $D_{\text{KL}}(p \| q) \ne D_{\text{KL}}(q \| p)$ — this is not a mathematical defect, but actually useful: "approximating $p$ with $q$" and "approximating $q$ with $p$" are genuinely different operations, and KL's asymmetry faithfully reflects this.</p>
+
+<h3>Mutual Information</h3>
+
+<p>The amount of information shared between two random variables:</p>
+<div class="formula">$I(X; Y) = D_{\text{KL}}(p(x,y) \parallel p(x)p(y)) = H(X) - H(X|Y)$</div>
+<p>Two equivalent forms. The first: how far the joint distribution is from independence. The second: how much uncertainty about $X$ is reduced by knowing $Y$. $I(X;Y) = 0$ iff $X, Y$ are independent.</p>
+
+<h3>In AI</h3>
+
+<p><strong>Cross-entropy loss for classification</strong>: one-hot label $\mathbf{y}$, model prediction $\hat{\mathbf{y}}$, the loss is $H(\mathbf{y}, \hat{\mathbf{y}}) = -\sum_c y_c \log \hat{y}_c$. Why not just use L2 loss? Because cross-entropy is equivalent to MLE, and when output probabilities saturate (close to 0 or 1) gradients do not vanish — whereas with L2 they do.</p>
+
+<p><strong>KL divergence as a constraint</strong>: In VAEs, the latent variable distribution is forced to stay close to a standard normal using KL; in RLHF, KL constrains the RL-optimized policy from drifting too far from the SFT model; in distillation, KL measures the distributional distance between student and teacher.</p>
+
+<p><strong>Mutual information as an objective</strong>: Many self-supervised learning methods (InfoNCE, CPC) maximize mutual information between different views of data — "the semantics shared across two views" is precisely what we want to learn.</p>
+
+<!-- 1.6.3 -->
+<h2 id="s1-6-3"><span class="num">1.6.3</span>Compressing Information: Source Coding</h2>
+<p class="pos">Orientation: Huffman coding, arithmetic coding — classic schemes for compression algorithms. Brief.</p>
+
+<h3>The Source Coding Theorem</h3>
+
+<p>Shannon's first theorem: the average code length of any lossless code is $\ge H(X)$, and there exists a code that achieves $H(X) + 1$ (due to the integer-bit constraint).</p>
+
+<h3>Huffman Coding</h3>
+
+<p>A greedy algorithm: repeatedly merge the two symbols with the lowest probabilities to form a binary tree, with left branch 0 and right branch 1. Result: high-frequency symbols get short codes, low-frequency symbols get long codes. Average code length is close to entropy (gap $< 1$ bit per symbol).</p>
+
+<p>Drawback: each symbol must be encoded with an integer number of bits. If a symbol has probability 0.9, its information content is only $-\log 0.9 \approx 0.15$ bits, yet Huffman still uses 1 bit — wasteful.</p>
+
+<h3>Arithmetic Coding</h3>
+
+<p>Maps an entire message to an interval in $[0,1)$, then encodes it as the binary representation of a real number within that interval. Theoretically achieves the entropy limit without the integer-bit constraint. Modern compression algorithms (AV1 video, Brotli compression) are largely based on arithmetic coding or its variant ANS.</p>
+
+<h3>In AI</h3>
+
+<p><strong>LLMs as compressors</strong>: Research from DeepMind and others has shown that large language models can serve as powerful general-purpose compressors — feed text to the model, use the per-step conditional probabilities for arithmetic coding, and achieve compression ratios that beat gzip. The intuition: LLMs learn better $p(x_{t+1} | x_{1:t})$; the better the model's predictions, the shorter the code. This is one of the most elegant connections between information theory and LLMs: <em>compression is understanding</em>.</p>
+
+<!-- 1.6.4 -->
+<h2 id="s1-6-4"><span class="num">1.6.4</span>Transmitting Information: Channel Coding</h2>
+<p class="pos">Orientation: Adding redundancy to combat noise — the core technology of communications. Less directly relevant to AI, kept brief.</p>
+
+<p>Shannon's second theorem: a noisy channel has capacity $C = \max_{p(x)} I(X; Y)$; at transmission rate $R < C$, there exists an encoding scheme that drives the error probability to zero.</p>
+
+<p>Implementation: add redundant bits. The simplest repetition code $(0 \to 000, 1 \to 111)$ decodes by majority vote. But it is inefficient — 3 bits to transmit 1 bit.</p>
+
+<p>Practical codes: Reed-Solomon codes (CDs, QR codes), convolutional codes + Viterbi decoding, LDPC (5G), and Polar codes (also 5G, proposed by Turkish researcher Erdal Arıkan). These codes transmit at rates approaching capacity.</p>
+
+<p>In AI, except for certain end-to-end communications research (replacing encoder/decoder with neural networks), engineers rarely encounter this in daily work. Knowing "this exists" is sufficient.</p>
+
+<!-- 1.6.5 -->
+<h2 id="s1-6-5"><span class="num">1.6.5</span>Boundaries and Security: Information Theory in ML and Cryptography</h2>
+<p class="pos">Orientation: Differential privacy, membership inference attacks — an information-theoretic perspective on AI security.</p>
+
+<h3>Differential Privacy</h3>
+
+<p>An algorithm $\mathcal{M}$ is $\epsilon$-differentially private if for any two datasets $D, D'$ differing by a single record and any output $S$:</p>
+<div class="formula">$P(\mathcal{M}(D) \in S) \le e^\epsilon \cdot P(\mathcal{M}(D') \in S)$</div>
+<p>Intuition: observing model outputs reveals almost nothing about whether any particular record was in the training set. Smaller $\epsilon$ means stronger privacy. Engineered in practice by adding Gaussian noise to gradients (DP-SGD).</p>
+
+<h3>Membership Inference Attacks</h3>
+
+<p>An attacker attempts to determine whether a particular record was in the training set. The method typically exploits the signal that "training samples have lower loss on the model." From an information-theoretic perspective: the model memorizes the training set, and the mutual information between the training data and model parameters satisfies $I(\text{data}; \theta) > 0$ — the larger this mutual information, the worse the privacy.</p>
+
+<h3>Why LLM Privacy Risks Are Serious</h3>
+
+<p>With sufficient capacity, LLMs can precisely memorize rare sequences from the training set (such as API keys on GitHub, personal email addresses). Membership inference and verbatim extraction attacks have both been demonstrated to be feasible. Differential privacy training can mitigate this, but at the cost of model quality — at the scale of large LLMs, this remains an unresolved engineering trade-off.</p>
+
+<!-- 1.6.6 -->
+<h2 id="s1-6-6"><span class="num">1.6.6</span>The Future of Information Theory</h2>
+<p class="pos">Orientation: Quantum information, AI communications, brain-computer interfaces — a brief glimpse at frontier directions.</p>
+
+<p>Quantum information theory: using quantum states as the unit of information (qubits), which can be superposed, introducing new concepts such as von Neumann entropy and quantum entanglement. Theoretical limits are broader than classical information theory. Still far from practical engineering.</p>
+
+<p>Semantic communications: traditional communications focuses on transmitting bits accurately; semantic communications focuses on preserving meaning — allowing outputs that differ literally but are semantically consistent. AI models (especially LLMs) as semantic encoders/decoders are central to this direction. One candidate technology area for 6G.</p>
+
+<p>Brain-computer interfaces: the upper bound on information rate between neural signals, intent, text, and actions is an information-theoretic problem. Neuralink and similar research are all advancing along this curve.</p>
+
+<p>This section requires no deep exploration — engineering roles will not encounter this within several years. The goal is simply to build the impression that "information theory is not an old discipline; it is still actively evolving at new frontiers."</p>
+
+<!-- ==================== 1.7 数值计算 ==================== -->
+<div class="part-header">
+  <div class="part-label">PART SEVEN</div>
+  <h2 class="part-title">1.7 Numerical Computation</h2>
+  <p class="part-desc">Making mathematics actually run on finite-precision computers — the area AI engineers interact with most frequently in daily work.</p>
+</div>
+
+<!-- 1.7.1 -->
+<h2 id="s1-7-1"><span class="num">1.7.1</span>Error Analysis</h2>
+<p class="pos">Orientation: Floating-point numbers are not real numbers — this section is the foundation for quantization, low-precision training, and NaN debugging.</p>
+
+<h3>IEEE 754 Floating-Point</h3>
+
+<p>Floating-point representation:</p>
+<div class="formula">$x = (-1)^s \cdot (1.f) \cdot 2^{e}$</div>
+<p>$s$ is the sign bit, $f$ is the mantissa (fractional part), and $e$ is the exponent. FP32 has 1+8+23 bits, FP16 has 1+5+10 bits, and BF16 has 1+8+7 bits.</p>
+
+<p>Core fact: <strong>floating-point numbers are not continuous</strong> but form a discrete lattice whose density varies with magnitude — densely packed near small values, sparsely packed near large values. This governs all numerical behavior.</p>
+
+<h3>Machine Epsilon</h3>
+
+<p>The smallest floating-point number greater than 1 is $1 + \epsilon$, where $\epsilon$ is the <strong>machine epsilon</strong>. FP32 $\epsilon \approx 1.19 \times 10^{-7}$, FP16 $\epsilon \approx 9.77 \times 10^{-4}$, BF16 $\epsilon \approx 3.91 \times 10^{-3}$. BF16 has four times worse precision than FP16, but it has a larger dynamic range (same exponent bits as FP32), which is why training uses BF16 rather than FP16.</p>
+
+<h3>Classic Numerical Pitfalls</h3>
+
+<p><strong>Pitfall 1: Catastrophic cancellation</strong>. Subtracting two nearby numbers loses precision.</p>
+<pre><code class="language-python">import numpy as np
+x = np.float32(1e8)
+y = x + np.float32(1.0)
+print(y - x)   # Expected 1.0, may actually be 0.0 — 1.0 is swallowed by the precision of 1e8
+</code></pre>
+
+<p><strong>Pitfall 2: Numerical overflow in softmax</strong>. Computing $\exp(x_i)/\sum\exp(x_j)$ directly causes $\exp$ to overflow to inf when $x_i$ is large. The standard fix is to <strong>subtract the maximum</strong>:</p>
+<div class="formula">$\text{softmax}(x_i) = \frac{\exp(x_i - \max_j x_j)}{\sum_k \exp(x_k - \max_j x_j)}$</div>
+<p>Mathematically equivalent (numerator and denominator both multiplied by $\exp(-\max)$), but numerically all $\exp$ inputs are $\le 0$, so results lie in $(0, 1]$ without overflow.</p>
+
+<p><strong>Pitfall 3: log-sum-exp</strong>. $\log\sum\exp(x_i)$ also overflows when computed directly; the same subtract-the-maximum trick applies:</p>
+<div class="formula">$\log\sum_i \exp(x_i) = \max_j x_j + \log\sum_i \exp(x_i - \max_j x_j)$</div>
+
+<p>These are not advanced optimizations — they are the standard techniques used by default in all numerical libraries (numpy, torch). Writing your own softmax and forgetting to subtract the maximum will cause mysterious NaNs during training.</p>
+
+<h3>In AI</h3>
+
+<p><strong>Low-precision training</strong>: Training FP32 models with FP16/BF16. Gradients can underflow in FP16 (becoming 0 when smaller than the minimum positive value), requiring loss scaling — multiply the loss by a large number (e.g., $2^{15}$) to shift gradient magnitudes into the representable range of FP16, then divide back before updating parameters. Because BF16 has a larger exponent range, loss scaling is typically unnecessary.</p>
+
+<p><strong>Quantization</strong>: INT8/INT4 inference. Maps floating-point weights to integers. This mapping introduces additional quantization error, and the accumulation of errors determines the compression limit. INT4 works for LLMs (AWQ, GPTQ), but going lower to INT2/INT3 causes severe accuracy degradation — not because the algorithms fail, but because the errors exceed the model's tolerance for perturbation.</p>
+
+<p><strong>Numerical stability checklist</strong>: subtract the maximum wherever $\exp$ appears; add a small $\epsilon$ wherever $\log$ appears ($\log(0) = -\infty$); check denominators in all divisions; replace matrix inversion with solve; use Cholesky instead of checking whether the Hessian is positive definite.</p>
+
+<!-- 1.7.2 -->
+<h2 id="s1-7-2"><span class="num">1.7.2</span>Classical Numerical Analysis Algorithms</h2>
+<p class="pos">Orientation: Linear systems, matrix decompositions, eigenvalue solvers — the "chassis" of scientific computing libraries.</p>
+
+<h3>LU Decomposition</h3>
+
+<p>$\mathbf{A} = \mathbf{L}\mathbf{U}$, where $\mathbf{L}$ is lower triangular (with unit diagonal) and $\mathbf{U}$ is upper triangular. Steps to solve $\mathbf{A}\mathbf{x} = \mathbf{b}$: $\mathbf{L}\mathbf{y} = \mathbf{b}$ (forward substitution, $O(n^2)$) → $\mathbf{U}\mathbf{x} = \mathbf{y}$ (back substitution, $O(n^2)$). Total: $O(n^3)$ for decomposition + $O(n^2)$ for solving. In practice, partial pivoting (PLU) is used to ensure numerical stability.</p>
+
+<h3>QR Decomposition</h3>
+
+<p>$\mathbf{A} = \mathbf{Q}\mathbf{R}$, where $\mathbf{Q}$ is orthogonal and $\mathbf{R}$ is upper triangular. More stable than LU, commonly used for least squares and eigenvalue computations. Construction methods: Gram-Schmidt (unstable), Householder reflections (stable, used in practice), Givens rotations.</p>
+
+<h3>Cholesky Decomposition</h3>
+
+<p>Specialized for symmetric positive definite matrices: $\mathbf{A} = \mathbf{L}\mathbf{L}^\top$. Computational cost is half that of general LU. Used repeatedly in Gaussian processes, Bayesian inference, and Kalman filtering, because covariance matrices are always symmetric positive definite.</p>
+
+<h3>Eigenvalue Solvers</h3>
+
+<p>Small matrices: solve the characteristic polynomial $\det(\mathbf{A} - \lambda \mathbf{I}) = 0$ directly. Large matrices: the <strong>QR algorithm</strong> (iteratively applying QR decomposition until convergence to diagonal/triangular form) is the standard approach — it is what <code>numpy.linalg.eig</code> uses under the hood.</p>
+
+<p><strong>When only the top $k$ eigenvalues are needed</strong>: use <strong>power iteration</strong>. Starting from a random vector $\mathbf{v}_0$, repeatedly apply $\mathbf{v}_{k+1} = \mathbf{A}\mathbf{v}_k / \|\mathbf{A}\mathbf{v}_k\|$, which converges to the eigenvector corresponding to the largest eigenvalue. Combined with deflation or the Lanczos method, multiple leading eigenvectors can be obtained.</p>
+
+<p>PageRank is power iteration — repeatedly multiplying the web link matrix converges to the steady-state probability of each page. Google's original core algorithm.</p>
+
+<h3>Linear Programming</h3>
+
+<p>Objective: $\min \mathbf{c}^\top \mathbf{x}$, subject to $\mathbf{A}\mathbf{x} \le \mathbf{b}, \mathbf{x} \ge \mathbf{0}$. The <strong>simplex method</strong> traverses vertices of a polyhedron — classical but exponential in the worst case. <strong>Interior-point methods</strong> (Karmarkar) traverse the interior in polynomial time and are standard in modern solvers. SVM primal optimization and LASSO solving can both be reduced to LP/QP.</p>
+
+<h3>In AI</h3>
+
+<p>Scientific computing libraries (numpy, scipy) encapsulate these algorithms. You will rarely write them by hand, but you need to <em>know which API to choose</em>: use <code>np.linalg.solve</code> (LU) to solve linear systems — not <code>inv</code>; use <code>np.linalg.lstsq</code> (SVD/QR) for least squares; use <code>scipy.linalg.cho_solve</code> for symmetric positive definite systems. Choosing the wrong API can result in numerical accuracy and speed differences of an order of magnitude.</p>
+
+<!-- 1.7.3 -->
+<h2 id="s1-7-3"><span class="num">1.7.3</span>Interpolation and Function Fitting</h2>
+<p class="pos">Orientation: Fitting a function to a point cloud — from classical interpolation to least squares.</p>
+
+<h3>The Difference Between Interpolation and Fitting</h3>
+
+<p><strong>Interpolation</strong>: the fitted curve must pass through every given point. Commonly used when exact values are known and the goal is to fill in the gaps. <strong>Fitting</strong>: the curve is not required to pass through every point; instead, total error is minimized. Commonly used for noisy data. Machine learning uses fitting, not interpolation.</p>
+
+<h3>Common Interpolation Methods</h3>
+
+<p><strong>Linear interpolation</strong>: connect two points with a straight line. Simple, but not smooth (derivative is discontinuous at nodes).</p>
+
+<p><strong>Lagrange interpolation</strong>: $n+1$ points uniquely determine a polynomial of degree $n$.</p>
+<div class="formula">$L(x) = \sum_{i=0}^n y_i \prod_{j \ne i} \frac{x - x_j}{x_i - x_j}$</div>
+<p>Drawback: high-degree polynomials oscillate violently near the endpoints (Runge's phenomenon) — adding more points can make the fit worse.</p>
+
+<p><strong>Cubic splines</strong>: piecewise cubic polynomials with continuous second derivatives across segments. Avoids the oscillation of high-degree polynomials; the preferred choice in engineering.</p>
+
+<h3>Least Squares Fitting</h3>
+
+<p>Given $n$ data points $(x_i, y_i)$, fit a line $y = a + bx$ by minimizing $\sum (y_i - a - bx_i)^2$. Closed-form solution:</p>
+<div class="formula">$b = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i - \bar{x})^2}, \quad a = \bar{y} - b\bar{x}$</div>
+<p>Generalized to multiple variables: $\mathbf{w} = (\mathbf{X}^\top \mathbf{X})^{-1} \mathbf{X}^\top \mathbf{y}$ — back to the pseudoinverse.</p>
+
+<h3>In AI</h3>
+
+<p>A neural network is an "ultra-high-degree, constrained, nonlinear function fitter." After understanding least squares and Runge's phenomenon, you will better appreciate why <strong>regularization</strong> is needed — in regions with few data points there are no constraints, so the model can exhibit Runge-like violent oscillations (overfitting); L2 regularization, Dropout, and data augmentation all suppress this type of oscillation.</p>
+
+<!-- 1.7.4 -->
+<h2 id="s1-7-4"><span class="num">1.7.4</span>Optimization Algorithms for Machine Learning</h2>
+<p class="pos">Orientation: SGD, Momentum, Adam — the second key section of this chapter, on par with 1.1.4.</p>
+
+<h3>The Problem with Batch Gradient Descent</h3>
+
+<p>Standard gradient descent computes the gradient over the full dataset at each step — precise but slow. <strong>Stochastic gradient descent (SGD)</strong>: estimates the gradient using a single sample per step — fast but highly noisy in direction. <strong>Mini-batch SGD</strong>: a compromise, using a small batch (32/64/256/...) per step. This is the standard approach in modern deep learning.</p>
+
+<p>SGD's gradient is an unbiased estimate of the true gradient, with variance inversely proportional to batch size. Why is noise actually beneficial? Empirically, noise helps models <em>escape poor local minima and converge to wider valleys</em>. "Wider valley → better generalization" has substantial empirical support (though theory has not fully resolved it).</p>
+
+<h3>Momentum</h3>
+
+<p>SGD oscillates back and forth in narrow ravines (large slope in the transverse direction, small slope in the longitudinal direction). Momentum adds "inertia":</p>
+<div class="formula">$\mathbf{v}_{t+1} = \beta \mathbf{v}_t + \nabla L(\boldsymbol{\theta}_t), \quad \boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta \mathbf{v}_{t+1}$</div>
+<p>$\beta \approx 0.9$. Effect: oscillations in transverse directions cancel out while progress in the correct direction accumulates. Convergence is faster and more stable.</p>
+
+<h3>Adam</h3>
+
+<p>The most popular optimizer. Core idea: <em>each parameter uses an independent learning rate, adaptively adjusted based on the first and second moments of its gradient history</em>.</p>
+
+<div class="formula">
+$\mathbf{m}_t = \beta_1 \mathbf{m}_{t-1} + (1-\beta_1) \mathbf{g}_t$ (first moment, ~Momentum)
+</div>
+<div class="formula">
+$\mathbf{v}_t = \beta_2 \mathbf{v}_{t-1} + (1-\beta_2) \mathbf{g}_t^2$ (second moment, exponential moving average of squared gradients)
+</div>
+<div class="formula">
+$\hat{\mathbf{m}}_t = \mathbf{m}_t / (1 - \beta_1^t), \quad \hat{\mathbf{v}}_t = \mathbf{v}_t / (1 - \beta_2^t)$ (bias correction)
+</div>
+<div class="formula">
+$\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta \frac{\hat{\mathbf{m}}_t}{\sqrt{\hat{\mathbf{v}}_t} + \epsilon}$
+</div>
+
+<p>$\beta_1 = 0.9, \beta_2 = 0.999, \epsilon = 10^{-8}$ are the default values. <strong>Bias correction</strong> is a detail but an important one: at the start, $\mathbf{m}_0 = \mathbf{v}_0 = 0$ causes early estimates to be biased low; dividing by $(1 - \beta^t)$ corrects for this.</p>
+
+<p>Intuition: parameters with large gradients automatically get a small learning rate (because $\sqrt{\mathbf{v}}$ is large), while parameters with small gradients get a large learning rate — automatic per-dimension adjustment. This is what "adaptive learning rate" means.</p>
+
+<pre><code class="language-python">import numpy as np
+
+def adam_step(params, grads, state, lr=1e-3, b1=0.9, b2=0.999, eps=1e-8):
+    t = state['t'] + 1
+    m = state.get('m', [np.zeros_like(p) for p in params])
+    v = state.get('v', [np.zeros_like(p) for p in params])
+    new_params = []
+    for i, (p, g) in enumerate(zip(params, grads)):
+        m[i] = b1 * m[i] + (1 - b1) * g
+        v[i] = b2 * v[i] + (1 - b2) * g * g
+        m_hat = m[i] / (1 - b1 ** t)
+        v_hat = v[i] / (1 - b2 ** t)
+        new_params.append(p - lr * m_hat / (np.sqrt(v_hat) + eps))
+    return new_params, {'t': t, 'm': m, 'v': v}
+</code></pre>
+
+<p>30 lines is all of Adam. PyTorch's <code>torch.optim.Adam</code> is mathematically equivalent to this code, with added engineering details such as fused kernels and sparse gradient support.</p>
+
+<h3>AdamW</h3>
+
+<p>Adam + decoupled weight decay. In the original Adam, L2 regularization and adaptive learning rates are coupled, reducing effectiveness. AdamW pulls weight decay out of the gradient computation and applies it directly to the parameters:</p>
+<div class="formula">$\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta \left(\frac{\hat{\mathbf{m}}_t}{\sqrt{\hat{\mathbf{v}}_t} + \epsilon} + \lambda \boldsymbol{\theta}_t\right)$</div>
+<p>Modern LLM training (GPT, LLaMA, Qwen) almost universally uses AdamW, not Adam.</p>
+
+<h3>Convergence Speed</h3>
+
+<p>Theoretically, for convex functions: GD converges at $O(1/t)$, accelerated gradient methods (Nesterov) at $O(1/t^2)$, and Newton's method at second-order rate $O(\rho^{2^t})$. But for non-convex problems with SGD, most of these results do not apply; in practice, empirical patterns matter more. Learning rate scheduling (warmup + cosine decay) and batch size tuning have a greater impact on actual convergence speed.</p>
+
+<h3>In AI</h3>
+
+<p>Training LLMs essentially comes down to AdamW + warmup + cosine decay + gradient clipping. This combination works across a wide range of scales. To save memory: 8-bit Adam (quantized optimizer states); for larger batches: LAMB (AdamW + layer-wise learning rate scaling). These are all variants of Adam — everything traces back to the same core idea.</p>
+
+<!-- 1.7.5 -->
+<h2 id="s1-7-5"><span class="num">1.7.5</span>Numerical Integration, Differentiation, and Root Finding</h2>
+<p class="pos">Orientation: Numerical integration (Simpson's rule), numerical solutions to differential equations, root finding — common engineering tools.</p>
+
+<h3>Numerical Integration</h3>
+
+<p><strong>Trapezoidal rule</strong>: piecewise linear approximation to the integrand. $\int_a^b f(x) dx \approx \frac{h}{2}[f(x_0) + 2f(x_1) + \ldots + 2f(x_{n-1}) + f(x_n)]$.</p>
+
+<p><strong>Simpson's rule</strong>: piecewise parabolic approximation, three points per segment. Much higher accuracy; commonly used in engineering.</p>
+
+<p>These rules cannot be used for high-dimensional integration (the number of grid points grows exponentially with dimension); <strong>Monte Carlo integration</strong> is required instead: $\int f(x) p(x) dx \approx \frac{1}{N} \sum_i f(x_i)$, $x_i \sim p$. Variance decreases at rate $1/\sqrt{N}$, independent of dimension. This is the universal tool for importance sampling, expected-value estimation in RL, and Bayesian inference.</p>
+
+<h3>Ordinary Differential Equations</h3>
+
+<p>Numerical solution of $y' = f(t, y), y(0) = y_0$.</p>
+
+<p><strong>Explicit Euler</strong>: $y_{n+1} = y_n + h f(t_n, y_n)$. Simple but unstable — large step sizes blow up.</p>
+
+<p><strong>Implicit Euler</strong>: $y_{n+1} = y_n + h f(t_{n+1}, y_{n+1})$. Requires solving an equation, but much better stability. <em>Stiff equations</em> (coexisting time constants of very different scales) require implicit methods.</p>
+
+<p><strong>Runge-Kutta 4 (RK4)</strong>: uses a weighted average of multiple intermediate points within each step to achieve fourth-order accuracy; the general-purpose engineering solution.</p>
+
+<h3>Root Finding</h3>
+
+<p><strong>Bisection</strong>: find $f(x) = 0$ on $[a, b]$, requiring $f(a) f(b) < 0$. Halves the interval at each step. Slow to converge but unconditionally stable.</p>
+
+<p><strong>Newton's method</strong>: $x_{n+1} = x_n - f(x_n)/f'(x_n)$. Second-order convergence (extremely fast), but requires a computable derivative, a good initial guess, and no poles. Failure rate is not low.</p>
+
+<h3>In AI</h3>
+
+<p><strong>Diffusion models</strong>: the sampling process solves an SDE (or an equivalent ODE), using DDPM (naive Euler), DDIM (improved step size), or DPM-Solver (high-order methods). The difference between "sampling needs 50 steps" and "sampling needs 5 steps" is the accuracy gap between ODE solvers.</p>
+
+<p><strong>Neural ODEs</strong>: replace the discrete layers of a neural network with a continuous time parameter, where the forward pass solves an ODE $\frac{d\mathbf{h}}{dt} = f(\mathbf{h}, t, \theta)$ and the backward pass uses the adjoint method. Niche but conceptually elegant.</p>
+
+<p><strong>Newton's method in LLM optimization</strong>: second-order optimizers (K-FAC, Shampoo) use Newton's method ideas to approximate the Hessian, converging faster than Adam in certain scenarios. Has not become mainstream, but offers advantages in large-batch training (batch size in the thousands).</p>
+
+<hr style="margin-top:60px; border:none; border-top:1px dashed var(--rule);">
+
+<p style="color:var(--muted); font-size:14px; font-style:italic; text-align:center; margin-top:40px;">
+— End of Chapter 1 —<br>
+29 sections total · Next chapter: Systems Software (CPU, OS, Programming Languages, Databases, Network Stack)
+</p>
+
+</main>
+
+<script>
+  hljs.highlightAll();
+  mermaid.initialize({ startOnLoad: true, theme: 'neutral', fontFamily: 'Inter, sans-serif' });
+</script>
+
+</body>
+</html>

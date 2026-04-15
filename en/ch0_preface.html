@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preface — Building Intelligence</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+  window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+:root {
+  --bg: #fbfaf7;
+  --fg: #1d1d1b;
+  --muted: #6b6b68;
+  --accent: #2d5a7a;
+  --accent-soft: #e6edf2;
+  --rule: #e3dfd6;
+  --code-bg: #282c34;
+  --sidebar-bg: #f4f1ea;
+  --mono: "SFMono-Regular", "JetBrains Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --serif: "Source Serif Pro", "Songti SC", "STSong", Georgia, "Times New Roman", serif;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--fg);
+  background: var(--bg);
+  display: flex;
+}
+aside.toc {
+  position: sticky;
+  top: 0;
+  width: 300px;
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--rule);
+  padding: 24px 20px;
+  font-family: var(--sans);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+aside.toc h1 {
+  font-family: var(--serif);
+  font-size: 18px;
+  margin: 0 0 4px 0;
+  color: var(--accent);
+}
+aside.toc .sub {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+aside.toc .group {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 14px;
+  margin-bottom: 4px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--rule);
+}
+aside.toc ol { list-style: none; padding: 0; margin: 0; }
+aside.toc ol li { margin-bottom: 2px; }
+aside.toc a {
+  color: var(--fg);
+  text-decoration: none;
+  display: block;
+  padding: 3px 6px;
+  border-radius: 3px;
+  transition: all 0.15s;
+}
+aside.toc a:hover { background: var(--accent-soft); color: var(--accent); }
+aside.toc .num { color: var(--muted); font-family: var(--mono); margin-right: 6px; font-size: 11px; }
+
+main {
+  flex: 1;
+  max-width: 880px;
+  padding: 60px 72px 120px 72px;
+  min-width: 0;
+}
+header.cover {
+  border-bottom: 2px solid var(--fg);
+  padding-bottom: 32px;
+  margin-bottom: 48px;
+}
+header.cover h1 {
+  font-size: 42px;
+  line-height: 1.15;
+  margin: 0 0 12px 0;
+  font-weight: 700;
+}
+header.cover .subtitle {
+  font-size: 20px;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 20px;
+}
+header.cover .meta {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+h2 {
+  font-size: 26px;
+  margin-top: 72px;
+  margin-bottom: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+  scroll-margin-top: 20px;
+}
+h3 {
+  font-size: 18px;
+  margin-top: 28px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+p { margin: 0 0 14px 0; text-align: justify; }
+
+.callout {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  padding: 10px 16px;
+  margin: 16px 0;
+  font-size: 15px;
+}
+.callout .tag {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 4px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+  font-family: var(--sans);
+}
+th, td {
+  border-bottom: 1px solid var(--rule);
+  padding: 7px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+th { background: var(--sidebar-bg); font-weight: 600; }
+
+@media (max-width: 1100px) {
+  aside.toc { display: none; }
+  main { padding: 40px 32px; }
+}
+</style>
+</head>
+<body>
+
+<aside class="toc">
+  <h1>Preface</h1>
+  <div class="sub">From Mathematics to Agents — A Complete Knowledge Map for AI Engineers</div>
+
+  <div class="group">Contents</div>
+  <ol>
+    <li><a href="#why"><span class="num">1</span>Why This Book</a></li>
+    <li><a href="#audience"><span class="num">2</span>Who It's For</a></li>
+    <li><a href="#structure"><span class="num">3</span>Book Structure</a></li>
+    <li><a href="#reading-guide"><span class="num">4</span>Reading Guide</a></li>
+    <li><a href="#papers"><span class="num">5</span>About Paper Deep Dives</a></li>
+    <li><a href="#conventions"><span class="num">6</span>Conventions</a></li>
+    <li><a href="#updates"><span class="num">7</span>Updates &amp; Errata</a></li>
+  </ol>
+</aside>
+
+<main>
+
+<header class="cover">
+  <h1>Preface</h1>
+  <div class="subtitle">From Mathematics to Agents — A Complete Knowledge Map for AI Engineers</div>
+  <div class="meta">Internal Study Material · Revised 2026</div>
+</header>
+
+<!-- ===================== WHY ===================== -->
+<h2 id="why">Why This Book</h2>
+
+<p>AI engineering demands extraordinary breadth. You need to understand <strong>why gradients in calculus can optimize a loss function</strong>, and also know <strong>how the Linux kernel's CFS scheduler and HugePages affect training throughput</strong>; you must master classical machine learning from decision trees to XGBoost, while keeping pace with the frontier of Transformers, MoE, and FlashAttention; you need to work through the math behind RLHF and DPO, and also know how to deploy models to production with vLLM and LoRA.</p>
+
+<p>There is no shortage of good books out there — <em>Linear Algebra Done Right</em> for math, the Deep Learning book for neural networks, CSAPP for systems. But each covers one domain in isolation, while real-world work demands all of this knowledge <strong>at the same time</strong>. A single inference optimization problem may simultaneously touch the Roofline model (numerical computation), KV Cache quantization (linear algebra + information theory), PagedAttention (OS memory management), and FP8 training (hardware architecture).</p>
+
+<p>This book attempts to bring the core knowledge an AI engineer needs <strong>into a single coherent system</strong>, covering the complete chain from mathematical foundations to Agent applications with consistent depth and perspective. It is not a textbook — there are no exercises or lengthy proofs; nor is it a quick-reference handbook — every topic is covered to the depth of "what an experienced colleague could explain to you in a 30-minute conversation."</p>
+
+<!-- ===================== AUDIENCE ===================== -->
+<h2 id="audience">Who It's For</h2>
+
+<p>This book is written for three types of readers:</p>
+
+<table>
+<tr><th>Reader Type</th><th>Background</th><th>Reading Advice</th></tr>
+<tr><td><strong>AI Engineers</strong></td><td>Familiar with deep learning, working on model training / inference / deployment</td><td>Skim the math chapters; focus on systems software and performance engineering; use Paper Deep Dives to fill gaps</td></tr>
+<tr><td><strong>Systems Engineers Transitioning to AI</strong></td><td>Experienced with Linux / networking / databases, starting to work with models</td><td>Build confidence starting from Chapter 2 (Systems Software), then read Chapters 1, 3, and 4 in order</td></tr>
+<tr><td><strong>Students / Self-Learners</strong></td><td>Solid programming background, systematically studying AI engineering</td><td>Read chapter by chapter from the beginning; return to Chapter 1 whenever unfamiliar math appears</td></tr>
+</table>
+
+<p>Prerequisites: you know Python, understand basic data structures and algorithms, and have used at least one deep learning framework (PyTorch preferred). No graduate-level math background is assumed — Chapter 1 reviews everything from the ground up.</p>
+
+<!-- ===================== STRUCTURE ===================== -->
+<h2 id="structure">Book Structure</h2>
+
+<p>The book is organized into 5 chapters, progressing layer by layer from foundational mathematics to high-level applications:</p>
+
+<h3>Chapter 1 · Mathematical Foundations</h3>
+<p>A math review handbook for AI engineers. Covers calculus (the mathematical essence of gradient descent and backpropagation), linear algebra (from SVD to low-rank approximation in LoRA), probability and statistics (the connection between MLE and cross-entropy), stochastic processes (Markov modeling in Tree of Thoughts), information theory (entropy, KL divergence, and LLM training loss), and numerical computation (floating-point precision, the Adam optimizer, ODE solvers for diffusion models). Each topic includes an "In AI" section that anchors the mathematical concepts to engineering practice. 7 parts, 29 sections.</p>
+
+<h3>Chapter 2 · Systems Software</h3>
+<p>From CPU to DPDK/VPP — the systems perspective every AI engineer needs. Covers CPU and GPU/NPU architecture (the CUDA programming model, Tensor Cores), operating system internals (process scheduling, virtual memory, concurrency primitives, eBPF), programming languages and compilers (Rust ownership, LLVM/MLIR, AI compilers), databases (B+Tree vs. LSM-Tree, graph databases, time-series databases, vector databases and HNSW), message middleware, and high-performance networking (DPDK user-space drivers, VPP vectorized forwarding, TCP/QUIC, observability). 6 parts, 28 sections.</p>
+
+<h3>Chapter 3 · AI Model Technology</h3>
+<p>From classical machine learning to performance engineering — the longest chapter. Covers traditional ML (complete derivations from KMeans to XGBoost), fundamental neural network operators (GEMM, convolution, activation functions, normalization), classical deep learning (CNN / LSTM / GNN / GAN / VAE / diffusion models), data and feature engineering, training optimization (supervised / self-supervised / SFT / RLHF / DPO / RL / distillation / federated learning / AutoML), AI performance engineering (the Roofline model, quantization and pruning, FlashAttention, software stack optimization), and AI applications in networking (traffic classification, log anomaly detection, KPI time-series forecasting). 7 parts, 36 sections.</p>
+
+<h3>Chapter 4 · LLM Technology</h3>
+<p>From Transformer to Agent — the core technology stack for the large-model era. Covers the LLM landscape and Scaling Laws, a complete derivation of the Transformer architecture, positional encodings (RoPE and long-context extrapolation), attention optimizations (MQA / GQA / MLA / sparse attention / Mamba), tokenizers and embeddings, MoE principles and engineering, distributed training (DDP / ZeRO / 3D parallelism), inference engines (KV Cache / PagedAttention / continuous batching / speculative decoding), inference compression (AWQ / GPTQ / FP8), RAG (from basics to GraphRAG / Agentic RAG), Agents (ReAct / Function Calling / MCP / multi-agent), and multimodality (VLMs / video generation / unified multimodal models). 12 parts.</p>
+
+<h3>Chapter 5 · Paper Deep Dives</h3>
+<p>From ResNet to DeepSeek — in-depth analysis of a curated set of foundational papers. This is a distinctive feature of the book: while the first four chapters address "what it is" and "how to use it," the Paper Deep Dives chapter addresses "why it was designed this way" and "the complete chain of mathematical derivation." Each paper includes background, core methodology (with full formula derivations), code implementation, experimental results, and a critical perspective on impact and limitations. High-citation papers include complete code examples and architecture diagrams. Every mention of a paper in the preceding chapters links directly to the corresponding deep dive.</p>
+
+<!-- ===================== READING GUIDE ===================== -->
+<h2 id="reading-guide">Reading Guide</h2>
+
+<p>This is not a book that needs to be read cover to cover. Based on your goals, here are a few recommended paths:</p>
+
+<h3>Path A: Fast Track to LLM Engineering</h3>
+<p>Chapter 4 (LLM Technology) → Chapter 3, Sections 3.5–3.6 (Training Optimization and Performance Engineering) → Chapter 5 relevant papers. Return to Chapter 1 whenever unfamiliar math comes up.</p>
+
+<h3>Path B: Systems Engineer Transitioning to AI</h3>
+<p>Chapter 2 (Systems Software, build confidence) → Chapter 1 (fill in the math) → Chapter 3 (AI Models, starting from classical ML) → Chapter 4 (LLMs).</p>
+
+<h3>Path C: Interview Preparation</h3>
+<p>Chapter 1 focusing on calculus + linear algebra + probability → Chapter 3, Sections 3.1–3.3 (classical ML + deep learning) → Chapter 4, Sections 4.2–4.4 (Transformer + attention) → Chapter 5 Paper Deep Dives for a quick pass.</p>
+
+<h3>Path D: Complete Study</h3>
+<p>Follow the chapter order: Chapter 1 → Chapter 2 → Chapter 3 → Chapter 4 → Chapter 5. After completing each chapter, read the corresponding paper deep dives.</p>
+
+<div class="callout">
+<span class="tag">Tip</span>
+The blue orientation bar at the start of each section describes where that section sits within the overall knowledge system and its relative importance, helping you decide whether to read carefully or skim.
+</div>
+
+<!-- ===================== PAPERS ===================== -->
+<h2 id="papers">About Paper Deep Dives</h2>
+
+<p>Chapter 5 is a defining feature of this book. From the hundreds of papers referenced across the first four chapters, we have selected approximately 26 for in-depth analysis, organized along several dimensions:</p>
+
+<table>
+<tr><th>Category</th><th>Papers Covered</th><th>Depth</th></tr>
+<tr><td>Classic Models (related to Chapter 3)</td><td>ResNet, LSTM, BatchNorm, Adam, XGBoost, GAN, VAE, DDPM, Word2Vec</td><td>1–3 pages; high-citation papers include code</td></tr>
+<tr><td>Systems Foundations (related to Chapter 2)</td><td>HNSW, Raft</td><td>1–2 pages</td></tr>
+<tr><td>Transformers &amp; Pretraining (related to Chapter 4)</td><td>Attention Is All You Need, BERT/GPT, Scaling Laws, RoPE</td><td>2–3 pages, with complete implementations</td></tr>
+<tr><td>Efficiency &amp; Inference (related to Chapter 4)</td><td>FlashAttention, LoRA/QLoRA, PagedAttention, MoE</td><td>2–3 pages, with algorithmic pseudocode</td></tr>
+<tr><td>Alignment &amp; Applications (related to Chapter 4)</td><td>InstructGPT/RLHF, DPO, Chain-of-Thought, DeepSeek-V3</td><td>2–3 pages</td></tr>
+<tr><td>LLM Supplements</td><td>Mamba, RAG, ReAct</td><td>1–2 pages</td></tr>
+</table>
+
+<p>Paper Deep Dives are not paper translations — the focus is on: <strong>what problem this paper solves, what the core idea is, the key steps in the mathematical derivation, and how it influenced subsequent work</strong>. Each entry ends with a "Critical Perspective" section that identifies limitations and traces subsequent developments.</p>
+
+<!-- ===================== CONVENTIONS ===================== -->
+<h2 id="conventions">Conventions</h2>
+
+<h3>Density and Style</h3>
+<p>The target density for each section is "what an experienced colleague could explain to you in a 30-minute conversation" — more compact than a textbook, more rigorous than a blog post. Formulas appear only when necessary, but when they do, they are derived in full. Code examples are primarily in Python/PyTorch, with occasional use of C, Rust, or SQL.</p>
+
+<h3>Cross-References</h3>
+<p>The connections between concepts matter. The orientation bar at the start of each section notes its relationship to other chapters. When a paper is first mentioned in the main text, a hyperlink points to its deep dive in Chapter 5. For example, when the text mentions "FlashAttention's tiling strategy," you can jump directly to the paper deep dive for the complete algorithm.</p>
+
+<h3>"In AI" Sections</h3>
+<p>Every topic in Chapters 1 and 2 closes with an "In AI" section that anchors the foundational knowledge to AI engineering practice. This is a deliberate design choice — isolated knowledge is easily forgotten; it becomes genuinely internalized only when connected to real applications.</p>
+
+<!-- ===================== UPDATES ===================== -->
+<h2 id="updates">Updates &amp; Errata</h2>
+
+<p>The AI field evolves at extraordinary speed. The content of this book reflects the state of the technology as of <strong>April 2026</strong>. We will continuously update the following:</p>
+
+<ul style="list-style:none; padding-left:0;">
+<li>- Significant newly released models and architectures (e.g., DeepSeek V4/R2, Qwen3.6-Plus, Claude Mythos, etc.)</li>
+<li>- Ongoing expansion of Paper Deep Dives</li>
+<li>- Errata corrections from community feedback</li>
+<li>- Updates to outdated information (hardware specs, framework versions, ecosystem changes)</li>
+</ul>
+
+<p>If you find errors or have content suggestions, please report them to the maintainers.</p>
+
+<p style="margin-top:48px; padding-top:24px; border-top:1px solid var(--rule); color:var(--muted); font-size:14px; font-family:var(--sans);">
+The book comprises 5 chapters, 130+ sections, covering five major modules: mathematics, systems, AI models, LLMs, and paper deep dives. Happy reading.
+</p>
+
+</main>
+
+<script>hljs.highlightAll();</script>
+</body>
+</html>
