@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LLM技术 — From Transformer to Agent</title>
+<title>LLM技术 — 从Transformer到Agent</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
@@ -82,121 +82,121 @@ th{background:var(--sidebar-bg);font-weight:600;}
 <main>
 <header class="cover">
 <h1>LLM技术</h1>
-<div class="subtitle">从Transformer到Agent — Complete Technical Stack of Large Language Models</div>
-<div class="meta">Chapter 4 · 内部学习材料 · 共37节</div>
+<div class="subtitle">从Transformer到Agent</div>
+<div class="meta">第4章 · 内部学习材料 · 共37节</div>
 </header>
 
-<p>LLM is no longer just a "model"—it is an entire technology stack. From low-level Transformer operators, to distributed training strategies, to inference-side scheduling optimizations, to RAG and Agent on the application side, every layer involves substantial engineering decisions and algorithm choices. This chapter ties these layers together so you can see the whole picture from top to bottom.</p>
+<p>LLM 早已不只是一个"模型"——它是一整套技术栈。从底层的 Transformer 算子、到分布式训练策略、到推理侧的调度优化、再到应用层的 RAG 与 Agent，每一层都涉及大量工程决策和算法取舍。本章把这些层串联起来，让你从上到下看清整张图。</p>
 
-<p>37 sections, all deep dives. Key anchors include: complete derivation of Self-Attention (4.2.2), RoPE rotation matrices (4.3.2), DeepSeek's MLA low-rank decomposition (4.4.1), Mamba's selective state space (4.4.3), ZeRO three-stage memory sharding (4.7.2), PagedAttention's paging mechanism (4.8.3), acceptance rate analysis for speculative decoding (4.8.5), mathematics of AWQ/GPTQ (4.9.1), reranking and query rewriting in advanced RAG (4.10.2), and ReAct loop implementation (4.11.1). Other sections maintain the density of "conceptual intuition + minimal derivation + engineering details."</p>
+<p>共37节，全部深挖。重点锚点包括：Self-Attention 完整推导（4.2.2）、RoPE 旋转矩阵（4.3.2）、DeepSeek MLA 低秩分解（4.4.1）、Mamba 选择性状态空间（4.4.3）、ZeRO 三阶段显存切分（4.7.2）、PagedAttention 分页机制（4.8.3）、推测解码接受率分析（4.8.5）、AWQ/GPTQ 数学推导（4.9.1）、高级 RAG 的重排序与查询改写（4.10.2）、ReAct 循环实现（4.11.1）。其余各节维持"概念直觉 + 极简推导 + 工程细节"的密度。</p>
 
-<p>When discussing concrete products, we focus on <strong>open-source</strong> (Transformers, vLLM, TGI, llama.cpp, DeepSpeed, FSDP, LangChain, LlamaIndex, etc.), with OpenAI/Anthropic APIs mentioned for comparison. This way you see the full ecosystem landscape without being tied to any single vendor.</p>
+<p>涉及具体产品时，以<strong>开源</strong>为主（Transformers、vLLM、TGI、llama.cpp、DeepSpeed、FSDP、LangChain、LlamaIndex 等），OpenAI/Anthropic API 作对比参照。这样能看到完整的生态全貌，而不被任何单一厂商绑定。</p>
 
 <div class="part-header"><div class="part-label">PART ONE</div><h2 class="part-title">4.1 LLM全景</h2><p class="part-desc">建立整个LLM领域的坐标系—能力从何而来,生态如何分化。</p></div>
 
-<h2 id="s4-1-1"><span class="num">4.1.1</span>From LM to LLM</h2>
-<p class="pos">Position: How Scaling transforms "language models" into "general reasoning systems"—history, key milestones, Scaling Law.</p>
+<h2 id="s4-1-1"><span class="num">4.1.1</span>从语言模型到LLM</h2>
+<p class="pos">定位：Scaling 如何把"语言模型"变成"通用推理系统"——历史脉络、关键节点、Scaling Law。</p>
 
-<h3>The Old Problem of Language Models</h3>
-<p>The definition of a language model has never changed: given the first $t-1$ tokens, predict the probability distribution of the $t$-th token.</p>
+<h3>语言模型的老问题</h3>
+<p>语言模型的定义从未变过：给定前 $t-1$ 个 token，预测第 $t$ 个 token 的概率分布。</p>
 <div class="formula">$P(w_t | w_1, w_2, \ldots, w_{t-1})$</div>
-<p>From Shannon's information theory in 1948, to N-grams in the 1980s, to Bengio's neural language models in 2003, to Word2Vec and GloVe—for decades, NLP researchers have been finding better ways to model this conditional probability. But no one could have predicted that "stacking" this simple objective large enough would lead to emergent reasoning, programming, and mathematical abilities.</p>
+<p>从 1948 年 Shannon 的信息论、到 1980 年代的 N-gram、到 2003 年 Bengio 的神经语言模型、再到 Word2Vec 和 GloVe——几十年里 NLP 研究者一直在找更好的方式建模这个条件概率。但没人预料到，把这个简单目标"堆大"到足够规模，会涌现出推理、编程、数学等能力。</p>
 
-<h3>Key Breakthroughs</h3>
-<p><strong>2017 Transformer</strong>: Google's "<a href="ch5_partA_preview.html#p06">Attention is All You Need</a>." Completely replaces RNNs, training is parallelizable, and results are superior. Foundation for everything that followed.</p>
-<p><strong>2018 <a href="ch5_partA_preview.html#p07">BERT / GPT-1</a></strong>: Establishes the pre-training + fine-tuning paradigm. BERT uses masked language modeling for pre-training, dominating various downstream tasks; GPT uses causal language modeling, taking the generation route.</p>
-<p><strong>2020 GPT-3</strong>: 175B parameters, can perform tasks via few-shot learning without fine-tuning. "In-context learning" becomes the new paradigm—as models grow larger, they can learn new tasks from prompts. This is the turning point where LLM transforms from "feature extractor" to "general reasoner."</p>
-<p><strong>2022 ChatGPT</strong>: Brings <a href="ch5_partB_preview.html#p14">RLHF</a> to product grade; models can now "chat." Overnight, LLM transforms from a research topic to a consumer product.</p>
-<p><strong>2023 GPT-4 / Claude 2 / LLaMA-2</strong>: Multimodal, 100K+ context windows, and strong open-source models emerge. The ecosystem begins to bifurcate—closed-source commercial vs. open-weight.</p>
-<p><strong>2024 <a href="ch5_partB_preview.html#p17">DeepSeek-V3</a> / o1 / Claude 3.5 / Qwen2.5</strong>: Open-source catches up with the first tier of closed-source models; "thinking at test time" (test-time compute) becomes a new dimension, allowing models to "think" for extended periods before output.</p>
-<p><strong>2025 DeepSeek-R1 / Qwen3 / LLaMA 4 / Claude 4 / GPT-5 / Gemini 3</strong>: Explosion of reasoning models. DeepSeek-R1 launches in early 2025, achieving GPT-4o-level reasoning via pure RL but at a tenth the cost, triggering a global open-source race; Qwen3 introduces a "thinking mode" toggle, covering both reasoning and non-reasoning scenarios in a single model; DeepSeek's subsequent V3.1 unifies thinking/non-thinking modes, while V3.2 introduces Sparse Attention (DSA) to further reduce costs; LLaMA 4 family (Scout/Maverick) uses MoE for the first time; Claude 4/4.5 emphasizes agent stability, while OpenAI GPT-5 and Google Gemini 3 compete for top reasoning benchmarks.</p>
-<p><strong>Early 2026</strong>: Open-source MoE densifies further—Qwen3-Next 80B-A3B, Qwen3.5-397B-A17B, Kimi K2, GLM-4.5/4.6, and MiniMax-M2 all emerge from late 2025 through early 2026. On the closed-source side, OpenAI releases GPT-4.2 (2025.12), followed by GPT-4.4 on 2026.3.5; the Claude series evolves to Opus 4.6 / Sonnet 4.6 / Haiku 4.5. Anthropic's <strong>Claude Mythos Preview</strong> in 2026.4 is a critical milestone—this unreleased frontier model exhibits "emergent-level" abilities in cybersecurity, automatically discovering thousands of zero-day vulnerabilities in mainstream operating systems and browsers. Anthropic makes an exception by not releasing it publicly, instead providing it exclusively to 50+ major enterprise partners through Project Glasswing for defensive purposes. This is the first time a major AI company has proactively constrained a frontier model's release for safety reasons since OpenAI's restricted GPT-2 release in 2019.</p>
-<p>In March 2026, DeepSeek releases <strong>V4</strong> (next-generation flagship) and <strong>R2</strong> (R1's successor reasoning model with significantly improved multilingual reasoning); Alibaba releases <strong>Qwen3.6-Plus Preview</strong>, supporting 1M context and always-on CoT reasoning. Major disruption in video generation: OpenAI announces on 2026.3.24 the <strong>shutdown of the entire Sora product line</strong> (including standalone app and API), redirecting resources to robot world simulation research; meanwhile, Kling 3.0 becomes the first natively 4K 60fps video generation model.</p>
-<p>The gap between open-source and closed-source narrows further to 3-6 months. Anthropic's MCP (Model Context Protocol) becomes the standard for Agent tool calling throughout 2025, widely adopted across Claude, Cursor, and the VSCode ecosystem. In 2025.12, MCP is donated to the Linux Foundation's Agentic AI Foundation (jointly founded by Anthropic, Block, and OpenAI), becoming the industry-standard protocol.</p>
+<h3>关键突破</h3>
+<p><strong>2017 Transformer</strong>：Google 的"<a href="ch5_partA_preview.html#p06">Attention is All You Need</a>"。彻底替代 RNN，训练可并行，效果更好。此后一切的基础。</p>
+<p><strong>2018 <a href="ch5_partA_preview.html#p07">BERT / GPT-1</a></strong>：确立预训练 + 微调范式。BERT 用 Masked Language Modeling 预训练，横扫各类下游任务；GPT 走因果语言建模的生成路线。</p>
+<p><strong>2020 GPT-3</strong>：1750 亿参数，无需微调即可通过 few-shot 完成任务。"In-context learning"成为新范式——模型越大，越能从 prompt 中学会新任务。LLM 从"特征提取器"转变为"通用推理器"的转折点。</p>
+<p><strong>2022 ChatGPT</strong>：把 <a href="ch5_partB_preview.html#p14">RLHF</a> 做到产品级；模型终于能"对话"了。一夜之间，LLM 从研究课题变成消费产品。</p>
+<p><strong>2023 GPT-4 / Claude 2 / LLaMA-2</strong>：多模态、100K+ 上下文窗口、强劲的开源模型相继出现。生态开始分化——闭源商业 vs. 开放权重。</p>
+<p><strong>2024 <a href="ch5_partB_preview.html#p17">DeepSeek-V3</a> / o1 / Claude 3.5 / Qwen2.5</strong>：开源追上闭源第一梯队；"推理时思考"（test-time compute）成为新维度，模型可以在输出前"想"很久。</p>
+<p><strong>2025 DeepSeek-R1 / Qwen3 / LLaMA 4 / Claude 4 / GPT-5 / Gemini 3</strong>：推理模型爆发。DeepSeek-R1 于 2025 年初发布，通过纯 RL 以十分之一的成本达到 GPT-4o 级别的推理能力，引发全球开源竞赛；Qwen3 引入"思考模式"开关，单模型同时覆盖推理与非推理场景；DeepSeek 后续 V3.1 统一思考/非思考模式，V3.2 引入 Sparse Attention（DSA）进一步降本；LLaMA 4 系列（Scout/Maverick）首次使用 MoE；Claude 4/4.5 强调 Agent 稳定性，OpenAI GPT-5 与 Google Gemini 3 角逐顶级推理基准。</p>
+<p><strong>2026 年初</strong>：开源 MoE 持续加密——Qwen3-Next 80B-A3B、Qwen3.5-397B-A17B、Kimi K2、GLM-4.5/4.6、MiniMax-M2 均在 2025 年末至 2026 年初相继发布。闭源方面，OpenAI 发布 GPT-4.2（2025.12），随后于 2026.3.5 发布 GPT-4.4；Claude 系列演进到 Opus 4.6 / Sonnet 4.6 / Haiku 4.5。Anthropic 于 2026.4 发布的 <strong>Claude Mythos Preview</strong> 是一个关键里程碑——这个尚未公开发布的前沿模型在网络安全领域展现出"涌现级"能力，能自动发现主流操作系统和浏览器中的数千个零日漏洞。Anthropic 破例不公开发布，而是通过 Project Glasswing 专项向 50 余家大型企业合作伙伴提供防御性使用授权。这是自 OpenAI 2019 年限制发布 GPT-2 以来，首次有主要 AI 公司出于安全原因主动约束前沿模型的发布。</p>
+<p>2026 年 3 月，DeepSeek 发布 <strong>V4</strong>（下一代旗舰）和 <strong>R2</strong>（R1 的继任推理模型，多语言推理能力大幅提升）；阿里巴巴发布 <strong>Qwen3.6-Plus Preview</strong>，支持 1M 上下文和常态化 CoT 推理。视频生成领域发生重大变局：OpenAI 于 2026.3.24 宣布<strong>关停整条 Sora 产品线</strong>（包括独立应用和 API），将资源转向机器人世界模拟研究；与此同时，可灵 3.0 成为首个原生 4K 60fps 视频生成模型。</p>
+<p>开源与闭源的差距进一步收窄至 3—6 个月。Anthropic 的 MCP（Model Context Protocol）在 2025 年全年成为 Agent 工具调用的事实标准，在 Claude、Cursor 和 VSCode 生态中广泛采用。2025.12，MCP 捐献给 Linux 基金会旗下的 Agentic AI Foundation（由 Anthropic、Block 和 OpenAI 联合创立），成为行业标准协议。</p>
 
-<h3><a href="ch5_partA_preview.html#p08">Scaling Law</a>: The Mathematical Explanation for All This</h3>
-<p>Why does scaling up enable emergent abilities? Two papers provide the answer: Kaplan 2020 and Chinchilla 2022. <strong>Loss is a power-law function of parameter count $N$, data quantity $D$, and compute budget $C$.</strong></p>
+<h3><a href="ch5_partA_preview.html#p08">Scaling Law</a>：一切的数学解释</h3>
+<p>为什么扩大规模能带来涌现能力？两篇论文给出了答案：Kaplan 2020 和 Chinchilla 2022。<strong>Loss 是参数量 $N$、数据量 $D$ 和算力预算 $C$ 的幂律函数。</strong></p>
 <div class="formula">$L(N, D) \approx E + \frac{A}{N^\alpha} + \frac{B}{D^\beta}$</div>
-<p>$E$ is the irreducible entropy of the data (theoretical lower bound), and $A/N^\alpha, B/D^\beta$ are compressible portions. The power law means that as long as compute continues to scale, loss continues to decrease—no saturation has been observed.</p>
-<p>More intriguingly, Chinchilla's finding: given a compute budget $C = 6ND$, the optimal point is when $N$ and $D$ grow in roughly equal proportion (with a specific ratio of about 1:20 tokens/param). GPT-3's 175B parameters actually didn't have enough training data (300B tokens); Chinchilla proved that 70B parameters with 1.4T tokens performs better. This guided the design of the LLaMA family.</p>
+<p>$E$ 是数据的不可压缩熵（理论下界），$A/N^\alpha, B/D^\beta$ 是可压缩部分。幂律意味着只要算力持续增加，loss 就持续下降——目前尚未观测到饱和。</p>
+<p>更有趣的是 Chinchilla 的发现：给定算力预算 $C = 6ND$，最优点是 $N$ 和 $D$ 大致等比增长（具体比例约为每参数 20 个 token）。GPT-3 的 1750 亿参数其实训练数据不够（仅 3000 亿 token）；Chinchilla 证明 700 亿参数配 1.4T token 效果更好。这指导了 LLaMA 系列的设计。</p>
 
-<h3>Emergent Abilities</h3>
-<p>Scaling is not linear—certain abilities suddenly appear when model size crosses a threshold (in-context learning, CoT reasoning, multi-step math). This is called "<strong>emergent abilities</strong>." Small models can't learn from limited prompts; large models master a task from just two or three examples.</p>
-<p>Some 2023 work argued that emergence is an illusion of metric choice (BIG-Bench uses strict accuracy, appearing to "emerge" as it jumps from 0 to non-zero; switching to log-likelihood smooths it out). But even so, the phenomenon remains: <strong>there are real qualitative differences in capability between large and small models.</strong></p>
+<h3>涌现能力</h3>
+<p>Scaling 不是线性的——某些能力在模型规模超过阈值时会突然出现（in-context learning、CoT 推理、多步数学）。这被称为"<strong>涌现能力</strong>"。小模型无法从有限的 prompt 中学习；大模型只需两三个示例就能掌握一项任务。</p>
+<p>2023 年有工作认为涌现是度量选择的假象（BIG-Bench 用严格准确率，从 0 跳到非零看起来"涌现"；换成对数似然就平滑了）。但即便如此，现象依然存在：<strong>大模型和小模型之间确实存在真实的能力质变。</strong></p>
 
-<h3>From Scaling to Test-Time Compute</h3>
-<p>In late 2024, the rules of the game changed again. OpenAI's o1 demonstrated that models don't just scale during training—<strong>test-time scaling also offers enormous gains.</strong> Letting models "think" for extended periods (generating many reasoning tokens before outputting an answer) can double performance. OpenAI subsequently released <strong>o3 and o3-mini</strong>, further boosting reasoning—o3 achieves breakthrough results (87.5%) on the ARC-AGI benchmark, exceeding the human average for the first time. DeepSeek-R1, QwQ, and Claude 3.7 Sonnet's thinking mode all follow this path.</p>
-<p>Throughout 2025, this direction dominated LLM evolution. Key developments:</p>
+<h3>从 Scaling 到 Test-Time Compute</h3>
+<p>2024 年末，游戏规则再次改变。OpenAI 的 o1 证明了模型不只是在训练时 scaling——<strong>推理时 scaling 同样带来巨大收益。</strong>让模型"想"更长时间（在输出答案前生成大量推理 token）可以将性能翻倍。OpenAI 随后发布 <strong>o3 和 o3-mini</strong>，进一步提升推理能力——o3 在 ARC-AGI 基准上取得突破性成绩（87.5%），首次超过人类平均水平。DeepSeek-R1、QwQ 以及 Claude 3.7 Sonnet 的思考模式均走这条路。</p>
+<p>2025 年全年，这一方向主导了 LLM 的演进。关键进展：</p>
 <ul style="list-style:none;padding-left:0;">
-<li><strong>DeepSeek-R1 (2025.1)</strong>: An open-source reasoning model trained via pure RL (GRPO algorithm) without requiring human annotations of reasoning traces—overturning the assumption that "alignment data is essential." The R1-0528 version exceeds GPT-4o on AIME math problems.</li>
-<li><strong>Hybrid thinking/non-thinking modes</strong>: Qwen3 pioneers a "mode toggle"—users flip a switch to enable or disable extended reasoning. DeepSeek V3.1 further merges both modes into one model, with chat templates controlling behavior. This design became standard for open-source models in the second half of 2025.</li>
-<li><strong>Thinking budget</strong>: The product side gradually exposes a "thinking budget" parameter, letting users control reasoning length—the same question can be answered with 1K tokens of thinking (fast) or 16K tokens (deep).</li>
+<li><strong>DeepSeek-R1（2025.1）</strong>：一个通过纯 RL（GRPO 算法）训练的开源推理模型，无需人工标注推理轨迹——推翻了"对齐数据不可或缺"的假设。R1-0528 版本在 AIME 数学题上超越 GPT-4o。</li>
+<li><strong>思考/非思考混合模式</strong>：Qwen3 率先引入"模式开关"——用户拨动开关即可启用或关闭扩展推理。DeepSeek V3.1 进一步将两种模式合并进同一个模型，由 chat template 控制行为。这一设计在 2025 年下半年成为开源模型的标配。</li>
+<li><strong>思考预算</strong>：产品侧逐步暴露"thinking budget"参数，让用户控制推理长度——同一个问题可以用 1K token 的思考（快速）或 16K token 的思考（深度）来回答。</li>
 </ul>
-<p>Test-time compute transforms "one forward pass determines capability" into "pay more compute for better answers"—a significant shift for the product side. This is one of the major axes of LLM evolution in the coming years.</p>
+<p>Test-time compute 把"一次前向决定能力"变成了"花更多算力换更好答案"——对产品侧是重大转变。这是未来几年 LLM 演进的主轴之一。</p>
 
-<h2 id="s4-1-2"><span class="num">4.1.2</span>Open-Source vs Closed-Source Ecosystems</h2>
-<p class="pos">Position: Two different development paths—open weights vs API services—and their technical/commercial tradeoffs.</p>
+<h2 id="s4-1-2"><span class="num">4.1.2</span>开源与闭源生态</h2>
+<p class="pos">定位：两条不同的发展路径——开放权重 vs. API 服务——及其技术与商业取舍。</p>
 
-<h3>Closed-Source Commercial Model</h3>
-<p>Typical examples: OpenAI's GPT series, Anthropic's Claude series, Google's Gemini. Model weights are not public; access is via API. Advantages: frontier capabilities (new releases often lead open-source by 6-12 months), managed service (no ops burden), comprehensive multimodal abilities.</p>
-<p>Tradeoffs: data must leave your infrastructure (privacy compliance), costs scale with usage, vendor lock-in, limited or no fine-tuning. Best for application development companies and non-sensitive workloads.</p>
+<h3>闭源商业模型</h3>
+<p>典型代表：OpenAI 的 GPT 系列、Anthropic 的 Claude 系列、Google 的 Gemini。模型权重不公开，通过 API 访问。优势：前沿能力（新版本往往领先开源 6—12 个月）、托管服务（无运维负担）、完整的多模态能力。</p>
+<p>取舍：数据须离开自有基础设施（隐私合规问题）、成本随用量线性增长、厂商锁定、微调能力有限或不支持。最适合应用开发公司和非敏感业务场景。</p>
 
-<h3>Open-Source Weight Models</h3>
-<p>Main families (as of early 2026):</p>
+<h3>开放权重模型</h3>
+<p>主要系列（截至 2026 年初）：</p>
 <table>
-<tr><th>Family</th><th>Latest</th><th>License</th><th>Characteristics</th></tr>
-<tr><td>LLaMA</td><td>LLaMA 4 Scout / Maverick</td><td>Community License</td><td>Meta-led; LLaMA 4 first to use MoE architecture</td></tr>
-<tr><td>Qwen</td><td>Qwen3 (0.6B-235B MoE), Qwen3-Next 80B-A3B</td><td>Apache 2.0</td><td>Alibaba; thinking mode toggle; strong in Chinese/English; full MoE and dense lineup</td></tr>
-<tr><td>DeepSeek</td><td>DeepSeek-V3.1/V3.2, R1</td><td>MIT</td><td>MLA, DSA architectural innovations; strong reasoning; extremely low cost</td></tr>
-<tr><td>Mistral</td><td>Mistral Large 3, Ministral</td><td>Partial Apache 2.0</td><td>European open-source pioneer</td></tr>
-<tr><td>Kimi (Moonshot)</td><td>Kimi K2, K2-Instruct</td><td>Permissive License</td><td>Emerged in 2025; strong long context and reasoning</td></tr>
-<tr><td>GLM (Zhipu)</td><td>GLM-4.5, GLM-4.6</td><td>Permissive License</td><td>Chinese MoE; shared experts + attention bias</td></tr>
-<tr><td>MiniMax</td><td>MiniMax-M2</td><td>Open Weight</td><td>Chinese; Flash Attention variant</td></tr>
-<tr><td>Phi</td><td>Phi-4</td><td>MIT</td><td>Microsoft; strong small models</td></tr>
-<tr><td>Gemma</td><td>Gemma 2, Gemma 3</td><td>Gemma License</td><td>Google's open-source version based on Gemini</td></tr>
-<tr><td>GPT-OSS</td><td>gpt-oss-20b, gpt-oss-120b</td><td>Apache 2.0</td><td>OpenAI's first open-source in 2025; first since GPT-2</td></tr>
-<tr><td>Granite</td><td>Granite 4 (Mamba-Attention hybrid)</td><td>Apache 2.0</td><td>IBM; enterprise use cases; architectural innovation</td></tr>
-<tr><td>Nemotron</td><td>Nemotron 2</td><td>Open</td><td>NVIDIA; Mamba2-Transformer hybrid</td></tr>
+<tr><th>系列</th><th>最新版本</th><th>许可证</th><th>特点</th></tr>
+<tr><td>LLaMA</td><td>LLaMA 4 Scout / Maverick</td><td>社区许可证</td><td>Meta 主导；LLaMA 4 首次采用 MoE 架构</td></tr>
+<tr><td>Qwen</td><td>Qwen3（0.6B-235B MoE）、Qwen3-Next 80B-A3B</td><td>Apache 2.0</td><td>阿里巴巴；思考模式开关；中英文均强；MoE 与稠密全系覆盖</td></tr>
+<tr><td>DeepSeek</td><td>DeepSeek-V3.1/V3.2, R1</td><td>MIT</td><td>MLA、DSA 架构创新；推理能力强；成本极低</td></tr>
+<tr><td>Mistral</td><td>Mistral Large 3, Ministral</td><td>部分 Apache 2.0</td><td>欧洲开源先驱</td></tr>
+<tr><td>Kimi（月之暗面）</td><td>Kimi K2, K2-Instruct</td><td>宽松许可证</td><td>2025 年崛起；长上下文与推理能力突出</td></tr>
+<tr><td>GLM（智谱）</td><td>GLM-4.5, GLM-4.6</td><td>宽松许可证</td><td>国产 MoE；共享专家 + 注意力偏置</td></tr>
+<tr><td>MiniMax</td><td>MiniMax-M2</td><td>开放权重</td><td>国产；Flash Attention 变体</td></tr>
+<tr><td>Phi</td><td>Phi-4</td><td>MIT</td><td>微软；小模型能力突出</td></tr>
+<tr><td>Gemma</td><td>Gemma 2, Gemma 3</td><td>Gemma 许可证</td><td>Google 基于 Gemini 的开源版本</td></tr>
+<tr><td>GPT-OSS</td><td>gpt-oss-20b, gpt-oss-120b</td><td>Apache 2.0</td><td>OpenAI 2025 年首次开源；GPT-2 之后的首次</td></tr>
+<tr><td>Granite</td><td>Granite 4（Mamba-Attention 混合）</td><td>Apache 2.0</td><td>IBM；企业场景；架构创新</td></tr>
+<tr><td>Nemotron</td><td>Nemotron 2</td><td>开放</td><td>NVIDIA；Mamba2-Transformer 混合</td></tr>
 </table>
-<p>Note that "open-source" is a spectrum—LLaMA's community license has commercial restrictions (customers with 700M+ monthly active users need separate licensing), so it's strictly "open-weight." Mistral, Qwen, DeepSeek, Kimi, GLM, and GPT-OSS are true Apache/MIT, enabling unlimited commercial use.</p>
-<p>A notable 2025 shift: <strong>Chinese open-source models become the absolute driving force</strong>—Qwen, DeepSeek, Kimi, GLM, MiniMax, Xiaomi MiMo and others surge collectively. The Chinchilla principle (data quantity matching parameter count) is widely adopted, with training data scaling from 15T tokens in the LLaMA-3 era to 30-40T.</p>
+<p>需要注意的是，"开源"是一个连续谱——LLaMA 的社区许可证有商业限制（月活用户超过 7 亿的客户需要单独授权），严格来说只是"开放权重"。Mistral、Qwen、DeepSeek、Kimi、GLM 和 GPT-OSS 是真正的 Apache/MIT，支持无限制商业使用。</p>
+<p>2025 年一个显著转变：<strong>中国开源模型成为绝对推动力</strong>——Qwen、DeepSeek、Kimi、GLM、MiniMax、小米 MiMo 等集体爆发。Chinchilla 原则（数据量与参数量匹配）被广泛采用，训练数据从 LLaMA-3 时代的 15T token 扩展到 30—40T。</p>
 
-<h3>Capability Gaps Are Narrowing</h3>
-<p>A striking 2024 trend: the gap between open-source flagship models and closed-source frontiers narrows to 6 months. By 2025, it shrinks to 3-6 months—DeepSeek-V3.2, Qwen3-235B-A22B, and Kimi K2 match or exceed contemporary closed-source models in math reasoning, coding, and general benchmarks. DeepSeek-R1 even surpasses GPT-4o-level models on some math benchmarks while costing 20x less.</p>
-<p>The "DeepSeek Moment" in February 2025: After R1's release, the global AI community is shaken; 94% of GitHub Trending's weekly rankings are AI-related. Closed-source vendors accelerate: OpenAI launches GPT-5, GPT-4.1, and GPT-4.2 (2025.12, with consecutive Codex-specific versions) in 2025; releases GPT-4.4 in 2026.3 unifying reasoning, coding, and computer use (1M context, 75% OSWorld-Verified), and rarely, open-sources GPT-OSS-20B/120B. Anthropic releases Claude Sonnet 4.5, Opus 4.6, Haiku 4.5, and previews Claude Mythos Preview in 2026.4—the gap reopens, but often closes again within months as the next open-source generation catches up.</p>
-<p>Closed-source maintains advantages in a few areas: multimodal completeness (Gemini 3's video understanding, GPT-4o/GPT-5's real-time voice chat); ultra-long context (Gemini's practical 1M+, GPT-4.4's usable 1M tokens); Agent tool-calling stability (Claude's Computer Use maturity); safety guardrails and compliance. Plus domain-specific "emergent abilities"—cybersecurity breakthroughs like Mythos Preview remain beyond current open-source models.</p>
+<h3>能力差距正在收窄</h3>
+<p>2024 年的显著趋势：开源旗舰模型与闭源前沿之间的差距收窄至 6 个月。到 2025 年，进一步缩短至 3—6 个月——DeepSeek-V3.2、Qwen3-235B-A22B 和 Kimi K2 在数学推理、编程和通用基准上已与同期闭源模型持平甚至超越。DeepSeek-R1 甚至在部分数学基准上超越 GPT-4o 级别的模型，而成本仅为后者的二十分之一。</p>
+<p>2025 年 2 月的"DeepSeek 时刻"：R1 发布后，全球 AI 社区震动；GitHub Trending 周榜中 94% 为 AI 相关。闭源厂商加速跟进：OpenAI 在 2025 年推出 GPT-5、GPT-4.1 和 GPT-4.2（2025.12，附连续 Codex 专项版）；于 2026.3 发布 GPT-4.4，统一推理、编程与计算机使用（1M 上下文，OSWorld-Verified 75%），并罕见地开源了 GPT-OSS-20B/120B。Anthropic 发布 Claude Sonnet 4.5、Opus 4.6、Haiku 4.5，并于 2026.4 预览 Claude Mythos Preview——差距时而拉开，但往往在下一代开源模型发布后数月内再度收窄。</p>
+<p>闭源在少数领域仍保持优势：多模态完整性（Gemini 3 的视频理解、GPT-4o/GPT-5 的实时语音）；超长上下文（Gemini 实用 1M+、GPT-4.4 可用 1M token）；Agent 工具调用稳定性（Claude Computer Use 的成熟度）；安全护栏与合规。以及领域专属的"涌现能力"——Mythos Preview 这类网络安全突破目前仍超出开源模型的能力范围。</p>
 
-<h3>Deployment Modes</h3>
-<p>Deployment options for open-source models:</p>
+<h3>部署模式</h3>
+<p>开源模型的部署选项：</p>
 <ul style="list-style:none;padding-left:0;">
-<li><strong>Local inference</strong> (laptop/workstation): llama.cpp, Ollama, LM Studio. Quantized to INT4, 7B models run on 5GB RAM.</li>
-<li><strong>Self-hosted service</strong> (data center): vLLM, TGI (HuggingFace), SGLang, LMDeploy. High concurrency, high throughput.</li>
-<li><strong>Edge deployment</strong> (embedded devices): llama.cpp with ARM NEON, MNN, MediaPipe. Phones, routers, IoT.</li>
-<li><strong>Cloud-hosted</strong>: AWS Bedrock, Azure AI, Alibaba Cloud PAI—third-party vendors host open-source models and provide APIs.</li>
+<li><strong>本地推理</strong>（笔记本/工作站）：llama.cpp、Ollama、LM Studio。量化到 INT4 后，7B 模型只需 5GB 内存。</li>
+<li><strong>自托管服务</strong>（数据中心）：vLLM、TGI（HuggingFace）、SGLang、LMDeploy。高并发、高吞吐。</li>
+<li><strong>边缘部署</strong>（嵌入式设备）：llama.cpp + ARM NEON、MNN、MediaPipe。手机、路由器、IoT。</li>
+<li><strong>云托管</strong>：AWS Bedrock、Azure AI、阿里云 PAI——第三方厂商托管开源模型并提供 API。</li>
 </ul>
 
-<h3>Inference Engine Landscape</h3>
-<p>Section 4.8 dives deep; here's the landscape (as of early 2026):</p>
+<h3>推理引擎格局</h3>
+<p>4.8 节会深入讲解；这里先给出全貌（截至 2026 年初）：</p>
 <table>
-<tr><th>Engine</th><th>Language</th><th>Primary Use</th><th>Characteristics</th></tr>
-<tr><td>Transformers</td><td>Python</td><td>Research/Prototype</td><td>HuggingFace official; broadest compatibility</td></tr>
-<tr><td>vLLM</td><td>Python+CUDA</td><td>Production Service</td><td>PagedAttention, continuous batching; growth accelerates after v1 architecture rewrite in 2025</td></tr>
-<tr><td>SGLang</td><td>Python+CUDA</td><td>Complex Workflows</td><td>RadixAttention, structured generation; one of fastest-growing engines in 2025</td></tr>
-<tr><td>TGI</td><td>Rust</td><td>Production Service</td><td>HuggingFace product; comprehensive ecosystem</td></tr>
-<tr><td>TensorRT-LLM</td><td>C++</td><td>NVIDIA Production</td><td>Highest performance; hardware-bound</td></tr>
-<tr><td>NVIDIA Dynamo</td><td>C++/Python</td><td>Massive-Scale Inference</td><td>NVIDIA 2025 release; unifies vLLM/SGLang/TRT-LLM backends; distributed scheduling</td></tr>
-<tr><td>LMDeploy</td><td>Python</td><td>Production Service</td><td>Shanghai AI Lab; recommended by DeepSeek and others</td></tr>
-<tr><td>llama.cpp</td><td>C++</td><td>Local/Edge</td><td>Pure CPU capable; comprehensive quantization</td></tr>
-<tr><td>MLC-LLM</td><td>Python+TVM</td><td>Cross-Hardware</td><td>WebGPU, ARM, Chinese chips</td></tr>
-<tr><td>Ollama</td><td>Go</td><td>Personal Use</td><td>User-level layer on llama.cpp</td></tr>
+<tr><th>引擎</th><th>语言</th><th>主要用途</th><th>特点</th></tr>
+<tr><td>Transformers</td><td>Python</td><td>研究/原型</td><td>HuggingFace 官方；兼容性最广</td></tr>
+<tr><td>vLLM</td><td>Python+CUDA</td><td>生产服务</td><td>PagedAttention、连续批处理；2025 年 v1 架构重写后增长提速</td></tr>
+<tr><td>SGLang</td><td>Python+CUDA</td><td>复杂工作流</td><td>RadixAttention、结构化生成；2025 年增长最快的引擎之一</td></tr>
+<tr><td>TGI</td><td>Rust</td><td>生产服务</td><td>HuggingFace 产品；生态完整</td></tr>
+<tr><td>TensorRT-LLM</td><td>C++</td><td>NVIDIA 生产</td><td>性能最高；强绑定硬件</td></tr>
+<tr><td>NVIDIA Dynamo</td><td>C++/Python</td><td>超大规模推理</td><td>NVIDIA 2025 年发布；统一 vLLM/SGLang/TRT-LLM 后端；分布式调度</td></tr>
+<tr><td>LMDeploy</td><td>Python</td><td>生产服务</td><td>上海 AI 实验室；DeepSeek 等推荐</td></tr>
+<tr><td>llama.cpp</td><td>C++</td><td>本地/边缘</td><td>纯 CPU 可运行；量化支持全面</td></tr>
+<tr><td>MLC-LLM</td><td>Python+TVM</td><td>跨硬件</td><td>WebGPU、ARM、国产芯片</td></tr>
+<tr><td>Ollama</td><td>Go</td><td>个人使用</td><td>llama.cpp 的用户层封装</td></tr>
 </table>
-<p>By 2025, the inference engine landscape forms a duopoly: vLLM + SGLang, cross-referencing and competing with each other. DeepSeek's V3 release explicitly recommends both, further solidifying their positions.</p>
+<p>到 2025 年，推理引擎格局形成双雄并立：vLLM + SGLang，相互参考、彼此竞争。DeepSeek V3 发布时明确推荐两者，进一步巩固了它们的地位。</p>
 
-<h3>Application-Layer Frameworks</h3>
-<p><strong>LangChain</strong>: Most comprehensive features, largest ecosystem; criticized for "over-abstraction." Good for rapid prototyping.</p>
-<p><strong>LlamaIndex</strong>: RAG-focused; strongest data connection and retrieval capabilities.</p>
-<p><strong>DSPy</strong> (Stanford): Treats LLM calls as "programmable components" with automatic prompt optimization.</p>
-<p><strong>Haystack</strong>: Enterprise-grade RAG framework; high production readiness.</p>
+<h3>应用层框架</h3>
+<p><strong>LangChain</strong>：功能最全面、生态最大；被批评"过度抽象"。适合快速原型。</p>
+<p><strong>LlamaIndex</strong>：专注 RAG；数据连接和检索能力最强。</p>
+<p><strong>DSPy</strong>（Stanford）：把 LLM 调用视为"可编程组件"，支持自动 prompt 优化。</p>
+<p><strong>Haystack</strong>：企业级 RAG 框架；生产就绪度高。</p>
 <p><strong>自己写</strong>:很多团队发现直接调 OpenAI SDK + 一点胶水代码比框架更清晰——LLM 调用本质就是 HTTP 请求,抽象层越厚反而越难调试。</p>
 
 <div class="part-header"><div class="part-label">PART TWO</div><h2 class="part-title">4.2 Transformer 架构</h2><p class="part-desc">所有 LLM 的基础——把这一块搞透,后面全通。</p></div>
@@ -297,8 +297,8 @@ def causal_attention(Q, K, V):
 <p>计算 $\mathbf{Q}\mathbf{K}^\top$: $O(L^2 d)$。softmax: $O(L^2)$。和 $\mathbf{V}$ 乘: $O(L^2 d)$。总计 $O(L^2 d)$。</p>
 <p>内存:$\mathbf{S}$ 矩阵 $O(L^2)$,$L=4096$ 时 16M 元素 × FP16 = 32MB 每头每样本。这就是 attention 的"二次复杂度瓶颈"——长上下文的根本挑战。<a href="ch5_partB_preview.html#p10">FlashAttention</a>、稀疏注意力、<a href="ch5_partC_supplement.html#p24">Mamba</a> 都是在解决这个。</p>
 
-<h2 id="s4-2-3"><span class="num">4.2.3</span>Multi-Head Attention</h2>
-<p class="pos">定位:把注意力拆成多头——为什么有效、怎么实现。</p>
+<h2 id="s4-2-3"><span class="num">4.2.3</span>Multi-Head Attention（多头注意力）</h2>
+<p class="pos">定位：把注意力拆成多头——为什么有效、怎么实现。</p>
 
 <h3>动机</h3>
 <p>单头 attention 只能学一种"注意模式"——可能学会"指代关系"、也可能学会"语法邻近",但一头只能表示一种。多头让模型同时学多种:每个头有独立的 $W_Q^h, W_K^h, W_V^h$,学不同模式。</p>
