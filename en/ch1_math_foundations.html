@@ -604,7 +604,7 @@ print("dL/dW1 =\n", dL_dW1)
 
 <table>
 <tr><th>Case</th><th>Condition</th><th>Result</th></tr>
-<tr><td>Square, full rank ($m = n, \text{rank} = n$) </td> \lt td>$\det(\mathbf{A}) \ne 0$ </td> \lt td>Unique solution $\mathbf{x} = \mathbf{A}^{-1}\mathbf{b}$</td></tr>
+<tr><td>Square, full rank ($m = n, \text{rank} = n$) </td> <td>$\det(\mathbf{A}) \ne 0$ </td> <td>Unique solution $\mathbf{x} = \mathbf{A}^{-1}\mathbf{b}$</td></tr>
 <tr><td>Overdetermined ($m > n$)</td><td>Usually no exact solution</td><td>Least squares solution</td></tr>
 <tr><td>Underdetermined ($m \lt n$)</td><td>Usually infinitely many solutions</td><td>Minimum-norm solution</td></tr>
 </table>
@@ -826,10 +826,10 @@ print("POTC     max load:", np.mean([simulate_balls_bins(n, 'potc')   for _ in r
 
 <table>
 <tr><th>Distribution</th><th>Meaning</th><th>PMF</th><th>Mean / Variance</th></tr>
-<tr><td>Bernoulli Ber(p)</td><td>One coin flip</td><td>$P(X=1) = p$ </td> \lt td>$p, p(1-p)$</td></tr>
-<tr><td>Binomial Bin(n, p)</td><td>Sum of n Bernoullis</td><td>$\binom{n}{k} p^k (1-p)^{n-k}$ </td> \lt td>$np, np(1-p)$</td></tr>
-<tr><td>Poisson Poi(λ)</td><td>Count of rare events</td><td>$\frac{\lambda^k e^{-\lambda}}{k!}$ </td> \lt td>$\lambda, \lambda$</td></tr>
-<tr><td>Geometric Geo(p)</td><td>Number of trials until success</td><td>$(1-p)^{k-1} p$ </td> \lt td>$1/p, (1-p)/p^2$</td></tr>
+<tr><td>Bernoulli Ber(p)</td><td>One coin flip</td><td>$P(X=1) = p$ </td> <td>$p, p(1-p)$</td></tr>
+<tr><td>Binomial Bin(n, p)</td><td>Sum of n Bernoullis</td><td>$\binom{n}{k} p^k (1-p)^{n-k}$ </td> <td>$np, np(1-p)$</td></tr>
+<tr><td>Poisson Poi(λ)</td><td>Count of rare events</td><td>$\frac{\lambda^k e^{-\lambda}}{k!}$ </td> <td>$\lambda, \lambda$</td></tr>
+<tr><td>Geometric Geo(p)</td><td>Number of trials until success</td><td>$(1-p)^{k-1} p$ </td> <td>$1/p, (1-p)/p^2$</td></tr>
 </table>
 
 <p>Poisson is the limit of Binomial as $n \to \infty, p \to 0, np = \lambda$. It describes "a large number of independent rare events" — user traffic, system crashes, genetic mutations.</p>
@@ -905,7 +905,7 @@ print("POTC     max load:", np.mean([simulate_balls_bins(n, 'potc')   for _ in r
 
 <h3>Confidence Intervals</h3>
 
-<p>A point estimate $\hat{\theta}$ is a single number that tells you nothing about certainty. A confidence interval $[\hat{\theta} - c, \hat{\theta} + c]$ means "if we repeated the sampling 100 times, 95% of the resulting confidence intervals would contain the true value" — note this is the probability that the interval contains the true value, not the probability that the true value falls within the interval (in the frequentist framework, $\theta$ is a constant, so there is no probability of it "falling" anywhere).</p>
+<p>A point estimate $\hat{\theta}$ is a single number that tells you nothing about certainty. A confidence interval $[\hat{\theta} - c, \hat{\theta} + c]$ means "if we repeated the sampling 100 times, about 95 of the resulting intervals would cover the true value." Note that the 95% is a property of the <em>interval-generating procedure</em> (its coverage rate), not a posterior probability about $\theta$ — in the frequentist framework, $\theta$ is a fixed constant and has no probability distribution.</p>
 
 <h3>In AI</h3>
 
@@ -926,7 +926,7 @@ print("POTC     max load:", np.mean([simulate_balls_bins(n, 'potc')   for _ in r
 <h3>Two Types of Errors</h3>
 
 <table>
-<tr><th></th><th>Truth: $H_0$ is true </th> \lt th>Truth: $H_1$ is true</th></tr>
+<tr><th></th><th>Truth: $H_0$ is true </th> <th>Truth: $H_1$ is true</th></tr>
 <tr><td>Accept $H_0$</td><td>Correct</td><td>Type II error (false negative, β)</td></tr>
 <tr><td>Reject $H_0$</td><td>Type I error (false positive, α)</td><td>Correct (power 1-β)</td></tr>
 </table>
@@ -1021,7 +1021,7 @@ print("POTC     max load:", np.mean([simulate_balls_bins(n, 'potc')   for _ in r
 
 <p>Single-path CoT propagates errors — once a step goes wrong, there is no way to correct it downstream. ToT provides a backtracking capability: branches with low scores are pruned, and the tree is re-expanded from an earlier node. Mathematically, this trades computational cost for reliability — one inference becomes dozens, but with a higher accuracy rate.</p>
 
-<p>In terms of stochastic process theory, this is a <strong>selective Markov process</strong>: rather than passively observing the evolution of states, we make decisions at each step based on an evaluation function. This is also precisely the basic setup of RL.</p>
+<p>In terms of stochastic process theory, this is a <strong>controlled Markov process (or Markov Decision Process)</strong>: rather than passively observing the evolution of states, we make decisions at each step based on an evaluation function. This is also precisely the basic setup of RL.</p>
 
 <p class="footnote">ToT raises GPT-4's accuracy on the Game of 24 task from 4% to 74% (<em>Tree of Thoughts</em>, Yao et al. 2023). The cost is a 5–100× increase in token consumption.</p>
 

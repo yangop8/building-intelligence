@@ -686,7 +686,7 @@ A: [let the model continue]
 </div>
 
 <h3>Why This Paper Is the Capstone</h3>
-<p>DeepSeek-V3 is not the first MoE, the first FP8 training run, or the first hybrid reasoning model — but it is the first open-source model to <em>integrate all of these techniques together and execute each to its limits</em>. 671B total parameters, 37B activated per token, trained in just 2.788M H800 GPU-hours (approximately US$5.6M), reaching GPT-4o-level capability.</p>
+<p>DeepSeek-V3 is not the first MoE, the first FP8 training run, or the first hybrid reasoning model — but it is the first open-source model to <em>integrate all of these techniques together and execute each to its limits</em>. 671B total parameters, 37B activated per token, trained in just 2.788M H800 GPU-hours (approximately USUS$5.6M), reaching GPT-4o-level capability.</p>
 <p>It is a case study in "engineering integration" winning over "single-point breakthroughs," and a decisive moment in open-source catching up to closed-source.</p>
 
 <h3>Architecture Overview</h3>
@@ -718,7 +718,7 @@ flowchart TB
 </ul>
 
 <h3>Innovation 3: Multi-Token Prediction (MTP)</h3>
-<p>During training, V3 predicts not just the next token but also the next $D$ tokens ($D = 1$ in V3, i.e., one extra token predicted). Each prediction position has a dedicated MTP module (with its own Transformer layer). Benefits:</p>
+<p>During training, in addition to the standard next-token prediction, V3 also predicts $D$ future tokens ($D = 1$ in V3, meaning it simultaneously predicts the next token and the one after). Each prediction position has a dedicated MTP module (with its own Transformer layer). Benefits:</p>
 <ul style="list-style:none;padding-left:0;">
 <li>- Denser training signal: the model learns more from the same number of tokens</li>
 <li>- At inference, the MTP module can directly serve as a speculative decoding draft head, eliminating the need for a separate draft model</li>
@@ -740,13 +740,13 @@ flowchart TB
 <tr><th>Metric</th><th>Value</th></tr>
 <tr><td>Total parameters / Activated</td><td>671B / 37B</td></tr>
 <tr><td>Training tokens</td><td>14.8T</td></tr>
-<tr><td>Pretraining GPU-hours</td><td>2.664M H800 (~US$5.3M)</td></tr>
+<tr><td>Pretraining GPU-hours</td><td>2.664M H800 (~USUS$5.3M)</td></tr>
 <tr><td>Total training GPU-hours (incl. SFT + RLHF)</td><td>2.788M</td></tr>
 <tr><td>Estimated comparison: GPT-4</td><td>~50–100M GPU-hours</td></tr>
 <tr><td>Capability level</td><td>Comparable to GPT-4o / Claude 3.5 Sonnet</td></tr>
 </table>
 
-<p>Approximately US$5.6M to train a GPT-4-level model — over 10× cheaper than closed-source estimates. This is the economic foundation of the "DeepSeek moment" (February 2025) — a cost low enough to shock the global industry.</p>
+<p>Approximately USUS$5.6M to train a GPT-4-level model — over 10× cheaper than closed-source estimates. This is the economic foundation of the "DeepSeek moment" (February 2025) — a cost low enough to shock the global industry.</p>
 
 <h3>Subsequent Evolution</h3>
 <ul style="list-style:none;padding-left:0;">
@@ -769,7 +769,7 @@ flowchart TB
 
 <h3>Critical Perspectives</h3>
 <ul style="list-style:none;padding-left:0;">
-<li>- The training cost figures are debated — US$5.6M may count only GPU time, excluding data, infrastructure, and labor</li>
+<li>- The training cost figures are debated — USUS$5.6M may count only GPU time, excluding data, infrastructure, and labor</li>
 <li>- "GPT-4 level" varies across benchmarks — V3 leads on some and trails on others</li>
 <li>- MLA's engineering complexity is high; small teams may find it difficult to reproduce</li>
 </ul>

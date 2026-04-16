@@ -986,7 +986,7 @@ The blue orientation bar at the start of each section describes where that secti
 <p>The connections between concepts matter. The orientation bar at the start of each section notes its relationship to other chapters. When a paper is first mentioned in the main text, a hyperlink points to its deep dive in Chapter 5. For example, when the text mentions "FlashAttention's tiling strategy," you can jump directly to the paper deep dive for the complete algorithm.</p>
 
 <h3>"In AI" Sections</h3>
-<p>Every topic in Chapters 1 and 2 closes with an "In AI" section that anchors the foundational knowledge to AI engineering practice. This is a deliberate design choice — isolated knowledge is easily forgotten; it becomes genuinely internalized only when connected to real applications.</p>
+<p>Every topic in Chapters 1 and 2 closes with an "In AI" section that connects the foundational concept to an AI engineering application. This is a deliberate design choice — isolated knowledge is easily forgotten; it becomes genuinely internalized only when connected to real applications.</p>
 
 <!-- ===================== UPDATES ===================== -->
 <h2 id="updates">Updates &amp; Errata</h2>
@@ -1053,7 +1053,7 @@ The book comprises 5 chapters, 130+ sections, covering five major modules: mathe
 <p>The <span class="math-i">n \times n</span> matrix formed by the second-order partial derivatives of <span class="math-i">f</span> is called the  <strong>Hessian matrix </strong> <span class="math-i">\mathbf{H}</span>, with <span class="math-i">(i,j)</span> entry <span class="math-i">\frac{\partial^2 f}{\partial x_i \partial x_j}</span>. The Hessian describes the local curvature of a function: positive definite means it is a bowl (local minimum), negative definite means it is a hilltop (local maximum), and indefinite means it is a saddle point.</p>
 
 <h3>In AI</h3>
-<p>The loss function <span class="math-i">L(\boldsymbol{\theta})</span> of a neural network maps from an extremely high-dimensional parameter space to a scalar — modern LLMs range from billions to hundreds of billions of parameters. What we need is <span class="math-i">\nabla_\boldsymbol{\theta} L</span> — a vector of the same dimensionality as the parameters, pointing in the direction of fastest loss increase. Each step <span class="math-i">\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \eta \nabla L</span> is gradient descent. The Hessian matrix is far too large to store (<span class="math-i">10^{10} \times 10^{10}</span>), so optimizers like Adam <em>approximate</em> Hessian information using the second moment of the gradient — this is the dividing line between first-order and second-order optimization.</p>
+<p>The loss function <span class="math-i">L(\boldsymbol{\theta})</span> of a neural network maps from an extremely high-dimensional parameter space to a scalar — modern LLMs range from billions to hundreds of billions of parameters. What we need is <span class="math-i">\nabla_{\boldsymbol{\theta}} L</span> — a vector of the same dimensionality as the parameters, pointing in the direction of fastest loss increase. Each step <span class="math-i">\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \eta \nabla L</span> is gradient descent. The Hessian matrix is far too large to store (<span class="math-i">10^{10} \times 10^{10}</span>), so optimizers like Adam <em>approximate</em> Hessian information using the second moment of the gradient — this is the dividing line between first-order and second-order optimization.</p>
 
 <!-- 1.1.2 -->
 <h2 id="s1-1-2"><span class="num">1.1.2</span>Function Analysis Techniques</h2>
@@ -1200,7 +1200,7 @@ print("dL/dW1 =\n", dL_dW1)
 <h2 id="s1-1-5"><span class="num">1.1.5</span>Real Analysis Extension: The Invertibility Problem in LLMs</h2>
 <p class="pos">Orientation: an open theoretical question — given the output distribution of an LLM, can the input be recovered? Introduced briefly.</p>
 
-<p>One of the central objects in real analysis is "measure" — an abstraction of length, area, and volume. A concrete application in AI is the <strong>invertibility of generative models</strong>: normalizing flows require each transformation layer to be a bijection with a computable Jacobian determinant, so that likelihoods can be computed exactly. Diffusion models, by contrast, abandon strict invertibility in favor of learning the score function <span class="math-i">\nabla_\mathbf{x} \log p(\mathbf{x})</span>.</p>
+<p>One of the central objects in real analysis is "measure" — an abstraction of length, area, and volume. A concrete application in AI is the <strong>invertibility of generative models</strong>: normalizing flows require each transformation layer to be a bijection with a computable Jacobian determinant, so that likelihoods can be computed exactly. Diffusion models, by contrast, abandon strict invertibility in favor of learning the score function <span class="math-i">\nabla_{\mathbf{x}} \log p(\mathbf{x})</span>.</p>
 
 <p>For LLMs as autoregressive generative models, "invertibility" is raised at a different level: <em>given a piece of output, can the prompt be uniquely recovered?</em> The answer is no — the sampling process injects randomness, and many prompts can produce the same output. Nonetheless, studying "approximate invertibility" has practical significance: for example, determining whether a piece of text was generated by a specific model (watermark detection), or inferring training data leakage. This is an active but nascent research direction with no established engineering tools yet. It is enough simply to be aware that this problem exists.</p>
 
@@ -1283,7 +1283,7 @@ print("dL/dW1 =\n", dL_dW1)
 
 <table>
 <tr><th>Case</th><th>Condition</th><th>Result</th></tr>
-<tr><td>Square, full rank (<span class="math-i">m = n, \text{rank} = n</span>) </td> \lt td><span class="math-i">\det(\mathbf{A}) \ne 0</span> </td> \lt td>Unique solution <span class="math-i">\mathbf{x} = \mathbf{A}^{-1}\mathbf{b}</span></td></tr>
+<tr><td>Square, full rank (<span class="math-i">m = n, \text{rank} = n</span>) </td> <td><span class="math-i">\det(\mathbf{A}) \ne 0</span> </td> <td>Unique solution <span class="math-i">\mathbf{x} = \mathbf{A}^{-1}\mathbf{b}</span></td></tr>
 <tr><td>Overdetermined (<span class="math-i">m > n</span>)</td><td>Usually no exact solution</td><td>Least squares solution</td></tr>
 <tr><td>Underdetermined (<span class="math-i">m \lt n</span>)</td><td>Usually infinitely many solutions</td><td>Minimum-norm solution</td></tr>
 </table>
@@ -1505,10 +1505,10 @@ print("POTC     max load:", np.mean([simulate_balls_bins(n, 'potc')   for _ in r
 
 <table>
 <tr><th>Distribution</th><th>Meaning</th><th>PMF</th><th>Mean / Variance</th></tr>
-<tr><td>Bernoulli Ber(p)</td><td>One coin flip</td><td><span class="math-i">P(X=1) = p</span> </td> \lt td><span class="math-i">p, p(1-p)</span></td></tr>
-<tr><td>Binomial Bin(n, p)</td><td>Sum of n Bernoullis</td><td><span class="math-i">\binom{n}{k} p^k (1-p)^{n-k}</span> </td> \lt td><span class="math-i">np, np(1-p)</span></td></tr>
-<tr><td>Poisson Poi(λ)</td><td>Count of rare events</td><td><span class="math-i">\frac{\lambda^k e^{-\lambda}}{k!}</span> </td> \lt td><span class="math-i">\lambda, \lambda</span></td></tr>
-<tr><td>Geometric Geo(p)</td><td>Number of trials until success</td><td><span class="math-i">(1-p)^{k-1} p</span> </td> \lt td><span class="math-i">1/p, (1-p)/p^2</span></td></tr>
+<tr><td>Bernoulli Ber(p)</td><td>One coin flip</td><td><span class="math-i">P(X=1) = p</span> </td> <td><span class="math-i">p, p(1-p)</span></td></tr>
+<tr><td>Binomial Bin(n, p)</td><td>Sum of n Bernoullis</td><td><span class="math-i">\binom{n}{k} p^k (1-p)^{n-k}</span> </td> <td><span class="math-i">np, np(1-p)</span></td></tr>
+<tr><td>Poisson Poi(λ)</td><td>Count of rare events</td><td><span class="math-i">\frac{\lambda^k e^{-\lambda}}{k!}</span> </td> <td><span class="math-i">\lambda, \lambda</span></td></tr>
+<tr><td>Geometric Geo(p)</td><td>Number of trials until success</td><td><span class="math-i">(1-p)^{k-1} p</span> </td> <td><span class="math-i">1/p, (1-p)/p^2</span></td></tr>
 </table>
 
 <p>Poisson is the limit of Binomial as <span class="math-i">n \to \infty, p \to 0, np = \lambda</span>. It describes "a large number of independent rare events" — user traffic, system crashes, genetic mutations.</p>
@@ -1584,7 +1584,7 @@ print("POTC     max load:", np.mean([simulate_balls_bins(n, 'potc')   for _ in r
 
 <h3>Confidence Intervals</h3>
 
-<p>A point estimate <span class="math-i">\hat{\theta}</span> is a single number that tells you nothing about certainty. A confidence interval <span class="math-i">[\hat{\theta} - c, \hat{\theta} + c]</span> means "if we repeated the sampling 100 times, 95% of the resulting confidence intervals would contain the true value" — note this is the probability that the interval contains the true value, not the probability that the true value falls within the interval (in the frequentist framework, <span class="math-i">\theta</span> is a constant, so there is no probability of it "falling" anywhere).</p>
+<p>A point estimate <span class="math-i">\hat{\theta}</span> is a single number that tells you nothing about certainty. A confidence interval <span class="math-i">[\hat{\theta} - c, \hat{\theta} + c]</span> means "if we repeated the sampling 100 times, about 95 of the resulting intervals would cover the true value." Note that the 95% is a property of the <em>interval-generating procedure</em> (its coverage rate), not a posterior probability about <span class="math-i">\theta</span> — in the frequentist framework, <span class="math-i">\theta</span> is a fixed constant and has no probability distribution.</p>
 
 <h3>In AI</h3>
 
@@ -1605,7 +1605,7 @@ print("POTC     max load:", np.mean([simulate_balls_bins(n, 'potc')   for _ in r
 <h3>Two Types of Errors</h3>
 
 <table>
-<tr><th></th><th>Truth: <span class="math-i">H_0</span> is true </th> \lt th>Truth: <span class="math-i">H_1</span> is true</th></tr>
+<tr><th></th><th>Truth: <span class="math-i">H_0</span> is true </th> <th>Truth: <span class="math-i">H_1</span> is true</th></tr>
 <tr><td>Accept <span class="math-i">H_0</span></td><td>Correct</td><td>Type II error (false negative, β)</td></tr>
 <tr><td>Reject <span class="math-i">H_0</span></td><td>Type I error (false positive, α)</td><td>Correct (power 1-β)</td></tr>
 </table>
@@ -1700,7 +1700,7 @@ print("POTC     max load:", np.mean([simulate_balls_bins(n, 'potc')   for _ in r
 
 <p>Single-path CoT propagates errors — once a step goes wrong, there is no way to correct it downstream. ToT provides a backtracking capability: branches with low scores are pruned, and the tree is re-expanded from an earlier node. Mathematically, this trades computational cost for reliability — one inference becomes dozens, but with a higher accuracy rate.</p>
 
-<p>In terms of stochastic process theory, this is a <strong>selective Markov process</strong>: rather than passively observing the evolution of states, we make decisions at each step based on an evaluation function. This is also precisely the basic setup of RL.</p>
+<p>In terms of stochastic process theory, this is a <strong>controlled Markov process (or Markov Decision Process)</strong>: rather than passively observing the evolution of states, we make decisions at each step based on an evaluation function. This is also precisely the basic setup of RL.</p>
 
 <p class="footnote">ToT raises GPT-4's accuracy on the Game of 24 task from 4% to 74% (<em>Tree of Thoughts</em>, Yao et al. 2023). The cost is a 5–100× increase in token consumption.</p>
 
@@ -2083,7 +2083,7 @@ def adam_step(params, grads, state, lr=1e-3, b1=0.9, b2=0.999, eps=1e-8):
 
 <h3>Microarchitecture: The Reality Beneath the ISA</h3>
 
-<p>The same ISA can yield several times the performance difference depending on the microarchitecture. Modern high-performance CPU cores contain these key components:</p>
+<p>The same ISA can differ in performance by several times depending on the microarchitecture. Modern high-performance CPU cores contain these key components:</p>
 
 <p><strong>Pipeline</strong>: Overlaps the five stages — fetch, decode, execute, memory access, writeback — so that one instruction completes per cycle. Branches disrupt the pipeline, which is why there is a <strong>branch predictor</strong> that uses historical statistics to guess the next instruction. Accuracy routinely exceeds 95%. A misprediction flushes the pipeline at a cost of 15–20 cycles.</p>
 
@@ -2306,7 +2306,7 @@ for (int j = 0; j &lt; N; j++)
 
 <h3>Priority Inversion</h3>
 
-<p>A classic failure mode: low-priority task L holds a lock; medium-priority task M preempts L (without releasing M's hold on L); high-priority task H waits for the lock — H is indirectly blocked by M, a priority inversion. The 1997 Mars Pathfinder mission suffered exactly this bug.</p>
+<p>A classic failure mode: low-priority task L holds a lock; medium-priority task M preempts L (so L cannot release the lock); high-priority task H waits for the lock — H is indirectly blocked by M, a priority inversion. The 1997 Mars Pathfinder mission suffered exactly this bug.</p>
 
 <p>Fix: <strong>priority inheritance</strong> — while L holds the lock, it is temporarily elevated to H's priority so M cannot preempt it. <strong>Priority ceiling</strong> — statically assigns a higher ceiling. Both mechanisms are implemented in RT-mutex.</p>
 
@@ -2644,7 +2644,7 @@ flag = 1;                        assert(x == 1);  // may fail!
 
 <!-- 2.2.0 -->
 <h2 id="s2-3-1"><span class="num">2.3.1</span>The Rust Language</h2>
-<p class="pos">Position: ownership model + no GC + zero-cost abstractions — the new baseline for systems programming.</p>
+<p class="pos">Orientation: ownership model + no GC + zero-cost abstractions — the new baseline for systems programming.</p>
 
 <h3>Ownership: The Core of Rust</h3>
 
@@ -2655,7 +2655,7 @@ flag = 1;                        assert(x == 1);  // may fail!
 <li>Assignment or passing a value as an argument moves ownership by default (unless the type implements <code>Copy</code>).</li>
 </ol>
 
-<p>These rules eliminate three classic C/C++ bugs at the root: use-after-free, double-free, and memory leaks. The compiler performs static checks at compile time with no runtime overhead.</p>
+<p>These rules eliminate three classic C/C++ bugs at the root: use-after-free and double-free (memory leaks can still occur with Rc/Arc reference cycles, but are far less dangerous). The compiler performs static checks at compile time with no runtime overhead.</p>
 
 <pre><code class="language-rust">fn main() {
     let s1 = String::from("hello");
@@ -2711,7 +2711,7 @@ fn longer&lt;'a&gt;(s1: &'a str, s2: &'a str) -&gt; &'a str {
 
 <!-- 2.2.1 -->
 <h2 id="s2-3-2"><span class="num">2.3.2</span>The Modern Evolution of C</h2>
-<p class="pos">Position: C is still the general-purpose low-level language — let's look at how it's evolving, and at C++ as an alternative path for systems programming. Brief.</p>
+<p class="pos">Orientation: C is still the general-purpose low-level language — let's look at how it's evolving, and at C++ as an alternative path for systems programming. Brief.</p>
 
 <p>This section covers the broader "C-family evolution." C is not dead — kernels, drivers, DPDK, and Redis are still written in C. But the C toolchain and its ecosystem keep improving:</p>
 
@@ -2738,7 +2738,7 @@ fn longer&lt;'a&gt;(s1: &'a str, s2: &'a str) -&gt; &'a str {
 
 <!-- 2.2.2 -->
 <h2 id="s2-3-3"><span class="num">2.3.3</span>Compiler Fundamentals</h2>
-<p class="pos">Position: lexical/syntactic/semantic analysis → IR → code generation. LLVM as the main thread.</p>
+<p class="pos">Orientation: lexical/syntactic/semantic analysis → IR → code generation. LLVM as the main thread.</p>
 
 <h3>The Classic Three-Stage Compiler</h3>
 
@@ -2807,7 +2807,7 @@ entry:
 
 <!-- 2.2.3 -->
 <h2 id="s2-3-4"><span class="num">2.3.4</span>Compiler Optimizations</h2>
-<p class="pos">Position: dozens of optimizations working together can make code several times faster — with direct implications for AI kernel optimization.</p>
+<p class="pos">Orientation: dozens of optimizations working together can make code several times faster — with direct implications for AI kernel optimization.</p>
 
 <h3>Local Optimizations</h3>
 
@@ -2885,7 +2885,7 @@ b = tmp + 2;
 
 <!-- 2.4.1 -->
 <h2 id="s2-4-1"><span class="num">2.4.1</span>Database Fundamentals</h2>
-<p class="pos">Position: storage engines, transactions, query optimization, logging — the four pillars of relational databases.</p>
+<p class="pos">Orientation: storage engines, transactions, query optimization, logging — the four pillars of relational databases.</p>
 
 <h3>Storage Engines: B+Tree vs LSM-Tree</h3>
 
@@ -2947,7 +2947,7 @@ b = tmp + 2;
 
 <!-- 2.4.2 -->
 <h2 id="s2-4-2"><span class="num">2.4.2</span>Graph Databases</h2>
-<p class="pos">Position: native storage of nodes and edges — the foundation for knowledge graphs, social networks, and reasoning chains.</p>
+<p class="pos">Orientation: native storage of nodes and edges — the foundation for knowledge graphs, social networks, and reasoning chains.</p>
 
 <h3>Graph Storage</h3>
 
@@ -3001,7 +3001,7 @@ RETURN DISTINCT fof.name
 
 <!-- 2.4.3 -->
 <h2 id="s2-4-3"><span class="num">2.4.3</span>Time-Series Databases</h2>
-<p class="pos">Position: data streams ordered by timestamp — purpose-built for monitoring, IoT, and financial market data.</p>
+<p class="pos">Orientation: data streams ordered by timestamp — purpose-built for monitoring, IoT, and financial market data.</p>
 
 <h3>Characteristics of Time-Series Data</h3>
 
@@ -3040,7 +3040,7 @@ RETURN DISTINCT fof.name
 
 <table>
 <tr><th>Product</th><th>Key Characteristics</th></tr>
-<tr><td>InfluxDB</td><td>Most popular; InfluxDB 2.x (2024) migrated to Apache Arrow / DataFusion engine; query language shifted to SQL/InfluxQL; Flux is deprecated</td></tr>
+<tr><td>InfluxDB</td><td>Most popular; InfluxDB 3.0 (2024) migrated to Apache Arrow / DataFusion engine; query language shifted to SQL/InfluxQL; Flux is deprecated</td></tr>
 <tr><td>Prometheus</td><td>Standard monitoring stack; PromQL; pull model</td></tr>
 <tr><td>TimescaleDB</td><td>PostgreSQL extension; SQL compatible</td></tr>
 <tr><td>VictoriaMetrics</td><td>Prometheus-compatible; stronger performance</td></tr>
@@ -3065,7 +3065,7 @@ histogram_quantile(0.99, sum by (le) (rate(http_duration_seconds_bucket[5m])))
 
 <!-- 2.4.4 -->
 <h2 id="s2-4-4"><span class="num">2.4.4</span>Vector Databases</h2>
-<p class="pos">Position: nearest-neighbor search over high-dimensional vectors — the foundation of RAG, semantic retrieval, and recommendation.</p>
+<p class="pos">Orientation: nearest-neighbor search over high-dimensional vectors — the foundation of RAG, semantic retrieval, and recommendation.</p>
 
 <h3>Problem Definition</h3>
 
@@ -3131,7 +3131,7 @@ histogram_quantile(0.99, sum by (le) (rate(http_duration_seconds_bucket[5m])))
 
 <!-- 2.5.1 -->
 <h2 id="s2-5-1"><span class="num">2.5.1</span>High-Performance Message Bus</h2>
-<p class="pos">Position: The foundation of all inter-process/service communication patterns — RPC, Pub/Sub, message queues.</p>
+<p class="pos">Orientation: The foundation of all inter-process/service communication patterns — RPC, Pub/Sub, message queues.</p>
 
 <h3>Classification of Communication Patterns</h3>
 
@@ -3216,7 +3216,7 @@ histogram_quantile(0.99, sum by (le) (rate(http_duration_seconds_bucket[5m])))
 
 <!-- 2.6.1 -->
 <h2 id="s2-6-1"><span class="num">2.6.1</span>Bottlenecks of the Kernel Network Stack</h2>
-<p class="pos">Position: Why bypass the kernel — understanding the reason DPDK/VPP exists.</p>
+<p class="pos">Orientation: Why bypass the kernel — understanding the reason DPDK/VPP exists.</p>
 
 <h3>The Linux Network Stack Path</h3>
 
@@ -3266,7 +3266,7 @@ flowchart TB
 
 <!-- 2.6.2 -->
 <h2 id="s2-6-2"><span class="num">2.6.2</span>DPDK Architecture</h2>
-<p class="pos">Position: The industry-standard framework for user-space networking that bypasses the kernel.</p>
+<p class="pos">Orientation: The industry-standard framework for user-space networking that bypasses the kernel.</p>
 
 <h3>DPDK's Design Philosophy</h3>
 
@@ -3374,7 +3374,7 @@ int main(int argc, char *argv[]) {
 
 <!-- 2.6.3 -->
 <h2 id="s2-6-3"><span class="num">2.6.3</span>Key DPDK Mechanisms</h2>
-<p class="pos">Position: The secrets behind DPDK's performance — HugePages, lock-free rings, NUMA, and RSS.</p>
+<p class="pos">Orientation: The secrets behind DPDK's performance — HugePages, lock-free rings, NUMA, and RSS.</p>
 
 <h3>HugePages</h3>
 
@@ -3420,7 +3420,7 @@ struct rte_ring {
 
 <!-- 2.6.4 -->
 <h2 id="s2-6-4"><span class="num">2.6.4</span>VPP Vectorized Forwarding</h2>
-<p class="pos">Position: A high-performance, programmable forwarding framework built on top of DPDK, based on the idea of "applying the same operation to a batch of packets consecutively."</p>
+<p class="pos">Orientation: A high-performance, programmable forwarding framework built on top of DPDK, based on the idea of "applying the same operation to a batch of packets consecutively."</p>
 
 <h3>VPP's Core Innovation: Graph Nodes + Vectorization</h3>
 
@@ -3507,7 +3507,7 @@ ip4_lookup_node_fn(vlib_main_t *vm, vlib_node_runtime_t *node,
 
 <!-- 2.6.5 -->
 <h2 id="s2-6-5"><span class="num">2.6.5</span>TCP / UDP / Raw IP</h2>
-<p class="pos">Position: Transport-layer protocols — you use sockets every day, but you should know what's happening underneath.</p>
+<p class="pos">Orientation: Transport-layer protocols — you use sockets every day, but you should know what's happening underneath.</p>
 
 <h3>The IP Layer</h3>
 
@@ -3555,7 +3555,7 @@ ip4_lookup_node_fn(vlib_main_t *vm, vlib_node_runtime_t *node,
 
 <!-- 2.6.6 -->
 <h2 id="s2-6-6"><span class="num">2.6.6</span>TLS and QUIC</h2>
-<p class="pos">Position: Two paradigms for encrypted transport — TLS over TCP vs. QUIC (UDP + encryption).</p>
+<p class="pos">Orientation: Two paradigms for encrypted transport — TLS over TCP vs. QUIC (UDP + encryption).</p>
 
 <h3>TLS Handshake</h3>
 
@@ -3600,7 +3600,7 @@ ip4_lookup_node_fn(vlib_main_t *vm, vlib_node_runtime_t *node,
 
 <!-- 2.6.7 -->
 <h2 id="s2-6-7"><span class="num">2.6.7</span>Forwarding Management and the Control Plane</h2>
-<p class="pos">Position: The data plane uses DPDK/VPP to forward packets at speed; the control plane is responsible for distributing policies and synchronizing routing tables. Brief section.</p>
+<p class="pos">Orientation: The data plane uses DPDK/VPP to forward packets at speed; the control plane is responsible for distributing policies and synchronizing routing tables. Brief section.</p>
 
 <h3>Control Plane vs. Data Plane</h3>
 
@@ -3643,7 +3643,7 @@ ip4_lookup_node_fn(vlib_main_t *vm, vlib_node_runtime_t *node,
 
 <!-- 2.6.8 -->
 <h2 id="s2-6-8"><span class="num">2.6.8</span>Logging and Observability</h2>
-<p class="pos">Position: The trinity of Metrics + Logs + Traces — without observability there is no production operations.</p>
+<p class="pos">Orientation: The trinity of Metrics + Logs + Traces — without observability there is no production operations.</p>
 
 <h3>The Three Pillars of Observability</h3>
 
@@ -3709,7 +3709,7 @@ ip4_lookup_node_fn(vlib_main_t *vm, vlib_node_runtime_t *node,
   <div class="meta">Chapter 3 · Internal Learning Material · 36 sections</div>
 </header>
 
-<p>AI engineers in the LLM era still need traditional machine learning — not out of nostalgia, but because in scenarios with <strong>limited data, interpretable features, and tight latency constraints</strong> (traffic classification on network devices, KPI anomaly detection), a single XGBoost tree is often a better fit than an LLM. The structure of this chapter reflects that view: traditional ML first, then fundamental operators, then classic deep learning models, then training optimization, and finally performance engineering and domain applications. Each layer is the foundation for the next, yet each also holds an independent place in modern AI systems.</p>
+<p>AI engineers in the LLM era still need traditional machine learning — not out of nostalgia, but because in scenarios with <strong>limited data, interpretable features, and tight latency constraints</strong> (traffic classification on network devices, KPI anomaly detection), a single XGBoost model is often a better fit than an LLM. The structure of this chapter reflects that view: traditional ML first, then fundamental operators, then classic deep learning models, then training optimization, and finally performance engineering and domain applications. Each layer is the foundation for the next, yet each also holds an independent place in modern AI systems.</p>
 
 <p>All 36 sections go deep. The key anchors are: 3.1.2 Tree Models (full derivation from decision trees to XGBoost), 3.2.3 Convolution (including im2col and Winograd), 3.3.2 LSTM gate derivations, 3.5.3 Fine-Tuning &amp; Alignment (the full SFT/DPO/RLHF pipeline), 3.6.3 Operator Optimization (Roofline + tiling + FlashAttention), and 3.7.2 Traffic Classification feature engineering in practice. The other sections are equally substantive — every section is written at the level of a knowledgeable colleague explaining it for 30 minutes, not as a textbook survey.</p>
 
@@ -4556,7 +4556,7 @@ flowchart LR
 
 <div class="formula"><span class="math-d">\mathbf{h}_v^{(l+1)} = \sigma\left(\sum_{u \in \mathcal{N}(v) \cup \{v\}} \frac{1}{\sqrt{\deg(u) \deg(v)}} W^{(l)} \mathbf{h}_u^{(l)}\right)</span></div>
 
-<p>The normalization factor <span class="math-i">1/\sqrt{d_u d_v}</span> prevents high-degree nodes from dominating the aggregation. The derivation comes from a spectral-domain approximation of the graph Laplacian — the details are complex, but the idea is simple: take a weighted average of neighbors, then apply a linear transformation.</p>
+<p>The normalization factor <span class="math-i">1/\sqrt{d_u d_v}</span> prevents high-degree nodes from dominating the aggregation. The derivation comes from a spectral-domain approximation of the graph Laplacian — the details are complex, but the idea is simple: apply a linear transformation, then take a weighted average of neighbors.</p>
 
 <h3>GraphSAGE</h3>
 
@@ -4962,7 +4962,7 @@ shap.summary_plot(shap_values, X_test)
 
 <p>Loss as a function of parameter count <span class="math-i">N</span> and data volume <span class="math-i">D</span> follows power-law decay. This turns large model training into an "engineering problem" (just add compute to improve) rather than a "research problem" (requiring algorithmic breakthroughs).</p>
 
-<p>Chinchilla (2022) refined this: for a given compute budget, the optimal allocation is to scale data and parameter counts in roughly equal proportion (rather than simply stacking more parameters as was previously done).</p>
+<p>Chinchilla (2022) refined this: for a given compute budget, the optimal allocation is to scale D (data) and N (parameters) in roughly 1:1 proportion (around 20 tokens per parameter) (rather than simply stacking more parameters as was previously done).</p>
 
 <!-- 3.5.3 -->
 <h2 id="s3-5-3"><span class="num">3.5.3</span>Fine-Tuning and Alignment</h2>
@@ -5119,7 +5119,7 @@ labels = [-100] * len(tokenize(prompt)) + tokenize(response + "&lt;|end|&gt;")
 
 <p><span class="math-i">A(s, a) = Q(s, a) - V(s)</span> is the advantage function (how much better this action is compared to average).</p>
 
-<p>Naive policy gradient has enormous variance and unstable updates. TRPO (2015) and PPO (2017) stabilize training by limiting the magnitude of each update. PPO uses <strong>clipping</strong> instead of TRPO's hard constraint — simple, efficient, and has become the default RL algorithm:</p>
+<p>Naive policy gradient has enormous variance and unstable updates. TRPO (2015) and PPO (2017) stabilize training by limiting the magnitude of each update. PPO uses <strong>clipping</strong> instead of TRPO's hard constraint — it is simpler, more efficient, and has become the default RL algorithm:</p>
 
 <div class="formula"><span class="math-d">\mathcal{L}^{\text{CLIP}} = \mathbb{E}\left[\min(r_t A_t, \text{clip}(r_t, 1-\epsilon, 1+\epsilon) A_t)\right]</span></div>
 
@@ -5962,7 +5962,7 @@ forecast = m.predict(future)
 <div class="meta">Chapter 4 · Internal Learning Material · 37 Sections · Revised Early 2026</div>
 </header>
 
-<p>An An LLM is no longer just a "model"—it is an entire technology stack. From low-level Transformer operators, to distributed training strategies, to inference-side scheduling optimizations, to RAG and Agent on the application side, every layer involves substantial engineering decisions and algorithm choices. This chapter ties these layers together so you can see the whole picture from top to bottom.</p>
+<p>An LLM is no longer just a "model"—it is an entire technology stack. From low-level Transformer operators, to distributed training strategies, to inference-side scheduling optimizations, to RAG and Agent on the application side, every layer involves substantial engineering decisions and algorithm choices. This chapter ties these layers together so you can see the whole picture from top to bottom.</p>
 
 <p>37 sections, all deep dives. Key anchors include: complete derivation of Self-Attention (4.2.2), RoPE rotation matrices (4.3.2), DeepSeek's MLA low-rank decomposition (4.4.1), Mamba's selective state space (4.4.3), ZeRO three-stage memory sharding (4.7.2), PagedAttention's paging mechanism (4.8.3), acceptance rate analysis for speculative decoding (4.8.5), mathematics of AWQ/GPTQ (4.9.1), reranking and query rewriting in advanced RAG (4.10.2), and ReAct loop implementation (4.11.1). Other sections are written at the same level of depth: conceptual intuition, minimal derivation, and engineering details.</p>
 
@@ -5971,7 +5971,7 @@ forecast = m.predict(future)
 <div class="part-header"><div class="part-label">PART ONE</div><h2 class="part-title">4.1 LLM Overview</h2><p class="part-desc">Establish a coordinate system for the entire LLM field—where capabilities come from and how the landscape divides.</p></div>
 
 <h2 id="s4-1-1"><span class="num">4.1.1</span>From LM to LLM</h2>
-<p class="pos">Position: How Scaling transforms "language models" into "general reasoning systems"—history, key milestones, Scaling Law.</p>
+<p class="pos">Orientation: How Scaling transforms "language models" into "general reasoning systems"—history, key milestones, Scaling Law.</p>
 
 <h3>The Old Problem of Language Models</h3>
 <p>The definition of a language model has never changed: given the first <span class="math-i">t-1</span> tokens, predict the probability distribution of the <span class="math-i">t</span>-th token.</p>
@@ -6011,7 +6011,7 @@ forecast = m.predict(future)
 <p>Test-time compute transforms "one forward pass determines capability" into "pay more compute for better answers"—a significant shift for the product side. This is one of the major axes of LLM evolution in the coming years.</p>
 
 <h2 id="s4-1-2"><span class="num">4.1.2</span>Open-Source vs Closed-Source Ecosystems</h2>
-<p class="pos">Position: Two different development paths—open weights vs API services—and their technical/commercial tradeoffs.</p>
+<p class="pos">Orientation: Two different development paths—open weights vs API services—and their technical/commercial tradeoffs.</p>
 
 <h3>Closed-Source Commercial Model</h3>
 <p>Typical examples: OpenAI's GPT series, Anthropic's Claude series, Google's Gemini. Model weights are not public; access is via API. Advantages: frontier capabilities (new releases often lead open-source by 6-12 months), managed service (no ops burden), comprehensive multimodal abilities.</p>
@@ -6078,7 +6078,7 @@ forecast = m.predict(future)
 <div class="part-header"><div class="part-label">PART TWO</div><h2 class="part-title">4.2 Transformer Architecture</h2><p class="part-desc">The foundation of all LLMs — master this section and everything downstream falls into place.</p></div>
 
 <h2 id="s4-2-1"><span class="num">4.2.1</span>Overall Structure and Information Flow</h2>
-<p class="pos">Position: The complete path of a token from model entry to output — establishing the macro picture.</p>
+<p class="pos">Orientation: The complete path of a token from model entry to output — establishing the macro picture.</p>
 
 <h3>Overall Flow</h3>
 <p>From user input "Hello world" to the model predicting the next token, the steps are:</p>
@@ -6126,7 +6126,7 @@ flowchart TB
 <p>During inference, starting from a prompt, only the next token is predicted each time. See Section 4.8 for details.</p>
 
 <h2 id="s4-2-2"><span class="num">4.2.2</span>Self-Attention: Complete Derivation</h2>
-<p class="pos">Position: The soul operator of LLMs — deriving every detail, including why we divide by √d.</p>
+<p class="pos">Orientation: The soul operator of LLMs — deriving every detail, including why we divide by √d.</p>
 
 <h3>Problem Setup</h3>
 <p>Input: <span class="math-i">L</span> tokens, each a <span class="math-i">d</span>-dimensional vector <span class="math-i">\mathbf{x}_i \in \mathbb{R}^d</span>. Goal: make the output <span class="math-i">\mathbf{y}_i</span> at each position <span class="math-i">i</span> a  <strong>dynamic weighted combination </strong> of all input positions, with weights determined by the "similarity" between <span class="math-i">\mathbf{x}_i</span> and other positions.</p>
@@ -6155,7 +6155,7 @@ flowchart TB
 <p>This is "Scaled Dot-Product Attention."</p>
 
 <h3>Causal Mask</h3>
-<p>LLMs are causal (each position can only see itself and prior positions), so the upper triangle of <span class="math-i">\mathbf{S}</span> is set to <span class="math-i">-\infty</span>, which becomes 0 after softmax:</p>
+<p>LLMs are causal (each position can only see itself and prior positions), so the upper triangle of <span class="math-i">\mathbf{S}</span> is filled with <span class="math-i">-\infty</span>; these entries become 0 after softmax:</p>
 <pre><code class="language-python">import torch
 
 def causal_attention(Q, K, V):
@@ -6174,7 +6174,7 @@ def causal_attention(Q, K, V):
 <p>Memory: the <span class="math-i">\mathbf{S}</span> matrix is <span class="math-i">O(L^2)</span>; at <span class="math-i">L=4096</span>, that's 16M elements × FP16 = 32MB per head per sample. This is the "quadratic complexity bottleneck" of attention — the fundamental challenge for long contexts. <a href="#p16">FlashAttention</a>, sparse attention, and <a href="#p20">Mamba</a> all address this.</p>
 
 <h2 id="s4-2-3"><span class="num">4.2.3</span>Multi-Head Attention</h2>
-<p class="pos">Position: Splitting attention into multiple heads — why it works and how to implement it.</p>
+<p class="pos">Orientation: Splitting attention into multiple heads — why it works and how to implement it.</p>
 
 <h3>Motivation</h3>
 <p>Single-head attention can only learn one "attention pattern" — it might learn coreference, or syntactic proximity, but a single head can only represent one. Multiple heads let the model learn multiple patterns simultaneously: each head has independent <span class="math-i">W_Q^h, W_K^h, W_V^h</span> projections that learn different patterns.</p>
@@ -6228,7 +6228,7 @@ class MultiHeadAttention(nn.Module):
 <p>Tools like BertViz and LLM Attention Viewer can visualize the attention of each head. Empirically, different heads do learn different patterns — some heads attend to end-of-sentence punctuation, some to nearest neighbors, some perform coreference resolution. But there are also many "redundant" heads (removing them doesn't affect performance) — this inspired subsequent head pruning research.</p>
 
 <h2 id="s4-2-4"><span class="num">4.2.4</span>FFN, Residual Connections, and Normalization</h2>
-<p class="pos">Position: The other half of the Transformer Block — FFN enhances expressiveness, residual connections and normalization ensure trainability.</p>
+<p class="pos">Orientation: The other half of the Transformer Block — FFN enhances expressiveness, residual connections and normalization ensure trainability.</p>
 
 <h3>The Role of FFN</h3>
 <p>Attention enables communication between positions, but <strong>attention output remains in the linear subspace of token representations</strong> — attention alone limits model expressiveness. FFN independently applies a nonlinear transformation at each position, projecting the representation into a high-dimensional nonlinear space and back.</p>
@@ -6274,7 +6274,7 @@ class MultiHeadAttention(nn.Module):
 <p>Empirically performs similarly to LayerNorm, but faster (saves one mean computation and one subtraction) and has fewer parameters (no <span class="math-i">\beta</span>). LLaMA uses RMSNorm, and most subsequent models have followed suit.</p>
 
 <h2 id="s4-2-5"><span class="num">4.2.5</span>Encoder/Decoder Divide</h2>
-<p class="pos">Position: Three Transformer variants — Encoder-only, Decoder-only, Encoder-Decoder — and where each is used.</p>
+<p class="pos">Orientation: Three Transformer variants — Encoder-only, Decoder-only, Encoder-Decoder — and where each is used.</p>
 
 <h3>Three Architectures</h3>
 <p>The original Transformer (2017) is Encoder-Decoder — designed for translation tasks: the encoder reads the source language, and the decoder attends to the encoder output and generates the target language. Three lines evolved from this.</p>
@@ -6304,7 +6304,7 @@ class MultiHeadAttention(nn.Module):
 <p>Encoder-only remains active in scenarios that require embeddings — because decoder-only doesn't naturally produce "sentence-level representations" (one must approximate using the last token or average pooling). But for generation tasks, decoder-only dominates.</p>
 
 <h2 id="s4-2-6"><span class="num">4.2.6</span>Transformer Evolution</h2>
-<p class="pos">Position: From the 2017 original to today — what are the key changes.</p>
+<p class="pos">Orientation: From the 2017 original to today — what are the key changes.</p>
 
 <h3>Evolution Checklist</h3>
 <p>Over 7 years, the original Transformer has been modified in many places. Each of these changes can be understood using the tools covered in the preceding sections. The table below shows the major changes from 2017 to 2024:</p>
@@ -6332,7 +6332,7 @@ class MultiHeadAttention(nn.Module):
 <div class="part-header"><div class="part-label">PART THREE</div><h2 class="part-title">4.3 Positional Encoding and Long Context</h2><p class="part-desc">Attention itself has no notion of order — positional encoding provides it. Long contexts require positional encoding to "extrapolate."</p></div>
 
 <h2 id="s4-3-1"><span class="num">4.3.1</span>History of Positional Encoding</h2>
-<p class="pos">Position: From sinusoidal absolute encoding, to learned, to relative positional encoding, to RoPE — the evolutionary logic.</p>
+<p class="pos">Orientation: From sinusoidal absolute encoding, to learned, to relative positional encoding, to RoPE — the evolutionary logic.</p>
 
 <h3>Why Positional Encoding Is Needed</h3>
 <p>Attention is a "set operation" — if you permute the input token order, the attention output for each position permutes accordingly, but <em>semantically</em> each position's representation is unchanged. "The cat sat on the mat" and "mat the on sat cat The" would produce identical intermediate representations. Clearly wrong. So positional information must be injected at each position.</p>
@@ -6364,7 +6364,7 @@ class MultiHeadAttention(nn.Module):
 </table>
 
 <h2 id="s4-3-2"><span class="num">4.3.2</span>RoPE Deep Dive</h2>
-<p class="pos">Position: Rotary positional encoding — mathematically elegant, simple to implement, the de facto standard.</p>
+<p class="pos">Orientation: Rotary positional encoding — mathematically elegant, simple to implement, the de facto standard.</p>
 
 <h3>Core Idea</h3>
 <p>RoPE does not add a position vector to the input; instead, it <em>rotates Q and K</em> — so that <span class="math-i">\mathbf{q}_m \cdot \mathbf{k}_n</span> naturally encodes the relative position <span class="math-i">m - n</span>.</p>
@@ -6409,7 +6409,7 @@ K = apply_rope(K, freqs_cis)
 </ol>
 
 <h2 id="s4-3-3"><span class="num">4.3.3</span>Long Context Extrapolation</h2>
-<p class="pos">Position: How to use a model trained on 4K context for 128K — PI, NTK-aware, YaRN, LongRoPE.</p>
+<p class="pos">Orientation: How to use a model trained on 4K context for 128K — PI, NTK-aware, YaRN, LongRoPE.</p>
 
 <h3>The Problem</h3>
 <p>Training seen positions 0 to 4K; at inference a 64K sequence arrives — high-frequency rotation angles have cycled through millions of radians at position 64K, a rotation state the model has never seen, causing performance collapse.</p>
@@ -6444,7 +6444,7 @@ K = apply_rope(K, freqs_cis)
 <div class="part-header"><div class="part-label">PART FOUR</div><h2 class="part-title">4.4 Attention Optimization Variants</h2><p class="part-desc">The quadratic complexity of attention is LLM's greatest bottleneck — the evolution from MHA to MLA to Mamba.</p></div>
 
 <h2 id="s4-4-1"><span class="num">4.4.1</span>MQA / GQA / MLA</h2>
-<p class="pos">Position: Successive generations of solutions for reducing KV Cache — from MQA to DeepSeek's MLA.</p>
+<p class="pos">Orientation: Successive generations of solutions for reducing KV Cache — from MQA to DeepSeek's MLA.</p>
 
 <h3>Why KV Cache Is the Bottleneck</h3>
 <p>During inference, generating each new token requires computing the new token's Q, K, V; appending the new K, V to the existing cache; and having the new Q perform attention over all K, V. Recomputing all prior K, V each time costs <span class="math-i">O(L^2)</span> computation.  <strong>KV Cache </strong> caches previously computed K, V so a new token only computes its own share, bringing total computation to <span class="math-i">O(L)</span>.</p>
@@ -6502,10 +6502,10 @@ K = apply_rope(K, freqs_cis)
 <li><strong>Unified thinking/non-thinking</strong>: V3.2 inherits V3.1's hybrid mode — the same model can answer quickly or reason deeply.</li>
 </ol>
 <p>DSA is the first time, after years of sparse attention research, that "quality matches dense attention with significantly lower cost" has been achieved in a large model. This also shows that the sparse attention direction covered in 4.4.2 hasn't failed — previous approaches just weren't fine-grained enough.</p>
-<p>V3.2 also has a "Speciale" variant that pushes reasoning capability to reportedly near the level of top closed-source models — the open-source benchmark at the end of 2025.</p>
+<p>V3.2 also has a "experimental" variant that pushes reasoning capability to reportedly near the level of top closed-source models — the open-source benchmark at the end of 2025.</p>
 
 <h2 id="s4-4-2"><span class="num">4.4.2</span>Sparse Attention</h2>
-<p class="pos">Position: Abandoning "every position attends to all positions," attending only to a key subset — replacing <span class="math-i">O(L^2)</span> with <span class="math-i">O(L \log L)</span> or even <span class="math-i">O(L)</span>.</p>
+<p class="pos">Orientation: Abandoning "every position attends to all positions," attending only to a key subset — replacing <span class="math-i">O(L^2)</span> with <span class="math-i">O(L \log L)</span> or even <span class="math-i">O(L)</span>.</p>
 
 <h3>The Idea</h3>
 <p>Most weights in full attention are actually small — most position pairs have weak associations. Sparse attention computes selectively, saving time and memory.</p>
@@ -6536,7 +6536,7 @@ K = apply_rope(K, freqs_cis)
 <p>The typical hybrid approach in today's open-source models is Mistral's "Sliding Window + full attention" — sliding in shallow layers, full attention in the last few layers — saving memory without sacrificing expressiveness.</p>
 
 <h2 id="s4-4-3"><span class="num">4.4.3</span>Linear Attention and <a href="#p20">Mamba</a></h2>
-<p class="pos">Position: The resurgence of RNNs — replacing KV Cache with "state," <span class="math-i">O(L)</span> inference, challenging Transformer.</p>
+<p class="pos">Orientation: The resurgence of RNNs — replacing KV Cache with "state," <span class="math-i">O(L)</span> inference, challenging Transformer.</p>
 
 <h3>The Linear Attention Idea</h3>
 <p>Standard attention: <span class="math-i">\text{softmax}(QK^\top) V</span>. If softmax can be removed, this can be rewritten as:</p>
@@ -6564,7 +6564,7 @@ K = apply_rope(K, freqs_cis)
 <table>
 <tr><th>Dimension</th><th>Transformer</th><th>Mamba</th></tr>
 <tr><td>Training</td><td>Fully parallel</td><td>Parallel scan (<span class="math-i">O(L)</span>)</td></tr>
-<tr><td>Inference</td><td><span class="math-i">O(L)</span> attention + <span class="math-i">O(L)</span> KV Cache </td> \lt td><span class="math-i">O(1)</span> state update</td></tr>
+<tr><td>Inference</td><td><span class="math-i">O(L)</span> attention + <span class="math-i">O(L)</span> KV Cache </td> <td><span class="math-i">O(1)</span> state update</td></tr>
 <tr><td>Inference memory</td><td>Grows with L (KV Cache)</td><td>Fixed</td></tr>
 <tr><td>Long sequences</td><td>Limited by KV Cache</td><td>Naturally supported</td></tr>
 <tr><td>Interpretability</td><td>Attention visualization</td><td>State not directly observable</td></tr>
@@ -6587,7 +6587,7 @@ K = apply_rope(K, freqs_cis)
 <div class="part-header"><div class="part-label">PART FIVE</div><h2 class="part-title">4.5 Tokenizer and Embedding</h2><p class="part-desc">The first gate for text entering the model — tokenizer details affect every aspect of LLM capability.</p></div>
 
 <h2 id="s4-5-1"><span class="num">4.5.1</span>The BPE Family</h2>
-<p class="pos">Position: From BPE to WordPiece to SentencePiece — the three main lines of modern tokenizers.</p>
+<p class="pos">Orientation: From BPE to WordPiece to SentencePiece — the three main lines of modern tokenizers.</p>
 
 <h3>Why Not Character-Level, Why Not Word-Level</h3>
 <p>Two extremes:</p>
@@ -6648,7 +6648,7 @@ def train_bpe(corpus, vocab_size):
 <p>The variant used by GPT-2. First convert text to UTF-8 byte sequences (256 possible values), then apply BPE on the byte sequence. Benefit: <strong>zero OOV</strong> — any Unicode character can be represented (at least as a byte sequence), no [UNK] token needed. GPT-3/4, LLaMA, Qwen, DeepSeek all use BBPE. It is the de facto standard.</p>
 
 <h2 id="s4-5-2"><span class="num">4.5.2</span>Modern Tokenizer Engineering</h2>
-<p class="pos">Position: Vocabulary size selection, Chinese/multilingual handling, tiktoken vs SentencePiece — engineering details.</p>
+<p class="pos">Orientation: Vocabulary size selection, Chinese/multilingual handling, tiktoken vs SentencePiece — engineering details.</p>
 
 <h3>Vocabulary Size</h3>
 <p>Historical typical choices:</p>
@@ -6694,7 +6694,7 @@ def train_bpe(corpus, vocab_size):
 <p><strong>Unicode normalization</strong>: differences between NFC/NFD can cause identically-appearing characters to tokenize differently. Unify during the data cleaning phase.</p>
 
 <h2 id="s4-5-3"><span class="num">4.5.3</span>Embedding Models</h2>
-<p class="pos">Position: From <a href="#p11">Word2Vec</a> to BGE — the model family specialized for text similarity, a key component of RAG.</p>
+<p class="pos">Orientation: From <a href="#p11">Word2Vec</a> to BGE — the model family specialized for text similarity, a key component of RAG.</p>
 
 <h3>From Word Embeddings to Sentence Embeddings</h3>
 <p>Early Word2Vec and GloVe were "word embeddings" — one fixed vector per word. But "bank" means different things in "river bank" and "bank account"; fixed vectors can't handle this.</p>
@@ -6734,7 +6734,7 @@ def train_bpe(corpus, vocab_size):
 <div class="part-header"><div class="part-label">PART SIX</div><h2 class="part-title">4.6 Mixture of Experts</h2><p class="part-desc">Sparse activation makes "trillion-parameter models" computationally feasible — nearly all the largest open-source models use MoE.</p></div>
 
 <h2 id="s4-6-1"><span class="num">4.6.1</span><a href="#p19">MoE</a> Fundamentals</h2>
-<p class="pos">Position: Why MoE, how MoE — core mathematics and basic architecture.</p>
+<p class="pos">Orientation: Why MoE, how MoE — core mathematics and basic architecture.</p>
 
 <h3>Motivation</h3>
 <p>Transformer parameters are mainly in FFN (computed in 4.2.1 as 2/3 of the total). FFN applies the same processing to every token — but different tokens may need different processing (nouns need different features than verbs). MoE's idea: replace a single FFN with <strong>multiple "expert" FFNs</strong>, each token activating only 1-2 experts. Effect: total parameters multiply, but compute barely increases.</p>
@@ -6784,7 +6784,7 @@ def train_bpe(corpus, vocab_size):
 <p>DeepSeek-V2/V3 uses "shared experts + routed experts": 1-2 shared experts that all tokens pass through, with the other N-2 selected by routing. Intuition: some knowledge (grammar, basic logic) is needed by all tokens and doesn't need to be routed each time.</p>
 
 <h2 id="s4-6-2"><span class="num">4.6.2</span>MoE Engineering Practice</h2>
-<p class="pos">Position: MoE looks good on paper, is hard in engineering — training, deployment, communication, and load balancing all need to be solved.</p>
+<p class="pos">Orientation: MoE looks good on paper, is hard in engineering — training, deployment, communication, and load balancing all need to be solved.</p>
 
 <h3>Training Challenges</h3>
 <p><strong>Instability</strong>: routing is discrete (top-k selection), making gradients hard to propagate. Early training sees routing thrash around with no expert specialization — requires very long warmup to stabilize.</p>
@@ -6837,7 +6837,7 @@ def train_bpe(corpus, vocab_size):
 <div class="part-header"><div class="part-label">PART SEVEN</div><h2 class="part-title">4.7 Distributed Training</h2><p class="part-desc">Models above the tens-of-billions scale don't fit on a single GPU — must span across GPUs and machines.</p></div>
 
 <h2 id="s4-7-1"><span class="num">4.7.1</span>Data Parallelism (DDP)</h2>
-<p class="pos">Position: The simplest distributed strategy — complete model on each GPU, different batch shards.</p>
+<p class="pos">Orientation: The simplest distributed strategy — complete model on each GPU, different batch shards.</p>
 
 <h3>Basic Idea</h3>
 <p><span class="math-i">N</span> GPUs, each holding a complete model replica. A large batch <span class="math-i">B</span> split into <span class="math-i">N</span> parts, <span class="math-i">B/N</span> per GPU. Each GPU computes its own forward loss and backward gradients. Gradients are <strong>AllReduced</strong> to aggregate into the full-batch average gradient; each GPU updates parameters with this gradient — parameters stay synchronized.</p>
@@ -6877,7 +6877,7 @@ for batch in loader:
 <p>Computing single-GPU requirements for a 7B FP16 model: parameters 14GB; gradients 14GB; Adam state (m, v, FP32) 56GB; activations ~10GB. Total ~100GB; A100 80G isn't enough, nor is H100 80G. So training above 7B requires sharding — enter ZeRO.</p>
 
 <h2 id="s4-7-2"><span class="num">4.7.2</span>ZeRO Three Stages</h2>
-<p class="pos">Position: DeepSpeed's flagship technology — sharding optimizer state, gradients, and parameters to achieve linear memory reduction.</p>
+<p class="pos">Orientation: DeepSpeed's flagship technology — sharding optimizer state, gradients, and parameters to achieve linear memory reduction.</p>
 
 <h3>Core Insight</h3>
 <p>In DDP, each GPU stores complete parameters, gradients, and optimizer state — but each GPU actually only needs to process its own portion of parameter updates; the state for other parameters is redundant. ZeRO (Zero Redundancy Optimizer, Microsoft 2020) says: <strong>shard these redundancies across different GPUs</strong>, fetching them via communication when needed.</p>
@@ -6933,7 +6933,7 @@ model = FSDP(
 <p>Based on parameter count: &lt; 1B: DDP suffices; 1B-10B: ZeRO-2 for balance; 10B-100B: ZeRO-3 or FSDP; 100B+: ZeRO-3 + tensor parallelism + pipeline parallelism.</p>
 
 <h2 id="s4-7-3"><span class="num">4.7.3</span>Tensor Parallelism and Pipeline Parallelism</h2>
-<p class="pos">Position: Splitting individual layer computations (TP), splitting the layer sequence (PP) — distributing "large models" across multiple GPUs.</p>
+<p class="pos">Orientation: Splitting individual layer computations (TP), splitting the layer sequence (PP) — distributing "large models" across multiple GPUs.</p>
 
 <h3>Tensor Parallelism (TP)</h3>
 <p>Split the matrix multiplication within a single layer. Most typical: Linear layer <span class="math-i">\mathbf{Y} = \mathbf{X} W</span>.</p>
@@ -6961,7 +6961,7 @@ model = FSDP(
 </table>
 
 <h2 id="s4-7-4"><span class="num">4.7.4</span>3D Parallelism and Training Stack</h2>
-<p class="pos">Position: Combining DP + TP + PP — the standard approach for 100B+ models. Also covering Megatron/DeepSpeed/FSDP.</p>
+<p class="pos">Orientation: Combining DP + TP + PP — the standard approach for 100B+ models. Also covering Megatron/DeepSpeed/FSDP.</p>
 
 <h3>3D Parallelism</h3>
 <p>Real large-model training uses all three dimensions together:</p>
@@ -7008,7 +7008,7 @@ model = FSDP(
 <div class="part-header"><div class="part-label">PART EIGHT</div><h2 class="part-title">4.8 Inference Engines and Scheduling</h2><p class="part-desc">Training is just the beginning — inference optimization is the key to whether LLMs can be practically deployed.</p></div>
 
 <h2 id="s4-8-1"><span class="num">4.8.1</span>Inference Workload Characteristics</h2>
-<p class="pos">Position: Prefill vs Decode — LLM inference's two phases have fundamentally different bottlenecks.</p>
+<p class="pos">Orientation: Prefill vs Decode — LLM inference's two phases have fundamentally different bottlenecks.</p>
 
 <h3>Two-Phase Model</h3>
 <p>LLM inference has two phases:</p>
@@ -7036,11 +7036,11 @@ model = FSDP(
 <p>Latency and throughput trade off. Large batches increase throughput but lengthen TPOT — how to schedule is the core problem of inference engines.</p>
 
 <h3>Hardware Bottleneck Analysis</h3>
-<p>H100 with LLaMA-3-70B FP16 decode: model weights 140GB; HBM bandwidth 3 TB/s; theoretical limit 3000 / 140 ≈ 21 tokens/s (single request).</p>
+<p>H100 with LLaMA-3-70B FP16 decode (across 2× H100 or quantized): model weights 140GB; HBM bandwidth 3 TB/s; theoretical limit 3000 / 140 ≈ 21 tokens/s (single request).</p>
 <p>Measured decode 25-40 tokens/s (vLLM data) — essentially approaching the bandwidth ceiling. Improvements only possible via: compressing weights (quantization), compressing KV Cache, or batching multiple requests (sharing bandwidth across requests).</p>
 
 <h2 id="s4-8-2"><span class="num">4.8.2</span>KV Cache</h2>
-<p class="pos">Position: The soul of LLM inference — cutting <span class="math-i">O(L^2)</span> complexity to <span class="math-i">O(L)</span>, but introducing memory pressure.</p>
+<p class="pos">Orientation: The soul of LLM inference — cutting <span class="math-i">O(L^2)</span> complexity to <span class="math-i">O(L)</span>, but introducing memory pressure.</p>
 
 <h3>Why It's Needed</h3>
 <p>During decode, generating the <span class="math-i">t</span>-th token requires only the new token's <span class="math-i">\mathbf{q}_t</span> for attention, but needs  <strong>all prior positions' K, V </strong>. If <span class="math-i">\mathbf{k}_1, \ldots, \mathbf{k}_{t-1}</span> were recomputed each time, that's <span class="math-i">O(t)</span> extra computation per step — total <span class="math-i">O(t^2)</span>. KV Cache caches all prior K, V — each new token only computes its own <span class="math-i">\mathbf{k}_t, \mathbf{v}_t</span> and appends to the cache. Total computation <span class="math-i">O(t)</span>.</p>
@@ -7098,7 +7098,7 @@ for each query q_i:
 <p>Not the only option. SGLang has its own <strong>RadixAttention</strong> (prefix sharing organized as a radix tree), faster for complex workflows (multi-turn, multi-candidate). TGI (HuggingFace's Rust implementation) is stable. TensorRT-LLM is extremely optimized on NVIDIA platforms but has a closed ecosystem.</p>
 
 <h2 id="s4-8-4"><span class="num">4.8.4</span>Continuous Batching</h2>
-<p class="pos">Position: The evolution of dynamic batching — efficiently parallelizing requests of different lengths rather than waiting for a full batch.</p>
+<p class="pos">Orientation: The evolution of dynamic batching — efficiently parallelizing requests of different lengths rather than waiting for a full batch.</p>
 
 <h3>Traditional Static Batching</h3>
 <p>Early approach: a batch of requests starts and ends together, padded to the longest length.</p>
@@ -7120,7 +7120,7 @@ for each query q_i:
 <p>Policies: First-Come-First-Served (FCFS), priority (premium users first), or swap fairness. vLLM implements these mechanisms; robust in production environments.</p>
 
 <h2 id="s4-8-5"><span class="num">4.8.5</span>Speculative Decoding</h2>
-<p class="pos">Position: A small model guesses, a large model verifies — 2-3× inference speedup with no quality loss.</p>
+<p class="pos">Orientation: A small model guesses, a large model verifies — 2-3× inference speedup with no quality loss.</p>
 
 <h3>Basic Idea</h3>
 <p>The primary bottleneck of decode is that each forward produces only 1 token. Can multiple tokens be produced at once? Standard methods can't — each token depends on the previous one.</p>
@@ -7151,7 +7151,7 @@ for each query q_i:
 <div class="part-header"><div class="part-label">PART NINE</div><h2 class="part-title">4.9 Inference Compression</h2><p class="part-desc">Quantization is not an "add-on" to inference speedup; it is the prerequisite for running open-source large models at all.</p></div>
 
 <h2 id="s4-9-1"><span class="num">4.9.1</span>AWQ / GPTQ Deep Dive</h2>
-<p class="pos">Position: The two mainstream LLM quantization methods — mathematical principles and engineering differences.</p>
+<p class="pos">Orientation: The two mainstream LLM quantization methods — mathematical principles and engineering differences.</p>
 
 <h3>LLM Quantization Specifics</h3>
 <p>Chapter 3 Section 4.7.2 covered general quantization principles. LLMs are special: enormous weight count (70B × 2B = 140GB); INT4 compression brings this to 35GB — fits on a single A100/H100; activations have extreme outliers — some dimensions have very large values that suffer severe loss with standard quantization; high precision requirements — a single wrong token can derail an entire response.</p>
@@ -7215,7 +7215,7 @@ model.save_quantized(quant_path)
 </code></pre>
 
 <h2 id="s4-9-2"><span class="num">4.9.2</span>KV Cache Quantization and FP8</h2>
-<p class="pos">Position: Beyond weights — KV Cache and activations also need compression to further free memory.</p>
+<p class="pos">Orientation: Beyond weights — KV Cache and activations also need compression to further free memory.</p>
 
 <h3>KV Cache Quantization</h3>
 <p>INT4 weight quantization is now standard, but KV Cache remains FP16 — at long contexts it can be larger than the model weights.</p>
@@ -7965,9 +7965,9 @@ flowchart TB
 <h3>Complexity Analysis</h3>
 <table>
 <tr><th>Operation</th><th>Time Complexity</th><th>Notes</th></tr>
-<tr><td>Search</td><td><span class="math-i">O(\log N)</span> </td> \lt td><span class="math-i">O(1)</span> greedy steps per layer, <span class="math-i">O(\log N)</span> layers total</td></tr>
+<tr><td>Search</td><td><span class="math-i">O(\log N)</span> </td> <td><span class="math-i">O(1)</span> greedy steps per layer, <span class="math-i">O(\log N)</span> layers total</td></tr>
 <tr><td>Insert</td><td><span class="math-i">O(\log N)</span></td><td>Search + edge creation</td></tr>
-<tr><td>Space</td><td><span class="math-i">O(N \cdot M)</span> </td> \lt td><span class="math-i">M</span> edges per node</td></tr>
+<tr><td>Space</td><td><span class="math-i">O(N \cdot M)</span> </td> <td><span class="math-i">M</span> edges per node</td></tr>
 </table>
 
 <h3>Key Parameters</h3>
@@ -9702,9 +9702,9 @@ flowchart TB
 <h3>Complexity Comparison</h3>
 <table>
 <tr><th>Model</th><th>Training Complexity</th><th>Inference (per token)</th><th>Long-Sequence Support</th></tr>
-<tr><td>Transformer</td><td><span class="math-i">O(N^2 d)</span> </td> \lt td><span class="math-i">O(N d)</span> (KV cache)</td><td>Limited by quadratic complexity</td></tr>
-<tr><td>S4 (fixed SSM)</td><td><span class="math-i">O(N \log N \cdot d)</span> </td> \lt td><span class="math-i">O(d)</span></td><td>Good, but lacks selectivity</td></tr>
-<tr><td>Mamba</td><td><span class="math-i">O(N d)</span> </td> \lt td><span class="math-i">O(d)</span> (fixed state)</td><td>Theoretically unbounded</td></tr>
+<tr><td>Transformer</td><td><span class="math-i">O(N^2 d)</span> </td> <td><span class="math-i">O(N d)</span> (KV cache)</td><td>Limited by quadratic complexity</td></tr>
+<tr><td>S4 (fixed SSM)</td><td><span class="math-i">O(N \log N \cdot d)</span> </td> <td><span class="math-i">O(d)</span></td><td>Good, but lacks selectivity</td></tr>
+<tr><td>Mamba</td><td><span class="math-i">O(N d)</span> </td> <td><span class="math-i">O(d)</span> (fixed state)</td><td>Theoretically unbounded</td></tr>
 </table>
 
 <h3>Experimental Results</h3>
@@ -9951,7 +9951,7 @@ A: [let the model continue]
 </div>
 
 <h3>Why This Paper Is the Capstone</h3>
-<p>DeepSeek-V3 is not the first MoE, the first FP8 training run, or the first hybrid reasoning model — but it is the first open-source model to <em>integrate all of these techniques together and execute each to its limits</em>. 671B total parameters, 37B activated per token, trained in just 2.788M H800 GPU-hours (approximately US$5.6M), reaching GPT-4o-level capability.</p>
+<p>DeepSeek-V3 is not the first MoE, the first FP8 training run, or the first hybrid reasoning model — but it is the first open-source model to <em>integrate all of these techniques together and execute each to its limits</em>. 671B total parameters, 37B activated per token, trained in just 2.788M H800 GPU-hours (approximately USUS$5.6M), reaching GPT-4o-level capability.</p>
 <p>It is a case study in "engineering integration" winning over "single-point breakthroughs," and a decisive moment in open-source catching up to closed-source.</p>
 
 <h3>Architecture Overview</h3>
@@ -9983,7 +9983,7 @@ flowchart TB
 </ul>
 
 <h3>Innovation 3: Multi-Token Prediction (MTP)</h3>
-<p>During training, V3 predicts not just the next token but also the next <span class="math-i">D</span> tokens (<span class="math-i">D = 1</span> in V3, i.e., one extra token predicted). Each prediction position has a dedicated MTP module (with its own Transformer layer). Benefits:</p>
+<p>During training, in addition to the standard next-token prediction, V3 also predicts <span class="math-i">D</span> future tokens (<span class="math-i">D = 1</span> in V3, meaning it simultaneously predicts the next token and the one after). Each prediction position has a dedicated MTP module (with its own Transformer layer). Benefits:</p>
 <ul style="list-style:none;padding-left:0;">
 <li>- Denser training signal: the model learns more from the same number of tokens</li>
 <li>- At inference, the MTP module can directly serve as a speculative decoding draft head, eliminating the need for a separate draft model</li>
@@ -10005,13 +10005,13 @@ flowchart TB
 <tr><th>Metric</th><th>Value</th></tr>
 <tr><td>Total parameters / Activated</td><td>671B / 37B</td></tr>
 <tr><td>Training tokens</td><td>14.8T</td></tr>
-<tr><td>Pretraining GPU-hours</td><td>2.664M H800 (~US$5.3M)</td></tr>
+<tr><td>Pretraining GPU-hours</td><td>2.664M H800 (~USUS$5.3M)</td></tr>
 <tr><td>Total training GPU-hours (incl. SFT + RLHF)</td><td>2.788M</td></tr>
 <tr><td>Estimated comparison: GPT-4</td><td>~50–100M GPU-hours</td></tr>
 <tr><td>Capability level</td><td>Comparable to GPT-4o / Claude 3.5 Sonnet</td></tr>
 </table>
 
-<p>Approximately US$5.6M to train a GPT-4-level model — over 10× cheaper than closed-source estimates. This is the economic foundation of the "DeepSeek moment" (February 2025) — a cost low enough to shock the global industry.</p>
+<p>Approximately USUS$5.6M to train a GPT-4-level model — over 10× cheaper than closed-source estimates. This is the economic foundation of the "DeepSeek moment" (February 2025) — a cost low enough to shock the global industry.</p>
 
 <h3>Subsequent Evolution</h3>
 <ul style="list-style:none;padding-left:0;">
@@ -10034,7 +10034,7 @@ flowchart TB
 
 <h3>Critical Perspectives</h3>
 <ul style="list-style:none;padding-left:0;">
-<li>- The training cost figures are debated — US$5.6M may count only GPU time, excluding data, infrastructure, and labor</li>
+<li>- The training cost figures are debated — USUS$5.6M may count only GPU time, excluding data, infrastructure, and labor</li>
 <li>- "GPT-4 level" varies across benchmarks — V3 leads on some and trails on others</li>
 <li>- MLA's engineering complexity is high; small teams may find it difficult to reproduce</li>
 </ul>

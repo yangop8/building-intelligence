@@ -354,7 +354,7 @@ th { background: var(--sidebar-bg); font-weight: 600; }
 
 <h3>Microarchitecture: The Reality Beneath the ISA</h3>
 
-<p>The same ISA can yield several times the performance difference depending on the microarchitecture. Modern high-performance CPU cores contain these key components:</p>
+<p>The same ISA can differ in performance by several times depending on the microarchitecture. Modern high-performance CPU cores contain these key components:</p>
 
 <p><strong>Pipeline</strong>: Overlaps the five stages — fetch, decode, execute, memory access, writeback — so that one instruction completes per cycle. Branches disrupt the pipeline, which is why there is a <strong>branch predictor</strong> that uses historical statistics to guess the next instruction. Accuracy routinely exceeds 95%. A misprediction flushes the pipeline at a cost of 15–20 cycles.</p>
 
@@ -577,7 +577,7 @@ for (int j = 0; j < N; j++)
 
 <h3>Priority Inversion</h3>
 
-<p>A classic failure mode: low-priority task L holds a lock; medium-priority task M preempts L (without releasing M's hold on L); high-priority task H waits for the lock — H is indirectly blocked by M, a priority inversion. The 1997 Mars Pathfinder mission suffered exactly this bug.</p>
+<p>A classic failure mode: low-priority task L holds a lock; medium-priority task M preempts L (so L cannot release the lock); high-priority task H waits for the lock — H is indirectly blocked by M, a priority inversion. The 1997 Mars Pathfinder mission suffered exactly this bug.</p>
 
 <p>Fix: <strong>priority inheritance</strong> — while L holds the lock, it is temporarily elevated to H's priority so M cannot preempt it. <strong>Priority ceiling</strong> — statically assigns a higher ceiling. Both mechanisms are implemented in RT-mutex.</p>
 
@@ -915,7 +915,7 @@ flag = 1;                        assert(x == 1);  // may fail!
 
 <!-- 2.2.0 -->
 <h2 id="s2-3-1"><span class="num">2.3.1</span>The Rust Language</h2>
-<p class="pos">Position: ownership model + no GC + zero-cost abstractions — the new baseline for systems programming.</p>
+<p class="pos">Orientation: ownership model + no GC + zero-cost abstractions — the new baseline for systems programming.</p>
 
 <h3>Ownership: The Core of Rust</h3>
 
@@ -926,7 +926,7 @@ flag = 1;                        assert(x == 1);  // may fail!
 <li>Assignment or passing a value as an argument moves ownership by default (unless the type implements <code>Copy</code>).</li>
 </ol>
 
-<p>These rules eliminate three classic C/C++ bugs at the root: use-after-free, double-free, and memory leaks. The compiler performs static checks at compile time with no runtime overhead.</p>
+<p>These rules eliminate three classic C/C++ bugs at the root: use-after-free and double-free (memory leaks can still occur with Rc/Arc reference cycles, but are far less dangerous). The compiler performs static checks at compile time with no runtime overhead.</p>
 
 <pre><code class="language-rust">fn main() {
     let s1 = String::from("hello");
@@ -982,7 +982,7 @@ fn longer<'a>(s1: &'a str, s2: &'a str) -> &'a str {
 
 <!-- 2.2.1 -->
 <h2 id="s2-3-2"><span class="num">2.3.2</span>The Modern Evolution of C</h2>
-<p class="pos">Position: C is still the general-purpose low-level language — let's look at how it's evolving, and at C++ as an alternative path for systems programming. Brief.</p>
+<p class="pos">Orientation: C is still the general-purpose low-level language — let's look at how it's evolving, and at C++ as an alternative path for systems programming. Brief.</p>
 
 <p>This section covers the broader "C-family evolution." C is not dead — kernels, drivers, DPDK, and Redis are still written in C. But the C toolchain and its ecosystem keep improving:</p>
 
@@ -1009,7 +1009,7 @@ fn longer<'a>(s1: &'a str, s2: &'a str) -> &'a str {
 
 <!-- 2.2.2 -->
 <h2 id="s2-3-3"><span class="num">2.3.3</span>Compiler Fundamentals</h2>
-<p class="pos">Position: lexical/syntactic/semantic analysis → IR → code generation. LLVM as the main thread.</p>
+<p class="pos">Orientation: lexical/syntactic/semantic analysis → IR → code generation. LLVM as the main thread.</p>
 
 <h3>The Classic Three-Stage Compiler</h3>
 
@@ -1078,7 +1078,7 @@ entry:
 
 <!-- 2.2.3 -->
 <h2 id="s2-3-4"><span class="num">2.3.4</span>Compiler Optimizations</h2>
-<p class="pos">Position: dozens of optimizations working together can make code several times faster — with direct implications for AI kernel optimization.</p>
+<p class="pos">Orientation: dozens of optimizations working together can make code several times faster — with direct implications for AI kernel optimization.</p>
 
 <h3>Local Optimizations</h3>
 
@@ -1156,7 +1156,7 @@ b = tmp + 2;
 
 <!-- 2.4.1 -->
 <h2 id="s2-4-1"><span class="num">2.4.1</span>Database Fundamentals</h2>
-<p class="pos">Position: storage engines, transactions, query optimization, logging — the four pillars of relational databases.</p>
+<p class="pos">Orientation: storage engines, transactions, query optimization, logging — the four pillars of relational databases.</p>
 
 <h3>Storage Engines: B+Tree vs LSM-Tree</h3>
 
@@ -1218,7 +1218,7 @@ b = tmp + 2;
 
 <!-- 2.4.2 -->
 <h2 id="s2-4-2"><span class="num">2.4.2</span>Graph Databases</h2>
-<p class="pos">Position: native storage of nodes and edges — the foundation for knowledge graphs, social networks, and reasoning chains.</p>
+<p class="pos">Orientation: native storage of nodes and edges — the foundation for knowledge graphs, social networks, and reasoning chains.</p>
 
 <h3>Graph Storage</h3>
 
@@ -1272,7 +1272,7 @@ RETURN DISTINCT fof.name
 
 <!-- 2.4.3 -->
 <h2 id="s2-4-3"><span class="num">2.4.3</span>Time-Series Databases</h2>
-<p class="pos">Position: data streams ordered by timestamp — purpose-built for monitoring, IoT, and financial market data.</p>
+<p class="pos">Orientation: data streams ordered by timestamp — purpose-built for monitoring, IoT, and financial market data.</p>
 
 <h3>Characteristics of Time-Series Data</h3>
 
@@ -1311,7 +1311,7 @@ RETURN DISTINCT fof.name
 
 <table>
 <tr><th>Product</th><th>Key Characteristics</th></tr>
-<tr><td>InfluxDB</td><td>Most popular; InfluxDB 2.x (2024) migrated to Apache Arrow / DataFusion engine; query language shifted to SQL/InfluxQL; Flux is deprecated</td></tr>
+<tr><td>InfluxDB</td><td>Most popular; InfluxDB 3.0 (2024) migrated to Apache Arrow / DataFusion engine; query language shifted to SQL/InfluxQL; Flux is deprecated</td></tr>
 <tr><td>Prometheus</td><td>Standard monitoring stack; PromQL; pull model</td></tr>
 <tr><td>TimescaleDB</td><td>PostgreSQL extension; SQL compatible</td></tr>
 <tr><td>VictoriaMetrics</td><td>Prometheus-compatible; stronger performance</td></tr>
@@ -1336,7 +1336,7 @@ histogram_quantile(0.99, sum by (le) (rate(http_duration_seconds_bucket[5m])))
 
 <!-- 2.4.4 -->
 <h2 id="s2-4-4"><span class="num">2.4.4</span>Vector Databases</h2>
-<p class="pos">Position: nearest-neighbor search over high-dimensional vectors — the foundation of RAG, semantic retrieval, and recommendation.</p>
+<p class="pos">Orientation: nearest-neighbor search over high-dimensional vectors — the foundation of RAG, semantic retrieval, and recommendation.</p>
 
 <h3>Problem Definition</h3>
 
@@ -1402,7 +1402,7 @@ histogram_quantile(0.99, sum by (le) (rate(http_duration_seconds_bucket[5m])))
 
 <!-- 2.5.1 -->
 <h2 id="s2-5-1"><span class="num">2.5.1</span>High-Performance Message Bus</h2>
-<p class="pos">Position: The foundation of all inter-process/service communication patterns — RPC, Pub/Sub, message queues.</p>
+<p class="pos">Orientation: The foundation of all inter-process/service communication patterns — RPC, Pub/Sub, message queues.</p>
 
 <h3>Classification of Communication Patterns</h3>
 
@@ -1487,7 +1487,7 @@ histogram_quantile(0.99, sum by (le) (rate(http_duration_seconds_bucket[5m])))
 
 <!-- 2.6.1 -->
 <h2 id="s2-6-1"><span class="num">2.6.1</span>Bottlenecks of the Kernel Network Stack</h2>
-<p class="pos">Position: Why bypass the kernel — understanding the reason DPDK/VPP exists.</p>
+<p class="pos">Orientation: Why bypass the kernel — understanding the reason DPDK/VPP exists.</p>
 
 <h3>The Linux Network Stack Path</h3>
 
@@ -1537,7 +1537,7 @@ flowchart TB
 
 <!-- 2.6.2 -->
 <h2 id="s2-6-2"><span class="num">2.6.2</span>DPDK Architecture</h2>
-<p class="pos">Position: The industry-standard framework for user-space networking that bypasses the kernel.</p>
+<p class="pos">Orientation: The industry-standard framework for user-space networking that bypasses the kernel.</p>
 
 <h3>DPDK's Design Philosophy</h3>
 
@@ -1645,7 +1645,7 @@ int main(int argc, char *argv[]) {
 
 <!-- 2.6.3 -->
 <h2 id="s2-6-3"><span class="num">2.6.3</span>Key DPDK Mechanisms</h2>
-<p class="pos">Position: The secrets behind DPDK's performance — HugePages, lock-free rings, NUMA, and RSS.</p>
+<p class="pos">Orientation: The secrets behind DPDK's performance — HugePages, lock-free rings, NUMA, and RSS.</p>
 
 <h3>HugePages</h3>
 
@@ -1691,7 +1691,7 @@ struct rte_ring {
 
 <!-- 2.6.4 -->
 <h2 id="s2-6-4"><span class="num">2.6.4</span>VPP Vectorized Forwarding</h2>
-<p class="pos">Position: A high-performance, programmable forwarding framework built on top of DPDK, based on the idea of "applying the same operation to a batch of packets consecutively."</p>
+<p class="pos">Orientation: A high-performance, programmable forwarding framework built on top of DPDK, based on the idea of "applying the same operation to a batch of packets consecutively."</p>
 
 <h3>VPP's Core Innovation: Graph Nodes + Vectorization</h3>
 
@@ -1778,7 +1778,7 @@ ip4_lookup_node_fn(vlib_main_t *vm, vlib_node_runtime_t *node,
 
 <!-- 2.6.5 -->
 <h2 id="s2-6-5"><span class="num">2.6.5</span>TCP / UDP / Raw IP</h2>
-<p class="pos">Position: Transport-layer protocols — you use sockets every day, but you should know what's happening underneath.</p>
+<p class="pos">Orientation: Transport-layer protocols — you use sockets every day, but you should know what's happening underneath.</p>
 
 <h3>The IP Layer</h3>
 
@@ -1826,7 +1826,7 @@ ip4_lookup_node_fn(vlib_main_t *vm, vlib_node_runtime_t *node,
 
 <!-- 2.6.6 -->
 <h2 id="s2-6-6"><span class="num">2.6.6</span>TLS and QUIC</h2>
-<p class="pos">Position: Two paradigms for encrypted transport — TLS over TCP vs. QUIC (UDP + encryption).</p>
+<p class="pos">Orientation: Two paradigms for encrypted transport — TLS over TCP vs. QUIC (UDP + encryption).</p>
 
 <h3>TLS Handshake</h3>
 
@@ -1871,7 +1871,7 @@ ip4_lookup_node_fn(vlib_main_t *vm, vlib_node_runtime_t *node,
 
 <!-- 2.6.7 -->
 <h2 id="s2-6-7"><span class="num">2.6.7</span>Forwarding Management and the Control Plane</h2>
-<p class="pos">Position: The data plane uses DPDK/VPP to forward packets at speed; the control plane is responsible for distributing policies and synchronizing routing tables. Brief section.</p>
+<p class="pos">Orientation: The data plane uses DPDK/VPP to forward packets at speed; the control plane is responsible for distributing policies and synchronizing routing tables. Brief section.</p>
 
 <h3>Control Plane vs. Data Plane</h3>
 
@@ -1914,7 +1914,7 @@ ip4_lookup_node_fn(vlib_main_t *vm, vlib_node_runtime_t *node,
 
 <!-- 2.6.8 -->
 <h2 id="s2-6-8"><span class="num">2.6.8</span>Logging and Observability</h2>
-<p class="pos">Position: The trinity of Metrics + Logs + Traces — without observability there is no production operations.</p>
+<p class="pos">Orientation: The trinity of Metrics + Logs + Traces — without observability there is no production operations.</p>
 
 <h3>The Three Pillars of Observability</h3>
 

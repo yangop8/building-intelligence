@@ -347,7 +347,7 @@ th { background: var(--sidebar-bg); font-weight: 600; }
   <div class="meta">Chapter 3 · Internal Learning Material · 36 sections</div>
 </header>
 
-<p>AI engineers in the LLM era still need traditional machine learning — not out of nostalgia, but because in scenarios with <strong>limited data, interpretable features, and tight latency constraints</strong> (traffic classification on network devices, KPI anomaly detection), a single XGBoost tree is often a better fit than an LLM. The structure of this chapter reflects that view: traditional ML first, then fundamental operators, then classic deep learning models, then training optimization, and finally performance engineering and domain applications. Each layer is the foundation for the next, yet each also holds an independent place in modern AI systems.</p>
+<p>AI engineers in the LLM era still need traditional machine learning — not out of nostalgia, but because in scenarios with <strong>limited data, interpretable features, and tight latency constraints</strong> (traffic classification on network devices, KPI anomaly detection), a single XGBoost model is often a better fit than an LLM. The structure of this chapter reflects that view: traditional ML first, then fundamental operators, then classic deep learning models, then training optimization, and finally performance engineering and domain applications. Each layer is the foundation for the next, yet each also holds an independent place in modern AI systems.</p>
 
 <p>All 36 sections go deep. The key anchors are: 3.1.2 Tree Models (full derivation from decision trees to XGBoost), 3.2.3 Convolution (including im2col and Winograd), 3.3.2 LSTM gate derivations, 3.5.3 Fine-Tuning &amp; Alignment (the full SFT/DPO/RLHF pipeline), 3.6.3 Operator Optimization (Roofline + tiling + FlashAttention), and 3.7.2 Traffic Classification feature engineering in practice. The other sections are equally substantive — every section is written at the level of a knowledgeable colleague explaining it for 30 minutes, not as a textbook survey.</p>
 
@@ -1262,7 +1262,7 @@ $\mathbf{h}_v^{(l+1)} = \text{UPDATE}\left(\mathbf{h}_v^{(l)}, \text{AGG}\left(\
 $\mathbf{h}_v^{(l+1)} = \sigma\left(\sum_{u \in \mathcal{N}(v) \cup \{v\}} \frac{1}{\sqrt{\deg(u) \deg(v)}} W^{(l)} \mathbf{h}_u^{(l)}\right)$
 </div>
 
-<p>The normalization factor $1/\sqrt{d_u d_v}$ prevents high-degree nodes from dominating the aggregation. The derivation comes from a spectral-domain approximation of the graph Laplacian — the details are complex, but the idea is simple: take a weighted average of neighbors, then apply a linear transformation.</p>
+<p>The normalization factor $1/\sqrt{d_u d_v}$ prevents high-degree nodes from dominating the aggregation. The derivation comes from a spectral-domain approximation of the graph Laplacian — the details are complex, but the idea is simple: apply a linear transformation, then take a weighted average of neighbors.</p>
 
 <h3>GraphSAGE</h3>
 
@@ -1680,7 +1680,7 @@ $L(N, D) \approx \left(\frac{N_c}{N}\right)^{\alpha_N} + \left(\frac{D_c}{D}\rig
 
 <p>Loss as a function of parameter count $N$ and data volume $D$ follows power-law decay. This turns large model training into an "engineering problem" (just add compute to improve) rather than a "research problem" (requiring algorithmic breakthroughs).</p>
 
-<p>Chinchilla (2022) refined this: for a given compute budget, the optimal allocation is to scale data and parameter counts in roughly equal proportion (rather than simply stacking more parameters as was previously done).</p>
+<p>Chinchilla (2022) refined this: for a given compute budget, the optimal allocation is to scale D (data) and N (parameters) in roughly 1:1 proportion (around 20 tokens per parameter) (rather than simply stacking more parameters as was previously done).</p>
 
 <!-- 3.5.3 -->
 <h2 id="s3-5-3"><span class="num">3.5.3</span>Fine-Tuning and Alignment</h2>
@@ -1853,7 +1853,7 @@ $\nabla_\theta J(\pi_\theta) = \mathbb{E}_\pi[\nabla_\theta \log \pi_\theta(a|s)
 
 <p>$A(s, a) = Q(s, a) - V(s)$ is the advantage function (how much better this action is compared to average).</p>
 
-<p>Naive policy gradient has enormous variance and unstable updates. TRPO (2015) and PPO (2017) stabilize training by limiting the magnitude of each update. PPO uses <strong>clipping</strong> instead of TRPO's hard constraint — simple, efficient, and has become the default RL algorithm:</p>
+<p>Naive policy gradient has enormous variance and unstable updates. TRPO (2015) and PPO (2017) stabilize training by limiting the magnitude of each update. PPO uses <strong>clipping</strong> instead of TRPO's hard constraint — it is simpler, more efficient, and has become the default RL algorithm:</p>
 
 <div class="formula">
 $\mathcal{L}^{\text{CLIP}} = \mathbb{E}\left[\min(r_t A_t, \text{clip}(r_t, 1-\epsilon, 1+\epsilon) A_t)\right]$

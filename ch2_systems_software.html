@@ -577,7 +577,7 @@ for (int j = 0; j < N; j++)
 
 <h3>优先级反转</h3>
 
-<p>经典故障模式:低优先级任务 L 持有锁,中优先级任务 M 抢占 L(L 没让 M),高优先级任务 H 等锁——H 间接被 M 阻塞,优先级倒置。1997 火星探路者号就栽在这上面。</p>
+<p>经典故障模式:低优先级任务 L 持有锁,中优先级任务 M 抢占 L(但 M 不需要那把锁),高优先级任务 H 等锁——H 间接被 M 阻塞,优先级倒置。1997 火星探路者号就栽在这上面。</p>
 
 <p>解决:<strong>优先级继承</strong>——L 持锁期间临时提升到 H 的优先级,不怕被 M 抢。<strong>优先级天花板</strong>——静态分配更高。这些机制在 RT-mutex 里实现。</p>
 
@@ -841,7 +841,7 @@ flag = 1;                        assert(x == 1);  // 可能失败!
 
 <p>解决:<strong>内存屏障</strong>(memory barrier)。x86 是 TSO(Total Store Order)内存模型,相对宽松——写操作保序、读可能提前。ARM 是 weakly-ordered,啥都可能重排,必须显式用屏障。</p>
 
-<p>高层语言抽象:C++11 的 <code>std::memory_order</code>、Rust 的 <code>Ordering</code>,有 Relaxed、Acquire、Release、AcqRel、SeqCst 五档。SeqCst 最强(顺序一致),开销最大;Relaxed 最弱(只保证原子性),最快。真正懂着用是高水平系统工程师的分界线。</p>
+<p>高层语言抽象:C++11 的 <code>std::memory_order</code>、Rust 的 <code>Ordering</code>,有 Relaxed、Acquire、Release、AcqRel、SeqCst 五档。SeqCst 最强(顺序一致),开销最大;Relaxed 最弱(只保证原子性),最快。真正懂得用是高水平系统工程师的分界线。</p>
 
 <h3>MESI 与缓存一致性</h3>
 
@@ -925,7 +925,7 @@ flag = 1;                        assert(x == 1);  // 可能失败!
 <li>赋值/传参默认是"移动"所有权(除非类型实现 Copy)</li>
 </ol>
 
-<p>这条规则从根上消除了 C/C++ 的三大经典 bug:use-after-free、double-free、内存泄漏。编译器在编译期静态检查,无运行时开销。</p>
+<p>这条规则从根上消除了 C/C++ 最危险的内存安全 bug:use-after-free 和 double-free(内存泄漏在 Rc/Arc 循环引用下仍可能发生,但远不如前两者危险)。编译器在编译期静态检查,无运行时开销。</p>
 
 <pre><code class="language-rust">fn main() {
     let s1 = String::from("hello");
@@ -1194,7 +1194,7 @@ b = tmp + 2;
 
 <h3>WAL 与恢复</h3>
 
-<p><strong>WAL</strong>(Write-Ahead Log):改数据页前先写日志(log 顺序 I/O 比随机 I/O 页快)。崩溃后通过日志 redo 已提交事务、undo 未提交事务。<strong>ARIES</strong> 算法是工业标准恢复协议:Analysis → Redo → Undo。</p>
+<p><strong>WAL</strong>(Write-Ahead Log):改数据页前先写日志(log 顺序 I/O 比随机 I/O 快得多)。崩溃后通过日志 redo 已提交事务、undo 未提交事务。<strong>ARIES</strong> 算法是工业标准恢复协议:Analysis → Redo → Undo。</p>
 
 <h3>查询优化器</h3>
 
@@ -1309,7 +1309,7 @@ RETURN DISTINCT fof.name
 
 <table>
 <tr><th>产品</th><th>核心特点</th></tr>
-<tr><td>InfluxDB</td><td>最流行;InfluxDB 2.-1（2024）迁移至 Apache Arrow / DataFusion 引擎,查询语言转向 SQL/InfluxQL,Flux 已废弃</td></tr>
+<tr><td>InfluxDB</td><td>最流行;InfluxDB 3.0（2024）迁移至 Apache Arrow / DataFusion 引擎,查询语言转向 SQL/InfluxQL,Flux 已废弃</td></tr>
 <tr><td>Prometheus</td><td>监控标配,PromQL,pull 模式</td></tr>
 <tr><td>TimescaleDB</td><td>PostgreSQL 扩展,兼容 SQL</td></tr>
 <tr><td>VictoriaMetrics</td><td>Prometheus 兼容,性能更强</td></tr>
@@ -1667,7 +1667,7 @@ struct rte_ring {
 
 <h3>NUMA 感知</h3>
 
-<p>现代服务器多 socket,跨 socket 访问内存延迟翻倍(DRAM vs 本地 DRAM)。DPDK 通过 <code>rte_socket_id()</code> 让你指定 mempool、队列都分配在特定 NUMA 节点。生产代码必须所有资源 NUMA 对齐——网卡、CPU 核、内存池在同一 socket。</p>
+<p>现代服务器多 socket,跨 socket 访问内存延迟翻倍(远端 DRAM vs 本地 DRAM)。DPDK 通过 <code>rte_socket_id()</code> 让你指定 mempool、队列都分配在特定 NUMA 节点。生产代码必须所有资源 NUMA 对齐——网卡、CPU 核、内存池在同一 socket。</p>
 
 <h3>RSS 与多队列</h3>
 

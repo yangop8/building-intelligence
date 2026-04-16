@@ -718,7 +718,7 @@ flowchart TB
 </ul>
 
 <h3>创新 3: Multi-Token Prediction (MTP)</h3>
-<p>训练时不只预测下一个 token,也预测接下来 $D$ 个 token(V3 用 $D = 1$ 即额外预测 1 个)。每个预测位置一个专门的 MTP 模块(带独立 Transformer 层)。好处:</p>
+<p>训练时在标准的下一 token 预测之外,再额外预测未来 $D$ 个 token(V3 取 $D = 1$,即同时预测下一个和下下个 token)。每个预测位置一个专门的 MTP 模块(带独立 Transformer 层)。好处:</p>
 <ul style="list-style:none;padding-left:0;">
 <li>- 训练信号密度更高,同样 token 数学到更多</li>
 <li>- 推理时可直接用 MTP 模块做推测解码,省一个独立 draft model</li>

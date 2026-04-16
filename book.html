@@ -672,8 +672,8 @@ span.num {
     <li><a href="#s1-1-2"><span class="num">2</span>函数分析技术</a></li>
     <li><a href="#s1-1-3"><span class="num">3</span>函数逼近技术</a></li>
     <li><a href="#s1-1-4"><span class="num">4</span>函数极值计算</a></li>
-    <li><a href="#s1-1-5"><span class="num">5</span>实推广: 可逆性</a></li>
-    <li><a href="#s1-1-6"><span class="num">6</span>黎曼推广: 流形优化</a></li>
+    <li><a href="#s1-1-5"><span class="num">5</span>实分析推广: 可逆性</a></li>
+    <li><a href="#s1-1-6"><span class="num">6</span>黎曼几何推广: 流形优化</a></li>
     <li style="margin-top:6px;font-weight:600;font-size:11px;color:var(--muted);letter-spacing:0.05em">1.2 线性代数</li>
     <li><a href="#s1-2-1"><span class="num">1</span>线性空间与矩阵</a></li>
     <li><a href="#s1-2-2"><span class="num">2</span>线性变换与矩阵运算</a></li>
@@ -1095,7 +1095,7 @@ span.num {
 <p><span class="math-i">f</span>的二阶偏导拼成的 <span class="math-i">n \times n</span>矩阵叫 <strong>海森矩阵 </strong> <span class="math-i">\mathbf{H}</span>，第 <span class="math-i">(i,j)</span>位置是 <span class="math-i">\frac{\partial^2 f}{\partial x_i \partial x_j}</span>。海森描述函数的局部曲率：正定表示这是个碗底（局部极小），负定表示这是个山顶（局部极大），不定表示鞍点。</p>
 
 <h3>在AI里</h3>
-<p>神经网络训练的损失函数 <span class="math-i">L(\boldsymbol{\theta})</span>是从极高维参数空间到一个标量的函数——现代LLM的参数量从数十亿到数千亿不等。我们要的是 <span class="math-i">\nabla_\boldsymbol{\theta} L</span>，也就是一个与参数同维度的向量，指向loss增大最快的方向。每走一步 <span class="math-i">\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \eta \nabla L</span>就是梯度下降。海森矩阵太大（<span class="math-i">10^{10} \times 10^{10}</span>存不下），所以Adam之类优化器<em>近似</em>用梯度的二阶矩来模拟海森信息——这是二阶优化与一阶优化的分界线。</p>
+<p>神经网络训练的损失函数 <span class="math-i">L(\boldsymbol{\theta})</span>是从极高维参数空间到一个标量的函数——现代LLM的参数量从数十亿到数千亿不等。我们要的是 <span class="math-i">\nabla_{\boldsymbol{\theta}} L</span>，也就是一个与参数同维度的向量，指向loss增大最快的方向。每走一步 <span class="math-i">\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \eta \nabla L</span>就是梯度下降。海森矩阵太大（<span class="math-i">10^{10} \times 10^{10}</span>存不下），所以Adam之类优化器<em>近似</em>用梯度的二阶矩来模拟海森信息——这是二阶优化与一阶优化的分界线。</p>
 
 <!-- 1.1.2 -->
 <h2 id="s1-1-2"><span class="num">1.1.2</span>函数分析技术</h2>
@@ -1111,7 +1111,7 @@ span.num {
 
 <h3>梯度、散度、旋度</h3>
 
-<p>梯度前面讲了。散度 <span class="math-i">\nabla \cdot \mathbf{F}</span>作用在向量场上，输出标量，衡量"向外流出的净量"；旋度 <span class="math-i">\nabla \times \mathbf{F}</span>也作用在向量场上，输出向量，衡量"局部旋转量"。这两个在AI日常中用得很少，一般只在涉及连续归一化流（CNF）、扩散模型的Fokker-Planck方程等场合出现，感受一下即可。</p>
+<p>梯度前面讲了。散度 <span class="math-i">\nabla \cdot \mathbf{F}</span>作用在向量场上，输出标量，衡量"向外流出的净量"；旋度 <span class="math-i">\nabla \times \mathbf{F}</span>也作用在向量场上，输出向量，衡量"局部旋转量"。这两个在AI日常中用得很少，一般只在涉及连续归一化流（CNF）、扩散模型的Fokker-Planck方程等场合出现，了解即可。</p>
 
 <h3>矩</h3>
 
@@ -1239,15 +1239,15 @@ print("dL/dW1 =\n", dL_dW1)
 <p>看 <span class="math-i">\sigma'(z)</span>这项。Sigmoid的导数最大值是 <span class="math-i">0.25</span>，乘 <span class="math-i">L</span>次就是 <span class="math-i">0.25^L</span>——层数一多梯度指数衰减，前几层学不动，这就是经典的<strong>梯度消失</strong>。ReLU在正半轴导数是1，才解决了这个问题。理解梯度消失的方法，就是盯着这串链式乘积看每一项到底是啥。</p>
 
 <!-- 1.1.5 -->
-<h2 id="s1-1-5"><span class="num">1.1.5</span>实推广：LLM的可逆性问题</h2>
+<h2 id="s1-1-5"><span class="num">1.1.5</span>实分析推广：LLM的可逆性问题</h2>
 <p class="pos">定位：一个开放性的理论问题——给定LLM的输出分布，能否反推输入？点到为止。</p>
 
-<p>实分析的核心对象之一是"测度"——比长度/面积/体积更抽象的"量"。对AI而言，一个具体的应用场景是<strong>生成模型的可逆性</strong>：normalizing flow要求每一层变换都是双射且雅可比行列式可计算，这样才能精确算likelihood。扩散模型的score matching则放弃了严格可逆，换成学习分数函数 <span class="math-i">\nabla_\mathbf{x} \log p(\mathbf{x})</span>。</p>
+<p>实分析的核心对象之一是"测度"——比长度/面积/体积更抽象的"量"。对AI而言，一个具体的应用场景是<strong>生成模型的可逆性</strong>：normalizing flow要求每一层变换都是双射且雅可比行列式可计算，这样才能精确算likelihood。扩散模型的score matching则放弃了严格可逆，换成学习分数函数 <span class="math-i">\nabla_{\mathbf{x}} \log p(\mathbf{x})</span>。</p>
 
 <p>LLM作为自回归生成模型，"可逆"在另一个层面被提出：<em>给定一段输出，能否唯一还原出prompt？</em>答案是否定的——采样过程注入了随机性，且许多prompt都能产生同一段输出。但理论上研究"近似可逆"有现实意义，比如判断某段文本是否由特定模型生成（水印检测）、反推训练数据泄露等。这是一个活跃但未成熟的研究方向，工程上还没成熟工具可用。了解到"这个问题存在"即可。</p>
 
 <!-- 1.1.6 -->
-<h2 id="s1-1-6"><span class="num">1.1.6</span>黎曼推广：流形优化</h2>
+<h2 id="s1-1-6"><span class="num">1.1.6</span>黎曼几何推广：流形优化</h2>
 <p class="pos">定位：当参数空间不是平直欧氏空间、而是一个曲面（流形）时怎么优化。简短介绍。</p>
 
 <p>标准梯度下降假设参数活在平直的 <span class="math-i">\mathbb{R}^n</span>里。但有些问题里参数天生有几何约束：正交矩阵（<span class="math-i">\mathbf{Q}^\top \mathbf{Q} = \mathbf{I}</span>）、正定矩阵、单位范数向量、低秩矩阵。这些对象构成的集合不是平直的 <span class="math-i">\mathbb{R}^n</span>，而是<strong>流形</strong>——局部像欧氏空间、全局弯曲的结构。</p>
@@ -1260,7 +1260,7 @@ print("dL/dW1 =\n", dL_dW1)
 <div class="part-header">
   <div class="part-label">PART TWO</div>
   <h2 class="part-title">1.2线性代数</h2>
-  <p class="part-desc">深度学习就是矩阵乘法的无数次嵌套——不过关的是整个领域。</p>
+  <p class="part-desc">深度学习就是矩阵乘法的无数次嵌套——线代不过关,整个领域做不下去。</p>
 </div>
 
 <!-- 1.1.0 -->
@@ -1277,7 +1277,7 @@ print("dL/dW1 =\n", dL_dW1)
 
 <p>一组向量 <span class="math-i">\{\mathbf{v}_1, \ldots, \mathbf{v}_k\}</span>叫 <strong>线性无关 </strong>，如果 <span class="math-i">\sum \alpha_i \mathbf{v}_i = \mathbf{0}</span>只有 <span class="math-i">\alpha_i = 0</span>这一解。一个线性空间的<strong>维度</strong>是能找到的最大线性无关组的大小。</p>
 
-<p>矩阵 <span class="math-i">\mathbf{A}</span>的 <strong>秩 </strong> <span class="math-i">\text{rank}(\mathbf{A})</span>是它的列（或行）向量组的最大线性无关数。<span class="math-i">\text{rank}(\mathbf{A}) \le \min(m, n)</span>。秩充分反映了"信息冗余度"：秩低的矩阵能被低维表示压缩。这是后面SVD和LoRA的起点。</p>
+<p>矩阵 <span class="math-i">\mathbf{A}</span>的 <strong>秩 </strong> <span class="math-i">\text{rank}(\mathbf{A})</span>是它的列（或行）向量组的最大线性无关数。<span class="math-i">\text{rank}(\mathbf{A}) \le \min(m, n)</span>。秩度量了"信息冗余度"：秩低的矩阵能被低维表示压缩。这是后面SVD和LoRA的起点。</p>
 
 <h3>在AI里</h3>
 
@@ -1325,7 +1325,7 @@ print("dL/dW1 =\n", dL_dW1)
 
 <table>
 <tr><th>情况</th><th>条件</th><th>结果</th></tr>
-<tr><td>方阵满秩(<span class="math-i">m = n, \text{rank} = n</span>) </td> \lt td><span class="math-i">\det(\mathbf{A}) \ne 0</span> </td> \lt td>唯一解 <span class="math-i">\mathbf{x} = \mathbf{A}^{-1}\mathbf{b}</span></td></tr>
+<tr><td>方阵满秩(<span class="math-i">m = n, \text{rank} = n</span>) </td> <td><span class="math-i">\det(\mathbf{A}) \ne 0</span> </td> <td>唯一解 <span class="math-i">\mathbf{x} = \mathbf{A}^{-1}\mathbf{b}</span></td></tr>
 <tr><td>超定(<span class="math-i">m > n</span>)</td><td>通常无精确解</td><td>最小二乘解</td></tr>
 <tr><td>欠定(<span class="math-i">m \lt n</span>)</td><td>通常有无穷解</td><td>最小范数解</td></tr>
 </table>
@@ -1447,7 +1447,7 @@ for r in [5, 10, 20, 50, 100]:
     print(f"rank {r:3d}: 相对误差 {err:.4f}")
 </code></pre>
 
-<p>跑一下会发现rank=10附近误差陡降后趋平——验证了"低秩近似能高保真还原"。这就是你可以信任LoRA的数学凭据。</p>
+<p>跑一下会发现rank=10附近误差陡降后趋平——验证了"低秩近似能高保真还原"。这就是LoRA能奏效的数学依据。</p>
 
 <!-- 1.1.5 -->
 <h2 id="s1-2-6"><span class="num">1.2.6</span>内积空间与距离度量</h2>
@@ -1547,10 +1547,10 @@ print("POTC    最大负载:", np.mean([simulate_balls_bins(n, 'potc')   for _ i
 
 <table>
 <tr><th>分布</th><th>含义</th><th>PMF</th><th>均值/方差</th></tr>
-<tr><td>伯努利Ber(p)</td><td>一次抛硬币</td><td><span class="math-i">P(X=1) = p</span> </td> \lt td><span class="math-i">p, p(1-p)</span></td></tr>
-<tr><td>二项Bin(n, p)</td><td>n次伯努利和</td><td><span class="math-i">\binom{n}{k} p^k (1-p)^{n-k}</span> </td> \lt td><span class="math-i">np, np(1-p)</span></td></tr>
-<tr><td>泊松Poi(λ)</td><td>稀有事件计数</td><td><span class="math-i">\frac{\lambda^k e^{-\lambda}}{k!}</span> </td> \lt td><span class="math-i">\lambda, \lambda</span></td></tr>
-<tr><td>几何Geo(p)</td><td>直到成功的次数</td><td><span class="math-i">(1-p)^{k-1} p</span> </td> \lt td><span class="math-i">1/p, (1-p)/p^2</span></td></tr>
+<tr><td>伯努利Ber(p)</td><td>一次抛硬币</td><td><span class="math-i">P(X=1) = p</span> </td> <td><span class="math-i">p, p(1-p)</span></td></tr>
+<tr><td>二项Bin(n, p)</td><td>n次伯努利和</td><td><span class="math-i">\binom{n}{k} p^k (1-p)^{n-k}</span> </td> <td><span class="math-i">np, np(1-p)</span></td></tr>
+<tr><td>泊松Poi(λ)</td><td>稀有事件计数</td><td><span class="math-i">\frac{\lambda^k e^{-\lambda}}{k!}</span> </td> <td><span class="math-i">\lambda, \lambda</span></td></tr>
+<tr><td>几何Geo(p)</td><td>直到成功的次数</td><td><span class="math-i">(1-p)^{k-1} p</span> </td> <td><span class="math-i">1/p, (1-p)/p^2</span></td></tr>
 </table>
 
 <p>泊松是 <span class="math-i">n \to \infty, p \to 0, np = \lambda</span>时二项的极限。它描述"大量独立稀有事件"——用户访问量、系统崩溃次数、基因突变。</p>
@@ -1578,7 +1578,7 @@ print("POTC    最大负载:", np.mean([simulate_balls_bins(n, 'potc')   for _ i
 
 <h3>大数定律与中心极限定理</h3>
 
-<p><strong>大数定律</strong>：<span class="math-i">n</span>个独立同分布样本的均值 <span class="math-i">\bar{X}_n</span>以概率1收敛到真均值 <span class="math-i">\mu</span>（在有限方差前提下）。这是所有基于"样本估计总体"的统计方法的根基——也是SGD能工作的理由（用小批量梯度估计全数据集梯度）。</p>
+<p><strong>大数定律</strong>：<span class="math-i">n</span>个独立同分布样本的均值 <span class="math-i">\bar{X}_n</span>以概率1收敛到真均值 <span class="math-i">\mu</span>（在期望存在前提下）。这是所有基于"样本估计总体"的统计方法的根基——也是SGD能工作的理由（用小批量梯度估计全数据集梯度）。</p>
 
 <p><strong>中心极限定理</strong>：任何分布的 <span class="math-i">n</span>个独立样本均值，当 <span class="math-i">n \to \infty</span>，分布趋近于正态：</p>
 <div class="formula"><span class="math-d">\sqrt{n}(\bar{X}_n - \mu) \xrightarrow{d} \mathcal{N}(0, \sigma^2)</span></div>
@@ -1626,7 +1626,7 @@ print("POTC    最大负载:", np.mean([simulate_balls_bins(n, 'potc')   for _ i
 
 <h3>置信区间</h3>
 
-<p>点估计 <span class="math-i">\hat{\theta}</span>是一个数，不告诉你它有多确定。置信区间 <span class="math-i">[\hat{\theta} - c, \hat{\theta} + c]</span>表示"在重复抽样100次中，有95%的置信区间会包含真值"——注意是区间包含真值的概率，不是真值落在区间的概率（频率派里 <span class="math-i">\theta</span>是常数，不谈"落在哪"的概率）。</p>
+<p>点估计 <span class="math-i">\hat{\theta}</span>是一个数，不告诉你它有多确定。置信区间 <span class="math-i">[\hat{\theta} - c, \hat{\theta} + c]</span>表示"如果重复抽样100次，构造出来的100个置信区间中约有95个会覆盖真值"。注意这是"构造区间的程序"的覆盖率性质，不是"真值落在某个固定区间里的概率"——频率派里 <span class="math-i">\theta</span>是常数，没有概率分布。</p>
 
 <h3>在AI里</h3>
 
@@ -1647,7 +1647,7 @@ print("POTC    最大负载:", np.mean([simulate_balls_bins(n, 'potc')   for _ i
 <h3>两类错误</h3>
 
 <table>
-<tr><th></th><th>真相 <span class="math-i">H_0</span>为真 </th> \lt th>真相 <span class="math-i">H_1</span>为真</th></tr>
+<tr><th></th><th>真相 <span class="math-i">H_0</span>为真 </th> <th>真相 <span class="math-i">H_1</span>为真</th></tr>
 <tr><td>接受 <span class="math-i">H_0</span></td><td>正确</td><td>第二类错误(漏报, β)</td></tr>
 <tr><td>拒绝 <span class="math-i">H_0</span></td><td>第一类错误(误报, α)</td><td>正确(功效1-β)</td></tr>
 </table>
@@ -2348,7 +2348,7 @@ for (int j = 0; j &lt; N; j++)
 
 <h3>优先级反转</h3>
 
-<p>经典故障模式:低优先级任务L持有锁,中优先级任务M抢占L(L没让M),高优先级任务H等锁——H间接被M阻塞,优先级倒置。1997火星探路者号就栽在这上面。</p>
+<p>经典故障模式:低优先级任务L持有锁,中优先级任务M抢占L(但M不需要那把锁),高优先级任务H等锁——H间接被M阻塞,优先级倒置。1997火星探路者号就栽在这上面。</p>
 
 <p>解决:<strong>优先级继承</strong>——L持锁期间临时提升到H的优先级,不怕被M抢。<strong>优先级天花板</strong>——静态分配更高。这些机制在RT-mutex里实现。</p>
 
@@ -2612,7 +2612,7 @@ flag = 1;                        assert(x == 1);  // 可能失败!
 
 <p>解决:<strong>内存屏障</strong>(memory barrier)。x86是TSO(Total Store Order)内存模型,相对宽松——写操作保序、读可能提前。ARM是weakly-ordered,啥都可能重排,必须显式用屏障。</p>
 
-<p>高层语言抽象:C++11的 <code>std::memory_order</code>、Rust的 <code>Ordering</code>,有Relaxed、Acquire、Release、AcqRel、SeqCst五档。SeqCst最强(顺序一致),开销最大;Relaxed最弱(只保证原子性),最快。真正懂着用是高水平系统工程师的分界线。</p>
+<p>高层语言抽象:C++11的 <code>std::memory_order</code>、Rust的 <code>Ordering</code>,有Relaxed、Acquire、Release、AcqRel、SeqCst五档。SeqCst最强(顺序一致),开销最大;Relaxed最弱(只保证原子性),最快。真正懂得用是高水平系统工程师的分界线。</p>
 
 <h3>MESI与缓存一致性</h3>
 
@@ -2696,7 +2696,7 @@ flag = 1;                        assert(x == 1);  // 可能失败!
 <li>赋值/传参默认是"移动"所有权(除非类型实现Copy)</li>
 </ol>
 
-<p>这条规则从根上消除了C/C++ 的三大经典bug:use-after-free、double-free、内存泄漏。编译器在编译期静态检查,无运行时开销。</p>
+<p>这条规则从根上消除了C/C++ 最危险的内存安全bug:use-after-free和double-free(内存泄漏在Rc/Arc循环引用下仍可能发生,但远不如前两者危险)。编译器在编译期静态检查,无运行时开销。</p>
 
 <pre><code class="language-rust">fn main() {
     let s1 = String::from("hello");
@@ -2965,7 +2965,7 @@ b = tmp + 2;
 
 <h3>WAL与恢复</h3>
 
-<p><strong>WAL</strong>(Write-Ahead Log):改数据页前先写日志(log顺序I/O比随机I/O页快)。崩溃后通过日志redo已提交事务、undo未提交事务。<strong>ARIES</strong>算法是工业标准恢复协议:Analysis → Redo → Undo。</p>
+<p><strong>WAL</strong>(Write-Ahead Log):改数据页前先写日志(log顺序I/O比随机I/O快得多)。崩溃后通过日志redo已提交事务、undo未提交事务。<strong>ARIES</strong>算法是工业标准恢复协议:Analysis → Redo → Undo。</p>
 
 <h3>查询优化器</h3>
 
@@ -3080,7 +3080,7 @@ RETURN DISTINCT fof.name
 
 <table>
 <tr><th>产品</th><th>核心特点</th></tr>
-<tr><td>InfluxDB</td><td>最流行;InfluxDB 2.-1（2024）迁移至Apache Arrow / DataFusion引擎,查询语言转向SQL/InfluxQL,Flux已废弃</td></tr>
+<tr><td>InfluxDB</td><td>最流行;InfluxDB 3.0（2024）迁移至Apache Arrow / DataFusion引擎,查询语言转向SQL/InfluxQL,Flux已废弃</td></tr>
 <tr><td>Prometheus</td><td>监控标配,PromQL,pull模式</td></tr>
 <tr><td>TimescaleDB</td><td>PostgreSQL扩展,兼容SQL</td></tr>
 <tr><td>VictoriaMetrics</td><td>Prometheus兼容,性能更强</td></tr>
@@ -3438,7 +3438,7 @@ struct rte_ring {
 
 <h3>NUMA感知</h3>
 
-<p>现代服务器多socket,跨socket访问内存延迟翻倍(DRAM vs本地DRAM)。DPDK通过 <code>rte_socket_id()</code>让你指定mempool、队列都分配在特定NUMA节点。生产代码必须所有资源NUMA对齐——网卡、CPU核、内存池在同一socket。</p>
+<p>现代服务器多socket,跨socket访问内存延迟翻倍(远端DRAM vs本地DRAM)。DPDK通过 <code>rte_socket_id()</code>让你指定mempool、队列都分配在特定NUMA节点。生产代码必须所有资源NUMA对齐——网卡、CPU核、内存池在同一socket。</p>
 
 <h3>RSS与多队列</h3>
 
@@ -3749,7 +3749,7 @@ ip4_lookup_node_fn(vlib_main_t *vm, vlib_node_runtime_t *node,
   <div class="meta">Chapter 3 · 内部学习材料 · 共36节</div>
 </header>
 
-<p>LLM时代的AI工程师仍然需要传统机器学习——不是因为怀旧,而是因为在<strong>数据量有限、特征可解释、延迟敏感</strong>的场景里(网络设备上的流量分类、KPI异常检测),一棵XGBoost树往往比一个LLM更合适。这一章的结构反映这个观点:先传统ML、再基础算子、再经典深度模型、再训练优化、最后性能工程和领域应用。每一层都是下一层的基础,但也都在现代AI系统里有独立位置。</p>
+<p>LLM时代的AI工程师仍然需要传统机器学习——不是因为怀旧,而是因为在<strong>数据量有限、特征可解释、延迟敏感</strong>的场景里(网络设备上的流量分类、KPI异常检测),一个XGBoost模型往往比一个LLM更合适。这一章的结构反映这个观点:先传统ML、再基础算子、再经典深度模型、再训练优化、最后性能工程和领域应用。每一层都是下一层的基础,但也都在现代AI系统里有独立位置。</p>
 
 <p>36节全深挖。重点锚点是这几节:3.1.2树模型(从决策树到XGBoost完整推导)、3.2.3卷积(含im2col和Winograd)、3.3.2 LSTM门控推导、3.5.3微调对齐(SFT/DPO/RLHF全链路)、3.6.3算子优化(Roofline + tiling + FlashAttention)、3.7.2流量分类的特征工程实战。其它节也内容充实——每节都到"一个有经验的同事能给你讲30分钟"的密度,不到"教科书式铺陈"的密度。</p>
 
@@ -3777,7 +3777,7 @@ ip4_lookup_node_fn(vlib_main_t *vm, vlib_node_runtime_t *node,
 <li>- <strong>特征尺度敏感</strong>:范围[0, 1]的特征和范围[0, 10000]的特征直接算欧式距离,后者完全支配。必须标准化。</li>
 </ul>
 
-<h3>Kmeans:最近邻聚类</h3>
+<h3>Kmeans:基于中心的聚类</h3>
 
 <p>给定数据 <span class="math-i">\{\mathbf{x}_i\}</span>,把它们分成 <span class="math-i">k</span>个簇,使得<strong>每点到其所属簇中心的距离平方和最小</strong>:</p>
 
@@ -5004,7 +5004,7 @@ shap.summary_plot(shap_values, X_test)
 
 <p>Loss作为参数数 <span class="math-i">N</span>、数据量 <span class="math-i">D</span>的函数是幂律衰减。这让大模型训练变成"工程问题"(只要加算力就能变好),而不是"科研问题"(需要算法突破)。</p>
 
-<p>Chinchilla(2022)细化了这一点:对给定算力预算,最优分配是数据量和参数量大致相等比例增长(而不是之前一味堆参数)。</p>
+<p>Chinchilla(2022)细化了这一点:对给定算力预算,数据量D与参数量N应按大致1:1的比例放大,经验值约为20 token/参数。</p>
 
 <!-- 3.5.3 -->
 <h2 id="s3-5-3"><span class="num">3.5.3</span>微调与对齐</h2>
@@ -6462,7 +6462,7 @@ K = apply_rope(K, freqs_cis)
 
 <h3>NTK-aware Scaling</h3>
 <p>PI不区分不同频率,把所有维度一起压。NTK-aware(2023民间提出)观察到:<strong>低频维度不该压缩(它们原本就没循环完一圈)</strong>,只压高频。</p>
-<p>具体做法:把RoPE的base从10000改大(如40000)。这相当于让所有频率都变小,但对原本就小的低频影响更小——精密保留了大尺度信息。</p>
+<p>具体做法:把RoPE的base从10000改大(如40000)。这相当于让所有频率都变小,但对原本就小的低频影响更小——更好地保留了大尺度信息。</p>
 <p>好处:无需微调就能2-4× 外推,质量下降小。</p>
 
 <h3>YaRN</h3>
@@ -6543,8 +6543,8 @@ K = apply_rope(K, freqs_cis)
 <li><strong>和MLA无缝结合</strong>:稀疏 + 低秩压缩双重减负,长上下文compute成本降50%左右,质量几乎无损。</li>
 <li><strong>思考/非思考统一</strong>:V3.2继承V3.1的混合模式,同一模型既能快速回答也能深度推理。</li>
 </ol>
-<p>DSA是稀疏注意力多年积累后,在大模型上第一次做到"效果和密集attention相当、成本显著更低"。这也说明4.4.2讲过的稀疏注意力路线并未失败,只是之前的方案不够精细。</p>
-<p>V3.2还有Speciale变种,把推理能力推到据称接近闭源顶级模型的水平——2025年末开源侧的标杆。</p>
+<p>DSA是稀疏注意力多年积累后,在大模型上第一次做到"效果和密集attention相当、成本显著更低"。这也说明4.4.2将讲到的稀疏注意力路线并未失败,只是之前的方案不够精细。</p>
+<p>V3.2还有实验性的稀疏注意力变种,把推理能力推到据称接近闭源顶级模型的水平——2025年末开源侧的标杆。</p>
 
 <h2 id="s4-4-2"><span class="num">4.4.2</span>稀疏注意力</h2>
 <p class="pos">定位:放弃"每个位置看所有位置",只看关键子集——用 <span class="math-i">O(L \log L)</span>甚至 <span class="math-i">O(L)</span>替代 <span class="math-i">O(L^2)</span>。</p>
@@ -6606,7 +6606,7 @@ K = apply_rope(K, freqs_cis)
 <table>
 <tr><th>维度</th><th>Transformer</th><th>Mamba</th></tr>
 <tr><td>训练</td><td>全并行</td><td>并行扫描(<span class="math-i">O(L)</span>)</td></tr>
-<tr><td>推理</td><td><span class="math-i">O(L)</span> attention + <span class="math-i">O(L)</span> KV Cache </td> \lt td><span class="math-i">O(1)</span>状态更新</td></tr>
+<tr><td>推理</td><td><span class="math-i">O(L)</span> attention + <span class="math-i">O(L)</span> KV Cache </td> <td><span class="math-i">O(1)</span>状态更新</td></tr>
 <tr><td>推理内存</td><td>随L增长(KV Cache)</td><td>固定</td></tr>
 <tr><td>长序列</td><td>受KV Cache限制</td><td>天然支持</td></tr>
 <tr><td>可解释性</td><td>attention可视化</td><td>状态不可直接观察</td></tr>
@@ -7754,7 +7754,7 @@ Action: finish("Max Verstappen, 27岁")
 
 <h3>Coding Agent的局限</h3>
 <ul style="list-style:none;padding-left:0;">
-<li>- <strong>创意设计弱</strong>:擅长明确需求(修bug、写测试、迁移),拙于模糊需求(从零设计架构)</li>
+<li>- <strong>创意设计弱</strong>:擅长明确需求(修bug、写测试、迁移),不擅长模糊需求(从零设计架构)</li>
 <li>- <strong>长任务不稳</strong>:超过30分钟的复杂任务,错误累积仍是问题</li>
 <li>- <strong>安全风险</strong>:自主执行代码有prompt注入、凭据泄露风险,需沙箱隔离</li>
 <li>- <strong>人机协作最优</strong>:当前最优实践不是"全自主",而是Agent草拟+人审查确认</li>
@@ -8006,9 +8006,9 @@ flowchart TB
 <h3>复杂度分析</h3>
 <table>
 <tr><th>操作</th><th>时间复杂度</th><th>说明</th></tr>
-<tr><td>搜索</td><td><span class="math-i">O(\log N)</span> </td> \lt td>每层贪心搜索 <span class="math-i">O(1)</span>步,共 <span class="math-i">O(\log N)</span>层</td></tr>
+<tr><td>搜索</td><td><span class="math-i">O(\log N)</span> </td> <td>每层贪心搜索 <span class="math-i">O(1)</span>步,共 <span class="math-i">O(\log N)</span>层</td></tr>
 <tr><td>插入</td><td><span class="math-i">O(\log N)</span></td><td>搜索 + 连边</td></tr>
-<tr><td>空间</td><td><span class="math-i">O(N \cdot M)</span> </td> \lt td>每个节点 <span class="math-i">M</span>条边</td></tr>
+<tr><td>空间</td><td><span class="math-i">O(N \cdot M)</span> </td> <td>每个节点 <span class="math-i">M</span>条边</td></tr>
 </table>
 
 <h3>关键参数</h3>
@@ -9743,9 +9743,9 @@ flowchart TB
 <h3>复杂度对比</h3>
 <table>
 <tr><th>模型</th><th>训练复杂度</th><th>推理(每token)</th><th>长序列支持</th></tr>
-<tr><td>Transformer</td><td><span class="math-i">O(N^2 d)</span> </td> \lt td><span class="math-i">O(N d)</span>(KV cache)</td><td>受限于二次复杂度</td></tr>
-<tr><td>S4 (固定SSM)</td><td><span class="math-i">O(N \log N \cdot d)</span> </td> \lt td><span class="math-i">O(d)</span></td><td>好,但缺乏选择性</td></tr>
-<tr><td>Mamba</td><td><span class="math-i">O(N d)</span> </td> \lt td><span class="math-i">O(d)</span>(固定状态)</td><td>理论上无上限</td></tr>
+<tr><td>Transformer</td><td><span class="math-i">O(N^2 d)</span> </td> <td><span class="math-i">O(N d)</span>(KV cache)</td><td>受限于二次复杂度</td></tr>
+<tr><td>S4 (固定SSM)</td><td><span class="math-i">O(N \log N \cdot d)</span> </td> <td><span class="math-i">O(d)</span></td><td>好,但缺乏选择性</td></tr>
+<tr><td>Mamba</td><td><span class="math-i">O(N d)</span> </td> <td><span class="math-i">O(d)</span>(固定状态)</td><td>理论上无上限</td></tr>
 </table>
 
 <h3>实验结果</h3>
@@ -10024,7 +10024,7 @@ flowchart TB
 </ul>
 
 <h3>创新3: Multi-Token Prediction (MTP)</h3>
-<p>训练时不只预测下一个token,也预测接下来 <span class="math-i">D</span>个token(V3用 <span class="math-i">D = 1</span>即额外预测1个)。每个预测位置一个专门的MTP模块(带独立Transformer层)。好处:</p>
+<p>训练时在标准的下一token预测之外,再额外预测未来 <span class="math-i">D</span>个token(V3取 <span class="math-i">D = 1</span>,即同时预测下一个和下下个token)。每个预测位置一个专门的MTP模块(带独立Transformer层)。好处:</p>
 <ul style="list-style:none;padding-left:0;">
 <li>- 训练信号密度更高,同样token数学到更多</li>
 <li>- 推理时可直接用MTP模块做推测解码,省一个独立draft model</li>

@@ -544,7 +544,7 @@ K = apply_rope(K, freqs_cis)
 
 <h3>NTK-aware Scaling</h3>
 <p>PI 不区分不同频率,把所有维度一起压。NTK-aware(2023 民间提出)观察到:<strong>低频维度不该压缩(它们原本就没循环完一圈)</strong>,只压高频。</p>
-<p>具体做法:把 RoPE 的 base 从 10000 改大(如 40000)。这相当于让所有频率都变小,但对原本就小的低频影响更小——精密保留了大尺度信息。</p>
+<p>具体做法:把 RoPE 的 base 从 10000 改大(如 40000)。这相当于让所有频率都变小,但对原本就小的低频影响更小——更好地保留了大尺度信息。</p>
 <p>好处:无需微调就能 2-4× 外推,质量下降小。</p>
 
 <h3>YaRN</h3>
@@ -625,8 +625,8 @@ K = apply_rope(K, freqs_cis)
 <li><strong>和 MLA 无缝结合</strong>:稀疏 + 低秩压缩双重减负,长上下文 compute 成本降 50% 左右,质量几乎无损。</li>
 <li><strong>思考/非思考统一</strong>:V3.2 继承 V3.1 的混合模式,同一模型既能快速回答也能深度推理。</li>
 </ol>
-<p>DSA 是稀疏注意力多年积累后,在大模型上第一次做到"效果和密集 attention 相当、成本显著更低"。这也说明 4.4.2 讲过的稀疏注意力路线并未失败,只是之前的方案不够精细。</p>
-<p>V3.2 还有 Speciale 变种,把推理能力推到据称接近闭源顶级模型的水平——2025 年末开源侧的标杆。</p>
+<p>DSA 是稀疏注意力多年积累后,在大模型上第一次做到"效果和密集 attention 相当、成本显著更低"。这也说明 4.4.2 将讲到的稀疏注意力路线并未失败,只是之前的方案不够精细。</p>
+<p>V3.2 还有实验性的稀疏注意力变种,把推理能力推到据称接近闭源顶级模型的水平——2025 年末开源侧的标杆。</p>
 
 <h2 id="s4-4-2"><span class="num">4.4.2</span>稀疏注意力</h2>
 <p class="pos">定位:放弃"每个位置看所有位置",只看关键子集——用 $O(L \log L)$ 甚至 $O(L)$ 替代 $O(L^2)$。</p>
@@ -688,7 +688,7 @@ K = apply_rope(K, freqs_cis)
 <table>
 <tr><th>维度</th><th>Transformer</th><th>Mamba</th></tr>
 <tr><td>训练</td><td>全并行</td><td>并行扫描 ($O(L)$)</td></tr>
-<tr><td>推理</td><td>$O(L)$ attention + $O(L)$ KV Cache </td> \lt td>$O(1)$ 状态更新</td></tr>
+<tr><td>推理</td><td>$O(L)$ attention + $O(L)$ KV Cache </td> <td>$O(1)$ 状态更新</td></tr>
 <tr><td>推理内存</td><td>随 L 增长(KV Cache)</td><td>固定</td></tr>
 <tr><td>长序列</td><td>受 KV Cache 限制</td><td>天然支持</td></tr>
 <tr><td>可解释性</td><td>attention 可视化</td><td>状态不可直接观察</td></tr>
@@ -1836,7 +1836,7 @@ Action: finish("Max Verstappen, 27 岁")
 
 <h3>Coding Agent的局限</h3>
 <ul style="list-style:none;padding-left:0;">
-<li>- <strong>创意设计弱</strong>:擅长明确需求(修bug、写测试、迁移),拙于模糊需求(从零设计架构)</li>
+<li>- <strong>创意设计弱</strong>:擅长明确需求(修bug、写测试、迁移),不擅长模糊需求(从零设计架构)</li>
 <li>- <strong>长任务不稳</strong>:超过30分钟的复杂任务,错误累积仍是问题</li>
 <li>- <strong>安全风险</strong>:自主执行代码有prompt注入、凭据泄露风险,需沙箱隔离</li>
 <li>- <strong>人机协作最优</strong>:当前最优实践不是"全自主",而是Agent草拟+人审查确认</li>

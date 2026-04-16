@@ -86,7 +86,7 @@ th{background:var(--sidebar-bg);font-weight:600;}
 <div class="meta">Chapter 4 · Internal Learning Material · 37 Sections · Revised Early 2026</div>
 </header>
 
-<p>An An LLM is no longer just a "model"—it is an entire technology stack. From low-level Transformer operators, to distributed training strategies, to inference-side scheduling optimizations, to RAG and Agent on the application side, every layer involves substantial engineering decisions and algorithm choices. This chapter ties these layers together so you can see the whole picture from top to bottom.</p>
+<p>An LLM is no longer just a "model"—it is an entire technology stack. From low-level Transformer operators, to distributed training strategies, to inference-side scheduling optimizations, to RAG and Agent on the application side, every layer involves substantial engineering decisions and algorithm choices. This chapter ties these layers together so you can see the whole picture from top to bottom.</p>
 
 <p>37 sections, all deep dives. Key anchors include: complete derivation of Self-Attention (4.2.2), RoPE rotation matrices (4.3.2), DeepSeek's MLA low-rank decomposition (4.4.1), Mamba's selective state space (4.4.3), ZeRO three-stage memory sharding (4.7.2), PagedAttention's paging mechanism (4.8.3), acceptance rate analysis for speculative decoding (4.8.5), mathematics of AWQ/GPTQ (4.9.1), reranking and query rewriting in advanced RAG (4.10.2), and ReAct loop implementation (4.11.1). Other sections are written at the same level of depth: conceptual intuition, minimal derivation, and engineering details.</p>
 
@@ -95,7 +95,7 @@ th{background:var(--sidebar-bg);font-weight:600;}
 <div class="part-header"><div class="part-label">PART ONE</div><h2 class="part-title">4.1 LLM Overview</h2><p class="part-desc">Establish a coordinate system for the entire LLM field—where capabilities come from and how the landscape divides.</p></div>
 
 <h2 id="s4-1-1"><span class="num">4.1.1</span>From LM to LLM</h2>
-<p class="pos">Position: How Scaling transforms "language models" into "general reasoning systems"—history, key milestones, Scaling Law.</p>
+<p class="pos">Orientation: How Scaling transforms "language models" into "general reasoning systems"—history, key milestones, Scaling Law.</p>
 
 <h3>The Old Problem of Language Models</h3>
 <p>The definition of a language model has never changed: given the first $t-1$ tokens, predict the probability distribution of the $t$-th token.</p>
@@ -135,7 +135,7 @@ th{background:var(--sidebar-bg);font-weight:600;}
 <p>Test-time compute transforms "one forward pass determines capability" into "pay more compute for better answers"—a significant shift for the product side. This is one of the major axes of LLM evolution in the coming years.</p>
 
 <h2 id="s4-1-2"><span class="num">4.1.2</span>Open-Source vs Closed-Source Ecosystems</h2>
-<p class="pos">Position: Two different development paths—open weights vs API services—and their technical/commercial tradeoffs.</p>
+<p class="pos">Orientation: Two different development paths—open weights vs API services—and their technical/commercial tradeoffs.</p>
 
 <h3>Closed-Source Commercial Model</h3>
 <p>Typical examples: OpenAI's GPT series, Anthropic's Claude series, Google's Gemini. Model weights are not public; access is via API. Advantages: frontier capabilities (new releases often lead open-source by 6-12 months), managed service (no ops burden), comprehensive multimodal abilities.</p>
@@ -202,7 +202,7 @@ th{background:var(--sidebar-bg);font-weight:600;}
 <div class="part-header"><div class="part-label">PART TWO</div><h2 class="part-title">4.2 Transformer Architecture</h2><p class="part-desc">The foundation of all LLMs — master this section and everything downstream falls into place.</p></div>
 
 <h2 id="s4-2-1"><span class="num">4.2.1</span>Overall Structure and Information Flow</h2>
-<p class="pos">Position: The complete path of a token from model entry to output — establishing the macro picture.</p>
+<p class="pos">Orientation: The complete path of a token from model entry to output — establishing the macro picture.</p>
 
 <h3>Overall Flow</h3>
 <p>From user input "Hello world" to the model predicting the next token, the steps are:</p>
@@ -250,7 +250,7 @@ flowchart TB
 <p>During inference, starting from a prompt, only the next token is predicted each time. See Section 4.8 for details.</p>
 
 <h2 id="s4-2-2"><span class="num">4.2.2</span>Self-Attention: Complete Derivation</h2>
-<p class="pos">Position: The soul operator of LLMs — deriving every detail, including why we divide by √d.</p>
+<p class="pos">Orientation: The soul operator of LLMs — deriving every detail, including why we divide by √d.</p>
 
 <h3>Problem Setup</h3>
 <p>Input: $L$ tokens, each a $d$-dimensional vector $\mathbf{x}_i \in \mathbb{R}^d$. Goal: make the output $\mathbf{y}_i$ at each position $i$ a  <strong>dynamic weighted combination </strong> of all input positions, with weights determined by the "similarity" between $\mathbf{x}_i$ and other positions.</p>
@@ -279,7 +279,7 @@ flowchart TB
 <p>This is "Scaled Dot-Product Attention."</p>
 
 <h3>Causal Mask</h3>
-<p>LLMs are causal (each position can only see itself and prior positions), so the upper triangle of $\mathbf{S}$ is set to $-\infty$, which becomes 0 after softmax:</p>
+<p>LLMs are causal (each position can only see itself and prior positions), so the upper triangle of $\mathbf{S}$ is filled with $-\infty$; these entries become 0 after softmax:</p>
 <pre><code class="language-python">import torch
 
 def causal_attention(Q, K, V):
@@ -298,7 +298,7 @@ def causal_attention(Q, K, V):
 <p>Memory: the $\mathbf{S}$ matrix is $O(L^2)$; at $L=4096$, that's 16M elements × FP16 = 32MB per head per sample. This is the "quadratic complexity bottleneck" of attention — the fundamental challenge for long contexts. <a href="ch5_partB_preview.html#p10">FlashAttention</a>, sparse attention, and <a href="ch5_partC_supplement.html#p24">Mamba</a> all address this.</p>
 
 <h2 id="s4-2-3"><span class="num">4.2.3</span>Multi-Head Attention</h2>
-<p class="pos">Position: Splitting attention into multiple heads — why it works and how to implement it.</p>
+<p class="pos">Orientation: Splitting attention into multiple heads — why it works and how to implement it.</p>
 
 <h3>Motivation</h3>
 <p>Single-head attention can only learn one "attention pattern" — it might learn coreference, or syntactic proximity, but a single head can only represent one. Multiple heads let the model learn multiple patterns simultaneously: each head has independent $W_Q^h, W_K^h, W_V^h$ projections that learn different patterns.</p>
@@ -352,7 +352,7 @@ class MultiHeadAttention(nn.Module):
 <p>Tools like BertViz and LLM Attention Viewer can visualize the attention of each head. Empirically, different heads do learn different patterns — some heads attend to end-of-sentence punctuation, some to nearest neighbors, some perform coreference resolution. But there are also many "redundant" heads (removing them doesn't affect performance) — this inspired subsequent head pruning research.</p>
 
 <h2 id="s4-2-4"><span class="num">4.2.4</span>FFN, Residual Connections, and Normalization</h2>
-<p class="pos">Position: The other half of the Transformer Block — FFN enhances expressiveness, residual connections and normalization ensure trainability.</p>
+<p class="pos">Orientation: The other half of the Transformer Block — FFN enhances expressiveness, residual connections and normalization ensure trainability.</p>
 
 <h3>The Role of FFN</h3>
 <p>Attention enables communication between positions, but <strong>attention output remains in the linear subspace of token representations</strong> — attention alone limits model expressiveness. FFN independently applies a nonlinear transformation at each position, projecting the representation into a high-dimensional nonlinear space and back.</p>
@@ -398,7 +398,7 @@ class MultiHeadAttention(nn.Module):
 <p>Empirically performs similarly to LayerNorm, but faster (saves one mean computation and one subtraction) and has fewer parameters (no $\beta$). LLaMA uses RMSNorm, and most subsequent models have followed suit.</p>
 
 <h2 id="s4-2-5"><span class="num">4.2.5</span>Encoder/Decoder Divide</h2>
-<p class="pos">Position: Three Transformer variants — Encoder-only, Decoder-only, Encoder-Decoder — and where each is used.</p>
+<p class="pos">Orientation: Three Transformer variants — Encoder-only, Decoder-only, Encoder-Decoder — and where each is used.</p>
 
 <h3>Three Architectures</h3>
 <p>The original Transformer (2017) is Encoder-Decoder — designed for translation tasks: the encoder reads the source language, and the decoder attends to the encoder output and generates the target language. Three lines evolved from this.</p>
@@ -428,7 +428,7 @@ class MultiHeadAttention(nn.Module):
 <p>Encoder-only remains active in scenarios that require embeddings — because decoder-only doesn't naturally produce "sentence-level representations" (one must approximate using the last token or average pooling). But for generation tasks, decoder-only dominates.</p>
 
 <h2 id="s4-2-6"><span class="num">4.2.6</span>Transformer Evolution</h2>
-<p class="pos">Position: From the 2017 original to today — what are the key changes.</p>
+<p class="pos">Orientation: From the 2017 original to today — what are the key changes.</p>
 
 <h3>Evolution Checklist</h3>
 <p>Over 7 years, the original Transformer has been modified in many places. Each of these changes can be understood using the tools covered in the preceding sections. The table below shows the major changes from 2017 to 2024:</p>
@@ -456,7 +456,7 @@ class MultiHeadAttention(nn.Module):
 <div class="part-header"><div class="part-label">PART THREE</div><h2 class="part-title">4.3 Positional Encoding and Long Context</h2><p class="part-desc">Attention itself has no notion of order — positional encoding provides it. Long contexts require positional encoding to "extrapolate."</p></div>
 
 <h2 id="s4-3-1"><span class="num">4.3.1</span>History of Positional Encoding</h2>
-<p class="pos">Position: From sinusoidal absolute encoding, to learned, to relative positional encoding, to RoPE — the evolutionary logic.</p>
+<p class="pos">Orientation: From sinusoidal absolute encoding, to learned, to relative positional encoding, to RoPE — the evolutionary logic.</p>
 
 <h3>Why Positional Encoding Is Needed</h3>
 <p>Attention is a "set operation" — if you permute the input token order, the attention output for each position permutes accordingly, but <em>semantically</em> each position's representation is unchanged. "The cat sat on the mat" and "mat the on sat cat The" would produce identical intermediate representations. Clearly wrong. So positional information must be injected at each position.</p>
@@ -488,7 +488,7 @@ class MultiHeadAttention(nn.Module):
 </table>
 
 <h2 id="s4-3-2"><span class="num">4.3.2</span>RoPE Deep Dive</h2>
-<p class="pos">Position: Rotary positional encoding — mathematically elegant, simple to implement, the de facto standard.</p>
+<p class="pos">Orientation: Rotary positional encoding — mathematically elegant, simple to implement, the de facto standard.</p>
 
 <h3>Core Idea</h3>
 <p>RoPE does not add a position vector to the input; instead, it <em>rotates Q and K</em> — so that $\mathbf{q}_m \cdot \mathbf{k}_n$ naturally encodes the relative position $m - n$.</p>
@@ -533,7 +533,7 @@ K = apply_rope(K, freqs_cis)
 </ol>
 
 <h2 id="s4-3-3"><span class="num">4.3.3</span>Long Context Extrapolation</h2>
-<p class="pos">Position: How to use a model trained on 4K context for 128K — PI, NTK-aware, YaRN, LongRoPE.</p>
+<p class="pos">Orientation: How to use a model trained on 4K context for 128K — PI, NTK-aware, YaRN, LongRoPE.</p>
 
 <h3>The Problem</h3>
 <p>Training seen positions 0 to 4K; at inference a 64K sequence arrives — high-frequency rotation angles have cycled through millions of radians at position 64K, a rotation state the model has never seen, causing performance collapse.</p>
@@ -568,7 +568,7 @@ K = apply_rope(K, freqs_cis)
 <div class="part-header"><div class="part-label">PART FOUR</div><h2 class="part-title">4.4 Attention Optimization Variants</h2><p class="part-desc">The quadratic complexity of attention is LLM's greatest bottleneck — the evolution from MHA to MLA to Mamba.</p></div>
 
 <h2 id="s4-4-1"><span class="num">4.4.1</span>MQA / GQA / MLA</h2>
-<p class="pos">Position: Successive generations of solutions for reducing KV Cache — from MQA to DeepSeek's MLA.</p>
+<p class="pos">Orientation: Successive generations of solutions for reducing KV Cache — from MQA to DeepSeek's MLA.</p>
 
 <h3>Why KV Cache Is the Bottleneck</h3>
 <p>During inference, generating each new token requires computing the new token's Q, K, V; appending the new K, V to the existing cache; and having the new Q perform attention over all K, V. Recomputing all prior K, V each time costs $O(L^2)$ computation.  <strong>KV Cache </strong> caches previously computed K, V so a new token only computes its own share, bringing total computation to $O(L)$.</p>
@@ -626,10 +626,10 @@ K = apply_rope(K, freqs_cis)
 <li><strong>Unified thinking/non-thinking</strong>: V3.2 inherits V3.1's hybrid mode — the same model can answer quickly or reason deeply.</li>
 </ol>
 <p>DSA is the first time, after years of sparse attention research, that "quality matches dense attention with significantly lower cost" has been achieved in a large model. This also shows that the sparse attention direction covered in 4.4.2 hasn't failed — previous approaches just weren't fine-grained enough.</p>
-<p>V3.2 also has a "Speciale" variant that pushes reasoning capability to reportedly near the level of top closed-source models — the open-source benchmark at the end of 2025.</p>
+<p>V3.2 also has a "experimental" variant that pushes reasoning capability to reportedly near the level of top closed-source models — the open-source benchmark at the end of 2025.</p>
 
 <h2 id="s4-4-2"><span class="num">4.4.2</span>Sparse Attention</h2>
-<p class="pos">Position: Abandoning "every position attends to all positions," attending only to a key subset — replacing $O(L^2)$ with $O(L \log L)$ or even $O(L)$.</p>
+<p class="pos">Orientation: Abandoning "every position attends to all positions," attending only to a key subset — replacing $O(L^2)$ with $O(L \log L)$ or even $O(L)$.</p>
 
 <h3>The Idea</h3>
 <p>Most weights in full attention are actually small — most position pairs have weak associations. Sparse attention computes selectively, saving time and memory.</p>
@@ -660,7 +660,7 @@ K = apply_rope(K, freqs_cis)
 <p>The typical hybrid approach in today's open-source models is Mistral's "Sliding Window + full attention" — sliding in shallow layers, full attention in the last few layers — saving memory without sacrificing expressiveness.</p>
 
 <h2 id="s4-4-3"><span class="num">4.4.3</span>Linear Attention and <a href="ch5_partC_supplement.html#p24">Mamba</a></h2>
-<p class="pos">Position: The resurgence of RNNs — replacing KV Cache with "state," $O(L)$ inference, challenging Transformer.</p>
+<p class="pos">Orientation: The resurgence of RNNs — replacing KV Cache with "state," $O(L)$ inference, challenging Transformer.</p>
 
 <h3>The Linear Attention Idea</h3>
 <p>Standard attention: $\text{softmax}(QK^\top) V$. If softmax can be removed, this can be rewritten as:</p>
@@ -688,7 +688,7 @@ K = apply_rope(K, freqs_cis)
 <table>
 <tr><th>Dimension</th><th>Transformer</th><th>Mamba</th></tr>
 <tr><td>Training</td><td>Fully parallel</td><td>Parallel scan ($O(L)$)</td></tr>
-<tr><td>Inference</td><td>$O(L)$ attention + $O(L)$ KV Cache </td> \lt td>$O(1)$ state update</td></tr>
+<tr><td>Inference</td><td>$O(L)$ attention + $O(L)$ KV Cache </td> <td>$O(1)$ state update</td></tr>
 <tr><td>Inference memory</td><td>Grows with L (KV Cache)</td><td>Fixed</td></tr>
 <tr><td>Long sequences</td><td>Limited by KV Cache</td><td>Naturally supported</td></tr>
 <tr><td>Interpretability</td><td>Attention visualization</td><td>State not directly observable</td></tr>
@@ -711,7 +711,7 @@ K = apply_rope(K, freqs_cis)
 <div class="part-header"><div class="part-label">PART FIVE</div><h2 class="part-title">4.5 Tokenizer and Embedding</h2><p class="part-desc">The first gate for text entering the model — tokenizer details affect every aspect of LLM capability.</p></div>
 
 <h2 id="s4-5-1"><span class="num">4.5.1</span>The BPE Family</h2>
-<p class="pos">Position: From BPE to WordPiece to SentencePiece — the three main lines of modern tokenizers.</p>
+<p class="pos">Orientation: From BPE to WordPiece to SentencePiece — the three main lines of modern tokenizers.</p>
 
 <h3>Why Not Character-Level, Why Not Word-Level</h3>
 <p>Two extremes:</p>
@@ -772,7 +772,7 @@ def train_bpe(corpus, vocab_size):
 <p>The variant used by GPT-2. First convert text to UTF-8 byte sequences (256 possible values), then apply BPE on the byte sequence. Benefit: <strong>zero OOV</strong> — any Unicode character can be represented (at least as a byte sequence), no [UNK] token needed. GPT-3/4, LLaMA, Qwen, DeepSeek all use BBPE. It is the de facto standard.</p>
 
 <h2 id="s4-5-2"><span class="num">4.5.2</span>Modern Tokenizer Engineering</h2>
-<p class="pos">Position: Vocabulary size selection, Chinese/multilingual handling, tiktoken vs SentencePiece — engineering details.</p>
+<p class="pos">Orientation: Vocabulary size selection, Chinese/multilingual handling, tiktoken vs SentencePiece — engineering details.</p>
 
 <h3>Vocabulary Size</h3>
 <p>Historical typical choices:</p>
@@ -818,7 +818,7 @@ def train_bpe(corpus, vocab_size):
 <p><strong>Unicode normalization</strong>: differences between NFC/NFD can cause identically-appearing characters to tokenize differently. Unify during the data cleaning phase.</p>
 
 <h2 id="s4-5-3"><span class="num">4.5.3</span>Embedding Models</h2>
-<p class="pos">Position: From <a href="ch5_partC_supplement.html#p23">Word2Vec</a> to BGE — the model family specialized for text similarity, a key component of RAG.</p>
+<p class="pos">Orientation: From <a href="ch5_partC_supplement.html#p23">Word2Vec</a> to BGE — the model family specialized for text similarity, a key component of RAG.</p>
 
 <h3>From Word Embeddings to Sentence Embeddings</h3>
 <p>Early Word2Vec and GloVe were "word embeddings" — one fixed vector per word. But "bank" means different things in "river bank" and "bank account"; fixed vectors can't handle this.</p>
@@ -858,7 +858,7 @@ def train_bpe(corpus, vocab_size):
 <div class="part-header"><div class="part-label">PART SIX</div><h2 class="part-title">4.6 Mixture of Experts</h2><p class="part-desc">Sparse activation makes "trillion-parameter models" computationally feasible — nearly all the largest open-source models use MoE.</p></div>
 
 <h2 id="s4-6-1"><span class="num">4.6.1</span><a href="ch5_partB_preview.html#p13">MoE</a> Fundamentals</h2>
-<p class="pos">Position: Why MoE, how MoE — core mathematics and basic architecture.</p>
+<p class="pos">Orientation: Why MoE, how MoE — core mathematics and basic architecture.</p>
 
 <h3>Motivation</h3>
 <p>Transformer parameters are mainly in FFN (computed in 4.2.1 as 2/3 of the total). FFN applies the same processing to every token — but different tokens may need different processing (nouns need different features than verbs). MoE's idea: replace a single FFN with <strong>multiple "expert" FFNs</strong>, each token activating only 1-2 experts. Effect: total parameters multiply, but compute barely increases.</p>
@@ -908,7 +908,7 @@ def train_bpe(corpus, vocab_size):
 <p>DeepSeek-V2/V3 uses "shared experts + routed experts": 1-2 shared experts that all tokens pass through, with the other N-2 selected by routing. Intuition: some knowledge (grammar, basic logic) is needed by all tokens and doesn't need to be routed each time.</p>
 
 <h2 id="s4-6-2"><span class="num">4.6.2</span>MoE Engineering Practice</h2>
-<p class="pos">Position: MoE looks good on paper, is hard in engineering — training, deployment, communication, and load balancing all need to be solved.</p>
+<p class="pos">Orientation: MoE looks good on paper, is hard in engineering — training, deployment, communication, and load balancing all need to be solved.</p>
 
 <h3>Training Challenges</h3>
 <p><strong>Instability</strong>: routing is discrete (top-k selection), making gradients hard to propagate. Early training sees routing thrash around with no expert specialization — requires very long warmup to stabilize.</p>
@@ -961,7 +961,7 @@ def train_bpe(corpus, vocab_size):
 <div class="part-header"><div class="part-label">PART SEVEN</div><h2 class="part-title">4.7 Distributed Training</h2><p class="part-desc">Models above the tens-of-billions scale don't fit on a single GPU — must span across GPUs and machines.</p></div>
 
 <h2 id="s4-7-1"><span class="num">4.7.1</span>Data Parallelism (DDP)</h2>
-<p class="pos">Position: The simplest distributed strategy — complete model on each GPU, different batch shards.</p>
+<p class="pos">Orientation: The simplest distributed strategy — complete model on each GPU, different batch shards.</p>
 
 <h3>Basic Idea</h3>
 <p>$N$ GPUs, each holding a complete model replica. A large batch $B$ split into $N$ parts, $B/N$ per GPU. Each GPU computes its own forward loss and backward gradients. Gradients are <strong>AllReduced</strong> to aggregate into the full-batch average gradient; each GPU updates parameters with this gradient — parameters stay synchronized.</p>
@@ -1001,7 +1001,7 @@ for batch in loader:
 <p>Computing single-GPU requirements for a 7B FP16 model: parameters 14GB; gradients 14GB; Adam state (m, v, FP32) 56GB; activations ~10GB. Total ~100GB; A100 80G isn't enough, nor is H100 80G. So training above 7B requires sharding — enter ZeRO.</p>
 
 <h2 id="s4-7-2"><span class="num">4.7.2</span>ZeRO Three Stages</h2>
-<p class="pos">Position: DeepSpeed's flagship technology — sharding optimizer state, gradients, and parameters to achieve linear memory reduction.</p>
+<p class="pos">Orientation: DeepSpeed's flagship technology — sharding optimizer state, gradients, and parameters to achieve linear memory reduction.</p>
 
 <h3>Core Insight</h3>
 <p>In DDP, each GPU stores complete parameters, gradients, and optimizer state — but each GPU actually only needs to process its own portion of parameter updates; the state for other parameters is redundant. ZeRO (Zero Redundancy Optimizer, Microsoft 2020) says: <strong>shard these redundancies across different GPUs</strong>, fetching them via communication when needed.</p>
@@ -1057,7 +1057,7 @@ model = FSDP(
 <p>Based on parameter count: &lt; 1B: DDP suffices; 1B-10B: ZeRO-2 for balance; 10B-100B: ZeRO-3 or FSDP; 100B+: ZeRO-3 + tensor parallelism + pipeline parallelism.</p>
 
 <h2 id="s4-7-3"><span class="num">4.7.3</span>Tensor Parallelism and Pipeline Parallelism</h2>
-<p class="pos">Position: Splitting individual layer computations (TP), splitting the layer sequence (PP) — distributing "large models" across multiple GPUs.</p>
+<p class="pos">Orientation: Splitting individual layer computations (TP), splitting the layer sequence (PP) — distributing "large models" across multiple GPUs.</p>
 
 <h3>Tensor Parallelism (TP)</h3>
 <p>Split the matrix multiplication within a single layer. Most typical: Linear layer $\mathbf{Y} = \mathbf{X} W$.</p>
@@ -1085,7 +1085,7 @@ model = FSDP(
 </table>
 
 <h2 id="s4-7-4"><span class="num">4.7.4</span>3D Parallelism and Training Stack</h2>
-<p class="pos">Position: Combining DP + TP + PP — the standard approach for 100B+ models. Also covering Megatron/DeepSpeed/FSDP.</p>
+<p class="pos">Orientation: Combining DP + TP + PP — the standard approach for 100B+ models. Also covering Megatron/DeepSpeed/FSDP.</p>
 
 <h3>3D Parallelism</h3>
 <p>Real large-model training uses all three dimensions together:</p>
@@ -1132,7 +1132,7 @@ model = FSDP(
 <div class="part-header"><div class="part-label">PART EIGHT</div><h2 class="part-title">4.8 Inference Engines and Scheduling</h2><p class="part-desc">Training is just the beginning — inference optimization is the key to whether LLMs can be practically deployed.</p></div>
 
 <h2 id="s4-8-1"><span class="num">4.8.1</span>Inference Workload Characteristics</h2>
-<p class="pos">Position: Prefill vs Decode — LLM inference's two phases have fundamentally different bottlenecks.</p>
+<p class="pos">Orientation: Prefill vs Decode — LLM inference's two phases have fundamentally different bottlenecks.</p>
 
 <h3>Two-Phase Model</h3>
 <p>LLM inference has two phases:</p>
@@ -1160,11 +1160,11 @@ model = FSDP(
 <p>Latency and throughput trade off. Large batches increase throughput but lengthen TPOT — how to schedule is the core problem of inference engines.</p>
 
 <h3>Hardware Bottleneck Analysis</h3>
-<p>H100 with LLaMA-3-70B FP16 decode: model weights 140GB; HBM bandwidth 3 TB/s; theoretical limit 3000 / 140 ≈ 21 tokens/s (single request).</p>
+<p>H100 with LLaMA-3-70B FP16 decode (across 2× H100 or quantized): model weights 140GB; HBM bandwidth 3 TB/s; theoretical limit 3000 / 140 ≈ 21 tokens/s (single request).</p>
 <p>Measured decode 25-40 tokens/s (vLLM data) — essentially approaching the bandwidth ceiling. Improvements only possible via: compressing weights (quantization), compressing KV Cache, or batching multiple requests (sharing bandwidth across requests).</p>
 
 <h2 id="s4-8-2"><span class="num">4.8.2</span>KV Cache</h2>
-<p class="pos">Position: The soul of LLM inference — cutting $O(L^2)$ complexity to $O(L)$, but introducing memory pressure.</p>
+<p class="pos">Orientation: The soul of LLM inference — cutting $O(L^2)$ complexity to $O(L)$, but introducing memory pressure.</p>
 
 <h3>Why It's Needed</h3>
 <p>During decode, generating the $t$-th token requires only the new token's $\mathbf{q}_t$ for attention, but needs  <strong>all prior positions' K, V </strong>. If $\mathbf{k}_1, \ldots, \mathbf{k}_{t-1}$ were recomputed each time, that's $O(t)$ extra computation per step — total $O(t^2)$. KV Cache caches all prior K, V — each new token only computes its own $\mathbf{k}_t, \mathbf{v}_t$ and appends to the cache. Total computation $O(t)$.</p>
@@ -1222,7 +1222,7 @@ for each query q_i:
 <p>Not the only option. SGLang has its own <strong>RadixAttention</strong> (prefix sharing organized as a radix tree), faster for complex workflows (multi-turn, multi-candidate). TGI (HuggingFace's Rust implementation) is stable. TensorRT-LLM is extremely optimized on NVIDIA platforms but has a closed ecosystem.</p>
 
 <h2 id="s4-8-4"><span class="num">4.8.4</span>Continuous Batching</h2>
-<p class="pos">Position: The evolution of dynamic batching — efficiently parallelizing requests of different lengths rather than waiting for a full batch.</p>
+<p class="pos">Orientation: The evolution of dynamic batching — efficiently parallelizing requests of different lengths rather than waiting for a full batch.</p>
 
 <h3>Traditional Static Batching</h3>
 <p>Early approach: a batch of requests starts and ends together, padded to the longest length.</p>
@@ -1244,7 +1244,7 @@ for each query q_i:
 <p>Policies: First-Come-First-Served (FCFS), priority (premium users first), or swap fairness. vLLM implements these mechanisms; robust in production environments.</p>
 
 <h2 id="s4-8-5"><span class="num">4.8.5</span>Speculative Decoding</h2>
-<p class="pos">Position: A small model guesses, a large model verifies — 2-3× inference speedup with no quality loss.</p>
+<p class="pos">Orientation: A small model guesses, a large model verifies — 2-3× inference speedup with no quality loss.</p>
 
 <h3>Basic Idea</h3>
 <p>The primary bottleneck of decode is that each forward produces only 1 token. Can multiple tokens be produced at once? Standard methods can't — each token depends on the previous one.</p>
@@ -1275,7 +1275,7 @@ for each query q_i:
 <div class="part-header"><div class="part-label">PART NINE</div><h2 class="part-title">4.9 Inference Compression</h2><p class="part-desc">Quantization is not an "add-on" to inference speedup; it is the prerequisite for running open-source large models at all.</p></div>
 
 <h2 id="s4-9-1"><span class="num">4.9.1</span>AWQ / GPTQ Deep Dive</h2>
-<p class="pos">Position: The two mainstream LLM quantization methods — mathematical principles and engineering differences.</p>
+<p class="pos">Orientation: The two mainstream LLM quantization methods — mathematical principles and engineering differences.</p>
 
 <h3>LLM Quantization Specifics</h3>
 <p>Chapter 3 Section 4.7.2 covered general quantization principles. LLMs are special: enormous weight count (70B × 2B = 140GB); INT4 compression brings this to 35GB — fits on a single A100/H100; activations have extreme outliers — some dimensions have very large values that suffer severe loss with standard quantization; high precision requirements — a single wrong token can derail an entire response.</p>
@@ -1339,7 +1339,7 @@ model.save_quantized(quant_path)
 </code></pre>
 
 <h2 id="s4-9-2"><span class="num">4.9.2</span>KV Cache Quantization and FP8</h2>
-<p class="pos">Position: Beyond weights — KV Cache and activations also need compression to further free memory.</p>
+<p class="pos">Orientation: Beyond weights — KV Cache and activations also need compression to further free memory.</p>
 
 <h3>KV Cache Quantization</h3>
 <p>INT4 weight quantization is now standard, but KV Cache remains FP16 — at long contexts it can be larger than the model weights.</p>

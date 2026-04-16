@@ -280,8 +280,8 @@ th { background: var(--sidebar-bg); font-weight: 600; }
     <li><a href="#s1-1-2"><span class="num">2</span>函数分析技术</a></li>
     <li><a href="#s1-1-3"><span class="num">3</span>函数逼近技术</a></li>
     <li><a href="#s1-1-4"><span class="num">4</span>函数极值计算</a></li>
-    <li><a href="#s1-1-5"><span class="num">5</span>实推广: 可逆性</a></li>
-    <li><a href="#s1-1-6"><span class="num">6</span>黎曼推广: 流形优化</a></li>
+    <li><a href="#s1-1-5"><span class="num">5</span>实分析推广: 可逆性</a></li>
+    <li><a href="#s1-1-6"><span class="num">6</span>黎曼几何推广: 流形优化</a></li>
   </ol>
 
   <div class="group">1.2 线性代数</div>
@@ -390,7 +390,7 @@ th { background: var(--sidebar-bg); font-weight: 600; }
 
 <h3>梯度、散度、旋度</h3>
 
-<p>梯度前面讲了。散度 $\nabla \cdot \mathbf{F}$ 作用在向量场上，输出标量，衡量"向外流出的净量"；旋度 $\nabla \times \mathbf{F}$ 也作用在向量场上，输出向量，衡量"局部旋转量"。这两个在 AI 日常中用得很少，一般只在涉及连续归一化流（CNF）、扩散模型的 Fokker-Planck 方程等场合出现，感受一下即可。</p>
+<p>梯度前面讲了。散度 $\nabla \cdot \mathbf{F}$ 作用在向量场上，输出标量，衡量"向外流出的净量"；旋度 $\nabla \times \mathbf{F}$ 也作用在向量场上，输出向量，衡量"局部旋转量"。这两个在 AI 日常中用得很少，一般只在涉及连续归一化流（CNF）、扩散模型的 Fokker-Planck 方程等场合出现，了解即可。</p>
 
 <h3>矩</h3>
 
@@ -518,7 +518,7 @@ print("dL/dW1 =\n", dL_dW1)
 <p>看 $\sigma'(z)$ 这项。Sigmoid 的导数最大值是 $0.25$，乘 $L$ 次就是 $0.25^L$——层数一多梯度指数衰减，前几层学不动，这就是经典的<strong>梯度消失</strong>。ReLU 在正半轴导数是 1，才解决了这个问题。理解梯度消失的方法，就是盯着这串链式乘积看每一项到底是啥。</p>
 
 <!-- 1.1.5 -->
-<h2 id="s1-1-5"><span class="num">1.1.5</span>实推广：LLM 的可逆性问题</h2>
+<h2 id="s1-1-5"><span class="num">1.1.5</span>实分析推广：LLM 的可逆性问题</h2>
 <p class="pos">定位：一个开放性的理论问题——给定 LLM 的输出分布，能否反推输入？点到为止。</p>
 
 <p>实分析的核心对象之一是"测度"——比长度/面积/体积更抽象的"量"。对 AI 而言，一个具体的应用场景是<strong>生成模型的可逆性</strong>：normalizing flow 要求每一层变换都是双射且雅可比行列式可计算，这样才能精确算 likelihood。扩散模型的 score matching 则放弃了严格可逆，换成学习分数函数 $\nabla_{\mathbf{x}} \log p(\mathbf{x})$。</p>
@@ -526,7 +526,7 @@ print("dL/dW1 =\n", dL_dW1)
 <p>LLM 作为自回归生成模型，"可逆"在另一个层面被提出：<em>给定一段输出，能否唯一还原出 prompt？</em>答案是否定的——采样过程注入了随机性，且许多 prompt 都能产生同一段输出。但理论上研究"近似可逆"有现实意义，比如判断某段文本是否由特定模型生成（水印检测）、反推训练数据泄露等。这是一个活跃但未成熟的研究方向，工程上还没成熟工具可用。了解到"这个问题存在"即可。</p>
 
 <!-- 1.1.6 -->
-<h2 id="s1-1-6"><span class="num">1.1.6</span>黎曼推广：流形优化</h2>
+<h2 id="s1-1-6"><span class="num">1.1.6</span>黎曼几何推广：流形优化</h2>
 <p class="pos">定位：当参数空间不是平直欧氏空间、而是一个曲面（流形）时怎么优化。简短介绍。</p>
 
 <p>标准梯度下降假设参数活在平直的 $\mathbb{R}^n$ 里。但有些问题里参数天生有几何约束：正交矩阵（$\mathbf{Q}^\top \mathbf{Q} = \mathbf{I}$）、正定矩阵、单位范数向量、低秩矩阵。这些对象构成的集合不是平直的 $\mathbb{R}^n$，而是<strong>流形</strong>——局部像欧氏空间、全局弯曲的结构。</p>
@@ -539,7 +539,7 @@ print("dL/dW1 =\n", dL_dW1)
 <div class="part-header">
   <div class="part-label">PART TWO</div>
   <h2 class="part-title">1.2 线性代数</h2>
-  <p class="part-desc">深度学习就是矩阵乘法的无数次嵌套——不过关的是整个领域。</p>
+  <p class="part-desc">深度学习就是矩阵乘法的无数次嵌套——线代不过关,整个领域做不下去。</p>
 </div>
 
 <!-- 1.1.0 -->
@@ -556,7 +556,7 @@ print("dL/dW1 =\n", dL_dW1)
 
 <p>一组向量 $\{\mathbf{v}_1, \ldots, \mathbf{v}_k\}$ 叫 <strong>线性无关 </strong>，如果 $\sum \alpha_i \mathbf{v}_i = \mathbf{0}$ 只有 $\alpha_i = 0$ 这一解。一个线性空间的<strong>维度</strong>是能找到的最大线性无关组的大小。</p>
 
-<p>矩阵 $\mathbf{A}$ 的 <strong>秩 </strong> $\text{rank}(\mathbf{A})$ 是它的列（或行）向量组的最大线性无关数。$\text{rank}(\mathbf{A}) \le \min(m, n)$。秩充分反映了"信息冗余度"：秩低的矩阵能被低维表示压缩。这是后面 SVD 和 LoRA 的起点。</p>
+<p>矩阵 $\mathbf{A}$ 的 <strong>秩 </strong> $\text{rank}(\mathbf{A})$ 是它的列（或行）向量组的最大线性无关数。$\text{rank}(\mathbf{A}) \le \min(m, n)$。秩度量了"信息冗余度"：秩低的矩阵能被低维表示压缩。这是后面 SVD 和 LoRA 的起点。</p>
 
 <h3>在 AI 里</h3>
 
@@ -604,7 +604,7 @@ print("dL/dW1 =\n", dL_dW1)
 
 <table>
 <tr><th>情况</th><th>条件</th><th>结果</th></tr>
-<tr><td>方阵满秩 ($m = n, \text{rank} = n$) </td> \lt td>$\det(\mathbf{A}) \ne 0$ </td> \lt td>唯一解 $\mathbf{x} = \mathbf{A}^{-1}\mathbf{b}$</td></tr>
+<tr><td>方阵满秩 ($m = n, \text{rank} = n$) </td> <td>$\det(\mathbf{A}) \ne 0$ </td> <td>唯一解 $\mathbf{x} = \mathbf{A}^{-1}\mathbf{b}$</td></tr>
 <tr><td>超定 ($m > n$)</td><td>通常无精确解</td><td>最小二乘解</td></tr>
 <tr><td>欠定 ($m \lt n$)</td><td>通常有无穷解</td><td>最小范数解</td></tr>
 </table>
@@ -726,7 +726,7 @@ for r in [5, 10, 20, 50, 100]:
     print(f"rank {r:3d}: 相对误差 {err:.4f}")
 </code></pre>
 
-<p>跑一下会发现 rank=10 附近误差陡降后趋平——验证了"低秩近似能高保真还原"。这就是你可以信任 LoRA 的数学凭据。</p>
+<p>跑一下会发现 rank=10 附近误差陡降后趋平——验证了"低秩近似能高保真还原"。这就是 LoRA 能奏效的数学依据。</p>
 
 <!-- 1.1.5 -->
 <h2 id="s1-2-6"><span class="num">1.2.6</span>内积空间与距离度量</h2>
@@ -826,10 +826,10 @@ print("POTC    最大负载:", np.mean([simulate_balls_bins(n, 'potc')   for _ i
 
 <table>
 <tr><th>分布</th><th>含义</th><th>PMF</th><th>均值/方差</th></tr>
-<tr><td>伯努利 Ber(p)</td><td>一次抛硬币</td><td>$P(X=1) = p$ </td> \lt td>$p, p(1-p)$</td></tr>
-<tr><td>二项 Bin(n, p)</td><td>n 次伯努利和</td><td>$\binom{n}{k} p^k (1-p)^{n-k}$ </td> \lt td>$np, np(1-p)$</td></tr>
-<tr><td>泊松 Poi(λ)</td><td>稀有事件计数</td><td>$\frac{\lambda^k e^{-\lambda}}{k!}$ </td> \lt td>$\lambda, \lambda$</td></tr>
-<tr><td>几何 Geo(p)</td><td>直到成功的次数</td><td>$(1-p)^{k-1} p$ </td> \lt td>$1/p, (1-p)/p^2$</td></tr>
+<tr><td>伯努利 Ber(p)</td><td>一次抛硬币</td><td>$P(X=1) = p$ </td> <td>$p, p(1-p)$</td></tr>
+<tr><td>二项 Bin(n, p)</td><td>n 次伯努利和</td><td>$\binom{n}{k} p^k (1-p)^{n-k}$ </td> <td>$np, np(1-p)$</td></tr>
+<tr><td>泊松 Poi(λ)</td><td>稀有事件计数</td><td>$\frac{\lambda^k e^{-\lambda}}{k!}$ </td> <td>$\lambda, \lambda$</td></tr>
+<tr><td>几何 Geo(p)</td><td>直到成功的次数</td><td>$(1-p)^{k-1} p$ </td> <td>$1/p, (1-p)/p^2$</td></tr>
 </table>
 
 <p>泊松是 $n \to \infty, p \to 0, np = \lambda$ 时二项的极限。它描述"大量独立稀有事件"——用户访问量、系统崩溃次数、基因突变。</p>
@@ -857,7 +857,7 @@ print("POTC    最大负载:", np.mean([simulate_balls_bins(n, 'potc')   for _ i
 
 <h3>大数定律与中心极限定理</h3>
 
-<p><strong>大数定律</strong>：$n$ 个独立同分布样本的均值 $\bar{X}_n$ 以概率 1 收敛到真均值 $\mu$（在有限方差前提下）。这是所有基于"样本估计总体"的统计方法的根基——也是 SGD 能工作的理由（用小批量梯度估计全数据集梯度）。</p>
+<p><strong>大数定律</strong>：$n$ 个独立同分布样本的均值 $\bar{X}_n$ 以概率 1 收敛到真均值 $\mu$（在期望存在前提下）。这是所有基于"样本估计总体"的统计方法的根基——也是 SGD 能工作的理由（用小批量梯度估计全数据集梯度）。</p>
 
 <p><strong>中心极限定理</strong>：任何分布的 $n$ 个独立样本均值，当 $n \to \infty$，分布趋近于正态：</p>
 <div class="formula">$\sqrt{n}(\bar{X}_n - \mu) \xrightarrow{d} \mathcal{N}(0, \sigma^2)$</div>
@@ -905,7 +905,7 @@ print("POTC    最大负载:", np.mean([simulate_balls_bins(n, 'potc')   for _ i
 
 <h3>置信区间</h3>
 
-<p>点估计 $\hat{\theta}$ 是一个数，不告诉你它有多确定。置信区间 $[\hat{\theta} - c, \hat{\theta} + c]$ 表示"在重复抽样 100 次中，有 95% 的置信区间会包含真值"——注意是区间包含真值的概率，不是真值落在区间的概率（频率派里 $\theta$ 是常数，不谈"落在哪"的概率）。</p>
+<p>点估计 $\hat{\theta}$ 是一个数，不告诉你它有多确定。置信区间 $[\hat{\theta} - c, \hat{\theta} + c]$ 表示"如果重复抽样 100 次，构造出来的 100 个置信区间中约有 95 个会覆盖真值"。注意这是"构造区间的程序"的覆盖率性质，不是"真值落在某个固定区间里的概率"——频率派里 $\theta$ 是常数，没有概率分布。</p>
 
 <h3>在 AI 里</h3>
 
@@ -926,7 +926,7 @@ print("POTC    最大负载:", np.mean([simulate_balls_bins(n, 'potc')   for _ i
 <h3>两类错误</h3>
 
 <table>
-<tr><th></th><th>真相 $H_0$ 为真 </th> \lt th>真相 $H_1$ 为真</th></tr>
+<tr><th></th><th>真相 $H_0$ 为真 </th> <th>真相 $H_1$ 为真</th></tr>
 <tr><td>接受 $H_0$</td><td>正确</td><td>第二类错误 (漏报, β)</td></tr>
 <tr><td>拒绝 $H_0$</td><td>第一类错误 (误报, α)</td><td>正确 (功效 1-β)</td></tr>
 </table>
