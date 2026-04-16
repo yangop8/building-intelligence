@@ -610,6 +610,38 @@ span.num {
   .cover-footer-left svg { width: 60px; }
 }
 
+/* ======== Two-Column Layout for Wide Screens ======== */
+@media (min-width: 1600px) {
+  main {
+    max-width: 1320px;
+    padding: 0 60px 120px 60px;
+    columns: 2;
+    column-gap: 48px;
+    column-rule: 1px solid var(--rule);
+  }
+  /* Full-width spanning elements */
+  .book-cover,
+  .chapter-divider,
+  .part-header,
+  pre,
+  table,
+  .mermaid,
+  .paper-meta,
+  .refback,
+  .cover-toc,
+  .cover-footer,
+  section#refs {
+    column-span: all;
+  }
+  /* Prevent awkward breaks */
+  p, li, .callout, .pos, .formula, h2, h3, h4, .footnote {
+    break-inside: avoid;
+  }
+  h2, h3, h4 {
+    break-after: avoid;
+  }
+}
+
 /* ======== Paper Metadata ======== */
 .paper-meta {
   font-family: var(--sans);
