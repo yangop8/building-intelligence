@@ -374,7 +374,7 @@ th { background: var(--sidebar-bg); font-weight: 600; }
 <p>$f$ 的二阶偏导拼成的 $n \times n$ 矩阵叫 <strong>海森矩阵 </strong> $\mathbf{H}$，第 $(i,j)$ 位置是 $\frac{\partial^2 f}{\partial x_i \partial x_j}$。海森描述函数的局部曲率：正定表示这是个碗底（局部极小），负定表示这是个山顶（局部极大），不定表示鞍点。</p>
 
 <h3>在 AI 里</h3>
-<p>神经网络训练的损失函数 $L(\boldsymbol{\theta})$ 是从极高维参数空间到一个标量的函数——现代 LLM 的参数量从数十亿到数千亿不等。我们要的是 $\nabla_\boldsymbol{\theta} L$，也就是一个与参数同维度的向量，指向 loss 增大最快的方向。每走一步 $\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \eta \nabla L$ 就是梯度下降。海森矩阵太大（$10^{10} \times 10^{10}$ 存不下），所以 Adam 之类优化器<em>近似</em>用梯度的二阶矩来模拟海森信息——这是二阶优化与一阶优化的分界线。</p>
+<p>神经网络训练的损失函数 $L(\boldsymbol{\theta})$ 是从极高维参数空间到一个标量的函数——现代 LLM 的参数量从数十亿到数千亿不等。我们要的是 $\nabla_{\boldsymbol{\theta}} L$，也就是一个与参数同维度的向量，指向 loss 增大最快的方向。每走一步 $\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \eta \nabla L$ 就是梯度下降。海森矩阵太大（$10^{10} \times 10^{10}$ 存不下），所以 Adam 之类优化器<em>近似</em>用梯度的二阶矩来模拟海森信息——这是二阶优化与一阶优化的分界线。</p>
 
 <!-- 1.1.2 -->
 <h2 id="s1-1-2"><span class="num">1.1.2</span>函数分析技术</h2>
@@ -521,7 +521,7 @@ print("dL/dW1 =\n", dL_dW1)
 <h2 id="s1-1-5"><span class="num">1.1.5</span>实推广：LLM 的可逆性问题</h2>
 <p class="pos">定位：一个开放性的理论问题——给定 LLM 的输出分布，能否反推输入？点到为止。</p>
 
-<p>实分析的核心对象之一是"测度"——比长度/面积/体积更抽象的"量"。对 AI 而言，一个具体的应用场景是<strong>生成模型的可逆性</strong>：normalizing flow 要求每一层变换都是双射且雅可比行列式可计算，这样才能精确算 likelihood。扩散模型的 score matching 则放弃了严格可逆，换成学习分数函数 $\nabla_\mathbf{x} \log p(\mathbf{x})$。</p>
+<p>实分析的核心对象之一是"测度"——比长度/面积/体积更抽象的"量"。对 AI 而言，一个具体的应用场景是<strong>生成模型的可逆性</strong>：normalizing flow 要求每一层变换都是双射且雅可比行列式可计算，这样才能精确算 likelihood。扩散模型的 score matching 则放弃了严格可逆，换成学习分数函数 $\nabla_{\mathbf{x}} \log p(\mathbf{x})$。</p>
 
 <p>LLM 作为自回归生成模型，"可逆"在另一个层面被提出：<em>给定一段输出，能否唯一还原出 prompt？</em>答案是否定的——采样过程注入了随机性，且许多 prompt 都能产生同一段输出。但理论上研究"近似可逆"有现实意义，比如判断某段文本是否由特定模型生成（水印检测）、反推训练数据泄露等。这是一个活跃但未成熟的研究方向，工程上还没成熟工具可用。了解到"这个问题存在"即可。</p>
 
