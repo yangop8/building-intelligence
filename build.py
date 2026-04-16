@@ -383,11 +383,24 @@ def assemble_html(lang, toc_html, body_html):
     css_m = re.search(r'<style>(.*?)</style>', existing, re.DOTALL)
     css = css_m.group(1) if css_m else ""
 
-    cover_m = re.search(
-        r'(<!-- .*?COVER.*?-->.*?</div>\s*</div>\s*</div>)',
-        existing, re.DOTALL
+    # Extract cover: from BOOK COVER comment (or div) up to but not including first <section
+    cover_start_m = re.search(
+        r'<!-- ======== BOOK COVER ======== -->\s*<div class="book-cover"',
+        existing
     )
-    cover = cover_m.group(1) if cover_m else "<!-- COVER MISSING -->"
+    if not cover_start_m:
+        cover_start_m = re.search(r'<div class="book-cover"', existing)
+    if cover_start_m:
+        cover_start = cover_start_m.start()
+        section_m = re.search(r'<section id="(?:preface|ch1)"', existing[cover_start:])
+        if section_m:
+            cover_end = cover_start + section_m.start()
+            # Trim trailing whitespace
+            cover = existing[cover_start:cover_end].rstrip()
+        else:
+            cover = "<!-- COVER MISSING -->"
+    else:
+        cover = "<!-- COVER MISSING -->"
 
     refs_m = re.search(r'(<section id="refs".*?</section>)', existing, re.DOTALL)
     refs = refs_m.group(1) if refs_m else "<!-- REFS MISSING -->"
