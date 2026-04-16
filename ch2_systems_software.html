@@ -399,7 +399,7 @@ for (int j = 0; j < N; j++)
 
 <h3>在 AI 里</h3>
 
-<p>AI 训练的数据预处理、tokenization、采样逻辑都跑在 CPU 上。一个常被忽略的细节:<strong>DataLoader 的 CPU 性能经常是训练瓶颈</strong>。GPU 算得飞快,CPU 喂不上数据。解决办法是多进程 DataLoader、绑定 NUMA 节点、用 pinned memory 减少拷贝。所有这些优化都建立在对 CPU 架构的基本理解上。</p>
+<p>AI 训练的数据预处理、tokenization、采样逻辑都跑在 CPU 上。一个常被忽略的细节:<strong>DataLoader 的 CPU 性能经常是训练瓶颈</strong>。GPU 算得飞快,CPU 来不及供给数据。解决办法是多进程 DataLoader、绑定 NUMA 节点、用 pinned memory 减少拷贝。所有这些优化都建立在对 CPU 架构的基本理解上。</p>
 
 <!-- 2.1.2 -->
 <h2 id="s2-1-2"><span class="num">2.1.2</span>网络处理单元</h2>
@@ -407,7 +407,7 @@ for (int j = 0; j < N; j++)
 
 <h3>为什么需要专用单元</h3>
 
-<p>线速处理 100Gbps 网络流量,按 64 字节小包算是 <strong>148.8 Mpps</strong>(million packets per second)。每包预算 <strong>6.7 ns</strong>——一次 DRAM 访问都做不完。通用 CPU 靠软件硬刚做不到,必须靠硬件。</p>
+<p>线速处理 100Gbps 网络流量,按 64 字节小包算是 <strong>148.8 Mpps</strong>(million packets per second)。每包预算 <strong>6.7 ns</strong>——一次 DRAM 访问都做不完。仅靠通用 CPU 软件难以实现,必须依赖硬件。</p>
 
 <h3>几种硬件加速路线</h3>
 
@@ -437,7 +437,7 @@ for (int j = 0; j < N; j++)
 <h2 id="s2-1-3"><span class="num">2.1.3</span>GPU 与 NPU 加速</h2>
 <p class="pos">定位:AI 算力的载体——并行计算与张量加速的硬件。简短,详细在第 4 章。</p>
 
-<p>这节和第 4 章 5.2 有重叠,这里只建立基本坐标。</p>
+<p>这节和第 4 章 4.2 有重叠,这里只建立基本坐标。</p>
 
 <h3>GPU 的并行模型</h3>
 
@@ -636,11 +636,11 @@ for (int j = 0; j < N; j++)
 
 <h3>OOM Killer</h3>
 
-<p>当连 swap 都没救时,内核启动 OOM Killer 选一个进程杀掉。评分算法综合考虑内存占用、运行时间、<code>oom_score_adj</code>(可调)。实践中:关键服务应设负的 <code>oom_score_adj</code> 降低被杀概率。</p>
+<p>当 swap 也无法缓解时,内核启动 OOM Killer 选一个进程杀掉。评分算法综合考虑内存占用、运行时间、<code>oom_score_adj</code>(可调)。实践中:关键服务应设负的 <code>oom_score_adj</code> 降低被杀概率。</p>
 
 <h3>在 AI 里</h3>
 
-<p>AI 训练的内存问题大多在 GPU 显存,CPU 内存相对宽裕。但以下场景踩坑频繁:</p>
+<p>AI 训练的内存问题大多在 GPU 显存,CPU 内存相对宽裕。但以下场景容易出问题:</p>
 <ul style="list-style:none; padding-left:0;">
 <li>- <strong>多 DataLoader worker 的 fork</strong>:由于 COW,主进程大对象(如数据集索引)被子进程"访问"时逐页复制,实际复制所有页后内存翻倍。Python 多进程训练 OOM 常因此。</li>
 <li>- <strong>page cache 压垮小内存机器</strong>:读大数据集时 page cache 把内存占满,某些内核版本下释放不及时。</li>
@@ -749,7 +749,7 @@ struct io_uring_cqe {  // Completion Queue Entry
 <tr><td>workqueue</td><td>内核线程上下文、可睡眠</td><td>需要睡眠的延迟工作</td></tr>
 </table>
 
-<p>网络收包路径是 softirq 的典型用户——硬中断来了之后把 skb 入队,NET_RX_SOFTIRQ 在下半部把 skb 交给协议栈。这也是为什么高速网络下 <code>ksoftirqd</code> 经常吃满一核。</p>
+<p>网络收包路径是 softirq 的典型用户——硬中断来了之后把 skb 入队,NET_RX_SOFTIRQ 在下半部把 skb 交给协议栈。这也是为什么高速网络下 <code>ksoftirqd</code> 经常占满一个核。</p>
 
 <h3>中断亲和与负载均衡</h3>
 
@@ -1818,7 +1818,7 @@ ip4_lookup_node_fn(vlib_main_t *vm, vlib_node_runtime_t *node,
 <p>AI 训练/推理通信主要用:</p>
 <ul style="list-style:none; padding-left:0;">
 <li>- <strong>TCP</strong>:gRPC/REST API、分布式训练的控制面</li>
-<li>- <strong>RDMA</strong>（将在第 4 章 5.7 节介绍）:训练数据面,完全绕过 TCP/IP</li>
+<li>- <strong>RDMA</strong>（将在第 4 章 4.7 节介绍）:训练数据面,完全绕过 TCP/IP</li>
 <li>- <strong>UDP</strong>:偶尔用于自定义 AllReduce 实现</li>
 </ul>
 

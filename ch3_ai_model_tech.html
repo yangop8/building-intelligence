@@ -349,7 +349,7 @@ th { background: var(--sidebar-bg); font-weight: 600; }
 
 <p>LLM 时代的 AI 工程师仍然需要传统机器学习——不是因为怀旧,而是因为在<strong>数据量有限、特征可解释、延迟敏感</strong>的场景里(网络设备上的流量分类、KPI 异常检测),一棵 XGBoost 树往往比一个 LLM 更合适。这一章的结构反映这个观点:先传统 ML、再基础算子、再经典深度模型、再训练优化、最后性能工程和领域应用。每一层都是下一层的基础,但也都在现代 AI 系统里有独立位置。</p>
 
-<p>36 节全深挖。重点锚点是这几节:3.1.2 树模型(从决策树到 XGBoost 完整推导)、3.2.3 卷积(含 im2col 和 Winograd)、3.3.2 LSTM 门控推导、3.5.3 微调对齐(SFT/DPO/RLHF 全链路)、3.6.3 算子优化(Roofline + tiling + FlashAttention)、3.7.2 流量分类的特征工程实战。其它节也不注水——每节都到"一个有经验的同事能给你讲 30 分钟"的密度,不到"教科书式铺陈"的密度。</p>
+<p>36 节全深挖。重点锚点是这几节:3.1.2 树模型(从决策树到 XGBoost 完整推导)、3.2.3 卷积(含 im2col 和 Winograd)、3.3.2 LSTM 门控推导、3.5.3 微调对齐(SFT/DPO/RLHF 全链路)、3.6.3 算子优化(Roofline + tiling + FlashAttention)、3.7.2 流量分类的特征工程实战。其它节也内容充实——每节都到"一个有经验的同事能给你讲 30 分钟"的密度,不到"教科书式铺陈"的密度。</p>
 
 <!-- ==================== 3.1 传统机器学习 ==================== -->
 <div class="part-header">
@@ -417,7 +417,7 @@ def kmeans(X, k, max_iter=100, tol=1e-4):
     return centers, labels
 </code></pre>
 
-<p>Kmeans 的几个坑。第一,<strong>对初始化敏感</strong>——不同种子跑出完全不同的簇。Kmeans++ 初始化(上面代码里做的)显著改善。第二,<strong>必须指定 $k$ </strong>——通常用 elbow method(画 $k$ vs SSE 曲线,找拐点)或 silhouette score 辅助选择。第三,<strong>假设簇是球形</strong>——条状、环形分布它搞不定,需要 DBSCAN 或 spectral clustering 这类。</p>
+<p>Kmeans 的几个常见问题。第一,<strong>对初始化敏感</strong>——不同种子跑出完全不同的簇。Kmeans++ 初始化(上面代码里做的)显著改善。第二,<strong>必须指定 $k$ </strong>——通常用 elbow method(画 $k$ vs SSE 曲线,找拐点)或 silhouette score 辅助选择。第三,<strong>假设簇是球形</strong>——条状、环形分布它无法处理,需要 DBSCAN 或 spectral clustering 这类。</p>
 
 <h3>在网络领域</h3>
 
@@ -852,7 +852,7 @@ def dtw(x, y):
 
 <p>给张量边缘补 0(或其他值)。卷积前补零保持 output shape = input shape;变长序列 padding 到同长度做 batching。</p>
 
-<p>Pad 的代价:<strong>浪费</strong>。一个 batch 里最长 2048 的序列和 16 的序列一起 pad 到 2048,短序列的计算全浪费。这就是为什么连续批处理(continuous batching,见第 4 章 5.13)对 LLM 推理价值巨大——避免 padding 浪费。</p>
+<p>Pad 的代价:<strong>浪费</strong>。一个 batch 里最长 2048 的序列和 16 的序列一起 pad 到 2048,短序列的计算全浪费。这就是为什么连续批处理(continuous batching,见第 4 章 4.8.4)对 LLM 推理价值巨大——避免 padding 浪费。</p>
 
 <h3>数据搬运的隐藏成本</h3>
 
@@ -1008,7 +1008,7 @@ $\text{softmax}(\mathbf{x})_i = \frac{e^{x_i}}{\sum_j e^{x_j}}$
 
 <p>特性:输出和为 1、处处可导、单调。用在分类输出层、attention 权重。</p>
 
-<p>数值稳定的实现必须减最大值(见第 1 章 2.8.1)。</p>
+<p>数值稳定的实现必须减最大值(见第 1 章 1.7.1)。</p>
 
 <!-- 3.2.5 -->
 <h2 id="s3-2-5"><span class="num">3.2.5</span>归一化</h2>
@@ -1232,7 +1232,7 @@ $\mathbf{h}_t = (1 - \mathbf{z}_t) \odot \mathbf{h}_{t-1} + \mathbf{z}_t \odot \
 
 <h3><a href="ch5_partC_supplement.html#p24">Mamba</a> 的复兴</h3>
 
-<p>2023 年 Mamba（选择性 SSM）把"类 RNN 结构"重新带回视野——训练能并行扫描,推理又是 $O(1)$ 每步。在长上下文场景挑战 Transformer。RNN 精神没死,只是需要更巧的设计(见第 4 章 5.6)。</p>
+<p>2023 年 Mamba（选择性 SSM）把"类 RNN 结构"重新带回视野——训练能并行扫描,推理又是 $O(1)$ 每步。在长上下文场景挑战 Transformer。RNN 精神没死,只是需要更巧的设计(见第 4 章 4.4.3)。</p>
 
 <!-- 3.3.3 -->
 <h2 id="s3-3-3"><span class="num">3.3.3</span>GNN 与 GAT</h2>
@@ -1471,11 +1471,11 @@ $\min_G \max_D \mathbb{E}_{x \sim p_{\text{data}}}[\log D(x)] + \mathbb{E}_{z \s
 
 <h3>PCA</h3>
 
-<p>第 1 章 2.3.4 已讲过数学。工程要点:</p>
+<p>第 1 章 1.2.4 已讲过数学。工程要点:</p>
 <ul style="list-style:none; padding-left:0;">
 <li>- <strong>必须先标准化</strong>——PCA 对方差敏感,不标准化的话范围大的特征主导</li>
 <li>- 选几个主成分:看累计方差贡献率(通常保留 95% 方差)</li>
-<li>- PCA 是<strong>线性</strong>降维——非线性结构(如瑞士卷)它搞不定</li>
+<li>- PCA 是<strong>线性</strong>降维——非线性结构(如瑞士卷)它无法有效处理</li>
 </ul>
 
 <p>变种:Kernel PCA 用核技巧做非线性;Incremental PCA 支持流式数据;Sparse PCA 产生稀疏的主成分便于解释。</p>
@@ -1486,7 +1486,7 @@ $\min_G \max_D \mathbb{E}_{x \sim p_{\text{data}}}[\log D(x)] + \mathbb{E}_{z \s
 
 <p>思路:高维空间里计算每对点的"相似度"(高斯核),低维空间里用 t 分布(重尾)计算相似度,最小化两者的 KL 散度。让高维近邻在低维仍是近邻。</p>
 
-<p>t-SNE 效果惊艳——MNIST 的 10 类数字在 2D 上清晰分开。但有坑:</p>
+<p>t-SNE 效果惊艳——MNIST 的 10 类数字在 2D 上清晰分开。但有几个注意事项:</p>
 <ul style="list-style:none; padding-left:0;">
 <li>- 超参数 <code>perplexity</code> 影响大(典型 5–50),不同值结果不同</li>
 <li>- 不保留全局结构(簇间距离没意义)</li>
@@ -2184,7 +2184,7 @@ $O_i^{\text{new}} = \frac{l_i}{l_i^{\text{new}}} e^{m_i - m_i^{\text{new}}} O_i 
 <p>PyTorch 2.0 的 <code>torch.compile</code> 背后做的就是自动算子融合。经典融合模式:</p>
 <ul style="list-style:none; padding-left:0;">
 <li><code>Conv + BN + ReLU</code>:BN 参数可折到 Conv 里,三合一</li>
-<li><code>GEMM + Bias + Activation</code>:一个 CUTLASS epilogue 搞定</li>
+<li><code>GEMM + Bias + Activation</code>:一个 CUTLASS epilogue 即可完成</li>
 <li><code>LayerNorm</code>:本身就是"减均值除方差+scale"三步融合</li>
 <li><code>RMSNorm + SwiGLU</code>:LLM 里常见融合</li>
 </ul>
@@ -2222,11 +2222,11 @@ $O_i^{\text{new}} = \frac{l_i}{l_i^{\text{new}}} e^{m_i - m_i^{\text{new}}} O_i 
 
 <p><strong>梯度检查点</strong>(Gradient Checkpointing):前向只存部分中间激活,反传时重算未存的。用 30% 额外计算换 2–5× 显存。训练大模型必用。</p>
 
-<p><strong>ZeRO</strong>(见第 4 章 5.10):把优化器状态、梯度、参数切片到不同卡,每卡只存一部分。</p>
+<p><strong>ZeRO</strong>(见第 4 章 4.7.2):把优化器状态、梯度、参数切片到不同卡,每卡只存一部分。</p>
 
 <p><strong>CPU Offload</strong>:把不常访问的东西(优化器状态)放 CPU,需要时再搬。省显存但慢。</p>
 
-<p><strong>PagedAttention</strong>(第 4 章 5.13):推理的 KV Cache 虚拟内存分页。</p>
+<p><strong>PagedAttention</strong>(第 4 章 4.8.3):推理的 KV Cache 虚拟内存分页。</p>
 
 <h3>I/O 优化</h3>
 

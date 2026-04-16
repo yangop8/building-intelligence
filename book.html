@@ -661,7 +661,7 @@ span.num {
     <li><a href="#structure"><span class="num">3</span>全书结构</a></li>
     <li><a href="#reading-guide"><span class="num">4</span>阅读指南</a></li>
     <li><a href="#papers"><span class="num">5</span>论文精读说明</a></li>
-    <li><a href="#conventions"><span class="num">6</span>体例说明</a></li>
+    <li><a href="#conventions"><span class="num">6</span>写作约定</a></li>
     <li><a href="#updates"><span class="num">7</span>更新与勘误</a></li>
   </ol>
   <div class="group"><a href="#ch1" style="color:inherit;text-decoration:none">第一章 数学基础</a></div>
@@ -1018,7 +1018,7 @@ span.num {
 <p>论文精读不是论文翻译——我们关注的是:<strong>这篇论文解决了什么问题、核心idea是什么、数学推导的关键步骤、以及它如何影响了后续工作</strong>。每篇最后都有"批判性视角",指出局限性和后续演进。</p>
 
 <!-- ===================== 体例 ===================== -->
-<h2 id="conventions">体例说明</h2>
+<h2 id="conventions">写作约定</h2>
 
 <h3>密度与风格</h3>
 <p>每一节的目标密度是"一个有经验的同事给你讲30分钟"——比教科书紧凑,比博客深入。公式只在必要时出现,出现就完整推导。代码示例以Python/PyTorch为主,偶尔用C/Rust/SQL。</p>
@@ -1060,7 +1060,7 @@ span.num {
   <div class="meta">Chapter 1 · 内部学习材料 · 共29节</div>
 </header>
 
-<p>这章的目标不是培养数学家。读者假设已经学过一遍本科数学但大多忘了，日常工作会读到AI论文或调用某个库的API，希望看到公式不打怵、遇到报错能判断数值原因、设计算法时能从理论里找到线索。</p>
+<p>这章的目标不是培养数学家。读者假设已经学过一遍本科数学但大多忘了，日常工作会读到AI论文或调用某个库的API，希望看到公式不再畏惧、遇到报错能判断数值原因、设计算法时能从理论里找到线索。</p>
 
 <p>这套要求决定了写作的三条原则。第一，<strong>每个公式都先讲它要解决什么问题</strong>，再给形式，最后连到AI里的一个具体应用场景——不做纯符号推演。第二，<strong>篇幅不对称</strong>。梯度下降、特征分解、大数定律、信息熵、浮点误差这些和AI几乎每天打交道的概念会挖得深；流形优化、排队论、通信编码理论这些远一点的点到为止。第三，<strong>代码作为第二种语言</strong>。公式不易懂时，一段能跑的Python往往胜过一页证明。</p>
 
@@ -1081,7 +1081,7 @@ span.num {
 
 <p>函数 <span class="math-i">f: \mathbb{R} \to \mathbb{R}</span>在点 <span class="math-i">x_0</span>的导数，定义上是斜率极限：</p>
 <div class="formula"><span class="math-d">f'(x_0) = \lim_{h \to 0} \frac{f(x_0 + h) - f(x_0)}{h}</span></div>
-<p>直觉：把 <span class="math-i">f</span>放大到足够小的邻域，它看起来就是条直线，这条直线的斜率就是导数。这个"局部看是直线"的观念在多元情形会推广成"局部看是超平面"。积分是导数的逆——给定斜率分布，反求原函数的值差。微积分基本定理把两者拧在一起：<span class="math-i">\int_a^b f'(x)\,dx = f(b) - f(a)</span>。</p>
+<p>直觉：把 <span class="math-i">f</span>放大到足够小的邻域，它看起来就是条直线，这条直线的斜率就是导数。这个"局部看是直线"的观念在多元情形会推广成"局部看是超平面"。积分是导数的逆——给定斜率分布，反求原函数的值差。微积分基本定理将两者统一起来：<span class="math-i">\int_a^b f'(x)\,dx = f(b) - f(a)</span>。</p>
 
 <h3>多元：从标量场到向量场</h3>
 
@@ -1122,7 +1122,7 @@ span.num {
 <div class="formula"><span class="math-d">(f * g)(t) = \int_{-\infty}^{+\infty} f(\tau) g(t - \tau)\,d\tau</span></div>
 <p>离散情形：<span class="math-i">(f * g)[n] = \sum_m f[m] g[n-m]</span>。</p>
 
-<p>直觉是"把 <span class="math-i">g</span>翻转再平移，在每个位置上和 <span class="math-i">f</span>做加权求和"。CNN里的"卷积"严格说是<em>互相关</em>（不翻转），但工程上沿用了convolution这个词。卷积有两个神奇性质撑起了它在AI中的地位：</p>
+<p>直觉是"把 <span class="math-i">g</span>翻转再平移，在每个位置上和 <span class="math-i">f</span>做加权求和"。CNN里的"卷积"严格说是<em>互相关</em>（不翻转），但工程上沿用了convolution这个词。卷积有两个关键性质奠定了它在AI中的地位：</p>
 
 <p><strong>性质一：卷积定理</strong>。傅里叶变换下 <span class="math-i">\mathcal{F}(f * g) = \mathcal{F}(f) \cdot \mathcal{F}(g)</span>——空域卷积等于频域点乘。这是FFT加速卷积的理论基础，也是为什么用频域分析信号这么自然。</p>
 
@@ -1342,7 +1342,7 @@ print("dL/dW1 =\n", dL_dW1)
 <li>- 一般情形：用SVD构造</li>
 </ul>
 
-<p><span class="math-i">\mathbf{x} = \mathbf{A}^+ \mathbf{b}</span>在超定情况下给出最小二乘解（残差范数最小），在欠定情况下给出最小范数解。这两件事合并成一个公式，干净得不像话。</p>
+<p><span class="math-i">\mathbf{x} = \mathbf{A}^+ \mathbf{b}</span>在超定情况下给出最小二乘解（残差范数最小），在欠定情况下给出最小范数解。这两件事合并成一个公式，极为简洁。</p>
 
 <h3>在AI里</h3>
 
@@ -1762,7 +1762,7 @@ print("POTC    最大负载:", np.mean([simulate_balls_bins(n, 'potc')   for _ i
 
 <p><strong>传输</strong>：一个噪声信道每单位时间能可靠传多少信息？答案：<em>不能超过信道容量 <span class="math-i">C</span></em>。在此之下，存在编码方案使错误率任意小；超过则一定有错误。</p>
 
-<p>这两个结果干净得不像话——都是尖锐的"可达不可超"极限。它们不告诉你怎么做（存在性证明），但告诉你"再优化也到此为止"。工程上信息论是一面镜子，任何现实压缩算法或通信系统都在和这个极限比较。</p>
+<p>这两个结果极为简洁——都是尖锐的"可达不可超"极限。它们不告诉你怎么做（存在性证明），但告诉你"再优化也到此为止"。工程上信息论是一面镜子，任何现实压缩算法或通信系统都在和这个极限比较。</p>
 
 <!-- 1.6.2 -->
 <h2 id="s1-6-2"><span class="num">1.6.2</span>信息的度量</h2>
@@ -1890,20 +1890,20 @@ print("POTC    最大负载:", np.mean([simulate_balls_bins(n, 'potc')   for _ i
 
 <p>大于1的最小浮点数是 <span class="math-i">1 + \epsilon</span>，这个 <span class="math-i">\epsilon</span>就是 <strong>机器精度 </strong>。FP32 <span class="math-i">\epsilon \approx 1.19 \times 10^{-7}</span>，FP16 <span class="math-i">\epsilon \approx 9.77 \times 10^{-4}</span>，BF16 <span class="math-i">\epsilon \approx 3.91 \times 10^{-3}</span>。BF16的精度比FP16还差4倍，但它有更大的动态范围（指数位同FP32），所以训练用BF16而不是FP16。</p>
 
-<h3>几个经典的数值坑</h3>
+<h3>几个经典的数值陷阱</h3>
 
-<p><strong>坑一：灾难性相消</strong>。相近两数相减损失精度。</p>
+<p><strong>陷阱一：灾难性相消</strong>。相近两数相减损失精度。</p>
 <pre><code class="language-python">import numpy as np
 x = np.float32(1e8)
 y = x + np.float32(1.0)
 print(y - x)   # 期望1.0,实际可能是0.0 —— 1.0被1e8的精度吃掉了
 </code></pre>
 
-<p><strong>坑二：softmax的数值爆炸</strong>。直接算 <span class="math-i">\exp(x_i)/\sum\exp(x_j)</span>，当 <span class="math-i">x_i</span>大时 <span class="math-i">\exp</span>会溢出inf。标准做法是<strong>减最大值</strong>：</p>
+<p><strong>陷阱二：softmax的数值爆炸</strong>。直接算 <span class="math-i">\exp(x_i)/\sum\exp(x_j)</span>，当 <span class="math-i">x_i</span>大时 <span class="math-i">\exp</span>会溢出inf。标准做法是<strong>减最大值</strong>：</p>
 <div class="formula"><span class="math-d">\text{softmax}(x_i) = \frac{\exp(x_i - \max_j x_j)}{\sum_k \exp(x_k - \max_j x_j)}</span></div>
 <p>数学上等价（分子分母同乘 <span class="math-i">\exp(-\max)</span>），但数值上所有 <span class="math-i">\exp</span>输入都 <span class="math-i">\le 0</span>，结果在 <span class="math-i">(0, 1]</span>，不溢出。</p>
 
-<p><strong>坑三：log-sum-exp</strong>。<span class="math-i">\log\sum\exp(x_i)</span>直接算也会溢出，同样用减最大值技巧：</p>
+<p><strong>陷阱三：log-sum-exp</strong>。<span class="math-i">\log\sum\exp(x_i)</span>直接算也会溢出，同样用减最大值技巧：</p>
 <div class="formula"><span class="math-d">\log\sum_i \exp(x_i) = \max_j x_j + \log\sum_i \exp(x_i - \max_j x_j)</span></div>
 
 <p>这些不是高深的优化，是所有数值库（numpy、torch）底层默认使用的标准技巧。自己写softmax忘了减最大值就会在训练中莫名NaN。</p>
@@ -2169,7 +2169,7 @@ for (int j = 0; j &lt; N; j++)
 
 <h3>在AI里</h3>
 
-<p>AI训练的数据预处理、tokenization、采样逻辑都跑在CPU上。一个常被忽略的细节:<strong>DataLoader的CPU性能经常是训练瓶颈</strong>。GPU算得飞快,CPU喂不上数据。解决办法是多进程DataLoader、绑定NUMA节点、用pinned memory减少拷贝。所有这些优化都建立在对CPU架构的基本理解上。</p>
+<p>AI训练的数据预处理、tokenization、采样逻辑都跑在CPU上。一个常被忽略的细节:<strong>DataLoader的CPU性能经常是训练瓶颈</strong>。GPU算得飞快,CPU来不及供给数据。解决办法是多进程DataLoader、绑定NUMA节点、用pinned memory减少拷贝。所有这些优化都建立在对CPU架构的基本理解上。</p>
 
 <!-- 2.1.2 -->
 <h2 id="s2-1-2"><span class="num">2.1.2</span>网络处理单元</h2>
@@ -2177,7 +2177,7 @@ for (int j = 0; j &lt; N; j++)
 
 <h3>为什么需要专用单元</h3>
 
-<p>线速处理100Gbps网络流量,按64字节小包算是 <strong>148.8 Mpps</strong>(million packets per second)。每包预算 <strong>6.7 ns</strong>——一次DRAM访问都做不完。通用CPU靠软件硬刚做不到,必须靠硬件。</p>
+<p>线速处理100Gbps网络流量,按64字节小包算是 <strong>148.8 Mpps</strong>(million packets per second)。每包预算 <strong>6.7 ns</strong>——一次DRAM访问都做不完。仅靠通用CPU软件难以实现,必须依赖硬件。</p>
 
 <h3>几种硬件加速路线</h3>
 
@@ -2207,7 +2207,7 @@ for (int j = 0; j &lt; N; j++)
 <h2 id="s2-1-3"><span class="num">2.1.3</span>GPU与NPU加速</h2>
 <p class="pos">定位:AI算力的载体——并行计算与张量加速的硬件。简短,详细在第4章。</p>
 
-<p>这节和第4章5.2有重叠,这里只建立基本坐标。</p>
+<p>这节和第4章4.2有重叠,这里只建立基本坐标。</p>
 
 <h3>GPU的并行模型</h3>
 
@@ -2406,11 +2406,11 @@ for (int j = 0; j &lt; N; j++)
 
 <h3>OOM Killer</h3>
 
-<p>当连swap都没救时,内核启动OOM Killer选一个进程杀掉。评分算法综合考虑内存占用、运行时间、<code>oom_score_adj</code>(可调)。实践中:关键服务应设负的 <code>oom_score_adj</code>降低被杀概率。</p>
+<p>当swap也无法缓解时,内核启动OOM Killer选一个进程杀掉。评分算法综合考虑内存占用、运行时间、<code>oom_score_adj</code>(可调)。实践中:关键服务应设负的 <code>oom_score_adj</code>降低被杀概率。</p>
 
 <h3>在AI里</h3>
 
-<p>AI训练的内存问题大多在GPU显存,CPU内存相对宽裕。但以下场景踩坑频繁:</p>
+<p>AI训练的内存问题大多在GPU显存,CPU内存相对宽裕。但以下场景容易出问题:</p>
 <ul style="list-style:none; padding-left:0;">
 <li>- <strong>多DataLoader worker的fork</strong>:由于COW,主进程大对象(如数据集索引)被子进程"访问"时逐页复制,实际复制所有页后内存翻倍。Python多进程训练OOM常因此。</li>
 <li>- <strong>page cache压垮小内存机器</strong>:读大数据集时page cache把内存占满,某些内核版本下释放不及时。</li>
@@ -2519,7 +2519,7 @@ struct io_uring_cqe {  // Completion Queue Entry
 <tr><td>workqueue</td><td>内核线程上下文、可睡眠</td><td>需要睡眠的延迟工作</td></tr>
 </table>
 
-<p>网络收包路径是softirq的典型用户——硬中断来了之后把skb入队,NET_RX_SOFTIRQ在下半部把skb交给协议栈。这也是为什么高速网络下 <code>ksoftirqd</code>经常吃满一核。</p>
+<p>网络收包路径是softirq的典型用户——硬中断来了之后把skb入队,NET_RX_SOFTIRQ在下半部把skb交给协议栈。这也是为什么高速网络下 <code>ksoftirqd</code>经常占满一个核。</p>
 
 <h3>中断亲和与负载均衡</h3>
 
@@ -3588,7 +3588,7 @@ ip4_lookup_node_fn(vlib_main_t *vm, vlib_node_runtime_t *node,
 <p>AI训练/推理通信主要用:</p>
 <ul style="list-style:none; padding-left:0;">
 <li>- <strong>TCP</strong>:gRPC/REST API、分布式训练的控制面</li>
-<li>- <strong>RDMA</strong>（将在第4章5.7节介绍）:训练数据面,完全绕过TCP/IP</li>
+<li>- <strong>RDMA</strong>（将在第4章4.7节介绍）:训练数据面,完全绕过TCP/IP</li>
 <li>- <strong>UDP</strong>:偶尔用于自定义AllReduce实现</li>
 </ul>
 
@@ -3750,7 +3750,7 @@ ip4_lookup_node_fn(vlib_main_t *vm, vlib_node_runtime_t *node,
 
 <p>LLM时代的AI工程师仍然需要传统机器学习——不是因为怀旧,而是因为在<strong>数据量有限、特征可解释、延迟敏感</strong>的场景里(网络设备上的流量分类、KPI异常检测),一棵XGBoost树往往比一个LLM更合适。这一章的结构反映这个观点:先传统ML、再基础算子、再经典深度模型、再训练优化、最后性能工程和领域应用。每一层都是下一层的基础,但也都在现代AI系统里有独立位置。</p>
 
-<p>36节全深挖。重点锚点是这几节:3.1.2树模型(从决策树到XGBoost完整推导)、3.2.3卷积(含im2col和Winograd)、3.3.2 LSTM门控推导、3.5.3微调对齐(SFT/DPO/RLHF全链路)、3.6.3算子优化(Roofline + tiling + FlashAttention)、3.7.2流量分类的特征工程实战。其它节也不注水——每节都到"一个有经验的同事能给你讲30分钟"的密度,不到"教科书式铺陈"的密度。</p>
+<p>36节全深挖。重点锚点是这几节:3.1.2树模型(从决策树到XGBoost完整推导)、3.2.3卷积(含im2col和Winograd)、3.3.2 LSTM门控推导、3.5.3微调对齐(SFT/DPO/RLHF全链路)、3.6.3算子优化(Roofline + tiling + FlashAttention)、3.7.2流量分类的特征工程实战。其它节也内容充实——每节都到"一个有经验的同事能给你讲30分钟"的密度,不到"教科书式铺陈"的密度。</p>
 
 <!-- ==================== 3.1传统机器学习 ==================== -->
 <div class="part-header">
@@ -3816,7 +3816,7 @@ def kmeans(X, k, max_iter=100, tol=1e-4):
     return centers, labels
 </code></pre>
 
-<p>Kmeans的几个坑。第一,<strong>对初始化敏感</strong>——不同种子跑出完全不同的簇。Kmeans++ 初始化(上面代码里做的)显著改善。第二,<strong>必须指定 <span class="math-i">k</span> </strong>——通常用elbow method(画 <span class="math-i">k</span> vs SSE曲线,找拐点)或silhouette score辅助选择。第三,<strong>假设簇是球形</strong>——条状、环形分布它搞不定,需要DBSCAN或spectral clustering这类。</p>
+<p>Kmeans的几个常见问题。第一,<strong>对初始化敏感</strong>——不同种子跑出完全不同的簇。Kmeans++ 初始化(上面代码里做的)显著改善。第二,<strong>必须指定 <span class="math-i">k</span> </strong>——通常用elbow method(画 <span class="math-i">k</span> vs SSE曲线,找拐点)或silhouette score辅助选择。第三,<strong>假设簇是球形</strong>——条状、环形分布它无法处理,需要DBSCAN或spectral clustering这类。</p>
 
 <h3>在网络领域</h3>
 
@@ -4225,7 +4225,7 @@ def dtw(x, y):
 
 <p>给张量边缘补0(或其他值)。卷积前补零保持output shape = input shape;变长序列padding到同长度做batching。</p>
 
-<p>Pad的代价:<strong>浪费</strong>。一个batch里最长2048的序列和16的序列一起pad到2048,短序列的计算全浪费。这就是为什么连续批处理(continuous batching,见第4章5.13)对LLM推理价值巨大——避免padding浪费。</p>
+<p>Pad的代价:<strong>浪费</strong>。一个batch里最长2048的序列和16的序列一起pad到2048,短序列的计算全浪费。这就是为什么连续批处理(continuous batching,见第4章4.8.4)对LLM推理价值巨大——避免padding浪费。</p>
 
 <h3>数据搬运的隐藏成本</h3>
 
@@ -4373,7 +4373,7 @@ def conv2d_im2col(X, W):
 
 <p>特性:输出和为1、处处可导、单调。用在分类输出层、attention权重。</p>
 
-<p>数值稳定的实现必须减最大值(见第1章2.8.1)。</p>
+<p>数值稳定的实现必须减最大值(见第1章1.7.1)。</p>
 
 <!-- 3.2.5 -->
 <h2 id="s3-2-5"><span class="num">3.2.5</span>归一化</h2>
@@ -4569,7 +4569,7 @@ flowchart LR
 
 <h3><a href="#p20">Mamba</a>的复兴</h3>
 
-<p>2023年Mamba（选择性SSM）把"类RNN结构"重新带回视野——训练能并行扫描,推理又是 <span class="math-i">O(1)</span>每步。在长上下文场景挑战Transformer。RNN精神没死,只是需要更巧的设计(见第4章5.6)。</p>
+<p>2023年Mamba（选择性SSM）把"类RNN结构"重新带回视野——训练能并行扫描,推理又是 <span class="math-i">O(1)</span>每步。在长上下文场景挑战Transformer。RNN精神没死,只是需要更巧的设计(见第4章4.4.3)。</p>
 
 <!-- 3.3.3 -->
 <h2 id="s3-3-3"><span class="num">3.3.3</span>GNN与GAT</h2>
@@ -4796,11 +4796,11 @@ flowchart LR
 
 <h3>PCA</h3>
 
-<p>第1章2.3.4已讲过数学。工程要点:</p>
+<p>第1章1.2.4已讲过数学。工程要点:</p>
 <ul style="list-style:none; padding-left:0;">
 <li>- <strong>必须先标准化</strong>——PCA对方差敏感,不标准化的话范围大的特征主导</li>
 <li>- 选几个主成分:看累计方差贡献率(通常保留95%方差)</li>
-<li>- PCA是<strong>线性</strong>降维——非线性结构(如瑞士卷)它搞不定</li>
+<li>- PCA是<strong>线性</strong>降维——非线性结构(如瑞士卷)它无法有效处理</li>
 </ul>
 
 <p>变种:Kernel PCA用核技巧做非线性;Incremental PCA支持流式数据;Sparse PCA产生稀疏的主成分便于解释。</p>
@@ -4811,7 +4811,7 @@ flowchart LR
 
 <p>思路:高维空间里计算每对点的"相似度"(高斯核),低维空间里用t分布(重尾)计算相似度,最小化两者的KL散度。让高维近邻在低维仍是近邻。</p>
 
-<p>t-SNE效果惊艳——MNIST的10类数字在2D上清晰分开。但有坑:</p>
+<p>t-SNE效果惊艳——MNIST的10类数字在2D上清晰分开。但有几个注意事项:</p>
 <ul style="list-style:none; padding-left:0;">
 <li>- 超参数 <code>perplexity</code>影响大(典型5–50),不同值结果不同</li>
 <li>- 不保留全局结构(簇间距离没意义)</li>
@@ -5477,7 +5477,7 @@ for (int bi = 0; bi &lt; M; bi += BM) {
 <p>PyTorch 2.0的 <code>torch.compile</code>背后做的就是自动算子融合。经典融合模式:</p>
 <ul style="list-style:none; padding-left:0;">
 <li><code>Conv + BN + ReLU</code>:BN参数可折到Conv里,三合一</li>
-<li><code>GEMM + Bias + Activation</code>:一个CUTLASS epilogue搞定</li>
+<li><code>GEMM + Bias + Activation</code>:一个CUTLASS epilogue即可完成</li>
 <li><code>LayerNorm</code>:本身就是"减均值除方差+scale"三步融合</li>
 <li><code>RMSNorm + SwiGLU</code>:LLM里常见融合</li>
 </ul>
@@ -5515,11 +5515,11 @@ for (int bi = 0; bi &lt; M; bi += BM) {
 
 <p><strong>梯度检查点</strong>(Gradient Checkpointing):前向只存部分中间激活,反传时重算未存的。用30%额外计算换2–5× 显存。训练大模型必用。</p>
 
-<p><strong>ZeRO</strong>(见第4章5.10):把优化器状态、梯度、参数切片到不同卡,每卡只存一部分。</p>
+<p><strong>ZeRO</strong>(见第4章4.7.2):把优化器状态、梯度、参数切片到不同卡,每卡只存一部分。</p>
 
 <p><strong>CPU Offload</strong>:把不常访问的东西(优化器状态)放CPU,需要时再搬。省显存但慢。</p>
 
-<p><strong>PagedAttention</strong>(第4章5.13):推理的KV Cache虚拟内存分页。</p>
+<p><strong>PagedAttention</strong>(第4章4.8.3):推理的KV Cache虚拟内存分页。</p>
 
 <h3>I/O优化</h3>
 
@@ -6116,7 +6116,7 @@ forecast = m.predict(future)
 <p><strong>Haystack</strong>：企业级RAG框架；生产就绪度高。</p>
 <p><strong>自己写</strong>:很多团队发现直接调OpenAI SDK + 一点胶水代码比框架更清晰——LLM调用本质就是HTTP请求,抽象层越厚反而越难调试。</p>
 
-<div class="part-header"><div class="part-label">PART TWO</div><h2 class="part-title">4.2 Transformer架构</h2><p class="part-desc">所有LLM的基础——把这一块搞透,后面全通。</p></div>
+<div class="part-header"><div class="part-label">PART TWO</div><h2 class="part-title">4.2 Transformer架构</h2><p class="part-desc">所有LLM的基础——把这一块彻底理解,后面全通。</p></div>
 
 <h2 id="s4-2-1"><span class="num">4.2.1</span>整体结构与信息流</h2>
 <p class="pos">定位:一个token从进入模型到输出的完整路径——建立宏观图景。</p>
@@ -6190,7 +6190,7 @@ flowchart TB
 
 <h3>为什么要除 √d</h3>
 <p>这里有个关键细节。<span class="math-i">\mathbf{q}_i \cdot \mathbf{k}_j = \sum_{k=1}^d q_k \cdot k_k</span>。如果 <span class="math-i">q, k</span>的每一维独立、均值0方差1,那点积的方差是 <span class="math-i">d</span>(标准差 <span class="math-i">\sqrt{d}</span>)。</p>
-<p><span class="math-i">d</span>大时点积值域很宽——有的很大,有的很小。送入softmax后,softmax会被最大值支配(softmax的"尖锐化"效应)。如果 <span class="math-i">s_1 = 30, s_2 = 25</span>,差5就会让softmax几乎只关注 <span class="math-i">s_1</span>。更严重:梯度会消失——softmax在"一家独大"的区域梯度极小。</p>
+<p><span class="math-i">d</span>大时点积值域很宽——有的很大,有的很小。送入softmax后,softmax会被最大值支配(softmax的"尖锐化"效应)。如果 <span class="math-i">s_1 = 30, s_2 = 25</span>,差5就会让softmax几乎只关注 <span class="math-i">s_1</span>。更严重:梯度会消失——softmax在权重高度集中的区域梯度极小。</p>
 <p>Transformer原论文的fix:除以 <span class="math-i">\sqrt{d_k}</span>,让点积方差回到1:</p>
 <div class="formula"><span class="math-d">\text{Attention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) = \text{softmax}\left(\frac{\mathbf{Q} \mathbf{K}^\top}{\sqrt{d_k}}\right) \mathbf{V}</span></div>
 <p>这就是"Scaled Dot-Product Attention"。</p>
@@ -6221,7 +6221,7 @@ def causal_attention(Q, K, V):
 <p>单头attention只能学一种"注意模式"——可能学会"指代关系"、也可能学会"语法邻近",但一头只能表示一种。多头让模型同时学多种:每个头有独立的 <span class="math-i">W_Q^h, W_K^h, W_V^h</span>,学不同模式。</p>
 
 <h3>实现</h3>
-<p>朴素实现会搞 <span class="math-i">H</span>次attention再拼接。实际为了效率,用一个大投影分头:</p>
+<p>朴素实现会做 <span class="math-i">H</span>次attention再拼接。实际为了效率,用一个大投影分头:</p>
 <ol>
 <li>把 <span class="math-i">\mathbf{X}</span>投到 <span class="math-i">d_{model}</span>维的Q/K/V</li>
 <li>Reshape成 <span class="math-i">H</span>个 <span class="math-i">d_{head}</span>维子空间: <span class="math-i">d_{model} = H \times d_{head}</span></li>
@@ -6298,7 +6298,7 @@ class MultiHeadAttention(nn.Module):
 </code></pre>
 
 <h3>残差连接</h3>
-<p>第3章4.4.1讲过ResNet的残差思想。Transformer也用:每个sublayer(attention和FFN)输出都加上输入。<span class="math-i">\mathbf{y} = \mathbf{x} + \text{Sublayer}(\mathbf{x})</span>。</p>
+<p>第3章3.3.1讲过ResNet的残差思想。Transformer也用:每个sublayer(attention和FFN)输出都加上输入。<span class="math-i">\mathbf{y} = \mathbf{x} + \text{Sublayer}(\mathbf{x})</span>。</p>
 <p>好处:梯度通过残差路径直达深层,避免消失;如果某层没学到有用变换,残差让它趋近恒等映射,不拖后腿;可训80+ 层模型。</p>
 
 <h3>Pre-Norm vs Post-Norm</h3>
@@ -6309,7 +6309,7 @@ class MultiHeadAttention(nn.Module):
 <p>代价:Pre-Norm的最终输出方差随层数累积(每层加一次残差),所以Pre-Norm模型最后要加一个final LayerNorm。现代LLM全部Pre-Norm。</p>
 
 <h3>RMSNorm替代LayerNorm</h3>
-<p>第3章4.3.5提过。LayerNorm:<span class="math-i">\frac{x - \mu}{\sigma} \gamma + \beta</span>,要算均值、方差、加bias。</p>
+<p>第3章3.2.5提过。LayerNorm:<span class="math-i">\frac{x - \mu}{\sigma} \gamma + \beta</span>,要算均值、方差、加bias。</p>
 <p>RMSNorm简化:只除以均方根,不减均值、不加bias。</p>
 <div class="formula"><span class="math-d">\text{RMSNorm}(\mathbf{x}) = \frac{\mathbf{x}}{\sqrt{\frac{1}{d}\sum_i x_i^2 + \epsilon}} \odot \boldsymbol{\gamma}</span></div>
 <p>实测效果和LayerNorm差不多,但更快(省一次均值计算、一次减法)、参数少(无 <span class="math-i">\beta</span>)。LLaMA用RMSNorm,之后大部分新模型都跟进。</p>
@@ -6728,7 +6728,7 @@ def train_bpe(corpus, vocab_size):
 <h3>特殊Token设计</h3>
 <p>现代LLM除了常规token还有一堆特殊token:BOS/EOS;对话角色(system/user/assistant);工具调用(tool_call/tool_response);推理段(reasoning_start/end);大量保留位为未来功能预留。特殊token设计对对话模板、prompt injection防御、工具调用协议都至关重要。LLaMA-3预留了250个特殊token,Qwen2.5有22个,各家差异大。</p>
 
-<h3>Tokenizer踩坑</h3>
+<h3>Tokenizer常见问题</h3>
 <p><strong>尾随空格</strong>:<code>"hello"</code>和 <code>"hello "</code> tokenize结果不同,经常被忽略导致prompt模板错。</p>
 <p><strong>Chat Template</strong>:不同模型对话格式不同。HuggingFace Transformers的 <code>apply_chat_template</code>是标准方案——不要手写字符串拼接。</p>
 <p><strong>BOS/EOS处理</strong>:有的模型加了BOS再微调,有的没。混用会训练/推理不一致。</p>
@@ -7186,7 +7186,7 @@ for each query q_i:
 <p><strong>EAGLE / EAGLE-2</strong>:更进化——不是"多头预测",而是一个轻量的自回归子网络,从主模型的隐藏状态生成候选。接受率可达80%+,加速3×+。</p>
 
 <h3>工程代价</h3>
-<p>推测解码的权衡:额外显存(小模型或额外head);实现复杂,和batch/KV Cache交互有坑;小batch下收益大,大batch下(已经memory-bound减弱)收益减小。</p>
+<p>推测解码的权衡:额外显存(小模型或额外head);实现复杂,和batch/KV Cache交互有兼容问题;小batch下收益大,大batch下(已经memory-bound减弱)收益减小。</p>
 <p>vLLM、TGI、TensorRT-LLM都支持了推测解码。线上部署的高QPS服务收益明显;内部工具型服务收益小不一定值得。</p>
 
 <div class="part-header"><div class="part-label">PART NINE</div><h2 class="part-title">4.9推理压缩</h2><p class="part-desc">量化不是推理加速的"附加项",是大模型开源能跑起来的前提。</p></div>
@@ -7195,7 +7195,7 @@ for each query q_i:
 <p class="pos">定位:LLM量化的两大主流方法——数学原理和工程差异。</p>
 
 <h3>LLM量化的特殊性</h3>
-<p>第3章4.7.2讲过通用量化原理。LLM的特别之处:权重极多(70B × 2B = 140GB),全INT4能压到35GB——能装进单张A100/H100;激活值有极端outlier——某些维度值特别大,常规量化对它们损失严重;精度要求高——错一个token可能整个回答跑偏。</p>
+<p>第3章3.6.2讲过通用量化原理。LLM的特别之处:权重极多(70B × 2B = 140GB),全INT4能压到35GB——能装进单张A100/H100;激活值有极端outlier——某些维度值特别大,常规量化对它们损失严重;精度要求高——错一个token可能整个回答出现偏差。</p>
 
 <h3>GPTQ</h3>
 <p>GPTQ(2022)用二阶信息做逐列量化。核心观察:量化一列权重引入的误差,可以通过调整剩余列来补偿。</p>
@@ -7367,7 +7367,7 @@ flowchart LR
 <p>拼好后送LLM生成答案。</p>
 
 <h3>朴素RAG的问题</h3>
-<p>看起来简单但实际坑多:检索recall低(用户查询和文档表达差异大,向量相似度找不到相关内容);排序不准(top-K里有相关的但不是最前面);chunks之间丢失上下文(相关内容横跨多个chunk,单独看都不完整);幻觉引用(LLM编造不存在的引用);查询意图误解(模糊查询、多意图查询处理不好)。</p>
+<p>看起来简单但实际问题很多:检索recall低(用户查询和文档表达差异大,向量相似度找不到相关内容);排序不准(top-K里有相关的但不是最前面);chunks之间丢失上下文(相关内容横跨多个chunk,单独看都不完整);幻觉引用(LLM编造不存在的引用);查询意图误解(模糊查询、多意图查询处理不好)。</p>
 <p>下一节讲的高级RAG就是针对这些问题。</p>
 
 <h2 id="s4-10-2"><span class="num">4.10.2</span>高级RAG技术</h2>
@@ -7635,7 +7635,7 @@ Action: finish("Max Verstappen, 27岁")
 <p><strong>对话式多Agent</strong>:多个Agent互相对话协作。AutoGen(Microsoft)是代表,两个或多个agent通过消息往返完成任务(一个写代码、一个审查、一个测试)。</p>
 <p><strong>Agent Mesh</strong>:松散耦合,每个agent独立能力,按需协作。</p>
 
-<h3>多Agent的坑</h3>
+<h3>多Agent的常见问题</h3>
 <p>实际做下来经验:</p>
 <ol>
 <li><strong>成本爆炸</strong>:N个agent互相通信,token消耗成倍</li>
@@ -7854,7 +7854,7 @@ flowchart LR
 <h3>图像生成</h3>
 <p>虽然严格不属于"LLM范畴",但现代多模态框架里常一起提。主流图像生成架构:</p>
 <ul style="list-style:none;padding-left:0;">
-<li><strong>扩散模型</strong>(主流):Stable Diffusion、SDXL、SD3、FLUX、DALL-E 3。见第3章4.4.4。</li>
+<li><strong>扩散模型</strong>(主流):Stable Diffusion、SDXL、SD3、FLUX、DALL-E 3。见第3章3.3.4。</li>
 <li><strong>自回归</strong>:把图像切成patch token,像生成文字一样生成。Parti、LLaMA-Gen、Emu3、Chameleon是代表。和LLM自然融合,但效果目前不如扩散。</li>
 <li><strong>混合</strong>:用LLM生成latent,用扩散decoder渲染。Transfusion(Meta)、Janus(DeepSeek)路线。</li>
 </ul>
@@ -7907,7 +7907,7 @@ flowchart LR
 <div class="part-header"><div class="part-label">第2章相关 · 系统基础</div></div>
 
 <h2 id="p01"><span class="num">P01</span>HNSW:向量数据库的检索引擎</h2>
-<p class="pos">对应主书:第2章3.5.4向量数据库</p>
+<p class="pos">对应主书:第2章2.4.4向量数据库</p>
 
 <div class="paper-meta">
 <div class="title-en">Efficient and robust approximate nearest neighbor using Hierarchical Navigable Small World graphs</div>
@@ -8033,7 +8033,7 @@ flowchart TB
 <li><strong>PostgreSQL pgvector</strong>:0.5+ 版本新增HNSW索引</li>
 </ul>
 
-<p>RAG管线(主书5.10)里"embedding + 向量检索"的"检索"部分,底层跑的就是HNSW。没有这篇论文,2023-2025年的向量数据库热潮不会发生。</p>
+<p>RAG管线(主书4.10)里"embedding + 向量检索"的"检索"部分,底层跑的就是HNSW。没有这篇论文,2023-2025年的向量数据库热潮不会发生。</p>
 
 <h3>批判视角</h3>
 <p>HNSW的主要缺点:<strong>内存占用大</strong>——全图必须在内存中,10亿向量 × 768维 × float32 ≈ 3TB,这还没算图的边存储。因此大规模场景通常HNSW + 量化(PQ/SQ)配合使用,或者分片。另外HNSW不支持动态删除(只能标记),长期运行需要重建。DiskANN(微软2019)是专门针对"磁盘上的ANN"设计的替代方案。</p>
@@ -8104,7 +8104,7 @@ stateDiagram-v2
 <div class="part-header"><div class="part-label">第3章相关 · 经典模型</div></div>
 
 <h2 id="p03"><span class="num">P03</span>ResNet:让网络能真的"深"起来</h2>
-<p class="pos">对应主书:第3章4.4.1 CNN · 第4章5.2.4(残差连接思想)</p>
+<p class="pos">对应主书:第3章3.3.1 CNN · 第4章4.2.4(残差连接思想)</p>
 
 <div class="paper-meta">
 <div class="title-en">Deep Residual Learning for Image Recognition</div>
@@ -8183,7 +8183,7 @@ class BasicBlock(nn.Module):
 <h3>影响</h3>
 <p>ResNet的残差思想已经不只是CNN的特性——它成为<strong>所有深度网络的基础组件</strong>:</p>
 <ol>
-<li><strong>Transformer</strong>:每个attention和FFN模块外都包残差(主书5.2.1)。没有残差,BERT/GPT深度训练不可能。</li>
+<li><strong>Transformer</strong>:每个attention和FFN模块外都包残差(主书4.2.1)。没有残差,BERT/GPT深度训练不可能。</li>
 <li><strong>DenseNet、U-Net</strong>:残差思想的变种——密集连接、跳跃连接</li>
 <li><strong>ControlNet、LoRA</strong>:都隐含"旁路 + 残差"的架构哲学</li>
 <li><strong>Neural ODE</strong>:把残差网络看作ODE的离散形式 <span class="math-i">\mathbf{y} = \mathbf{x} + \mathcal{F}(\mathbf{x}, t)</span></li>
@@ -8197,7 +8197,7 @@ class BasicBlock(nn.Module):
 <!-- ============================ P02 LSTM ============================ -->
 
 <h2 id="p04"><span class="num">P04</span>LSTM:序列建模的经典守门人</h2>
-<p class="pos">对应主书:第3章4.4.2 RNN/LSTM/GRU</p>
+<p class="pos">对应主书:第3章3.3.2 RNN/LSTM/GRU</p>
 
 <div class="paper-meta">
 <div class="title-en">Long Short-Term Memory</div>
@@ -8254,7 +8254,7 @@ class BasicBlock(nn.Module):
 <!-- ============================ P03 BatchNorm ============================ -->
 
 <h2 id="p05"><span class="num">P05</span>BatchNorm:让深网络训练变简单</h2>
-<p class="pos">对应主书:第3章4.3.5归一化</p>
+<p class="pos">对应主书:第3章3.2.5归一化</p>
 
 <div class="paper-meta">
 <div class="title-en">Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift</div>
@@ -8284,14 +8284,14 @@ class BasicBlock(nn.Module):
 
 <h3>影响</h3>
 <p>BN是2015年之后CNN的标配。让100+ 层网络训练成为可能,和ResNet一起支撑了CV的深度时代。</p>
-<p>但BN对RNN、Transformer不好使——batch维度的统计量对序列任务意义不大。Transformer全用LayerNorm,后来又演化出RMSNorm。所以在主书5.2.4里你看到"Pre-Norm + RMSNorm"是LLM标配。BN的故事基本结束在CV领域。</p>
+<p>但BN对RNN、Transformer效果不佳——batch维度的统计量对序列任务意义不大。Transformer全用LayerNorm,后来又演化出RMSNorm。所以在主书4.2.4里你看到"Pre-Norm + RMSNorm"是LLM标配。BN的故事基本结束在CV领域。</p>
 
-<div class="refback"><strong>为什么必读:</strong>理解"归一化不是数据预处理,是深度网络的结构组件"——这个观念转变是BatchNorm的真正贡献。读这篇论文能让你对主书里LayerNorm、RMSNorm、GroupNorm的意义有根子上的理解。</div>
+<div class="refback"><strong>为什么必读:</strong>理解"归一化不是数据预处理,是深度网络的结构组件"——这个观念转变是BatchNorm的真正贡献。读这篇论文能让你对主书里LayerNorm、RMSNorm、GroupNorm的意义有根本性的理解。</div>
 
 <!-- ============================ P04 Adam ============================ -->
 
 <h2 id="p06"><span class="num">P06</span>Adam:深度学习默认优化器</h2>
-<p class="pos">对应主书:第1章2.8.4 · 第3章4.5.1</p>
+<p class="pos">对应主书:第1章1.7.4 · 第3章3.5.1</p>
 
 <div class="paper-meta">
 <div class="title-en">Adam: A Method for Stochastic Optimization</div>
@@ -8324,14 +8324,14 @@ class BasicBlock(nn.Module):
 <p>典型超参:<span class="math-i">\beta_1 = 0.9, \beta_2 = 0.999, \epsilon = 10^{-8}, \alpha = 10^{-3}</span>。这些数字几乎所有PyTorch/TensorFlow代码默认都是它们。</p>
 
 <h3>AdamW</h3>
-<p>Loshchilov 2017指出:Adam里的"weight decay"(权重衰减正则化)和学习率耦合不正确。<strong>AdamW</strong>解耦,现在是LLM训练的默认选择。主书5.7.4里LLaMA训练配方的"AdamW"就是它。</p>
+<p>Loshchilov 2017指出:Adam里的"weight decay"(权重衰减正则化)和学习率耦合不正确。<strong>AdamW</strong>解耦,现在是LLM训练的默认选择。主书4.7.4里LLaMA训练配方的"AdamW"就是它。</p>
 
 <h3>影响与争议</h3>
 <p>Adam是深度学习最广使用的优化器——像空气一样默认。但也有争议:</p>
 <ul style="list-style:none;padding-left:0;">
 <li>- <strong>收敛性</strong>:Reddi 2018 "On the Convergence of Adam"证明原版Adam在某些简单凸问题上不收敛。提出AMSGrad修复(但实用中很少用)</li>
 <li>- <strong>泛化</strong>:在CV任务上SGD+Momentum常常泛化更好。但在Transformer训练上Adam/AdamW无替代</li>
-<li>- <strong>内存</strong>:Adam需要存 <span class="math-i">\mathbf{m}, \mathbf{v}</span>各一份——是参数的2倍。大模型时代这是显存杀手。ZeRO(主书5.7.2)就是为了分片这个状态而生</li>
+<li>- <strong>内存</strong>:Adam需要存 <span class="math-i">\mathbf{m}, \mathbf{v}</span>各一份——是参数的2倍。大模型时代这是显存杀手。ZeRO(主书4.7.2)就是为了分片这个状态而生</li>
 </ul>
 
 <div class="refback"><strong>为什么必读:</strong>每个LLM训练背后都在用AdamW。这是"默认值"的力量——但知道默认值背后的数学,你才能在遇到训练不稳定时对症下药。</div>
@@ -8339,7 +8339,7 @@ class BasicBlock(nn.Module):
 <!-- ============================ P05 XGBoost ============================ -->
 
 <h2 id="p07"><span class="num">P07</span>XGBoost:表格数据的事实标准</h2>
-<p class="pos">对应主书:第3章4.2.2树模型</p>
+<p class="pos">对应主书:第3章3.1.2树模型</p>
 
 <div class="paper-meta">
 <div class="title-en">XGBoost: A Scalable Tree Boosting System</div>
@@ -8372,7 +8372,7 @@ class BasicBlock(nn.Module):
 
 <div class="formula"><span class="math-d">\text{Gain} = \frac{1}{2}\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R + \lambda} - \frac{(G_L+G_R)^2}{H_L+H_R+\lambda}\right] - \gamma</span></div>
 
-<p>有了这个公式,贪心选最大Gain的分裂,直到Gain < 0(或其他停止条件)。详细推导见主书4.2.2。</p>
+<p>有了这个公式,贪心选最大Gain的分裂,直到Gain < 0(或其他停止条件)。详细推导见主书3.1.2。</p>
 
 <h3>工程创新</h3>
 <ul style="list-style:none;padding-left:0;">
@@ -8421,7 +8421,7 @@ print("Accuracy:", model.score(Xv, yv))
 <!-- ============================ P06 Attention ============================ -->
 
 <h2 id="p08"><span class="num">P08</span>GAN:对抗训练的开创</h2>
-<p class="pos">对应主书:第3章4.4.4生成模型</p>
+<p class="pos">对应主书:第3章3.3.4生成模型</p>
 
 <div class="paper-meta">
 <div class="title-en">Generative Adversarial Nets</div>
@@ -8549,7 +8549,7 @@ for epoch in range(num_epochs):
 <!-- ============================ P21 VAE ============================ -->
 
 <h2 id="p09"><span class="num">P09</span>VAE:变分推断遇上深度学习</h2>
-<p class="pos">对应主书:第3章4.4.4生成模型</p>
+<p class="pos">对应主书:第3章3.3.4生成模型</p>
 
 <div class="paper-meta">
 <div class="title-en">Auto-Encoding Variational Bayes</div>
@@ -8665,7 +8665,7 @@ def vae_loss(recon_x, x, mu, logvar):
 <!-- ============================ P22 DDPM ============================ -->
 
 <h2 id="p10"><span class="num">P10</span>DDPM:扩散模型,现代图像生成的基石</h2>
-<p class="pos">对应主书:第3章4.4.4生成模型</p>
+<p class="pos">对应主书:第3章3.3.4生成模型</p>
 
 <div class="paper-meta">
 <div class="title-en">Denoising Diffusion Probabilistic Models</div>
@@ -8795,7 +8795,7 @@ def sample(model, shape):
 <!-- ============================ P23 Word2Vec ============================ -->
 
 <h2 id="p11"><span class="num">P11</span>Word2Vec:词向量的起点</h2>
-<p class="pos">对应主书:第3章4.5.2嵌入</p>
+<p class="pos">对应主书:第3章3.5.2嵌入</p>
 
 <div class="paper-meta">
 <div class="title-en">Efficient Estimation of Word Representations in Vector Space</div>
@@ -8850,7 +8850,7 @@ def sample(model, shape):
 <div class="part-header"><div class="part-label">第4章相关 · Transformer与预训练</div></div>
 
 <h2 id="p12"><span class="num">P12</span>Attention Is All You Need:Transformer的诞生</h2>
-<p class="pos">对应主书:第4章5.2全节</p>
+<p class="pos">对应主书:第4章4.2全节</p>
 
 <div class="paper-meta">
 <div class="title-en">Attention Is All You Need</div>
@@ -8871,7 +8871,7 @@ def sample(model, shape):
 
 <div class="formula"><span class="math-d">\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right) V</span></div>
 
-<p>关键细节 <strong><span class="math-i">\sqrt{d_k}</span> </strong>缩放:<span class="math-i">d</span>维向量点积方差是 <span class="math-i">d</span>,除以 <span class="math-i">\sqrt{d}</span>让方差归一,防止softmax过饱和(主书5.2.2有详细推导)。</p>
+<p>关键细节 <strong><span class="math-i">\sqrt{d_k}</span> </strong>缩放:<span class="math-i">d</span>维向量点积方差是 <span class="math-i">d</span>,除以 <span class="math-i">\sqrt{d}</span>让方差归一,防止softmax过饱和(主书4.2.2有详细推导)。</p>
 
 <h3>Multi-Head Attention</h3>
 <p>把Q、K、V投到 <span class="math-i">H</span>个子空间,每个子空间独立做attention,结果拼接后再投影:</p>
@@ -8895,7 +8895,7 @@ flowchart TB
     A2 --> OUT[Output]
 </div>
 
-<p>(图中是Pre-Norm版本,原论文用Post-Norm,现代实现大多切换到Pre-Norm;详见主书5.2.4。)</p>
+<p>(图中是Pre-Norm版本,原论文用Post-Norm,现代实现大多切换到Pre-Norm;详见主书4.2.4。)</p>
 
 <h3>位置编码</h3>
 <p>Attention本身是"集合运算"——打乱输入顺序输出不变。要给模型位置感,加位置编码:</p>
@@ -9025,7 +9025,7 @@ logits = model(x)                       # [2, 50, 10000]
 <!-- ============================ P07 BERT / GPT ============================ -->
 
 <h2 id="p13"><span class="num">P13</span>BERT与GPT:预训练时代的双子星</h2>
-<p class="pos">对应主书:第4章5.2.5(Encoder/Decoder分野)· 4.5.2(自监督预训练)</p>
+<p class="pos">对应主书:第4章4.2.5(Encoder/Decoder分野)· 4.5.2(自监督预训练)</p>
 
 <div class="paper-meta">
 <div class="title-en">BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding</div>
@@ -9096,7 +9096,7 @@ cheese =&gt; ???
 </table>
 
 <h3>为什么Decoder-only最终赢了</h3>
-<p>主书5.2.5分析过,主要因素:</p>
+<p>主书4.2.5分析过,主要因素:</p>
 <ol>
 <li>Decoder-only训练更简单——单一目标,所有文本都是训练数据</li>
 <li>In-context learning让"一个模型做所有任务"成为现实</li>
@@ -9114,7 +9114,7 @@ cheese =&gt; ???
 <!-- ============================ P08 Scaling Law ============================ -->
 
 <h2 id="p14"><span class="num">P14</span>Scaling Law与Chinchilla:训练大模型的经济学</h2>
-<p class="pos">对应主书:第4章5.1.1 · 4.5.2</p>
+<p class="pos">对应主书:第4章4.1.1 · 4.5.2</p>
 
 <div class="paper-meta">
 <div class="title-en">Scaling Laws for Neural Language Models</div>
@@ -9177,7 +9177,7 @@ cheese =&gt; ???
 <!-- ============================ P09 RoPE ============================ -->
 
 <h2 id="p15"><span class="num">P15</span>RoPE:旋转位置编码</h2>
-<p class="pos">对应主书:第4章5.3.2 RoPE深挖</p>
+<p class="pos">对应主书:第4章4.3.2 RoPE深挖</p>
 
 <div class="paper-meta">
 <div class="title-en">RoFormer: Enhanced Transformer with Rotary Position Embedding</div>
@@ -9260,7 +9260,7 @@ K = apply_rope(K, freqs_cis)
 <div class="part-header"><div class="part-label">第4章相关 · 效率与推理</div></div>
 
 <h2 id="p16"><span class="num">P16</span>FlashAttention:IO感知的精确attention</h2>
-<p class="pos">对应主书:第3章4.7.3算子优化 · 第4章5.2.2 / 5.8</p>
+<p class="pos">对应主书:第3章3.6.3算子优化 · 第4章4.2.2 / 4.8</p>
 
 <div class="paper-meta">
 <div class="title-en">FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness</div>
@@ -9364,7 +9364,7 @@ flowchart TB
 <!-- ============================ P11 LoRA ============================ -->
 
 <h2 id="p17"><span class="num">P17</span>LoRA / QLoRA:让微调变得便宜</h2>
-<p class="pos">对应主书:第3章4.5.3微调 · 第4章5.4.1低秩思想</p>
+<p class="pos">对应主书:第3章3.5.3微调 · 第4章4.4.1低秩思想</p>
 
 <div class="paper-meta">
 <div class="title-en">LoRA: Low-Rank Adaptation of Large Language Models</div>
@@ -9456,14 +9456,14 @@ model.print_trainable_parameters()
 </ul>
 
 <h3>影响</h3>
-<p>LoRA是2022年后<strong>微调领域最重要的工作</strong>。今天几乎所有开源LLM的fine-tune都用LoRA或其变种——HuggingFace PEFT库就是围绕它建的。LoRA还激发了架构设计的思想:DeepSeek的MLA用低秩分解压缩KV Cache(主书5.4.1),精神一脉相承。</p>
+<p>LoRA是2022年后<strong>微调领域最重要的工作</strong>。今天几乎所有开源LLM的fine-tune都用LoRA或其变种——HuggingFace PEFT库就是围绕它建的。LoRA还激发了架构设计的思想:DeepSeek的MLA用低秩分解压缩KV Cache(主书4.4.1),精神一脉相承。</p>
 
 <div class="refback"><strong>为什么是2页:</strong>LoRA是开源社区最重要的"杠杆"——让个人和小团队也能参与前沿LLM适配。QLoRA的NF4设计值得一读,对"面向分布设计数据类型"有很好的启发。</div>
 
 <!-- ============================ P12 PagedAttention ============================ -->
 
 <h2 id="p18"><span class="num">P18</span>PagedAttention / vLLM:把KV Cache当虚拟内存</h2>
-<p class="pos">对应主书:第4章5.8.3</p>
+<p class="pos">对应主书:第4章4.8.3</p>
 
 <div class="paper-meta">
 <div class="title-en">Efficient Memory Management for Large Language Model Serving with PagedAttention</div>
@@ -9554,7 +9554,7 @@ for each query q_i:
 <!-- ============================ P13 MoE ============================ -->
 
 <h2 id="p19"><span class="num">P19</span>Switch Transformer与Mixtral:把MoE做成实用</h2>
-<p class="pos">对应主书:第4章5.6</p>
+<p class="pos">对应主书:第4章4.6</p>
 
 <div class="paper-meta">
 <div class="title-en">Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity</div>
@@ -9642,7 +9642,7 @@ flowchart TB
 <!-- ============================ P14 InstructGPT ============================ -->
 
 <h2 id="p20"><span class="num">P20</span>Mamba:线性时间的序列建模</h2>
-<p class="pos">对应主书:第4章5.4.3非Transformer架构</p>
+<p class="pos">对应主书:第4章4.4.3非Transformer架构</p>
 
 <div class="paper-meta">
 <div class="title-en">Mamba: Linear-Time Sequence Modeling with Selective State Spaces</div>
@@ -9773,7 +9773,7 @@ flowchart TB
 <div class="part-header"><div class="part-label">第4章相关 · 对齐与应用</div></div>
 
 <h2 id="p21"><span class="num">P21</span>InstructGPT / RLHF:对齐的起点</h2>
-<p class="pos">对应主书:第3章4.5.3微调与对齐 · 第4章5.1.1</p>
+<p class="pos">对应主书:第3章3.5.3微调与对齐 · 第4章4.1.1</p>
 
 <div class="paper-meta">
 <div class="title-en">Training language models to follow instructions with human feedback</div>
@@ -9839,7 +9839,7 @@ flowchart LR
 <!-- ============================ P15 DPO ============================ -->
 
 <h2 id="p22"><span class="num">P22</span>DPO:把RLHF变成分类损失</h2>
-<p class="pos">对应主书:第3章4.5.3</p>
+<p class="pos">对应主书:第3章3.5.3</p>
 
 <div class="paper-meta">
 <div class="title-en">Direct Preference Optimization: Your Language Model is Secretly a Reward Model</div>
@@ -9911,7 +9911,7 @@ flowchart LR
 <!-- ============================ P16 CoT ============================ -->
 
 <h2 id="p23"><span class="num">P23</span>Chain-of-Thought:让模型"想"一步再答</h2>
-<p class="pos">对应主书:第4章5.11.1 · 5.1.1推理时计算</p>
+<p class="pos">对应主书:第4章4.11.1 · 4.1.1推理时计算</p>
 
 <div class="paper-meta">
 <div class="title-en">Chain-of-Thought Prompting Elicits Reasoning in Large Language Models</div>
@@ -9981,7 +9981,7 @@ A: [让模型续写]
 <!-- ============================ P17 DeepSeek V3 ============================ -->
 
 <h2 id="p24"><span class="num">P24</span>DeepSeek-V3:开源MoE的集大成</h2>
-<p class="pos">对应主书:第4章5.4.1 MLA · 5.6 MoE · 5.9.2 FP8</p>
+<p class="pos">对应主书:第4章4.4.1 MLA · 4.6 MoE · 4.9.2 FP8</p>
 
 <div class="paper-meta">
 <div class="title-en">DeepSeek-V3 Technical Report</div>
@@ -10008,7 +10008,7 @@ flowchart TB
 </div>
 
 <h3>创新1: MLA(Multi-head Latent Attention)</h3>
-<p>主书5.4.1详讲过。核心:用低秩分解压缩KV Cache。</p>
+<p>主书4.4.1详讲过。核心:用低秩分解压缩KV Cache。</p>
 <div class="formula"><span class="math-d">\mathbf{c}_{\text{kv}} = W_{DKV} \mathbf{x}, \quad \mathbf{k} = W_{UK} \mathbf{c}_{\text{kv}}, \quad \mathbf{v} = W_{UV} \mathbf{c}_{\text{kv}}</span></div>
 
 <p><span class="math-i">d_c \ll d_{model}</span>,KV Cache只存 <span class="math-i">\mathbf{c}_{\text{kv}}</span>。推理时 <span class="math-i">W_{UK}</span>可合并进Q投影,零额外运算。</p>
@@ -10084,7 +10084,7 @@ flowchart TB
 <div class="refback"><strong>为什么压轴:</strong>V3技术报告是2024年最值得读的LLM工程论文——它把前面P06-P13的所有技术(Transformer、MoE、LoRA思想、FP8、推理优化)集大成,并展示"它们组合起来能做到什么"。读完这篇,前面16篇的相互关系会变得极其清晰。</div>
 
 <h2 id="p25"><span class="num">P25</span>RAG:让LLM用上外部知识</h2>
-<p class="pos">对应主书:第4章5.10 RAG</p>
+<p class="pos">对应主书:第4章4.10 RAG</p>
 
 <div class="paper-meta">
 <div class="title-en">Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</div>
@@ -10134,7 +10134,7 @@ flowchart TB
 <!-- ============================ P26 ReAct ============================ -->
 
 <h2 id="p26"><span class="num">P26</span>ReAct:让LLM推理与行动协同</h2>
-<p class="pos">对应主书:第4章5.11 Agent</p>
+<p class="pos">对应主书:第4章4.11 Agent</p>
 
 <div class="paper-meta">
 <div class="title-en">ReAct: Synergizing Reasoning and Acting in Language Models</div>

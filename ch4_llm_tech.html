@@ -199,7 +199,7 @@ th{background:var(--sidebar-bg);font-weight:600;}
 <p><strong>Haystack</strong>：企业级 RAG 框架；生产就绪度高。</p>
 <p><strong>自己写</strong>:很多团队发现直接调 OpenAI SDK + 一点胶水代码比框架更清晰——LLM 调用本质就是 HTTP 请求,抽象层越厚反而越难调试。</p>
 
-<div class="part-header"><div class="part-label">PART TWO</div><h2 class="part-title">4.2 Transformer 架构</h2><p class="part-desc">所有 LLM 的基础——把这一块搞透,后面全通。</p></div>
+<div class="part-header"><div class="part-label">PART TWO</div><h2 class="part-title">4.2 Transformer 架构</h2><p class="part-desc">所有 LLM 的基础——把这一块彻底理解,后面全通。</p></div>
 
 <h2 id="s4-2-1"><span class="num">4.2.1</span>整体结构与信息流</h2>
 <p class="pos">定位:一个 token 从进入模型到输出的完整路径——建立宏观图景。</p>
@@ -273,7 +273,7 @@ flowchart TB
 
 <h3>为什么要除 √d</h3>
 <p>这里有个关键细节。$\mathbf{q}_i \cdot \mathbf{k}_j = \sum_{k=1}^d q_k \cdot k_k$。如果 $q, k$ 的每一维独立、均值 0 方差 1,那点积的方差是 $d$(标准差 $\sqrt{d}$)。</p>
-<p>$d$ 大时点积值域很宽——有的很大,有的很小。送入 softmax 后,softmax 会被最大值支配(softmax 的"尖锐化"效应)。如果 $s_1 = 30, s_2 = 25$,差 5 就会让 softmax 几乎只关注 $s_1$。更严重:梯度会消失——softmax 在"一家独大"的区域梯度极小。</p>
+<p>$d$ 大时点积值域很宽——有的很大,有的很小。送入 softmax 后,softmax 会被最大值支配(softmax 的"尖锐化"效应)。如果 $s_1 = 30, s_2 = 25$,差 5 就会让 softmax 几乎只关注 $s_1$。更严重:梯度会消失——softmax 在权重高度集中的区域梯度极小。</p>
 <p>Transformer 原论文的 fix:除以 $\sqrt{d_k}$,让点积方差回到 1:</p>
 <div class="formula">$\text{Attention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) = \text{softmax}\left(\frac{\mathbf{Q} \mathbf{K}^\top}{\sqrt{d_k}}\right) \mathbf{V}$</div>
 <p>这就是"Scaled Dot-Product Attention"。</p>
@@ -304,7 +304,7 @@ def causal_attention(Q, K, V):
 <p>单头 attention 只能学一种"注意模式"——可能学会"指代关系"、也可能学会"语法邻近",但一头只能表示一种。多头让模型同时学多种:每个头有独立的 $W_Q^h, W_K^h, W_V^h$,学不同模式。</p>
 
 <h3>实现</h3>
-<p>朴素实现会搞 $H$ 次 attention 再拼接。实际为了效率,用一个大投影分头:</p>
+<p>朴素实现会做 $H$ 次 attention 再拼接。实际为了效率,用一个大投影分头:</p>
 <ol>
 <li>把 $\mathbf{X}$ 投到 $d_{model}$ 维的 Q/K/V</li>
 <li>Reshape 成 $H$ 个 $d_{head}$ 维子空间: $d_{model} = H \times d_{head}$</li>
@@ -381,7 +381,7 @@ class MultiHeadAttention(nn.Module):
 </code></pre>
 
 <h3>残差连接</h3>
-<p>第 3 章 4.4.1 讲过 ResNet 的残差思想。Transformer 也用:每个 sublayer(attention 和 FFN)输出都加上输入。$\mathbf{y} = \mathbf{x} + \text{Sublayer}(\mathbf{x})$。</p>
+<p>第 3 章 3.3.1 讲过 ResNet 的残差思想。Transformer 也用:每个 sublayer(attention 和 FFN)输出都加上输入。$\mathbf{y} = \mathbf{x} + \text{Sublayer}(\mathbf{x})$。</p>
 <p>好处:梯度通过残差路径直达深层,避免消失;如果某层没学到有用变换,残差让它趋近恒等映射,不拖后腿;可训 80+ 层模型。</p>
 
 <h3>Pre-Norm vs Post-Norm</h3>
@@ -392,7 +392,7 @@ class MultiHeadAttention(nn.Module):
 <p>代价:Pre-Norm 的最终输出方差随层数累积(每层加一次残差),所以 Pre-Norm 模型最后要加一个 final LayerNorm。现代 LLM 全部 Pre-Norm。</p>
 
 <h3>RMSNorm 替代 LayerNorm</h3>
-<p>第 3 章 4.3.5 提过。LayerNorm:$\frac{x - \mu}{\sigma} \gamma + \beta$,要算均值、方差、加 bias。</p>
+<p>第 3 章 3.2.5 提过。LayerNorm:$\frac{x - \mu}{\sigma} \gamma + \beta$,要算均值、方差、加 bias。</p>
 <p>RMSNorm 简化:只除以均方根,不减均值、不加 bias。</p>
 <div class="formula">$\text{RMSNorm}(\mathbf{x}) = \frac{\mathbf{x}}{\sqrt{\frac{1}{d}\sum_i x_i^2 + \epsilon}} \odot \boldsymbol{\gamma}$</div>
 <p>实测效果和 LayerNorm 差不多,但更快(省一次均值计算、一次减法)、参数少(无 $\beta$)。LLaMA 用 RMSNorm,之后大部分新模型都跟进。</p>
@@ -811,7 +811,7 @@ def train_bpe(corpus, vocab_size):
 <h3>特殊 Token 设计</h3>
 <p>现代 LLM 除了常规 token 还有一堆特殊 token:BOS/EOS;对话角色(system/user/assistant);工具调用(tool_call/tool_response);推理段(reasoning_start/end);大量保留位为未来功能预留。特殊 token 设计对对话模板、prompt injection 防御、工具调用协议都至关重要。LLaMA-3 预留了 250 个特殊 token,Qwen2.5 有 22 个,各家差异大。</p>
 
-<h3>Tokenizer 踩坑</h3>
+<h3>Tokenizer 常见问题</h3>
 <p><strong>尾随空格</strong>:<code>"hello"</code> 和 <code>"hello "</code> tokenize 结果不同,经常被忽略导致 prompt 模板错。</p>
 <p><strong>Chat Template</strong>:不同模型对话格式不同。HuggingFace Transformers 的 <code>apply_chat_template</code> 是标准方案——不要手写字符串拼接。</p>
 <p><strong>BOS/EOS 处理</strong>:有的模型加了 BOS 再微调,有的没。混用会训练/推理不一致。</p>
@@ -1269,7 +1269,7 @@ for each query q_i:
 <p><strong>EAGLE / EAGLE-2</strong>:更进化——不是"多头预测",而是一个轻量的自回归子网络,从主模型的隐藏状态生成候选。接受率可达 80%+,加速 3×+。</p>
 
 <h3>工程代价</h3>
-<p>推测解码的权衡:额外显存(小模型或额外 head);实现复杂,和 batch/KV Cache 交互有坑;小 batch 下收益大,大 batch 下(已经 memory-bound 减弱)收益减小。</p>
+<p>推测解码的权衡:额外显存(小模型或额外 head);实现复杂,和 batch/KV Cache 交互有兼容问题;小 batch 下收益大,大 batch 下(已经 memory-bound 减弱)收益减小。</p>
 <p>vLLM、TGI、TensorRT-LLM 都支持了推测解码。线上部署的高 QPS 服务收益明显;内部工具型服务收益小不一定值得。</p>
 
 <div class="part-header"><div class="part-label">PART NINE</div><h2 class="part-title">4.9 推理压缩</h2><p class="part-desc">量化不是推理加速的"附加项",是大模型开源能跑起来的前提。</p></div>
@@ -1278,7 +1278,7 @@ for each query q_i:
 <p class="pos">定位:LLM 量化的两大主流方法——数学原理和工程差异。</p>
 
 <h3>LLM 量化的特殊性</h3>
-<p>第 3 章 4.7.2 讲过通用量化原理。LLM 的特别之处:权重极多(70B × 2B = 140GB),全 INT4 能压到 35GB——能装进单张 A100/H100;激活值有极端 outlier——某些维度值特别大,常规量化对它们损失严重;精度要求高——错一个 token 可能整个回答跑偏。</p>
+<p>第 3 章 3.6.2 讲过通用量化原理。LLM 的特别之处:权重极多(70B × 2B = 140GB),全 INT4 能压到 35GB——能装进单张 A100/H100;激活值有极端 outlier——某些维度值特别大,常规量化对它们损失严重;精度要求高——错一个 token 可能整个回答出现偏差。</p>
 
 <h3>GPTQ</h3>
 <p>GPTQ(2022)用二阶信息做逐列量化。核心观察:量化一列权重引入的误差,可以通过调整剩余列来补偿。</p>
@@ -1450,7 +1450,7 @@ flowchart LR
 <p>拼好后送 LLM 生成答案。</p>
 
 <h3>朴素 RAG 的问题</h3>
-<p>看起来简单但实际坑多:检索 recall 低(用户查询和文档表达差异大,向量相似度找不到相关内容);排序不准(top-K 里有相关的但不是最前面);chunks 之间丢失上下文(相关内容横跨多个 chunk,单独看都不完整);幻觉引用(LLM 编造不存在的引用);查询意图误解(模糊查询、多意图查询处理不好)。</p>
+<p>看起来简单但实际问题很多:检索 recall 低(用户查询和文档表达差异大,向量相似度找不到相关内容);排序不准(top-K 里有相关的但不是最前面);chunks 之间丢失上下文(相关内容横跨多个 chunk,单独看都不完整);幻觉引用(LLM 编造不存在的引用);查询意图误解(模糊查询、多意图查询处理不好)。</p>
 <p>下一节讲的高级 RAG 就是针对这些问题。</p>
 
 <h2 id="s4-10-2"><span class="num">4.10.2</span>高级 RAG 技术</h2>
@@ -1718,7 +1718,7 @@ Action: finish("Max Verstappen, 27 岁")
 <p><strong>对话式多 Agent</strong>:多个 Agent 互相对话协作。AutoGen(Microsoft)是代表,两个或多个 agent 通过消息往返完成任务(一个写代码、一个审查、一个测试)。</p>
 <p><strong>Agent Mesh</strong>:松散耦合,每个 agent 独立能力,按需协作。</p>
 
-<h3>多 Agent 的坑</h3>
+<h3>多 Agent 的常见问题</h3>
 <p>实际做下来经验:</p>
 <ol>
 <li><strong>成本爆炸</strong>:N 个 agent 互相通信,token 消耗成倍</li>
@@ -1937,7 +1937,7 @@ flowchart LR
 <h3>图像生成</h3>
 <p>虽然严格不属于"LLM 范畴",但现代多模态框架里常一起提。主流图像生成架构:</p>
 <ul style="list-style:none;padding-left:0;">
-<li><strong>扩散模型</strong>(主流):Stable Diffusion、SDXL、SD3、FLUX、DALL-E 3。见第 3 章 4.4.4。</li>
+<li><strong>扩散模型</strong>(主流):Stable Diffusion、SDXL、SD3、FLUX、DALL-E 3。见第 3 章 3.3.4。</li>
 <li><strong>自回归</strong>:把图像切成 patch token,像生成文字一样生成。Parti、LLaMA-Gen、Emu3、Chameleon 是代表。和 LLM 自然融合,但效果目前不如扩散。</li>
 <li><strong>混合</strong>:用 LLM 生成 latent,用扩散 decoder 渲染。Transfusion(Meta)、Janus(DeepSeek)路线。</li>
 </ul>

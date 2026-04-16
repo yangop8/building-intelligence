@@ -116,7 +116,7 @@ th{background:var(--sidebar-bg);font-weight:600;}
 
 <!-- ============================ P01 ResNet ============================ -->
 <h2 id="p01"><span class="num">P01</span>ResNet:让网络能真的"深"起来</h2>
-<p class="pos">对应主书:第 3 章 4.4.1 CNN · 第 4 章 5.2.4(残差连接思想)</p>
+<p class="pos">对应主书:第 3 章 3.3.1 CNN · 第 4 章 4.2.4(残差连接思想)</p>
 
 <div class="paper-meta">
 <div class="title-en">Deep Residual Learning for Image Recognition</div>
@@ -195,7 +195,7 @@ class BasicBlock(nn.Module):
 <h3>影响</h3>
 <p>ResNet 的残差思想已经不只是 CNN 的特性——它成为<strong>所有深度网络的基础组件</strong>:</p>
 <ol>
-<li><strong>Transformer</strong>:每个 attention 和 FFN 模块外都包残差(主书 5.2.1)。没有残差,BERT/GPT 深度训练不可能。</li>
+<li><strong>Transformer</strong>:每个 attention 和 FFN 模块外都包残差(主书 4.2.1)。没有残差,BERT/GPT 深度训练不可能。</li>
 <li><strong>DenseNet、U-Net</strong>:残差思想的变种——密集连接、跳跃连接</li>
 <li><strong>ControlNet、LoRA</strong>:都隐含"旁路 + 残差"的架构哲学</li>
 <li><strong>Neural ODE</strong>:把残差网络看作 ODE 的离散形式 $\mathbf{y} = \mathbf{x} + \mathcal{F}(\mathbf{x}, t)$</li>
@@ -208,7 +208,7 @@ class BasicBlock(nn.Module):
 
 <!-- ============================ P02 LSTM ============================ -->
 <h2 id="p02"><span class="num">P02</span>LSTM:序列建模的经典守门人</h2>
-<p class="pos">对应主书:第 3 章 4.4.2 RNN/LSTM/GRU</p>
+<p class="pos">对应主书:第 3 章 3.3.2 RNN/LSTM/GRU</p>
 
 <div class="paper-meta">
 <div class="title-en">Long Short-Term Memory</div>
@@ -264,7 +264,7 @@ class BasicBlock(nn.Module):
 
 <!-- ============================ P03 BatchNorm ============================ -->
 <h2 id="p03"><span class="num">P03</span>BatchNorm:让深网络训练变简单</h2>
-<p class="pos">对应主书:第 3 章 4.3.5 归一化</p>
+<p class="pos">对应主书:第 3 章 3.2.5 归一化</p>
 
 <div class="paper-meta">
 <div class="title-en">Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift</div>
@@ -294,13 +294,13 @@ class BasicBlock(nn.Module):
 
 <h3>影响</h3>
 <p>BN 是 2015 年之后 CNN 的标配。让 100+ 层网络训练成为可能,和 ResNet 一起支撑了 CV 的深度时代。</p>
-<p>但 BN 对 RNN、Transformer 不好使——batch 维度的统计量对序列任务意义不大。Transformer 全用 LayerNorm,后来又演化出 RMSNorm。所以在主书 5.2.4 里你看到 "Pre-Norm + RMSNorm" 是 LLM 标配。BN 的故事基本结束在 CV 领域。</p>
+<p>但 BN 对 RNN、Transformer 效果不佳——batch 维度的统计量对序列任务意义不大。Transformer 全用 LayerNorm,后来又演化出 RMSNorm。所以在主书 4.2.4 里你看到 "Pre-Norm + RMSNorm" 是 LLM 标配。BN 的故事基本结束在 CV 领域。</p>
 
-<div class="refback"><strong>为什么必读:</strong>理解"归一化不是数据预处理,是深度网络的结构组件"——这个观念转变是 BatchNorm 的真正贡献。读这篇论文能让你对主书里 LayerNorm、RMSNorm、GroupNorm 的意义有根子上的理解。</div>
+<div class="refback"><strong>为什么必读:</strong>理解"归一化不是数据预处理,是深度网络的结构组件"——这个观念转变是 BatchNorm 的真正贡献。读这篇论文能让你对主书里 LayerNorm、RMSNorm、GroupNorm 的意义有根本性的理解。</div>
 
 <!-- ============================ P04 Adam ============================ -->
 <h2 id="p04"><span class="num">P04</span>Adam:深度学习默认优化器</h2>
-<p class="pos">对应主书:第 1 章 2.8.4 · 第 3 章 4.5.1</p>
+<p class="pos">对应主书:第 1 章 1.7.4 · 第 3 章 3.5.1</p>
 
 <div class="paper-meta">
 <div class="title-en">Adam: A Method for Stochastic Optimization</div>
@@ -333,21 +333,21 @@ class BasicBlock(nn.Module):
 <p>典型超参:$\beta_1 = 0.9, \beta_2 = 0.999, \epsilon = 10^{-8}, \alpha = 10^{-3}$。这些数字几乎所有 PyTorch/TensorFlow 代码默认都是它们。</p>
 
 <h3>AdamW</h3>
-<p>Loshchilov 2017 指出:Adam 里的"weight decay"(权重衰减正则化)和学习率耦合不正确。<strong>AdamW</strong> 解耦,现在是 LLM 训练的默认选择。主书 5.7.4 里 LLaMA 训练配方的 "AdamW" 就是它。</p>
+<p>Loshchilov 2017 指出:Adam 里的"weight decay"(权重衰减正则化)和学习率耦合不正确。<strong>AdamW</strong> 解耦,现在是 LLM 训练的默认选择。主书 4.7.4 里 LLaMA 训练配方的 "AdamW" 就是它。</p>
 
 <h3>影响与争议</h3>
 <p>Adam 是深度学习最广使用的优化器——像空气一样默认。但也有争议:</p>
 <ul style="list-style:none;padding-left:0;">
 <li>- <strong>收敛性</strong>:Reddi 2018 "On the Convergence of Adam"证明原版 Adam 在某些简单凸问题上不收敛。提出 AMSGrad 修复(但实用中很少用)</li>
 <li>- <strong>泛化</strong>:在 CV 任务上 SGD+Momentum 常常泛化更好。但在 Transformer 训练上 Adam/AdamW 无替代</li>
-<li>- <strong>内存</strong>:Adam 需要存 $\mathbf{m}, \mathbf{v}$ 各一份——是参数的 2 倍。大模型时代这是显存杀手。ZeRO(主书 5.7.2)就是为了分片这个状态而生</li>
+<li>- <strong>内存</strong>:Adam 需要存 $\mathbf{m}, \mathbf{v}$ 各一份——是参数的 2 倍。大模型时代这是显存杀手。ZeRO(主书 4.7.2)就是为了分片这个状态而生</li>
 </ul>
 
 <div class="refback"><strong>为什么必读:</strong>每个 LLM 训练背后都在用 AdamW。这是"默认值"的力量——但知道默认值背后的数学,你才能在遇到训练不稳定时对症下药。</div>
 
 <!-- ============================ P05 XGBoost ============================ -->
 <h2 id="p05"><span class="num">P05</span>XGBoost:表格数据的事实标准</h2>
-<p class="pos">对应主书:第 3 章 4.2.2 树模型</p>
+<p class="pos">对应主书:第 3 章 3.1.2 树模型</p>
 
 <div class="paper-meta">
 <div class="title-en">XGBoost: A Scalable Tree Boosting System</div>
@@ -380,7 +380,7 @@ class BasicBlock(nn.Module):
 
 <div class="formula">$\text{Gain} = \frac{1}{2}\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R + \lambda} - \frac{(G_L+G_R)^2}{H_L+H_R+\lambda}\right] - \gamma$</div>
 
-<p>有了这个公式,贪心选最大 Gain 的分裂,直到 Gain < 0(或其他停止条件)。详细推导见主书 4.2.2。</p>
+<p>有了这个公式,贪心选最大 Gain 的分裂,直到 Gain < 0(或其他停止条件)。详细推导见主书 3.1.2。</p>
 
 <h3>工程创新</h3>
 <ul style="list-style:none;padding-left:0;">
@@ -428,7 +428,7 @@ print("Accuracy:", model.score(Xv, yv))
 
 <!-- ============================ P06 Attention ============================ -->
 <h2 id="p06"><span class="num">P06</span>Attention Is All You Need:Transformer 的诞生</h2>
-<p class="pos">对应主书:第 4 章 5.2 全节</p>
+<p class="pos">对应主书:第 4 章 4.2 全节</p>
 
 <div class="paper-meta">
 <div class="title-en">Attention Is All You Need</div>
@@ -449,7 +449,7 @@ print("Accuracy:", model.score(Xv, yv))
 
 <div class="formula">$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right) V$</div>
 
-<p>关键细节 <strong>$\sqrt{d_k}$ </strong> 缩放:$d$ 维向量点积方差是 $d$,除以 $\sqrt{d}$ 让方差归一,防止 softmax 过饱和(主书 5.2.2 有详细推导)。</p>
+<p>关键细节 <strong>$\sqrt{d_k}$ </strong> 缩放:$d$ 维向量点积方差是 $d$,除以 $\sqrt{d}$ 让方差归一,防止 softmax 过饱和(主书 4.2.2 有详细推导)。</p>
 
 <h3>Multi-Head Attention</h3>
 <p>把 Q、K、V 投到 $H$ 个子空间,每个子空间独立做 attention,结果拼接后再投影:</p>
@@ -473,7 +473,7 @@ flowchart TB
     A2 --> OUT[Output]
 </div>
 
-<p>(图中是 Pre-Norm 版本,原论文用 Post-Norm,现代实现大多切换到 Pre-Norm;详见主书 5.2.4。)</p>
+<p>(图中是 Pre-Norm 版本,原论文用 Post-Norm,现代实现大多切换到 Pre-Norm;详见主书 4.2.4。)</p>
 
 <h3>位置编码</h3>
 <p>Attention 本身是"集合运算"——打乱输入顺序输出不变。要给模型位置感,加位置编码:</p>
@@ -602,7 +602,7 @@ logits = model(x)                       # [2, 50, 10000]
 
 <!-- ============================ P07 BERT / GPT ============================ -->
 <h2 id="p07"><span class="num">P07</span>BERT 与 GPT:预训练时代的双子星</h2>
-<p class="pos">对应主书:第 4 章 5.2.5(Encoder/Decoder 分野)· 4.5.2(自监督预训练)</p>
+<p class="pos">对应主书:第 4 章 4.2.5(Encoder/Decoder 分野)· 4.5.2(自监督预训练)</p>
 
 <div class="paper-meta">
 <div class="title-en">BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding</div>
@@ -673,7 +673,7 @@ cheese =&gt; ???
 </table>
 
 <h3>为什么 Decoder-only 最终赢了</h3>
-<p>主书 5.2.5 分析过,主要因素:</p>
+<p>主书 4.2.5 分析过,主要因素:</p>
 <ol>
 <li>Decoder-only 训练更简单——单一目标,所有文本都是训练数据</li>
 <li>In-context learning 让"一个模型做所有任务"成为现实</li>
@@ -690,7 +690,7 @@ cheese =&gt; ???
 
 <!-- ============================ P08 Scaling Law ============================ -->
 <h2 id="p08"><span class="num">P08</span>Scaling Law 与 Chinchilla:训练大模型的经济学</h2>
-<p class="pos">对应主书:第 4 章 5.1.1 · 4.5.2</p>
+<p class="pos">对应主书:第 4 章 4.1.1 · 4.5.2</p>
 
 <div class="paper-meta">
 <div class="title-en">Scaling Laws for Neural Language Models</div>
@@ -752,7 +752,7 @@ cheese =&gt; ???
 
 <!-- ============================ P09 RoPE ============================ -->
 <h2 id="p09"><span class="num">P09</span>RoPE:旋转位置编码</h2>
-<p class="pos">对应主书:第 4 章 5.3.2 RoPE 深挖</p>
+<p class="pos">对应主书:第 4 章 4.3.2 RoPE 深挖</p>
 
 <div class="paper-meta">
 <div class="title-en">RoFormer: Enhanced Transformer with Rotary Position Embedding</div>

@@ -340,7 +340,7 @@ th { background: var(--sidebar-bg); font-weight: 600; }
   <div class="meta">Chapter 1 · 内部学习材料 · 共 29 节</div>
 </header>
 
-<p>这章的目标不是培养数学家。读者假设已经学过一遍本科数学但大多忘了，日常工作会读到 AI 论文或调用某个库的 API，希望看到公式不打怵、遇到报错能判断数值原因、设计算法时能从理论里找到线索。</p>
+<p>这章的目标不是培养数学家。读者假设已经学过一遍本科数学但大多忘了，日常工作会读到 AI 论文或调用某个库的 API，希望看到公式不再畏惧、遇到报错能判断数值原因、设计算法时能从理论里找到线索。</p>
 
 <p>这套要求决定了写作的三条原则。第一，<strong>每个公式都先讲它要解决什么问题</strong>，再给形式，最后连到 AI 里的一个具体应用场景——不做纯符号推演。第二，<strong>篇幅不对称</strong>。梯度下降、特征分解、大数定律、信息熵、浮点误差这些和 AI 几乎每天打交道的概念会挖得深；流形优化、排队论、通信编码理论这些远一点的点到为止。第三，<strong>代码作为第二种语言</strong>。公式不易懂时，一段能跑的 Python 往往胜过一页证明。</p>
 
@@ -361,7 +361,7 @@ th { background: var(--sidebar-bg); font-weight: 600; }
 
 <p>函数 $f: \mathbb{R} \to \mathbb{R}$ 在点 $x_0$ 的导数，定义上是斜率极限：</p>
 <div class="formula">$f'(x_0) = \lim_{h \to 0} \frac{f(x_0 + h) - f(x_0)}{h}$</div>
-<p>直觉：把 $f$ 放大到足够小的邻域，它看起来就是条直线，这条直线的斜率就是导数。这个"局部看是直线"的观念在多元情形会推广成"局部看是超平面"。积分是导数的逆——给定斜率分布，反求原函数的值差。微积分基本定理把两者拧在一起：$\int_a^b f'(x)\,dx = f(b) - f(a)$。</p>
+<p>直觉：把 $f$ 放大到足够小的邻域，它看起来就是条直线，这条直线的斜率就是导数。这个"局部看是直线"的观念在多元情形会推广成"局部看是超平面"。积分是导数的逆——给定斜率分布，反求原函数的值差。微积分基本定理将两者统一起来：$\int_a^b f'(x)\,dx = f(b) - f(a)$。</p>
 
 <h3>多元：从标量场到向量场</h3>
 
@@ -402,7 +402,7 @@ th { background: var(--sidebar-bg); font-weight: 600; }
 <div class="formula">$(f * g)(t) = \int_{-\infty}^{+\infty} f(\tau) g(t - \tau)\,d\tau$</div>
 <p>离散情形：$(f * g)[n] = \sum_m f[m] g[n-m]$。</p>
 
-<p>直觉是"把 $g$ 翻转再平移，在每个位置上和 $f$ 做加权求和"。CNN 里的"卷积"严格说是<em>互相关</em>（不翻转），但工程上沿用了 convolution 这个词。卷积有两个神奇性质撑起了它在 AI 中的地位：</p>
+<p>直觉是"把 $g$ 翻转再平移，在每个位置上和 $f$ 做加权求和"。CNN 里的"卷积"严格说是<em>互相关</em>（不翻转），但工程上沿用了 convolution 这个词。卷积有两个关键性质奠定了它在 AI 中的地位：</p>
 
 <p><strong>性质一：卷积定理</strong>。傅里叶变换下 $\mathcal{F}(f * g) = \mathcal{F}(f) \cdot \mathcal{F}(g)$——空域卷积等于频域点乘。这是 FFT 加速卷积的理论基础，也是为什么用频域分析信号这么自然。</p>
 
@@ -622,7 +622,7 @@ print("dL/dW1 =\n", dL_dW1)
 <li>- 一般情形：用 SVD 构造</li>
 </ul>
 
-<p>$\mathbf{x} = \mathbf{A}^+ \mathbf{b}$ 在超定情况下给出最小二乘解（残差范数最小），在欠定情况下给出最小范数解。这两件事合并成一个公式，干净得不像话。</p>
+<p>$\mathbf{x} = \mathbf{A}^+ \mathbf{b}$ 在超定情况下给出最小二乘解（残差范数最小），在欠定情况下给出最小范数解。这两件事合并成一个公式，极为简洁。</p>
 
 <h3>在 AI 里</h3>
 
@@ -1042,7 +1042,7 @@ print("POTC    最大负载:", np.mean([simulate_balls_bins(n, 'potc')   for _ i
 
 <p><strong>传输</strong>：一个噪声信道每单位时间能可靠传多少信息？答案：<em>不能超过信道容量 $C$</em>。在此之下，存在编码方案使错误率任意小；超过则一定有错误。</p>
 
-<p>这两个结果干净得不像话——都是尖锐的"可达不可超"极限。它们不告诉你怎么做（存在性证明），但告诉你"再优化也到此为止"。工程上信息论是一面镜子，任何现实压缩算法或通信系统都在和这个极限比较。</p>
+<p>这两个结果极为简洁——都是尖锐的"可达不可超"极限。它们不告诉你怎么做（存在性证明），但告诉你"再优化也到此为止"。工程上信息论是一面镜子，任何现实压缩算法或通信系统都在和这个极限比较。</p>
 
 <!-- 1.6.2 -->
 <h2 id="s1-6-2"><span class="num">1.6.2</span>信息的度量</h2>
@@ -1170,20 +1170,20 @@ print("POTC    最大负载:", np.mean([simulate_balls_bins(n, 'potc')   for _ i
 
 <p>大于 1 的最小浮点数是 $1 + \epsilon$，这个 $\epsilon$ 就是 <strong>机器精度 </strong>。FP32 $\epsilon \approx 1.19 \times 10^{-7}$，FP16 $\epsilon \approx 9.77 \times 10^{-4}$，BF16 $\epsilon \approx 3.91 \times 10^{-3}$。BF16 的精度比 FP16 还差 4 倍，但它有更大的动态范围（指数位同 FP32），所以训练用 BF16 而不是 FP16。</p>
 
-<h3>几个经典的数值坑</h3>
+<h3>几个经典的数值陷阱</h3>
 
-<p><strong>坑一：灾难性相消</strong>。相近两数相减损失精度。</p>
+<p><strong>陷阱一：灾难性相消</strong>。相近两数相减损失精度。</p>
 <pre><code class="language-python">import numpy as np
 x = np.float32(1e8)
 y = x + np.float32(1.0)
 print(y - x)   # 期望 1.0, 实际可能是 0.0 —— 1.0 被 1e8 的精度吃掉了
 </code></pre>
 
-<p><strong>坑二：softmax 的数值爆炸</strong>。直接算 $\exp(x_i)/\sum\exp(x_j)$，当 $x_i$ 大时 $\exp$ 会溢出 inf。标准做法是<strong>减最大值</strong>：</p>
+<p><strong>陷阱二：softmax 的数值爆炸</strong>。直接算 $\exp(x_i)/\sum\exp(x_j)$，当 $x_i$ 大时 $\exp$ 会溢出 inf。标准做法是<strong>减最大值</strong>：</p>
 <div class="formula">$\text{softmax}(x_i) = \frac{\exp(x_i - \max_j x_j)}{\sum_k \exp(x_k - \max_j x_j)}$</div>
 <p>数学上等价（分子分母同乘 $\exp(-\max)$），但数值上所有 $\exp$ 输入都 $\le 0$，结果在 $(0, 1]$，不溢出。</p>
 
-<p><strong>坑三：log-sum-exp</strong>。$\log\sum\exp(x_i)$ 直接算也会溢出，同样用减最大值技巧：</p>
+<p><strong>陷阱三：log-sum-exp</strong>。$\log\sum\exp(x_i)$ 直接算也会溢出，同样用减最大值技巧：</p>
 <div class="formula">$\log\sum_i \exp(x_i) = \max_j x_j + \log\sum_i \exp(x_i - \max_j x_j)$</div>
 
 <p>这些不是高深的优化，是所有数值库（numpy、torch）底层默认使用的标准技巧。自己写 softmax 忘了减最大值就会在训练中莫名 NaN。</p>

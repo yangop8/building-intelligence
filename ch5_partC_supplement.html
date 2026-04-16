@@ -102,7 +102,7 @@ th{background:var(--sidebar-bg);font-weight:600;}
 
 <!-- ============================ P18 HNSW ============================ -->
 <h2 id="p18"><span class="num">P18</span>HNSW:向量数据库的检索引擎</h2>
-<p class="pos">对应主书:第 2 章 3.5.4 向量数据库</p>
+<p class="pos">对应主书:第 2 章 2.4.4 向量数据库</p>
 
 <div class="paper-meta">
 <div class="title-en">Efficient and robust approximate nearest neighbor using Hierarchical Navigable Small World graphs</div>
@@ -228,7 +228,7 @@ flowchart TB
 <li><strong>PostgreSQL pgvector</strong>:0.5+ 版本新增 HNSW 索引</li>
 </ul>
 
-<p>RAG 管线(主书 5.10)里"embedding + 向量检索"的"检索"部分,底层跑的就是 HNSW。没有这篇论文,2023-2025 年的向量数据库热潮不会发生。</p>
+<p>RAG 管线(主书 4.10)里"embedding + 向量检索"的"检索"部分,底层跑的就是 HNSW。没有这篇论文,2023-2025 年的向量数据库热潮不会发生。</p>
 
 <h3>批判视角</h3>
 <p>HNSW 的主要缺点:<strong>内存占用大</strong>——全图必须在内存中,10 亿向量 × 768 维 × float32 ≈ 3TB,这还没算图的边存储。因此大规模场景通常 HNSW + 量化(PQ/SQ)配合使用,或者分片。另外 HNSW 不支持动态删除(只能标记),长期运行需要重建。DiskANN(微软 2019)是专门针对"磁盘上的 ANN"设计的替代方案。</p>
@@ -295,7 +295,7 @@ stateDiagram-v2
 
 <!-- ============================ P20 GAN ============================ -->
 <h2 id="p20"><span class="num">P20</span>GAN:对抗训练的开创</h2>
-<p class="pos">对应主书:第 3 章 4.4.4 生成模型</p>
+<p class="pos">对应主书:第 3 章 3.3.4 生成模型</p>
 
 <div class="paper-meta">
 <div class="title-en">Generative Adversarial Nets</div>
@@ -422,7 +422,7 @@ for epoch in range(num_epochs):
 
 <!-- ============================ P21 VAE ============================ -->
 <h2 id="p21"><span class="num">P21</span>VAE:变分推断遇上深度学习</h2>
-<p class="pos">对应主书:第 3 章 4.4.4 生成模型</p>
+<p class="pos">对应主书:第 3 章 3.3.4 生成模型</p>
 
 <div class="paper-meta">
 <div class="title-en">Auto-Encoding Variational Bayes</div>
@@ -537,7 +537,7 @@ def vae_loss(recon_x, x, mu, logvar):
 
 <!-- ============================ P22 DDPM ============================ -->
 <h2 id="p22"><span class="num">P22</span>DDPM:扩散模型,现代图像生成的基石</h2>
-<p class="pos">对应主书:第 3 章 4.4.4 生成模型</p>
+<p class="pos">对应主书:第 3 章 3.3.4 生成模型</p>
 
 <div class="paper-meta">
 <div class="title-en">Denoising Diffusion Probabilistic Models</div>
@@ -666,7 +666,7 @@ def sample(model, shape):
 
 <!-- ============================ P23 Word2Vec ============================ -->
 <h2 id="p23"><span class="num">P23</span>Word2Vec:词向量的起点</h2>
-<p class="pos">对应主书:第 3 章 4.5.2 嵌入</p>
+<p class="pos">对应主书:第 3 章 3.5.2 嵌入</p>
 
 <div class="paper-meta">
 <div class="title-en">Efficient Estimation of Word Representations in Vector Space</div>
@@ -718,7 +718,7 @@ def sample(model, shape):
 
 <!-- ============================ P24 Mamba ============================ -->
 <h2 id="p24"><span class="num">P24</span>Mamba:线性时间的序列建模</h2>
-<p class="pos">对应主书:第 4 章 5.4.3 非 Transformer 架构</p>
+<p class="pos">对应主书:第 4 章 4.4.3 非 Transformer 架构</p>
 
 <div class="paper-meta">
 <div class="title-en">Mamba: Linear-Time Sequence Modeling with Selective State Spaces</div>
@@ -846,7 +846,7 @@ flowchart TB
 
 <!-- ============================ P25 RAG ============================ -->
 <h2 id="p25"><span class="num">P25</span>RAG:让 LLM 用上外部知识</h2>
-<p class="pos">对应主书:第 4 章 5.10 RAG</p>
+<p class="pos">对应主书:第 4 章 4.10 RAG</p>
 
 <div class="paper-meta">
 <div class="title-en">Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</div>
@@ -895,7 +895,7 @@ flowchart TB
 
 <!-- ============================ P26 ReAct ============================ -->
 <h2 id="p26"><span class="num">P26</span>ReAct:让 LLM 推理与行动协同</h2>
-<p class="pos">对应主书:第 4 章 5.11 Agent</p>
+<p class="pos">对应主书:第 4 章 4.11 Agent</p>
 
 <div class="paper-meta">
 <div class="title-en">ReAct: Synergizing Reasoning and Acting in Language Models</div>
