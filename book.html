@@ -99,6 +99,7 @@ aside.toc .num { color: var(--muted); font-family: var(--mono); margin-right: 6p
 main {
   flex: 1;
   max-width: 880px;
+  margin: 0 auto;
   padding: 0 72px 120px 72px;
   min-width: 0;
 }
@@ -608,38 +609,6 @@ span.num {
   .cover-stats { gap: 24px; flex-wrap: wrap; }
   .cover-footer { flex-direction: column; align-items: flex-start; gap: 12px; }
   .cover-footer-left svg { width: 60px; }
-}
-
-/* ======== Two-Column Layout for Wide Screens ======== */
-@media (min-width: 1600px) {
-  main {
-    max-width: 1320px;
-    padding: 0 60px 120px 60px;
-    columns: 2;
-    column-gap: 48px;
-    column-rule: 1px solid var(--rule);
-  }
-  /* Full-width spanning elements */
-  .book-cover,
-  .chapter-divider,
-  .part-header,
-  pre,
-  table,
-  .mermaid,
-  .paper-meta,
-  .refback,
-  .cover-toc,
-  .cover-footer,
-  section#refs {
-    column-span: all;
-  }
-  /* Prevent awkward breaks */
-  p, li, .callout, .pos, .formula, h2, h3, h4, .footnote {
-    break-inside: avoid;
-  }
-  h2, h3, h4 {
-    break-after: avoid;
-  }
 }
 
 /* ======== Paper Metadata ======== */
