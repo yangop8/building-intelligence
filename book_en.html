@@ -1084,7 +1084,7 @@ The book comprises 5 chapters, 130+ sections, covering five major modules: mathe
 <p>The <span class="math-i">n \times n</span> matrix formed by the second-order partial derivatives of <span class="math-i">f</span> is called the  <strong>Hessian matrix </strong> <span class="math-i">\mathbf{H}</span>, with <span class="math-i">(i,j)</span> entry <span class="math-i">\frac{\partial^2 f}{\partial x_i \partial x_j}</span>. The Hessian describes the local curvature of a function: positive definite means it is a bowl (local minimum), negative definite means it is a hilltop (local maximum), and indefinite means it is a saddle point.</p>
 
 <h3>In AI</h3>
-<p>The loss function <span class="math-i">L(\boldsymbol{\theta})</span> of a neural network maps from a million-dimensional parameter space to a scalar. What we need is <span class="math-i">\nabla_\boldsymbol{\theta} L</span> — a million-dimensional vector pointing in the direction of fastest loss increase. Each step <span class="math-i">\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \eta \nabla L</span> is gradient descent. The Hessian matrix is far too large to store (<span class="math-i">10^6 \times 10^6</span>), so optimizers like Adam <em>approximate</em> Hessian information using the second moment of the gradient — this is the dividing line between first-order and second-order optimization.</p>
+<p>The loss function <span class="math-i">L(\boldsymbol{\theta})</span> of a neural network maps from an extremely high-dimensional parameter space to a scalar — modern LLMs range from billions to hundreds of billions of parameters. What we need is <span class="math-i">\nabla_\boldsymbol{\theta} L</span> — a vector of the same dimensionality as the parameters, pointing in the direction of fastest loss increase. Each step <span class="math-i">\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \eta \nabla L</span> is gradient descent. The Hessian matrix is far too large to store (<span class="math-i">10^{10} \times 10^{10}</span>), so optimizers like Adam <em>approximate</em> Hessian information using the second moment of the gradient — this is the dividing line between first-order and second-order optimization.</p>
 
 <!-- 1.1.2 -->
 <h2 id="s1-1-2"><span class="num">1.1.2</span>Function Analysis Techniques</h2>
@@ -9972,7 +9972,7 @@ A: [let the model continue]
 <!-- ============================ P17 DeepSeek V3 ============================ -->
 
 <h2 id="p24"><span class="num">P24</span>DeepSeek-V3: The Culmination of Open-Source MoE</h2>
-<p class="pos">Main text reference: Chapter 4, §4.4.1 MLA · §5.6 MoE · §4.9.2 FP8</p>
+<p class="pos">Main text reference: Chapter 4, §4.4.1 MLA · §4.6 MoE · §4.9.2 FP8</p>
 
 <div class="paper-meta">
 <div class="title-en">DeepSeek-V3 Technical Report</div>

@@ -1126,7 +1126,7 @@ span.num {
 <p><span class="math-i">f</span>的二阶偏导拼成的 <span class="math-i">n \times n</span>矩阵叫 <strong>海森矩阵 </strong> <span class="math-i">\mathbf{H}</span>，第 <span class="math-i">(i,j)</span>位置是 <span class="math-i">\frac{\partial^2 f}{\partial x_i \partial x_j}</span>。海森描述函数的局部曲率：正定表示这是个碗底（局部极小），负定表示这是个山顶（局部极大），不定表示鞍点。</p>
 
 <h3>在AI里</h3>
-<p>神经网络训练的损失函数 <span class="math-i">L(\boldsymbol{\theta})</span>是从百万维参数空间到一个标量的函数。我们要的是 <span class="math-i">\nabla_\boldsymbol{\theta} L</span>，也就是一个百万维向量，指向loss增大最快的方向。每走一步 <span class="math-i">\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \eta \nabla L</span>就是梯度下降。海森矩阵太大（<span class="math-i">10^6 \times 10^6</span>存不下），所以Adam之类优化器<em>近似</em>用梯度的二阶矩来模拟海森信息——这是二阶优化与一阶优化的分界线。</p>
+<p>神经网络训练的损失函数 <span class="math-i">L(\boldsymbol{\theta})</span>是从极高维参数空间到一个标量的函数——现代LLM的参数量从数十亿到数千亿不等。我们要的是 <span class="math-i">\nabla_\boldsymbol{\theta} L</span>，也就是一个与参数同维度的向量，指向loss增大最快的方向。每走一步 <span class="math-i">\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \eta \nabla L</span>就是梯度下降。海森矩阵太大（<span class="math-i">10^{10} \times 10^{10}</span>存不下），所以Adam之类优化器<em>近似</em>用梯度的二阶矩来模拟海森信息——这是二阶优化与一阶优化的分界线。</p>
 
 <!-- 1.1.2 -->
 <h2 id="s1-1-2"><span class="num">1.1.2</span>函数分析技术</h2>
