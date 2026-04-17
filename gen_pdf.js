@@ -51,7 +51,7 @@ const fs = require('fs');
   }));
   await new Promise(r => setTimeout(r, 3000));
 
-  // Hide sidebar and back-to-top for print; center content
+  // Hide sidebar and back-to-top for print; let main take full width
   await page.addStyleTag({
     content: `
       aside.toc { display: none !important; }
@@ -60,9 +60,13 @@ const fs = require('fs');
       main {
         max-width: 100% !important;
         margin: 0 !important;
-        padding: 40px 60px 60px 60px !important;
+        padding: 0 60px 60px 60px !important;
       }
-      .book-cover { min-height: auto !important; }
+      /* Cover takes a full page */
+      .book-cover {
+        min-height: calc(100vh - 40mm) !important;
+        page-break-after: always;
+      }
       .chapter-divider { page-break-before: always; }
       pre { white-space: pre-wrap !important; word-wrap: break-word !important; }
     `,
