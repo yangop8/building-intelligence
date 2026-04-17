@@ -2,3 +2,5 @@
 .ccb/
 .omc/
 .claude/
+node_modules/
+*.pdf
